@@ -1,0 +1,101 @@
+
+install_geoip_nginx () {
+    su  swadmin -c "
+    cd /opt/src/ 
+    wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E9%80%9A%E7%94%A8%E5%8C%85/GeoIP.tar.gz
+    tar -xf GeoIP.tar.gz
+    cd GeoIP-1.4.8
+    ./configure --prefix=/opt/apps/GeoIP 
+    make
+    make install 
+    "
+    ln -s /opt/apps/GeoIP/lib/*  /lib64/
+    su  swadmin -c "
+    cd /opt/src/ 
+    wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E9%80%9A%E7%94%A8%E5%8C%85/nginx-1.10.3.tar.gz
+    tar -xf nginx-1.10.3.tar.gz 
+    cd nginx-1.10.3
+    ./configure --prefix=/opt/apps/nginx --with-http_stub_status_module --with-http_ssl_module --with-http_geoip_module --with-http_gzip_static_module --with-ipv6 --with-http_realip_module  --user=swadmin --group=swadmin
+    make
+    make install
+    cd /opt/apps/nginx/conf
+    wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/ip.conf
+	wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/blacklist.conf
+    rm -rf nginx.conf
+    wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/GeoIP.dat 
+    wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/GeoLiteCity.dat 
+    wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/nginx.conf
+    cp /opt/apps/nginx/conf/nginx.conf /opt/apps/nginx/conf/nginx.conf.default
+    sed -i "s/example/$webname/g" nginx.conf
+    mkdir -p /opt/apps/nginx/conf/keys/"$webname"_crt
+    cd /opt/apps/nginx/conf/keys/"$webname"_crt
+    wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/keys/example_crt/example.crt
+    wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/keys/example_crt/example.key
+    mv example.key "$webname".key
+    mv example.crt "$webname".crt
+    mkdir -p /opt/apps/nginx/conf/vhosts/tgapp
+    cd /opt/apps/nginx/conf/vhosts
+	wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/vhosts/admin_default_server.conf
+    wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/vhosts/http_default_server.conf  
+    wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/vhosts/https_default_server.conf
+	wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/vhosts/filter.forbid
+    wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/vhosts/qp.whitelist
+    sed -i "s/example/$webname/g" *
+    mkdir -p /opt/apps/nginx/conf/vhosts/$webname
+    cd /opt/apps/nginx/conf/vhosts/$webname
+    # get nginx configuration files
+    wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/vhosts/example/https_web.conf
+    wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/vhosts/example/web.conf 
+    wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/vhosts/example/web_admin.conf 
+    wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/vhosts/example/web_agent.conf 
+    wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/vhosts/example/web_cms.conf 
+    wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/vhosts/example/wechats.conf
+    wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/vhosts/example/work.conf
+
+    sed -i "s/example/$webname/g" * 
+    sed -i "s/xxx.xxx.xxx.xxx/$default_ip/" *
+    sed -i "s/103.68.110.32/$analysis/g" *
+	##
+	cd /opt/apps/nginx/conf/vhosts/tgapp
+	wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/tgapp/https_tgapp12.conf
+	wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/tgapp/https_tgapp3.conf
+	wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/tgapp/https_tgapp456.conf
+	wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/tgapp/https_tgapp789.conf
+	wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/tgapp/https_tgapp1-5-9.conf
+	wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/tgapp/https_tgapp8081-3.conf
+	wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/tgapp/https_tgapp1001-1003.conf
+	wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/tgapp/https_tgapp2001-3.conf
+	wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/tgapp/https_tgapp3001-3.conf
+	sed -i "s/example/$webname/g"  https_tgapp*.conf
+	sed -i "s/xxx.xxx.xxx.xxx/$default_ip/" https_tgapp*.conf
+	sed -i "s/103.68.110.32/$analysis/g" https_tgapp*.conf
+	mkdir /opt/apps/nginx/conf/keys/{tgapp12,tgapp3,tgapp456,tgapp789,tgapp1-5-9,tgapp8081-3,tgapp1001-1003,tgapp2001-3,tgapp3001-3}	
+	cd /opt/apps/nginx/conf/keys/tgapp12/
+	wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/tgapp/tgapp1688-2288/server.crt
+	wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/tgapp/tgapp1688-2288/server.key
+	cd /opt/apps/nginx/conf/keys/tgapp3/
+	wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/tgapp/tgapp3588/server.crt
+	wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/tgapp/tgapp3588/server.key
+	cd /opt/apps/nginx/conf/keys/tgapp456
+	wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/tgapp/tgapp456/server.crt
+	wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/tgapp/tgapp456/server.key
+	cd /opt/apps/nginx/conf/keys/tgapp789
+	wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/tgapp/tgapp789/server.crt
+	wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/tgapp/tgapp789/server.key
+    cd /opt/apps/nginx/conf/keys/tgapp1-5-9
+	wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/tgapp/tgapp1234-tgapp5678-tgapp9012/server.crt
+	wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/tgapp/tgapp1234-tgapp5678-tgapp9012/server.key
+	cd /opt/apps/nginx/conf/keys/tgapp8081-3
+	wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/tgapp/tgapp8081-3/server.crt
+	wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/tgapp/tgapp8081-3/server.key
+	cd /opt/apps/nginx/conf/keys/tgapp1001-1003
+	wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/tgapp/tgapp1001-1003/server.crt
+	wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/tgapp/tgapp1001-1003/server.key
+	cd /opt/apps/nginx/conf/keys/tgapp2001-3
+	wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/tgapp/tgapp2001-3/server.crt
+	wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/tgapp/tgapp2001-3/server.key
+	cd /opt/apps/nginx/conf/keys/tgapp3001-3
+	wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/tgapp/tgapp3001-3/server.crt
+	wget --http-user=downloader  --http-password=bytVi_iFD__foXZl2PpkpdH3iWgm0dcf --no-check-certificate   https://hkdownload.zhushuqt.com:8443/download/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/nginx/tgapp/tgapp3001-3/server.key		
+	"
+}

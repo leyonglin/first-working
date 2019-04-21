@@ -1,0 +1,325 @@
+ 
+https://hub.docker.com/
+https://github.com/docker
+ 
+Docker：把应用程序自动部署到容器，go语言编写。部署引擎，方便部署应用程序
+		提供简单轻量的建模方式，启动快。职责的逻辑分离，一致性的环境。缩短开发生命周期。鼓励使用面向服务的架构，[启动一个进程]
+容器是一种虚拟化的方案，运行在操作系统之上的，操作系统虚拟化，依赖linux内核的namespace和cgroup，资源占用少
+
+docker基本组成：
+docker client    客户端
+	c/s架构    本地/远程  客户端访问守护进程
+docker daemon    守护进程
+docker image     镜像
+	容器的源代码(构建和打包)，1.容器的基石，2.层叠的只读文件系统(引导文件系统bootfs---rootfs(centos/ubuntu...)(基础镜像)---3.联合加载(。。。))
+docker container 容器
+	通过镜像启动，启动和执行阶段。启动镜像会加载一个可写层(写时复制)
+docker registry  仓库
+	公有和私有
+
+docker客户端通过访问docker守护进程，操作docker容器。容器通过镜像启动，镜像保存仓库
+
+docker virsion  
+docker search 
+docker pull   
+docker run learn/least CMD
+docker ps -l
+docker commit  ID  learn/ping
+docker inspect ID
+docker image 
+docker push NAME
+
+使用技术：[编程中：命名空间是一种封装概念，实现代码隔离]
+namespaces：PID  NET  IPC MNT(文件系统相关)  UTS(隔离内核和版本标识)
+control groups控制组：资源限制   优先级设定  资源计量  资源控制(挂起或恢复)
+docker容器的能力:文件系统隔离(root文件系统)  进程隔离：  网络隔离   资源隔离和分组
+
+ubuntu安装docker：
+检查：
+内核版本：uname -a
+内核驱动：/sys/class/misc/device-mapper/(存在既有)
+whereis curl
+安装
+sudo apt-get install -y curl
+curl -sSL https://get.docker.com/ubuntu/  | sudo sh
+创建docker组：sudo groupadd docker
+			  sudo gpasswd -a jkxy docker
+			  sudo service docker restart （root启动）
+			  重新登陆系统...docker用户组可以使用docker命令(不用sudo)
+
+window(通过虚拟机)安装：boot2docker for windows---高版本可能不需要
+
+os x :(通过虚拟机) boot2docker组件提供运行环境与命令工具
+
+
+容器基础操作：docker run NAME/TAGS CMD
+docker start|stop|restart 容器名     启动/停止/重启容器
+docker run -it --name=自定义名称  IMAGE CMD  [-g "daemon off;"]
+-i --interactive=true|false 默认是false(标准输入)   -t --tty=true|false  默认是false 伪终端  
+
+docker run -d centos /bin/sh -c "while true;do echo hello docker;sleep 1;done"
+
+docker start [-i] 容器名        重新启动停止的容器
+docker rm  ID                   删除停止的容器
+
+docker ps  默认是正在运行的容器    -l 最新的容器  -a 包括停止的容器
+
+docker inspect ID   详细信息
+ 实例：docker inspect --format="{{.Volums}}"  容器名     查看数据卷信息
+
+守护式容器：长期非交互式运行
+交互式运行容器 + ctrl+p + ctrl+q   ---保持容器运行
+进入到运行中的容器：docker attach 容器名
+docker run --name container01 -d  NAME  CMD  程序完成，容器会停止
+
+查看容器内部程序结果：
+docker logs [-f] [-t] [--tail] 容器名  （默认返回所有）
+-f --follows=true|false 默认是false  跟踪日志变化结果
+-t --timestamps=true|false 默认是false
+--tail n  输出最后n条  默认输出所有all
+
+查看运行容器进程：docker top 容器名
+查看容器端口：docker port 容器名
+
+在运行容器内启动新进程：
+docker exec [-d] [-i] [-t] 容器名 [COMMAND] [ARG...]
+
+停止守护式容器：docker stop 容器名    docker kill  容器名---强制杀死
+
+docker帮助文件：例如 man docker-run    man docker-logs
+
+设置容器的端口映射：
+docker run [-P映射所有端口] [-p指定映射端口  宿主机端口:容器端口] 有四种 仅1.p 2.p:p 3.ip:容器p  4.ip:p:p
+
+
+查看信息：docker info
+查看镜像：docker images [OPTION] [REPOSITORY]
+-a --all=false(列出中间层镜像)  -f --filter=[] 过滤条件  --no-trunc=false 不截断数据    -q --quiet=false 只显示镜像的唯一id
+
+REPOSITORY 仓库，指一系列关联镜像的集合，以标签名TAGS区分的，默认使用latest镜像，可为同一个镜像(id相同)打上不同标签
+REGISTRY组件仓库，docker镜像的存储服务，包含很多REPOSITORY 仓库     
+
+查看镜像：docker inspect [OPTIONS] CONTAINER|IMAGE [CONTAINER|IMAGE...]    -f --format=""
+删除镜像docker rmi     [OPTIONS] IMAGE  [IMAGE...] -f --force=false Force removal of the image    --no-prune=false Do not delete untagged parents
+
+查找镜像:在官网上找或者docker search [OPTIONS] TERM
+--authmated=false  Only show automated builds  --no-trunc=false Don't truncate output  -s --stars=0 Only displays with at least x stars
+拉取镜像:docker pull [OPTIONS] NAME:TAGS   -a --all-tags=false 
+拉起国内镜像
+在配置文件里添加：DOCKER_OPTS="--registry-mirror=URL"    (在daoclound.io网站注册账号并使用加速器生成镜像链接)
+docker ps
+上传镜像：docker push 
+
+构建镜像：
+1.docker commit 通过容器构建
+	docker commit [OPTIONS] CONTAINER/[REPOSITORY[:TAGS]]  NEW_con_NAME
+	-a --author=""   Author
+	-m --message=""  Commit message
+	-p --pause=true  pause container during commit
+	
+2.docker build  通过dockerfile文件构建
+docker build [OPTIONS] PATH | URL | -
+--force-rm=false   --no-cache=false  --pull=false  -q,--quiet=false   --rm=true   -t,--tags="REPOSITORY"
+实例：docker build -t="REPOSITORY:TAGS" .
+
+dockerfile文件的命令：顺序执行
+#添加注释信息
+FROM  REPOSITORY:TAGS                     第一条非注释指令
+MAINTAINER  Author or message             维护人
+RUN  CMD                                    构建时执行的命令
+	两种模式：1.shell模式：/bin/sh -c CMD     2.exec模式：(可以指定其它的shell模式)["executable" , "param" , "param..."]
+EXPOSE  port                               开放的端口(容器运行时，仍需要在run命令中指定)
+CMD ["","",""...]                                      与RUN相似，但是是在容器启动是执行的，如果容器启动是指定命令，则会被覆盖。一般搭配ENTERYPOINT，为其提供默认参数
+ENTERYPOINT                               于CMD区别是不会被覆盖，除非添加参数docker run --entrypoint,因此可以是ENTERYPOINT指定命令，CMD指定参数
+ADD <src> <dest>  ["<src>"..."<dest>"]     src是本地相对路径，dest是本地绝对路径，对于远程url，建议使用wget或者curl获取文件,包含类似tar的解压功能
+COPY <src> <dest> ["<src>"..."<dest>"]     src是本地相对路径，dest是本地绝对路径，对于远程url，建议使用wget或者curl获取文件，适合单纯复制文件
+VOLUME ["/data"]                           卷，存在一个或多个容器，绕过联合文件系统，提供数据共享或数据持久化功能
+WORKDIR                                    工作目录，指定命令都在改目录下运行，使用绝对路径
+ENV <key><value>   <key>=<value>           设置环境变量，构建和运行中都有效                            
+USER                                       以什么用户执行  user/user:group/user:gid/uid...
+ONBUILD                                    触发器，当镜像被其它镜像当作基础镜像执行时，或出发[dockerfile--image--image(触发)]
+
+
+docker的c/s模式
+1.user --- docker client(命令行接口--docker二进制程序--输入docker命令) --传递--> docker daemon(负责实现功能) 处理  --返回客户端
+2.通过remoteAPI可以自己编写程序调用接口进行集成(也可交互，即输入输出)   docker文档：https://docs.docker.com
+
+客户端和守护进程通过socker进行连接
+1.unix:///var/run/docker.sock(默认)     nc -U /var/run/docker.sock -- GET /info HTTP/1.1(查看remoteAPI的接口信息) 
+2.tcp://host:port
+3.fd://socketfd
+
+
+守护进程的配置和操作
+启动docker，并查询进程--进程显示docker -d [OPTIONS] 信息
+与守护进程运行相关:目录，日志级别，进程id，写入文件地址，驱动模式，debug模式调试
+-D --debug=false   -e，--exec-driver="native"   -g，--graph="/var/lib/docker"
+--icc=true   -l，--log-level="info"
+--label=[]   -p，--pidfile="/var/run/docker.pid"  -------例子[--label name="container01"]
+与服务器连接相关：用户组，安全相关tls  连接socket配置(-H)
+-G，--group="docker"    -H,--host=[]  --tls=false   --tlsverify=false
+--tlsacert="/home/sven/.docker/ca.pem"   --tlscert="/home/sven/.docker/cert.pem"   --tlskey="/home/sven/.docker/key.pem"
+RemotAPI相关：--api-enable-cors=false
+存储/驱动/设置相关：-s,--storage-driver=   --selinux-enabled=false    --storage-opt=[]
+Registry连接相关：--insecure-registry=[]     --registry-mirror=[]
+网络设置相关： -b,--bridge=""   --bip=""   --fixed-cidr=""    --fixed-cidr-v6=""   --dns=[]   --dns-search=[]
+			   --ip=0.0.0.0  ip-forward=true  --ip-masq=true  --iptables=true  --ipv6=false  --mtu=0
+		帮助文档：https://docs.docker.com/reference/commandline/cli
+在配置文件中添加：DOCKER_OPTS=""
+docker info   可以查看到修改
+
+
+docker远程访问：
+docker服务器：客户端可以curl http://ip:port/info
+在服务器端配置文件配置   -H  1.tcp://host:port(2375)     2.unix:///path/to/socket(默认)    3.fd://* or fd://socketfd 
+          配置文件实例：DOCKER_OPTS="--label name=container01 -H tcp://host:port -H unix:///var/run/docker.sock"
+				
+在客户端命令行：-H  1.tcp://host:port(2375)     2.unix:///path/to/socket(默认)    3.fd://* or fd://socketfd 
+    命令行实例 docker -H tcp://ip:port info  				
+使用环境变量DOCKER_HOST    export DOCKER_HOST="tcp://ip:port"
+
+
+dockerfile构建过程：从基础镜像运行容器--执行命令，修改同期--提交新的镜像层--再运行新的容器--...(构建过程会删除中间层容器，但不会删除中间层镜像)
+中间层镜像可以用来调试，排查错误。
+构建缓存：重复构建，会使用构建缓存(使用中间层镜像)
+不使用缓存(update)：1.构建时使用选项--no-cache   2.dockerfile文件中添加环境变量ENV REFRESH_DATE 2012-08-30  时间不同会刷新之后的构建缓存
+查看构建过程：docker history [image]
+
+
+docker容器的网络基础
+互联理论基础
+docker的守护进程时通过docker0为容器提供网络连接的，docker0是linux的虚拟网桥
+网桥：根据osi七层模型，网桥是数据链路层的一个设备，通过网络设备的物理地址进行划分网络，在不同网络之间传递数据
+linux的虚拟网桥：可以设置ip，是通用网路设备的一种，只要是网络设备，就能设置IP地址，则能通过路由表，在网络层定位地址，相当于拥有隐藏的虚拟网卡，网卡名字=虚拟网桥=docker0
+docker守护进程(host)有虚拟网桥docker0并且打开veth*的接口 与 容器eth0的通信
+网桥管理工具：bridge-utils 
+              brctl show  查看网桥
+              brctl addbr  br0 添加虚拟网桥(并在docker配置文件中添加-b=br0)
+              ifconfig docker0 ip netmask 掩码     临时修改ip
+
+同一宿主机容器的互联
+--icc=true  选项默认同一宿主机内的容器是互联的，但是重启容器，默认情况下是会变的(如果配置文件--icc=false,则会拒绝容器间的连接)
+docker run -it --name=自定义名称  --link=[CONTAINER_NAMR已存在容器名]:[ALIAS别名]  [IMAGE] [COMMOND]  新启动容器，能通过别名连接到已存在容器[名]上，重启也可以用别名连接(会改变新生成容器的ENV和hosts本地解析)
+允许特定容器间的互联,需要3个选项：
+1.--icc=false(阻断互联)     2.--link(特定互联)      3.--iptables=true(允许docker将规则添加到linux的iptables设置中)
+iptables [-t filter] -L -n    (默认查filter表)查看规则(从上往下匹配，匹配即停止)
+iptables -F                   清空规则
+
+容器与外部网络的互联：1.ip_forward=true(docker守护进程默认为true)   2.iptables
+iptables是与linux内核集成的包过滤防火墙系统
+表(table)： nat  mangle  raw  filter                           iptables将同样的操作抽象为表
+链(chain):  prerouting   input  output  postrouting   forward  数据处理中的不同环节或阶段
+规则(rule): ACCEPT  REJECT  DROP 链下的操作
+docker run -it -p 80:80 --name cct1 centos       C+p C+q
+docker port cct1
+iptables -I DOCKER -s ip -d ip -p tcp --dport 80 -j DROP
+
+
+docker容器的数据管理：dockerfile---VOLUME ["/data"]---会自动创建数据卷，无法共享
+docker容器的数据卷：是经过特殊设计的目录，，独立于容器的存在，存在于宿主机中的文件系统(目录/文件)，可以绕过联合文件系统(UFS),可共享为一个或多个容器提供访问
+					将应用与运行环境打包，环境生存周期与应用程序相一致，数据需要是持久化的，数据卷在容器删除的时候不会被删除，并且能共享的
+		docker run -it --name 容器名 -v  宿主机目录:容器目录:访问权限(ro/w)  容器名 CMD  --- 可以挂载已有目录
+		docker ps -l  
+		docker inspect ID
+		
+docker的数据卷容器
+		挂载数据卷的容器，且被其它容器通过挂载这个容器实现数据共享，叫做数据卷容器
+		docker run --volumes-from [CONTAINER NAME]
+		docker run -it --name new_cname --volumes-from old_dcname  image  CMD   创建挂载数据卷容器的容器
+		docker rm 容器名 -- 数据卷容器被删除，挂载了数据卷容器的容器也可以访问数据，即数据卷容器只传递了数据卷篇配置的信息
+		docker rm -v 容器名 -- 删除容器及数据卷，但是不能删除仍被使用的数据卷(被挂载)
+		
+docker数据卷的备份和还原
+		docker run --volumes-from back_cname -v 宿主机目录:容器目录 --name new_bcname  ubuntu  tar cvf 容器目录/backup.tar  容器备份目录
+		执行备份命令的容器，即挂载了数据存放目录，且挂载了备份数据存放目录
+
+
+docker容器的跨主机连接
+    使用网桥实现跨主机容器连接(MAC OS X + Parallels软件，有的虚拟机软件不能实现)
+	  同一宿主机通过docker0网桥通信，不同宿主机则是把docker0网桥桥接到宿主机网卡上，docker容器与网桥docker0与物理网卡设置为同一个网段
+    ubuntu网卡配置文件设置：/etc/network/interfaces
+      auth br0                    网桥名称         
+      iface br0 inet static       ip分配方式(静态)
+      address  ip                 ip
+      netmask 
+      gateway
+      bridge_ports eth0            将本地网卡连接到网桥上
+    docker配置文件设置：
+	  DOCKER_OPTS="-b=br0 --fixed-cidr=ip/mask"       -b=br0使用自定义网桥  --fixed-cidr=ip/mask限制ip地址分配范围
+		
+	使用ovs(open vswitch)实现跨主机容器连接(MAC OS X + Virtualbox软件 ，双网卡host-only&NAT )
+	  Open vSwitch是一个高质量，多层虚拟交换机，使用开源Apache2.0许可协议，主要实现代码为可移植的C代码，目的是让大规模网络自动化可以通过编程拓展，同时仍然支持标准的管理接口和协议(例：NetFlow,sFlow,SPAN,RSPAN,CLI,LACP,802.lag..)
+     	GRE(通用路由协议封装)隧道:隧道技术(Tunneling)是一种通过互联网络的基础设施载网络之间传递数据的方式，使用隧道传递的数据或负载可以是不同协议的数据帧或包，隧道协议将其它协议的数据帧或包重新封装然后通过隧道发送，新的帧头提供路由信息，以便通过互联网传递被封装的负载数据，是一种点对点的再封装技术
+	  软件包：openvswitch-switch && bridge-utils
+	 建立ovs网桥
+	  ovs-vsctl show
+	  ovs-vsctl add-br obr0                                               添加网桥	 
+	 添加gre连接
+	  ovs-vsctl add-port obr0 gre0                                        添加接口
+	  ovs-vsctl set interface gre0 type=gre options:remote_ip=ip          设置接口
+	 配置docker容器虚拟网桥
+	  brctl addbr br0
+	  ifconfig br0 ip netmask mask                                        设置ip
+	 为虚拟网桥添加ovs接口
+	  brctl addif br0 obr0                                                为br0网桥添加ovs网桥的连接
+	  brctl show	 	 
+	 添加不同Docker容器网段路由(不同网段需要查询路由表)
+	  DOCKER_OPTS="-b=br0"--重启docker--再运行容器
+	  route
+	  ip route add  网段  via 拥有这个网段主机  dev eth0     添加路由信息，该网段需要去另一台主机找，通过eth0(下一跳和本机eth0需要同一个网端上)
+
+	使用weave实现跨主机容器连接(MAC OS X + Virtualbox软件 ，双网卡host-only&NAT )
+	  weave(编织)：建立一个虚拟网络，用于将运行在不同主机的docker容器连接起来。网址：1.http://weave.works   2.https://github.com/weaveworks/weave#readme
+	 安装weave:
+	   host1:wget -O /usr/bin/weave https://raw.githubusercontent.com/zettio/weave/master/weave
+	         chmod a+x /usr/bin/weave                                                            启动weave
+			 weave launch
+			 weave run ip/mask(本容器) -it --name new_cname ubuntu /bin/bash
+	   host2:wget -O /usr/bin/weave https://raw.githubusercontent.com/zettio/weave/master/weave
+	         chmod a+x /usr/bin/weave
+			 weave launch 另一台主机ip                                                           通过weave连接不同主机
+			 weave run ip/mask(本容器) -it --name new_cname ubuntu /bin/bash                     通过weave指定IP地址启动容器，网络设备ethwe
+			 
+			 
+	 
+补充：
+docker镜像的导出：docker save -o  名称.tar  存在的镜像名     --- 类似压缩
+docker镜像的导入：docker load -i  名称.tar	           
+	 
+扩容帮助文档：https://github.com/moby/moby/tree/master/daemon/graphdriver/devmapper
+1.在存储配置文件/etc/sysconfig/docker-storage中添加：DOCKER_STORAGE_OPTIONS="--storage-opt dm.basesize=20G"
+2.容器查看磁盘空间大小：df -h
+  查看mapper设备信息:/dev/mapper/* 与 进入容器df -h是一致的(以下的*表示的是同样的字符串)
+  查看卷信息表		：dmsetup  table  *(是/dev/mapper/*d的这个*)
+  第二个数字是设备的大小，表示有多少个512bytes的扇区。(nG*1024*1024*1024/512)
+  修改卷信息表：echo  $(dmsetup  table  *) | dmsetup load *           设备大小可根据自己需要修改
+  激活：dmsetup resume *
+  查看: dmsetup table  *
+  修改文件系统：xfs_growfs  /dev/mapper/*
+
+
+docker监控：
+
+
+
+
+
+
+
+yum -y install docker-mapper*
+pipework:容器间网络设置
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

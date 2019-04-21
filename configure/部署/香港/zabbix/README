@@ -1,0 +1,25 @@
+
+
+install_web_db_master_zabbix () {
+    su mtadmin -c "
+    cd /home/mtadmin/
+    wget --http-user=${http_user}  --http-password=${http_password} --no-check-certificate   https://$downloadserver/%E9%80%9A%E7%94%A8%E5%8C%85/zabbix-agent-web%2Bdb.zip
+    sleep 2
+    unzip zabbix-agent-web+db.zip &&  rm -rf zabbix-agent-web+db.zip
+    sleep 1
+	cd /home/mtadmin/apps/zabbix/scripts/
+	wget --http-user=${http_user}  --http-password=${http_password} --no-check-certificate   https://$downloadserver/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/%E5%85%B6%E4%BB%96/sersync_data.sh
+	wget --http-user=${http_user}  --http-password=${http_password} --no-check-certificate   https://$downloadserver/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/%E5%85%B6%E4%BB%96/sersync_views.sh
+	cd /home/mtadmin/apps/zabbix/etc/zabbix_agentd.conf.d/
+	wget --http-user=${http_user}  --http-password=${http_password} --no-check-certificate   https://$downloadserver/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/%E5%85%B6%E4%BB%96/sersync.conf
+	sleep 1
+	chmod +x /home/mtadmin/apps/zabbix/scripts/*
+    chmod +x /home/mtadmin/apps/zabbix/sbin/zabbix_agentd
+    sed -i  's#\(Hostname=\).*#\1zabbixclient-"$webname"-web-master#' /home/mtadmin/apps/zabbix/etc/zabbix_agentd.conf
+    grep Hostname= /home/mtadmin/apps/zabbix/etc/zabbix_agentd.conf
+    /home/mtadmin/apps/zabbix/sbin/zabbix_agentd
+    "
+	echo -e "########zabbix开机自启########\nsu mtadmin -c \"/home/mtadmin/apps/zabbix/sbin/zabbix_agentd\"" >> /etc/rc.local
+    chmod +x /etc/rc.local
+	chmod +x /etc/rc.d/rc.local
+}

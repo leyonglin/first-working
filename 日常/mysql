@@ -1,0 +1,64 @@
+
+
+Mysql：
+select user,host from mysql.user where user='myrync' \G;
+
+撤销授权（直接删除用户）
+Delete FROM mysql.user Where User='gameplat_analysis_dev' and Host='$i';
+Delete FROM mysql.user Where User='gameplat_analysis_dev' and Host='103.86.87.194';
+Delete FROM mysql.user Where User='gameplat_sc_data_dev' and Host='$i';
+Delete FROM mysql.user Where User='gameplat_sc_data_dev' and Host='103.86.87.194';
+Delete FROM mysql.user Where User='gameplat_cms_dev' and Host='$i';
+Delete FROM mysql.user Where User='gameplat_cms_dev' and Host='103.86.87.194';
+
+主从授权：grant replication slave on *.* to myrync@'$i' identified by 'MyryncCloud';
+          flush privileges；
+
+查看信息：show master status;
+
+从库指定主库信息：
+CHANGE MASTER TO
+MASTER_HOST='103.68.110.243',
+MASTER_USER='myrync',
+MASTER_PASSWORD='MyryncCloud',
+MASTER_PORT=16303,
+MASTER_LOG_FILE='mysql-bin.000001',
+MASTER_LOG_POS=366173927;
+
+MySQL中source命令   mysql> source D:\db.sql; //导入数据 
+
+删除一行记录
+delete from db where localhost=103.86.87.193;
+删除表
+drop table 表名；
+
+Innobackupex
+全备文件：2018-05-20_12-33-46
+差异文件：/backup/data_back/incre/2018-05-20_12-33-46/*
+全备：innobackupex  --defaults-file=/opt/conf/my_16303.cnf  --use-memory=10G --compress --compress-threads=24  -uroot -p9tN6GFGK60Jk8BNkBJM611GwA66uDFeG  -S  /opt/data/data_16303/mysql.sock  /opt/src/upload/full
+差异备：innobackupex  --defaults-file=/opt/conf/my_16303.cnf  --use-memory=10G --compress --compress-threads=24  -uroot -p  -S  /opt/data/data_16303/mysql.sock  --incremental /backup/data_back/xtrabackup/incre/2018-05-20_12-33-46 --incremental-basedir /backup/data_back/xtrabackup/full/2018-05-20_12-33-46
+停止mysqld服务，清空data_16303/目录
+解压全备：innobackupex --decompress --parallel=16 /backup/data_back/full/2018-05-20_12-33-46/
+应用日志等待回滚：innobackupex --apply-log --use-memory=4G --redo-only /backup/data_back/full/2018-05-20_12-33-46/
+解压差异备份：innobackupex --decompress --parallel=16 /backup/data_back/incre/2018-05-20_12-33-46/2018-05-20_13-00-09/
+合并日志回滚：innobackupex --apply-log --use-memory=4G /backup/data_back/full/2018-05-20_12-33-46/  --incremental-dir=/backup/data_back/incre/2018-05-20_12-33-46/2018-05-20_13-00-09/
+可查看这个文件：less /backup/data_back/full/2018-05-20_12-33-46/xtrabackup_checkpoints---lsn是否最新(有变化)
+恢复数据：innobackupex --defaults-file=/opt/conf/my_16303.cnf --use-memory=4G  --copy(move)-back  /backup/data_back/full/2018-05-20_12-33-46/
+启动服务：mysqld --defaults-file=/opt/conf/my_16303.cnf  --user=swadmin &  （数据目录权限值得看一下）
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,303 @@
+
+英语单词：lag延迟  allocation分配  raw：状态跟踪  backlog：积压  pm：fpm进程      buckets：桶，缓存   orphans：孤儿，单独无关联   scaling：定标; 缩放比例
+
+格力空调
+swing：摆动
+mode：模式
+ifeel：智能随身感
+timer：定时
+dry：干燥
+light：空调指示灯
+temp：温度
+fan ：送风
+turbo：无线信号增强按键(增压涡轮)
+
+Jmeter:
+Apache jmeter 可以用于对静态的和动态的资源（文件，Servlet，Perl脚本，java 对象，数据库和查询，FTP服务器等等）的性能进行测试。它可以用于对服务器、网络或对象模拟繁重的负载来测试它们的强度或分析不同压力类型下的整体性能。你可以使用它做性能的图形分析或在大并发负载测试你的服务器/脚本/对象。
+
+notepad++  也叫npp
+文件对比(插件) ，Alt列模式编辑，支持备份  
+支持代码折叠，支持多种格式文件，语法高亮，轻量级支持插件，显示行号，放大缩小，隐藏，
+导出城不同格式(NppExport插件)，直接拉入，Ctrl+Tab多文件切换  
+
+
+宏语言的释义：
+1、宏语言是一种强有力的工具语言，可以用来描述软件和解决软件移植等问题，用于书写宏指命和宏定义的表示法和规则。
+2、宏语言是一类编程语言，其全部或多数计算是由扩展宏完成的。宏语言并未在通用编程中广泛使用，但在文本处理程序中应用普遍。
+
+Settings-> Preference ->General -> Tab Bar  （session：会话）
+设置       首选项       通用        标签栏
+
+
+Win10：快捷键
+Win键+D：显示桌面
+Win键+Shift+左/右：将应用从一个显示屏移至另一个显示屏
+Win键+I：打开Windows 10设置
+Win键+X：打开高级用户功能
+Win键+Ctrl+D：创建一个新的虚拟桌面(Win键+Tab可解)
+Win键+Ctrl+左/右：切换虚拟桌面
+Win键+Ctrl+F4：关闭最近使用的虚拟桌面
+Win键+Tab：激活多任务视图
+Win键+E：打开文件管理器
+Win键+G：打开Xbox游戏录制工具栏，供用户录制游戏视频或截屏
+Win键+L：锁定屏幕
+Win键+R：运行
+Win键+1/2/3：打开任务栏中固定的程序，1代表任务栏中第一个应用图标
+Shift +左/右/上/下:移动光标并选中文本
+Win键+左/右/上/下：移动应用窗口，可多程序同屏
+
+
+xshell：
+ctrl+a+tab 可切换终端
+设置锁屏密码，快捷键
+上传下载：lrzsz 和 xftp
+右键粘贴选用的文字：工具->选项->键盘和鼠标->将选定的文本自动复制到剪贴板
+同时执行命令：View->’Compose Bar’(查看--撰写栏)
+设置快捷命令：1.查看--快速命令  2.工具--快速命令集
+设置数字小键盘(每次都需要设置)：Properties->Terminal->Initial VT Modes->Set as normal
+               属性         终端       vt模式           设置为正常
+迁移连接信息：拷贝每个保存的Session连接信息都是保存到.xsh
+
+vmware：nat网络设置1.编辑--虚拟网络编辑器--nat模式--更改设置--dhcp设置--确定
+				   2.虚拟机--设置--网络适配器--nat模式      3.网卡文件设置
+
+
+lvs+keepalived中的tcp调优
+【依赖包：libnl包含一个便捷库，可简化使用Linux内核的netlink套接字接口进行网络操作】
+tcp/ip三次握手：SYN(客1)   SYN，ACK(服2)               ACK(客户端3)
+      四次断开：FIN(客4)   ACK(服5)   FIN，ACK(服6)    ACK(客7)
+11种状态：
+客户端TCP状态迁移：
+CLOSED--->SYN_SENT--->ESTABLISHED--->FIN_WAIT_1--->FIN_WAIT_2--->TIME_WAIT--->CLOSED
+初始状态  发送SYN后   连接状态        发送FIN      收到ACK        发送ACK-->2MSL等待状态(2-4分钟)
+
+服务器TCP状态迁移：
+CLOSED--->LISTEN--->SYN收到 --->ESTABLISHED--->CLOSE_WAIT          --->LAST_ACK--->CLOSED
+未起服务  初始状态  收到SYN      连接状态     发送FIN，ACK，等待ACK     等待收到ACK
+
+jumpserver：可以在xshell登陆，也可以在网页登陆，web终端可以和xshell一样使用命令，上传下载有目录限制
+
+进程有5种状态: 
+1. 运行(正在运行或在运行队列中等待) 
+    R 运行 runnable (on run queue)
+2. 中断(休眠中, 受阻, 在等待某个条件的形成或接受到信号) 
+    S 中断 sleeping
+3. 不可中断(收到信号不唤醒和不可运行, 进程必须等待直到有中断发生) 
+    D 不可中断 uninterruptible sleep (usually IO)
+4. 僵死(进程已终止, 但进程描述符存在, 直到父进程调用wait4()系统调用后释放) 
+    Z  僵死 a defunct (”zombie”) process 
+5. 停止(进程收到SIGSTOP, SIGSTP, SIGTIN, SIGTOU信号后停止运行运行
+    T 停止 traced or stopped  
+
+yum search fortune      可输出随机句子
+http://code.google.com/p/chinese-fortune/downloads/list
+make install
+make -C src install
+输入fortune-zh song100 会提示 “No fortunes found”, 还要把中文相关的数据文件拷贝到 fortune的默认数据文件处
+例如：复制《道德经》文件
+#cd /usr/share/fortune/zh
+# cp dao* ../../games/fortune/
+如果要复制所有文件到默认目录 则运行以下
+# cp -r /usr/share/fortune/zh/* /usr/share/games/fortune/
+接下来就可以用fortune-zh [数据文件名] 打印各种中文的段子了
+中文fortune目前包括的模块有：
+caigentan: 菜根谭
+dao: 道德经
+joke: 笑话集
+lunyu: 论语
+maoshici: 毛泽东诗词
+maoyulu: 毛泽东语录
+proverb: 谚语
+song100: 宋诗100首
+songproses: 宋词
+tang300: 唐诗300首
+zengguang: 增广贤文
+
+在linux环境下，任何事物都以文件的形式存在，通过文件不仅仅可以访问常规数据，还可以访问网络连接和硬件。所以如传输控制协议 (TCP) 和用户数据报协议 (UDP) 套接字等，系统在后台都为该应用程序分配了一个文件描述符，是基于函数生成的，
+无论这个文件的本质如何，该文件描述符为应用程序与基础操作系统之间的交互提供了通用接口。因为应用程序打开文件的描述符列表提供了大量关于这个应用程序本身的信息，因此通过lsof工具能够查看这个列表对系统监测以及排错将是很有帮助的。
+lsof -R  参数详解：
+COMMAND：进程的名称   PID：进程标识符    PPID：父进程标识符（需要指定-R参数）   USER：进程所有者    PGID：进程所属组
+FD：文件描述符，应用程序通过文件描述符识别该文件
+   cwd：应用程序的当前工作目录    
+   txt ：该类型的文件是程序代码,如应用程序二进制文件(程序)本身或共享库
+   lnn：library references (AIX);
+   er：FD information error (see NAME column);
+   jld：jail directory (FreeBSD);
+   ltx：shared library text (code and data);
+   mxx ：hex memory-mapped type number xx.
+   m86：DOS Merge mapped file;
+   mem：memory-mapped file;
+   mmap：memory-mapped device;
+   pd：parent directory;
+   rtd：root directory;
+   tr：kernel trace file (OpenBSD);
+   v86  VP/ix mapped file;
+   0：表示标准输出
+   1：表示标准输入
+   2：表示标准错误
+一般在标准输出、标准错误、标准输入后还跟着文件状态模式：r、w、u等
+   u：表示该文件被打开并处于读取/写入模式
+   r：表示该文件被打开并处于只读模式
+   w：表示该文件被打开并处于
+   空格：表示该文件的状态模式为unknow，且没有锁定
+同时在文件状态模式后面，还跟着相关的锁   
+   N：for a Solaris NFS lock of unknown type;   
+   r：for read lock on part of the file;  
+   R：for a read lock on the entire file;   
+   w：for a write lock on part of the file;（文件的部分写锁）   
+   W：for a write lock on the entire file;（整个文件的写锁）   
+   u：for a read and write lock of any length;   
+   U：for a lock of unknown type;   
+   x：for an SCO OpenServer Xenix lock on part of the file;   
+   X：for an SCO OpenServer Xenix lock on the  entire file;  
+   space：if there is no lock.
+TYPE：文件类型，如DIR、REG等，常见的文件类型
+   DIR：表示目录
+   CHR：表示字符类型
+   BLK：块设备类型
+   UNIX： UNIX 域套接字
+   FIFO：先进先出 (FIFO) 队列
+   IPv4：网际协议 (IP) 套接字
+DEVICE：指定磁盘的名称
+SIZE：文件的大小
+NODE：索引节点（文件在磁盘上的标识）
+NAME：打开文件的确切名称
+参数：支持正则和递归
+-R -u(用户) -g -p(pid 1,2,3)  -c(进程名)  -i(tcp/:port/udp:55)  -N(列出所有网络文件系统)  -d(fs 2-3)         
+-a 列出打开文件存在的进程
+-c<进程名> 列出指定进程所打开的文件
+-g  列出GID号进程详情
+-d<文件号> 列出占用该文件号的进程
++d<目录>  列出目录下被打开的文件
++D<目录>  递归列出目录下被打开的文件
+-n<目录>  列出使用NFS的文件
+-i<条件>  列出符合条件的进程。（4、6、协议、:端口、 @ip ）
+-p<进程号> 列出指定进程号所打开的文件
+-u  列出UID号进程详情
+-h 显示帮助信息
+-v 显示版本信息
+
+
+
+
+Vim： 
+行内跳转：0: 绝对行首  $: 绝对行尾  ^: 跳转至行首的第一个非空白字符  H：移动光标到屏幕上面   M：移动光标到屏幕中间  L：移动光标到屏幕下面
+          nx: 删除光标所在处及向后的共n个字符     连续u命令可撤消此前的n次编辑操作  
+          G 最后一行(vim + filename)    gg 第一行
+		  dw 删除光标之后的单词剩余部分。   d$ 删除光标之后的该行剩余部分。 daw删除光标所在单词
+
+多屏
+  在命令模式下：      :sp {filename}   再打开一个文件   ctrl+w+上下键可切换     :qa可关闭其它窗口(无修改)
+  多文件编辑  vim FILE1 FILE2 FILE3 …  :next 下一个  :prev前一个  :first 第一个  :last 最后一个  :wall 保存所有  :qall退出所有  :wqall   
+  多文件分割  vim -o -O FILE1 FILE2 …  -o: 水平分割  -O: 垂直分割  在窗口间切换：Ctrl+w
+  单文件窗口分割：Ctrl+w,s: split, 水平分割    Ctrl+w,v: vertical, 垂直分割   ctrl+w,q：取消相邻窗口   ctrl+w,o:取消全部窗口  ：wqall退出
+可视化
+   按键组合	             说明
+      v	         字符选择，会将光标经过的地方反白选择
+      V	         行选择，会将光标经过的行反白选择
+    Ctrl+v	     块选择，用一个矩形选择文本
+   可以进行删复制粘贴
+   1 ctrl+v 进入列编辑模式
+   2 向下或向上移动光标
+   3 把需要注释的行的开头标记起来
+   4 然后按大写的I
+   5 再插入注释符,比如"#"
+   6 再按Esc,就会全部注释了
+
+Vim查找支持正则表达式，例如/vim$匹配行尾的"vim"		 
+   查找：/foo\c将会查找所有的"foo","FOO","Foo"等字符串  \c表示大小写不敏感查找，\C表示大小写敏感查找
+   替换：连续字符替换：命令模式按R    跟shell交互 :! COMMAND
+   :{作用范围}s/{目标}/{替换}/{替换标志}    :%s/foo/bar/g会在全局范围(%)查找foo并替换为bar，所有出现都会被替换（g）
+ !!!   :%s/foo/bar/gc   replace with bar (y/n/a/q/l/^E/^Y)?
+   按下y表示替换，n表示不替换，a表示替换所有，q表示退出查找模式， l表示替换当前位置并退出。^E与^Y是光标移动快捷键
+   行移动：通过h← j↓ k↑ l→ i来进行左下上右的光标移动。10j可以向下移动10行(方向键也可以)
+  单词移动：
+   w移动光标到下一个单词的词首，e移动光标到当前/下一个单词的结尾，b移动光标到当前/上一个单词的词首；
+   4w可以向后移动4个单词，W, B, E具有同样的功能，只不过它是用空格来分隔单词的，可以跳地更远~
+  读存：r {filename}  当前行读入文件    w {filename} 另存为
+  拷贝整个文件：ggyG
+插入模式：i：在当前字符的左边插入 I：在当前行首插入
+          a：在当前字符的右边插入 A：在当前行尾插入
+          o：在当前行下面插入一个新行 O：在当前行上面插入一个新行
+
+1 yy        　　//复制当前行
+2 yw     　　　　//当前光标下面的这个单词
+3 yit        　//复制一个html标签中的内容
+4 yft        　//复制当前行上光标到第一个t之间的所有内容
+
+vim普通模式下按Q进入ex      ex命令模式下按：vi进入命令模式
+ 
+宏复制：   命令行模式qw---x-j-q--100@w(w与前面w对应)    qw---i-123-Esc-hhj-q---100@w（或者上下键）     
+ 
+寄存器：拷贝当前行到寄存器 a 或者其他字母。你应该按 “ayy。现在当前行已存在寄存器 a 里面直到你又拷贝了一些东西进入寄存器 a。你可以使用命令 “ap 来粘贴寄存器 a 里面的内容到你想要的位置
+
+
+路由器中存在两种类型和层次的表，一个是路由表(routing-table)，另一个是转发表(forwording-table)。转发表是由路由表映射过来的，策略路由直接作用于转发表，路由策略直接作用于路由表。 
+策略路由则是先有策略再有路由，通过策略决定某些数据的走向，当策略和这些数据不匹配，这些数据才会通过查询路由表来实现数据访问 
+ 
+
+more：需要是可以编辑
+按空白键（space）就往下一页显示，按 b 键就会往回（back）一页显示，而且还有搜寻字串的功能 ，在启动时就加载整个文件
+参数：-n  定义屏幕大小为n(数字)行  -c   置顶显示   -s   把连续的多个空行显示为一行  +/pattern 在每个档案显示前搜寻该字串（pattern），然后从该字串前两行之后开始显示 
+命令：=  输出当前行的行号    :f   输出文件名和当前行的行号    !命令  调用Shell，并执行命令
+
+less:只能查看    可以向前向后翻页/查找   /keyword：从文件首部向文件尾部依次查找，不区分字符大小写   ？keyword：从文件尾部向文件首部依次查找
+参数：-m  显示类似more命令的百分比    -N  显示每行的行号  -s  显示连续空行为一行   -i  忽略搜索时的大小写
+命令：/字符串：向下搜索“字符串”的功能  ?字符串：向上搜索“字符串”的功能  [pagedown]：向下翻动一页  [pageup]：向上翻动一页
+    浏览多个文件： :p 切换到file1   :n 切换到file2...    当正在浏览一个文件时，也可以使用 :e命令 打开另一个文件
+     ma 使用 a 标记文本的当前位置   'a  导航到标记 a 处
+
+mtr：遇到数据传输延迟失败的问题，检测丢包率
+参数:-r 以报告模式显示  -c 设置每秒发送数据包的数量 -s 用来指定ping数据包的大小  -4/6 IPv4/6 
+
+安全狗：网站安全狗，服务器安全狗，安全狗服云。互联网安全品牌，云安全服务与解决方案提供商，提供专业的云安全服务，解决在混合云、私有云、公有云及传统环境下可能遇到的各种安全与管理问题，厦门服云信息科技有限公司
+
+Dns：DNS查询，有解析域名服务器、根域名服务器、TLD域名服务器、主域名服务器
+SOA记录与NS记录的区别:SOA(起始授权记录)记录设置一些数据版本和更新以及过期时间的信息，是配置文件的第一个记录
+NS记录表示域名服务器记录，用来指定该域名由哪个DNS服务器来进行解析;            
+CNAME   A   AAAA   MX记录:域的邮件交换，电子邮件正确到达您的邮件服务器      PTR记录：反解析(dig -x)
+
+星型密码查看器：可以查看星型***的密码
+
+管理员密码：可以重启由grub进入runlevel1修改
+
+文件描述符(文件句柄)：在linux系统中打开文件就会获得文件描述符，它是个很小的非负整数。每个进程在PCB（Process Control Block）中保存着一份文件描述符表，文件描述符就是这个表的索引，每个表项都有一个指向已打开文件的指针。
+文件指针：C语言中使用文件指针做为I/O的句柄。文件指针指向进程用户区中的一个被称为FILE结构的数据结构。FILE结构包括一个缓冲区和一个文件描述符。而文件描述符是文件描述符表的一个索引，因此从某种意义上说文件指针就是句柄的句柄（在Windows系统上，文件描述符被称作文件句柄）
+
+
+Git:
+搭建可以用gitlab-ce,下载网址：https://mirrors.tuna.tsinghua.edu.cn/gitlab-ce/[yum/e17/]
+可以指定成员的权限,上传密钥可以免密操作
+git push -u origin master    可以创建不同branch
+远程分支回滚的三种方法： git log
+自己的分支回滚直接用reset----- git reset --hard commit-id
+公共分支回滚用revert     ----- git revert commit-id
+错的太远了直接将代码全部删掉，用正确代码替代
+
+Npm是节点JavaScript平台(前端)的包管理器。它将模块放置到位，以便节点能够找到它们，并智能地管理依赖冲突。它非常容易配置以支持各种各样的用例。最常见的是，它用于发布、发现、安装和开发节点程序。
+
+Jenkins 能解决以下几类问题：1.自动化构建软件  2.自动化检查  3.构建可持续的自动化测试  4.自动化打包和分发部署
+        执行完一个task，会跟着执行下一个task
+
+
+runlevel可查看
+0-停机(千万不要把initdefault设置为0)
+1-单用户模式
+2-多用户，没有NFS
+3-multi-user.target完全多用户模式（标准的运行级）
+4-备用，没有用到
+5-GUI模式/GNOME/KDE图形化界面（x11：xwindow）
+6-重新启动(千万不要把initdefault设置为6)
+
+
+Python3:安装完成会安装好pip3(setuptools)  依赖包(libffi-devel,gcc,make,zlib*)
+
+Eclipse:是一个开放源代码的、基于Java的可扩展开发平台。就其本身而言，它只是一个框架和一组服务，用于通过插件组件构建开发环境。幸运的是，Eclipse附带了一个标准的插件集，包括Java开发工具（Java Development Kit，JDK）。
+
+DNSPod：是中国第一大DNS解析服务提供商，是一款免费智能DNS产品。 DNSPod 可以为同时有电信、联通、教育网服务器的网站提供智能的解析
+
+python3.5.7：从官网上选择系统和版本下载，依赖包gcc，make，openssl-devel(其它报错自己看) ，成功安装会附带pip3
+
+
+ 
+ 

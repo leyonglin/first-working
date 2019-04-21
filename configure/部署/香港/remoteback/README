@@ -1,0 +1,11 @@
+
+
+set_db_remoteback (){
+	echo ${webname} >/usr/local/.tocken_var
+	if [ $remote_backserver == "kr" ];then
+		wget --http-user=${http_user}  --http-password=${http_password} --no-check-certificate   https://$downloadserver/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/%E8%84%9A%E6%9C%AC%E7%9B%B8%E5%85%B3/remote_back.sh -O /opt/scripts/remote_back.sh
+		chmod 600 /opt/scripts/remote_back.sh
+		echo "WIxii20OhL1qM5q93MeASh4sSrdzCzfGrxWXtoXRLvq9s7cFFQMJtUdgiPIHPB4R" >/opt/scripts/.rsyncd.passwd;setfacl -m u:ybdeploy:r /opt/scripts/.rsyncd.passwd
+		(crontab -l|egrep -v  "rsync|db异地备份|remote_back" ;echo -e "# db异地备份\n$(($RANDOM%59)) $(($RANDOM%3+6)) * * *  /usr/bin/bash /opt/scripts/remote_back.sh" ) |crontab
+	fi
+}

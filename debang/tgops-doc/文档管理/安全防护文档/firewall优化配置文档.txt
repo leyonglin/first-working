@@ -1,0 +1,21 @@
+
+
+设置白名单：提前写好白名单IP文档，便于直接导入firewall
+[root@localhost ~]#cat firewall.txt        创建文件
+103.232.87.0/24
+103.35.118.19
+[root@localhost ~]# firewall-cmd --permanent --new-ipset=hgcp_whitelist --type=hash:ip                 在firewall上创建名单ipset
+[root@localhost ~]# firewall-cmd --reload                                                              加载
+[root@localhost ~]# firewall-cmd --ipset=hgcp_whitelist  --add-entries-from-file=/opt/dfcp_whitelist   导入白名单文件内容
+
+
+设置端口转发
+[root@localhost ~]#firewall-cmd --add-forward-port=port=80:proto=tcp:toport=8000 --permanent  
+
+web端口（80）对白名单单位时间不限制连接数，其他IP每秒限制2次
+[root@localhost ~]#firewall-cmd --permanent --add-rich-rule='rule family="ipv4" 
+                   source ipset="hgcp_whitelist" port port="80" protocol="tcp" accept'                   仅白名单
+[root@localhost ~]#firewall-cmd --permanent --add-rich-rule='rule family="ipv4" 
+                   source address="0.0.0.0/0" port port="80" protocol="tcp" accept limit value="2/s"'    ip每秒限制2次
+
+firewall-cmd --list-all 查看rich rules且顺序是正确的

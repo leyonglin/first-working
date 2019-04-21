@@ -1,0 +1,28 @@
+
+
+set_web_rsync () {
+    su swadmin -c "
+    chmod +x /opt/apps/rsync/bin/rsync
+    echo 'rsync:RsYnCpAsWoRd' > /opt/apps/rsync/etc/rsyncd.secret
+    chmod 600 /opt/apps/rsync/etc/rsyncd.secret
+    echo 'RsYnCpAsWoRd' > /opt/scripts/.rsyncd.passwd
+    chmod 600 /opt/scripts/.rsyncd.passwd
+    /opt/apps/rsync/bin/rsync --daemon --config=/opt/apps/rsync/etc/rsyncd.conf --no-detach &
+    "
+}
+
+set_web_sersync () {
+    website_slaveip=`echo $webslaveip| awk '{print $1}'`
+    cd /opt/apps/sersync
+    sed -i '/\<remote ip="127.0.0.1" name="data"\/>/a\            \<remote ip='"\"$website_slaveip\""' name="data"\/>' data.xml
+    sed -i '/\<remote ip="127.0.0.1" name="views"\/>/a\             \<remote ip='"\"$website_slaveip\""' name="views"\/>' views.xml
+    sed -i "s/103.68.110.225/$website_slaveip/" nginx_conf.xml
+    chmod +x sersync2
+    su swadmin -c "
+    /opt/apps/sersync/sersync2 -r -d -o /opt/apps/sersync/data.xml
+    /opt/apps/sersync/sersync2 -r -d -o /opt/apps/sersync/views.xml 
+    /opt/apps/sersync/sersync2 -r -d -o /opt/apps/sersync/nginx_conf.xml
+    touch /opt/webapps/admin_7001/data/hello
+    touch /opt/webapps/cms_9001/views/world
+    "
+}

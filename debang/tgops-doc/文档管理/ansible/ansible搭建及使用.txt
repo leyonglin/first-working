@@ -1,0 +1,639 @@
+
+一、ansible介绍：
+1.1 Ansible —基于 Pythonparamiko 开发，分布式，无需客户端，轻量级，配置语法使用 YMAL 及 Jinja2 模板语言，更强的远程命令执行操作 其他 DevOps 请参看：https://github.com/geekwolf/sa-scripts/blob/master/devops.md。
+1.2 Ansible 是一个简单的自动化运维管理工具，可以用来自动化部署应用、配置、编排 task(持续 交付、无宕机更新等)，采用 paramiko 协议库（fabric 也使用这个），通过 SSH 或者 ZeroMQ 等连 接主机，大概每 2 个月发布一个主版本
+1.3 Ansible 工作机制 
+Ansible 在管理节点将 Ansible 模块通过 SSH 协议（或者 Kerberos、LDAP）推送到被管理端执行。
+ 
+由上面的图可以看到 Ansible 的组成由 5 个部分组成： 
+Ansible：核心 
+Modules：包括 Ansible 自带的核心模块及自定义模块 
+Plugins：完成模块功能的补充，包括连接插件、邮件插件等 
+Playbooks：网上很多翻译为剧本，个人觉得理解为编排更为合理；定义 Ansible 多任务配置文 件，有 Ansible 自动执行 
+Inventory：定义 Ansible 管理主机的清单
+
+
+二、ansible安装配置使用
+2.1 使用环境CentOS Linux release 7.4.1708 (Core)
+ControlMachine: 192.168.0.4 
+ManagedNodes0: 192.168.0.5 192.168.0.6 ...
+
+2.2 源码安装
+控制端：可以使用跳板机也可自己的虚拟机
+源码安装需要python2.6以上版本，其依赖模块paramiko、PyYAML、Jinja2、httplib2、simplejson、pycrypto模块，以上模块可以通过pip或easy_install 进行安装，不过本部分既然提到的是源码安装，主要针对的无法上外	网的情况下，可以通过pypi 站点搜索以上包，下载后通过python setup.py install 进行安装。
+
+
+2.3 yum安装
+控制端：可以使用跳板机，以下为自己的虚拟机
+Yum -y install ansible
+
+2.4 ansible生成配置文件、密钥的配对
+2.4.1 ansible生成的配置文件
+[root@localhost ~]# ls /etc/ansible/hosts 
+/etc/ansible/hosts
+vim/etc/ansilbe/hosts 
+192.168.0.4 
+192.168.0.5 
+192.168.0.6
+
+2.4.2 ansible和ansible-playbook配置密钥
+1. ansible配置无密码登陆，密码认证使用 Ansible 的-k 参数 
+root@:~#ssh-keygen 
+root@:~#ssh-copy-id -i ~/.ssh/id_rsa.pub root@192.168.0.4 		
+root@:~#ssh-copy-id -i ~/.ssh/id_rsa.pub root@192.168.0.5
+root@:~#ssh-copy-id -i ~/.ssh/id_rsa.pub root@192.168.0.6
+
+2. ansible-playbook 配置密钥登录,自定义hosts配合yml文件使用
+root@:~#ssh-keygen
+root@:~#cat 1.hosts
+[product_web:vars]
+ansible_ssh_user=swadmin
+ansible_ssh_pass=Passw0rd
+ansible_ssh_port=22
+
+[product_web]
+103.108.185.244
+154.223.3.60
+154.223.1.101
+154.223.1.104
+root@:~#cat product_web.yml
+- hosts: product_web
+  remote_user: swadmin
+  tasks:
+  - name: copy ssh key
+    authorized_key:
+      user: swadmin
+      key: "{{ lookup('file', '/root/.ssh/id_rsa.pub') }}"
+
+2.4.3 ansible测试ping
+root@geekwolf:~#ansible all -m ping 
+192.168.0.4|success>>{ 
+"changed":false, 
+"ping":"pong" 
+}
+192.168.0.6|success>>{ 
+"changed":false, 
+"ping":"pong"
+ }
+192.168.0.5|success>>{ 
+"changed":false, 
+"ping":"pong"
+ }
+
+2.4.4 ansible命令参数介绍
+Usage: ansible <host-pattern> [options] 
+Options: 
+-m MODULE_NAME, --module-name=MODULE_NAME 要执行的模块，默认为command 
+-a MODULE_ARGS, --args=MODULE_ARGS 模块的参数 
+-u REMOTE_USER, --user=REMOTE_USER ssh连接的用户名，默认用root，ansible.cfg中可以配置 
+-k, --ask-pass 提示输入ssh登录密码，当使用密码验证登录的时候用 
+-s, --sudo sudo运行 -U SUDO_USER, --sudo-user=SUDO_USER sudo到哪个用户，默认为root 
+-K, --ask-sudo-pass 提示输入sudo密码，当不是NOPASSWD模式时使用 
+-B SECONDS, --background=SECONDS run asynchronously, failing after X seconds(default=N/A) 	-P POLL_INTERVAL, --poll=POLL_INTERVAL set the poll interval if using -B (default=15) 
+-C, --check 只是测试一下会改变什么内容，不会真正去执行 
+-c CONNECTION 连接类型(default=smart) 
+-f FORKS, --forks=FORKS fork多少个进程并发处理，默认5 
+-i INVENTORY, --inventory-file=INVENTORY 指定hosts文件路径，默认default =/etc/ansible/hosts 	-l SUBSET, --limit=SUBSET 指定一个pattern，对<host_pattern>已经匹配的主机 中再过滤一次 	--list-hosts 只打印有哪些主机会执行这个playbook文件，不是实际执行该playboo 
+-M MODULE_PATH, --module-path=MODULE_PATH 要执行的模块的路径，默认为 	/usr/share/ansible/ 
+-o, --one-line 压缩输出，摘要输出 
+--private-key=PRIVATE_KEY_FILE 私钥路径 
+-T TIMEOUT, --timeout=TIMEOUT ssh连接超时时间，默认10秒 
+-t TREE, --tree=TREE 日志输出到该目录，日志文件名会以主机名命名 
+-v, --verbose verbose mode (-vvv for more, -vvvv to enable connection debu gging)
+
+2.4.5 注释： 
+1. 在首次连接或者重装系统之后会出现检查 keys 的提示 Theauthenticity of host 	'192.168.0.5(192.168.0.5)'can't be established. 	ECDSAkeyfingerprintis05:51:e5:c4:d4:66:9b:af:5b:c9:ba:e9:e6:a4:2b:fe. Are you sure you want 	to continue connecting (yes/no)? 
+解决办法: vim/etc/ansible/ansible.cfg 或者 ~/.ansible.cfg 	[defaults] 	host_key_checking=False 也可以通过设置系统环境变量来禁止这样的提示 		
+export 	ANSIBLE_HOST_KEY_CHECKING=False
+
+2. 在使用 paramiko 模式时，主机 keys 的检查会很慢
+
+3. 默认情况下 Ansible 会记录一些模块的参数等信息到每个被控端的 syslog 日志文件里，除非 在任务或者剧本里设置了 no_log:True 会不记录日志
+
+2.5 主机清单
+1.Ansible 通过读取默认的主机清单配置/etc/ansible/hosts,可以同时连接到多个远程主机上执行任务,默认路径可以通过修改 ansible.cfg 的 hostfile 参数指定路径 /etc/ansible/hosts 
+主机清单配置格式如下：
+mail.example.com
+[webservers]
+Foo.example.com
+Bar.example.com
+[dbservers]
+One.example.com
+Two.example.com
+three.example.com
+badwolf.example.com:5309 指定 SSH 端口 5309
+jumper ansible_ssh_port=5555 ansible_ssh_host=192.168.1.50 设置主机别名为 jumper
+www[01:50].example.com 支持通配符匹配 www01 www02 ...www50
+[databases]
+db-[a:f].example.com 支持字母匹配 a b c...f
+
+2.为每个主机指定连接类型和连接用户：
+[targets] 
+localhost ansible_connection=local 
+other1.example.com ansible_connection=ssh ansible_ssh_user=mpdehaan 	other2.example.com ansible_connection=ssh ansible_ssh_user=mdehaan
+
+3.可以为每个主机单独指定一些变量，这些变量随后可以在 playbooks 中使用：
+[atlanta] 
+host1 http_port=80 maxRequestsPerChild=808 
+host2 http_port=303 maxRequestsPerChild=909
+
+4.也可以为一个组指定变量，组内每个主机都可以使用该变量：
+[atlanta] 
+host1 
+host2 
+[atlanta:vars]
+ntp_server=ntp.atlanta.example.com
+proxy=proxy.atlanta.example.com
+5.组可以包含其他组：
+[atlanta] 
+host1 
+host2 
+[raleigh] 
+host2 
+host3 
+[southeast:children] 
+atlanta 
+raleigh 
+[southeast:vars]
+some_server=foo.southeast.example.com
+halon_system_timeout=30
+self_destruct_countdown=60
+escape_pods=2
+[usa:children] 
+southeast 
+northeast 
+southwest 
+northwest
+
+2.6 通配模式 Patterns 
+2.6.1在 Ansible 中，Patterns 意味着要管理哪些机器，在 playbooks 中，意味着哪些主机需要应		用特 定的配置或者过程 命令格式（下一章介绍 Ansible 的命令具体使用）： 
+ansible<pattern_goes_here>-m <module_name>-a <arguments> 
+比如我们的主机列表配置为： 
+192.168.0.6 
+[webservers] 
+192.168.0.4 
+[db] 
+192.168.0.5 
+ansible webservers -m service -a "name=httpd state=restarted" 
+模式通常用主机组来表示，上面的命令就代表webservers组的所有主机 
+2.6.2其他的匹配方式： 表示通配inventory中的所有主机 all *
+也可以指定具有规则特征的主机或者主机名 
+one.example.com 
+one.example.com:two.example.com
+192.168.1.50 
+192.168.1.*
+下面的模式，用来知道一个地址或多个组。组名之间通过冒号隔开，表示“OR”的意思，意思是这两个组中的所有主机 
+webservers 
+webservers:dbservers
+2.6.3非模式匹配：
+表示在 webservers 组不在 phoenix 组的主机 
+webservers:!phoenix
+2.6.4交集匹配：
+表示同时都在 webservers 和 staging 组的主机
+webservers:&staging
+2.6.5组合匹配：
+在 webservers 或者 dbservers 组中，必须还存在于 staging 组中，但是不在 phoenix 	组	中 
+webservers:dbservers:&staging:!phoenix
+在 ansible-palybook 命令中，你也可以使用变量来组成这样的表达式，但是你必须使用“-e”的	选项	来 指定这个表达式 
+webservers:!{{excluded}}:&{{required}}
+你完全不需要使用这些严格的模式去定义组来管理你的机器，主机名，IP，组都可以使用通配符去 匹	配 		
+*.example.com 
+*.com 
+one*.com:dbservers
+2.6.6在开头的地方使用“~”，表示这是一个正则表达式 
+~(web|db).*\.example\.com
+2.6.7在 /usr/bin/ansible 和 /usr/bin/ansible-playbook 中 ，还可以通过一个参数”–limit”来		明确指	定排除某 些主机或组 
+ansible-playbook site.yml --limit datacenter2
+
+2.7 ansible常用模块操作
+以下是如何使用/usr/bin/ansible运行一些临时任务的例子，比如关机、重启服务等并不需要写剧本 	playbooks，这时使用ansible的一行命令或者程序就能方便解决，对于配置管理及应用部署使用	playbooks 将是很好的选择：
+
+2.7.1 并行性和 shell 命令 
+1. 重启 altanta 主机组的所有机器，每次重启 10 台 
+Ansible atlanta -a"/sbin/reboot" -f 10
+
+2. 以geekwolf 用户身份在 atlanta 组的所有主机运行 foo 命令 
+Ansible atlanta -a"/usr/bin/foo"-u geekwolf
+
+3. 以 geekwolf 用户身份 sudo 执行命令 foo（--ask-sudo-pass (-K) 如果有 sudo 密码请使用此参数） 
+Ansible atlanta -a"/usr/bin/foo"-u geekwolf --sudo [--ask-sudo-pass]
+
+4. 也可以 sudo 到其他用户执行命令非 root 
+Ansible atlanta -a"/usr/bin/foo" -u username -U otheruser [--ask-sudo-pass]
+
+5. 默认情况下，ansible 使用的 module 是 command，这个模块并不支持 shell 变量和管道等，若想使用 shell 来执行模块，请使用-m 参数指定 shell 模块
+ansibleraleigh-mshell-a 'echo$TERM'
+2.7.2 传输文件 
+1. 拷贝本地的/etc/hosts 文件到 atlanta 主机组所有主机的/tmp/hosts（空目录除外）,如果使用 playbooks 则可以充分利用 template 模块 
+Ansible atlanta -m copy -a "src=/etc/hosts dest=/tmp/hosts"
+
+2. file 模块允许更改文件的用户及权限 
+Ansible webservers -m file -a "dest=/srv/foo/a.txt mode=600" 
+ansible webservers -m file -a "dest=/srv/foo/b.txt mode=600 		owner=mdehaan group=mdehaan"
+
+3.使用 file 模块创建目录，类似 mkdir-p 
+Ansible webservers -m file -a "dest=/path/to/c mode=755 	owner=mdehaan 	group=mdehaan state=directory"
+
+4.使用 file 模块删除文件或者目录 
+Ansible webservers -m file -a "dest=/path/to/c state=absent"
+
+2.7.3 管理软件包 
+apt、yum 模块分表用于管理 Ubuntu 系列和 RedHat 系列系统软件包
+
+1.确保 acme 包已经安装，但不更新 
+Ansible webservers -m wget -a "name=acme state=present"
+
+2.确保安装包到一个特定的版本 
+Ansible webservers -m wget -a "name=acme-1.5 state=present"
+
+3.确保一个软件包是最新版本  
+Ansible webservers -m wget -a "name=acme state=latest"
+
+4.确保一个软件包没有被安装 
+Ansible webservers -m wget -a "name=acme state=absent"
+
+2.7.4 服务管理
+1.确保 webservers 组所有主机的 httpd 是启动的 
+Ansible webservers -m service -a "name=httpd state=started"
+
+2.重启 webservers 组所有主机的 httpd 服务 
+Ansible webservers -m service -a "name=httpd state=restarted"
+
+3.确保 webservers 组所有主机的 httpd 是关闭的 
+Ansible webservers -m service -a "name=httpd state=stopped"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+三、ansible-playbooks 
+Playbooks 是 Ansible 管理配置、部署应用和编排的语言，可以使用 Playbooks 来描述你想在远 程主机执行的策	略或者执行的一组步骤过程等 
+Playbooks 采用 YMAL 语法结构，基本的 YMAL 语法请参考 http://docs.ansible.com/YAMLSyntax.html
+
+3.1 Playbooks 组成 
+Targetsection 
+定义将要执行 playbook 的远程主机组 
+
+Variablesection 
+定义 playbook 运行时需要使用的变量 
+
+Tasksection 
+定义将要在远程主机上执行的任务列表 
+
+Handlersection 
+定义 task 执行完成以后需要调用的任务
+
+举个例子：
+---
+- hosts: webservers 
+vars: 
+http_port: 80 
+max_clients: 200 
+remote_user: root 
+tasks: 
+- name: ensure apache is at the latest version 
+yum: pkg=httpd state=latest 
+- name: write the apache config file 
+template: src=/srv/httpd.j2 dest=/etc/httpd.conf 
+notify: 
+- restartapache
+   - name: ensure apache is running 
+service:name=httpdstate=started 
+handlers: 
+- name: restart apache 
+service: name=httpd state=restarted
+3.2 主机和用户定义
+1. 在 playbook 中的每一个 play 都可以选择在哪些机器和以什么用户身份完成，hosts 一行可 以是一个主机	组或者主机也可以是多个，中间以冒号分隔,可以参考前面讲的通配模式；remote_user 表示执行的用户账号 
+---
+- host: webserver
+  remote_user: root
+2.每个任务都可以定义为一个用户
+---
+- hosts: webserver
+  rmote_user: root
+  tasks:
+    - name: test connection
+      ping:
+      remote_user: yourname
+3.在 play 中支持 sudo 
+---
+- hosts: webservers 
+remote_user: yourname 
+sudo: yes
+
+在一个任务中支持 sudo 
+---
+- hosts: webservers 
+remote_user: yourname 
+tasks: 
+- service: name=nginx state=started 
+sudo: yes
+
+登陆后 sudo 到其他用户执行 
+---
+- hosts: webservers 
+remote_user: yourname 
+sudo: yes 
+sudo_user: postgres
+4.注释：
+在使用 sudo_user 切换到非 root 用户时，Ansible 会将模块参数（非密码选项参数）记录到 /tmp 下的一个	临时随机文件，命令执行完后会删除；当 sudo 到 root 或者普通用户登陆时并不记录
+
+3.3 任务列表
+每个任务建议定义一个可读性较强的名字即 name，在执行 playbook 时会输出，tasks 的声明格式
+1.下面以 service 模块为例来定义一个任务，service: key=value 参数，请参看模块的详细介绍 ：
+tasks: 
+- name: make sure apache is running 
+service: name=httpd state=running
+2.command 和 shell 模块不需要增加 key 
+tasks: 
+- name: disable selinux 
+command: /sbin/setenforce 0
+3.4 变量的使用
+1.变量名应该由字母、数组和下划线组成，以字母开头 
+例如：foo_port、foo5 就是很好的变量名，而 foo-port、foo port、foo.port、12 都是无效的变量名
+
+2.在 inventory 中定义变量 
+ 	上面讲过
+
+3.在 playbook 中如何定义变量 
+例子：
+- hosts: webservers 
+vars: 
+http_port: 80
+
+4.从角色和文件包含中定义变量 参考下面：角色和包含 				 					
+http://docs.ansible.com/playbooks_roles.html#role-default-variables
+
+5.使用jinja2变量
+Jinja2 是一个被广泛使用的全功能的 Python 模板引擎
+1.举个模板例子：
+Myamp goesto{{max_amp_value}} 
+2.playbook的例子：
+template: src=foo.cfg.j2 dest={{remote_install_path}}/foo.cfg 
+
+6.jinja2过滤器
+6.1变量可以通过过滤器修改。过滤器与变量用管道符号（ | ）分割，并且也 可以用圆括号传递可 选参数。多个	过滤器可以链式调用，前一个过滤器的输出会被作为 后一个过滤器的输入。
+
+6.2过滤器和条件一起使用：
+tasks:
+- shell: /usr/bin/foo 
+register: foo_result 
+ignore_errors: True
+- debug: msg="it failed" 
+when: foo_result|failed
+ - debug: msg="it changed" 
+when: foo_result|changed
+- debug: msg="it succeeded" 
+when: foo_result|success
+- debug: msg="it was skipped" 
+when: foo_result|skipped
+注释：register 关键字的作用是将命令执行的结果保存为变量，结果会因为模块不同而不同，在运 行 		ansible-playbook 时增加-v 参数可以看到 results 可能的值；注册变量就如同通过 setup 模块获取 		facts 一样，比如当注册变量 foo_result
+- hosts: web_servers
+tasks:
+  - shell: /usr/bin/foo 
+register: foo_result 
+ignore_errors: True
+- shell: /usr/bin/bar 
+when: foo_result.rc==5
+root@#: ansible-playbookt 1.yml -v 
+PLAY[192.168.0.4]************************************************************
+
+GATHERINGFACTS*************************************************************** 		ok:[192.168.0.4]
+
+TASK:[shell /bin/echso test]************************************************* 		failed:[192.168.0.4]=>{"changed":true,"cmd":"/bin/echsotest","delta": 		"0:00:00.004034","end": 		"2014-11-2810:27:37.214545","rc":127,"start":"2014-11-2810:27:37.210511","warnings":[]} 	stderr:/bin/sh: 1:/bin/echso: notfound ...ignoring
+
+TASK:[test]****************************************************************** 		changed:[192.168.0.4]=>{"changed":true,"checksum": 		"28cc27b7ed8d908fce31134ce21cfe903707e637","dest":"/tmp/p.txt","gid":0,"group": 		"root","md5sum": 	"e72feb3cab584b809fb751f95f4a9555","mode":"0644","owner":"root","size":31,"src": 	"/root/.ansible/tmp/ansible-tmp-1417141657.23-249511894486070/source","state":"file",	"uid":0}
+
+TASK:[debugmsg="itfailed"]************************************************* 		ok:[192.168.0.4]=>{ "msg":"it failed" }
+
+TASK:[debugmsg="itchanged"]************************************************ 		ok:[192.168.0.4]=>{ "msg":"it changed" }
+
+TASK:[debugmsg="it succeeded"]********************************************** 		skipping:[192.168.0.4]
+
+TASK:[debugmsg="it was skipped"]******************************************** 		skipping:[192.168.0.4]
+
+PLAYRECAP******************************************************************** 		192.168.0.4 :ok=5 changed=2 unreachable=0 failed=0
+通过上面两个例子我们可以看到 task 的执行输出是和 facts 一样的，我们可以通过 Jinja2 模板获取 变量	值： {{foo_result.cmd }} {{foo_result.delta}} 或者在 task 中直接使用变量 foo_result.rc==127
+在 Jinja2 中使用未定义的变量：
+{{result.cmd|default(5)}} 
+如果 result.cmd 变量未定义，默认返回值 5 或者其他数字字符串 default(‘hello world!’)，而执	行	该 task 时不会抛错出来
+6.3列表过滤：
+1. 过滤出列表最小值{{list1 |min }} 
+root@#cat t.yml 
+---
+- hosts:192.168.0.4 
+remote_user:root 
+vars: 
+- test: [1,2,3,4,5] 
+tasks: 
+- name: vars 
+template:  src=p.j2 dest=/tmp/p.txt 
+root@#cat p.j2 
+{{test|min}} 
+root@#cat /tmp/p.txt 
+1
+2. 过滤出列表最大值{{[3,4,2]|max}} 
+---
+- hosts: 192.168.0.4
+  Remote_user: root
+  Var:
+  - test: [3,5,2]
+  Tasks:
+  - name: vars
+    Template: src=p.j2 dest=/tmp/{{test|max}}
+6.4.数据集过滤：
+1. 对列表唯一过滤 {{list1 |unique }} 
+{{[1,2,1,2,4]|unique}} 
+输出结果为:[1,2,4]
+2. 对两个列表去重合并{{list1 |union(list2)}} 
+{{[1,2,4,2,5]|union([2,5,33,2])}} 
+输出结果为:[1,2,4,5,33]
+3. 对两个列表做交集{{list1 |intersect(list2)}} 
+{{[1,2,4,2,5]|intersect([2,5,33,2])}} 
+输出结果为:[2,5]
+4. 找到两个列表差异部分(在 list1 不在 list2 的差异){{list1|difference(list2) }} 
+{{[1,2,4,2,5]|difference([2,5,33,2])}} 
+输出结果为:[1,4]
+5. 找到两个列表都互相不在对方列表的部分{{list1 |symmetric_difference(list2)}}
+ {{[1,2,4,2,5]|symmetric_difference([2,5,33,2])}} 
+输出结果为:[1,4,33]
+6.5版本过滤： 
+使用 version_compare 比较版本 			
+{{ansible_distribution_version|version_compare('12.04','>=')}} 
+如果系统版本大于等于 12.04，那么返回 True，否则 False version_compare 支持以下操作符: 	<,lt,<=,le,>,gt, >=,ge,==,=,eq,!=,<>,ne
+6.6随机数过滤：
+1. 从列表中随机获取元素 
+{{['a','b','c','d','e','f']|random }}
+2. 从 0-59 的整数中随机获取一个数 
+{{59|random}}
+3. 从 0-100 中随机获取能被 10 整除的数（可以理解为 01020304050...100 的随机数） 
+{{100|random(step=10)}}
+4. 从 0-100 中随机获取 1 开始步长为 10 的数（可以理解为 111213141...91 的随机数）
+{{100|random(1,10)}} 
+{{100|random(start=1,step=10)}
+6.7随机列表过滤：
+给已存在的列表随机排序 
+{{['a','b','c']|shuffle }}=>['c','a','b'] 
+{{['a','b','c']|shuffle }}=>['b','c','a']
+6.8.其他有用的过滤器： 
+1.列表转换成字符串 
+{{[1,2,4,5,6]|join("-")}} 
+输出：1-2-4-5-6
+2.获取文件路径最后文件或者目录的名字 
+{{‘/etc/asdf/foo.txt’|basename }} 
+输出：foo.txt
+3. 获取文件路径最后一层目录的路径
+{{‘/root/geekwolf/t.yml’|dirname }} 
+输出：/root/geekwolf
+注释：在使用过程中要注意如果是目录后面一定不要忘记加/,否则会认为是文件
+
+7. 变量文件分离 
+可以将单个主机或者单个主机组等的变量写到独立的小文件里，一定程度上降低了分享 playbook 时暴漏敏	感信息的风险
+示例： 
+---
+- hosts: all 
+remote_user: root 
+vars: 
+favcolor: blue 
+vars_files: 
+- /vars/external_vars.yml
+tasks:
+- name: this is just a placeholder
+  command: /bin/echo foo
+变量文件就是一个简单的YAML格式的字典
+
+8.通过命令行传递变量
+- hosts: ‘{{ hosts }}’
+  remote_user: '{{user}}'
+tasks: -... 
+1.比如上面的 playbook，我们可以这样传递{{hosts}}、{{user}}变量： 
+ansible-playbookrelease.yml --extra-vars "hosts=vipersuser=starbuck"
+
+2.也可以使用 JSON 数据来传递变量 			
+--extra-vars'{"pacman":"mrs","ghosts":["inky","pinky","clyde","sue"]}'
+
+
+3.在 Ansible1.3 中，可以通过@导入 JSON 文件来传递变量，也可以使用 YMAL 格式以命令行或者@ 文	件的	方式导入 
+--extra-vars"@some_file.json"
+
+9.变量优先级
+*extra vars(命令中-e)最优先 
+*inventory 主机清单中连接变量(ansible_ssh_user 等) 
+*play 中 vars、vars_files 等 
+* 剩余的在 inventory 中定义的变量 
+* 系统的 facts 变量 
+* 角色定义的默认变量(roles/rolesname/defaults/main.yml) 
+注释：子组会覆盖父组，主机总是覆盖组定义的变量
+
+10.变量使用总结
+1.定义在 Ansible 中的 hosts 和 groups 变量中 
+cat/etc/ansible/group_vars/server 
+vhost:test 
+Vim file-book.yml 
+---
+- hosts: server 
+tasks:
+- name: create a virtual host file for{{vhost }} 
+template: src=/etc/hosts dest=/tmp/{{vhost }}
+
+2.在playbook中指定
+Vim file-book.yml 
+---
+- hosts: server 
+vars: 
+- vhost: test 
+tasks: 
+- name: create a virtual host file for{{vhost }} 
+template: src=/etc/hosts dest=/tmp/{{vhost }}
+
+3.任意指定变量文件
+vim /root/variables 
+vhost: test
+vimfile-book.yml 
+---
+- hosts: server 
+vars_files: 
+- /root/variables 
+tasks: 
+- name: create a virtual host file for{{vhost}} 
+template: src=/etc/hosts dest=/tmp/{{vhost }}
+4.交互方式获取变量
+Vim file-book.yml 
+---
+- hosts: server 
+vars_prompt: 
+- name: web 
+prompt:  'Please input the web server:' 
+private: no 
+tasks: 
+- name: concent of the file test 
+template: src=/root/test dest=/tmp/test
+cat/root/test 
+{{web}}
+5.获取setup模块的变量
+获取 192.168.0.4 主机的 mac 地址：
+Vim file-book.yml 
+---
+- hosts: 192.168.0.4 
+tasks: 
+- name: concent of the file test 
+template: src=/root/test dest=/tmp/test
+cat/root/test 
+{{ansible_devices.vda.size}} 
+{{ansible_mounts[0].device}} 
+{{ansible_eth0["ipv4"]["address"]}} 
+或{{ansible_eth0.ipv4.address }}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

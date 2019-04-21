@@ -1,0 +1,149 @@
+
+
+find / -name sh.sh | xargs file                                                                 将命令输出结果传递给另一个命令
+ 
+后台执行& 或者Ctrl+z + bg
+
+ping www.baidu.com | awk '{print $0"\t" strftime("%Y-%m-%d %H:%M:%S",systime())}' >>/tmp/ping &     添加时间
+
+ssh -p 22 -C -f -N -g -L 9200:192.168.1.19:9200 ihavecat@192.168.1.19
+
+du -sh /* |  grep "G" | sort -rn     查看文件大小
+
+pv   将字符串顺序输出
+
+pstree -p                                                                                           搜索进程IP
+
+ps -aux | sort -rnk 4 | head                                                                        内存高的
+
+ps -aux | sort -rnk 3 | head                                                                        cpu高的
+
+ps -eo ...
+
+ss -nat | awk '{print $1}'|grep -v State | sort | uniq -c | sort -rn                                       查看网络连接状态
+
+ss -anpl |grep -w 8080 | grep tcp |awk '{print $5}' | awk -F: '{print $1}' | uniq -c | sort -nr     统计8080端口的相同ip连接数
+
+ss -pan | grep -w port                  通过端口查服务/服务
+[ps -C service]                        通过服务查pid]
+ss -pan | grep pid                   通过pid找端口
+
+
+win10截图：win+shift+s   钉钉：ctrl+shift+A  
+
+查看本机IP：curl https://ip.cn             curl ifconfig.me
+
+window远程链接：win+R 输入mstsc
+
+ps命令：1.ps -uroot  2.ps -ef | grep ssh  |grep -v grep  3.ps -C 命令或进程名   4.ps -l(后台非进程)
+        5.ps aux 内存中的程序    6.ps -o pid,ppid
+
+pwd命令:当当前目录被删除，用/bin/pwd会报错      选项-P显示源路径(非链接) -L显示连接路径
+
+mkdir命令:选项-p(递归创建)  -m(+带数字权限)  -v(显示创建信息) 
+mkdir -vp scf/{lib/,bin/,doc/{info,product},logs/{info,product},service/deploy/{info,product}}
+
+
+wc：-c 统计字节数   -l 统计行数    -m 统计字符数，这个标志不能与 -c 标志一起使用。
+    -w 统计单词数，一个字被定义为由空白、跳格或换行字符分隔的字符串   -L 打印最长行的字符数。
+
+
+
+lsof -n |awk '{print $2}'|sort|uniq -c |sort -nr|more     查看文件句柄数量
+
+nc -zvw3  ip  port                             netcat查看端口是否开启(z不读写扫描v显性输出w3超时3秒)
+nmap ip -p port                                nmap可用审计
+telnet ip port
+
+dig 默认会解析A记录与CNAME记录
+
+默认输出5部分第一部分显示 dig 命令的版本和输入的参数。
+第二部分显示服务返回的一些技术详情，比较重要的是 status。如果 status 的值为 NOERROR 则说明本次查询成功结束。
+第三部分中的 "QUESTION SECTION" 显示我们要查询的域名。
+第四部分的 "ANSWER SECTION" 是查询到的结果。
+第五部分则是本次查询的一些统计信息，比如用了多长时间，查询了哪个 DNS 服务器，在什么时间进行的查询等等。
+
+类型	目的
+A	    地址记录，用来指定域名的 IPv4 地址，如果需要将域名指向一个 IP 地址，就需要添加 A 记录。
+AAAA	用来指定主机名(或域名)对应的 IPv6 地址记录。
+CNAME	如果需要将域名指向另一个域名，再由另一个域名提供 ip 地址，就需要添加 CNAME 记录。
+MX	    如果需要设置邮箱，让邮箱能够收到邮件，需要添加 MX 记录。
+NS    	域名服务器记录，用来指定该域名由哪个DNS服务器来进行解析，如果需要把子域名交给其他 DNS 服务器解析，就需要添加 NS 记录。
+SOA	    这种记录是所有区域性文件中的强制性记录。它必须是一个文件中的第一个记录。
+TXT	    可以写任何东西，长度限制为 255。绝大多数的 TXT记录是用来做 SPF 记录(反垃圾邮件)。
+
+TTL 是 DNS 解析中很重要的指标，主要是控制 DNS 记录在 DNS 服务器上的缓存时间，位于ANSWER SECTION第二列
+
+指定dns服务器查询：dig @8.8.8.8 abc.com(默认以/etc/reslov.conf为准)
+简略查询：dig   abc.com  +short 
+追踪整个查询过程：dig @8.8.8.8  821810.com +trace
+自定义查询：dig abc.com +noall +answer
+            dig +nocmd  +noall abc.com  +answer  
+            dig abc.com +nocomments +noquestion +noauthority +noadditional +nostats
+			
+tcp协议查询：dig abc.com +tcp
+反向查询：dig   -x   8.8.8.8    
+
+tcping 域名 端口
+
+screen：
+查看：screen -ls
+创建：screen -S  起名 /screen vim /etc/passwd(直接进入)  
+      ---> ctrl+a+d   保存并退出当前screen
+
+重新连接：screen -r 16582 或者 screen -R name ---> C-a  k 杀掉当前窗口  C-a x 关闭一个终端
+杀死：kill  pid
+C-a叫做命令字符（command character）
+创建分屏
+上下分屏：ctrl + a  再按shift + s    上屏top命令
+切换导下屏：ctrl + a  再按tab键
+创建下屏终端：ctrl + a  再按c        下屏tail -f 命令
+
+使用工具tmux
+1，输入命令tmux使用工具
+2，上下分屏：ctrl + b  再按 "
+3，左右分屏：ctrl + b  再按 %
+4，切换屏幕：ctrl + b  再按o
+5，关闭一个终端：ctrl + b  再按x
+6，上下分屏与左右分屏切换： ctrl + b  再按空格键
+
+file [-z压缩文件 -L链接 -i] filename可以查看文件类型/目录          type cmd 可以查看命令类型
+
+man：参数[-aw(显示所有手册路径)   -f简短描述信息 
+n(指定章节手册) 1用户命令 2系统调用 3 c库函数调用 4.设备文件及特殊文件(/dev下的各种设备文件) 5配置文件 6系统游戏使用帮助 7附件/变量 8管理工具(root)及守护进程 9含糊的内核规范和接口]  
+
+
+Rpm：-q 查询是否下载  -qa下载多少软件包  -qi软件包信息  -ql文件安装目录   -qf+文件路径  -ivh下载  -Uvh升级 -e删除  
+Yum：yum check-update列出所有可更新的软件清单  yum update/yum list update安装所有更新软件 yum list列出所有可安裝的软件清单(比rpm -qi简略一点) 
+      yum provides +命令或文件路径  yum search +包关键字   yum info+updates/installed 可更新/已安装详细信息 
+	yum deplist+软件包  查看依赖    yum clean all 清除下载缓存
+
+
+reboot重启/{halt/poweroff 立刻关机} 
+shutdown -r/h now 立刻重启(root用户使用) 
+shutdown -r/h 10 过10分钟自动重启(root用户使用) 
+shutdown -r/h 20:35 在时间为20:35时候重启(root用户使用)  
+参数：-k 发警告给登陆者    -c "message" 取消关机程序
+
+nsupdate是一个动态DNS更新工具，可以向DNS服务器提交更新记录的请求，它可以从区文件中添加或删除资源记录，而不需要手动进行编辑区文件
+
+
+scp -P 220 ubuntu.tar  192.168.126.128:/root      指定端口
+
+iconv命令是用来转换文件的编码方式:
+iconv -c -f utf-8 -t gb2312 docker_vmlist.csv -o docker_vmlist_`date+%H%M`.csv
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,8 @@
+
+
+
+sudo firewall-cmd --list-all
+sudo firewall-cmd --info-ipset=db_whitelist
+sudo firewall-cmd --permanent --ipset=db_whitelist --add-entry=${i}
+sudo firewall-cmd --permanent --ipset=db_whitelist --remove-entry=${i}
+

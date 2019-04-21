@@ -1,0 +1,152 @@
+
+有些东西有标志性总结，例如：数据库1032=数据库主从数据不一致
+
+后台默认开放：PH菲律宾|AU澳大利亚|MY马来西亚|HK香港|KH柬埔寨|KR	韩国
+
+##支付接口：
+/api/recharge/onlinePayAsyncCallback 支付异步回调
+/api/payment/onlinePayAsyncCallback 代付回调
+
+聊天室卡的话，先问开发，开发会给一个地址，ping一下，直接(A，dns盾tgchat)加速(cname，cdn搜tgchat)互切
+
+如果ybop执行数据库备份计划的时候报这个错误：You need to be root to perform this command.
+是由于安装xtrbackup工具失败所致，请将/etc/yum.repos.d/percona-release.repo文件里面的gpgcheck = 1改为gpgcheck = 0 然后um -y install percona-xtrabackup-24 qpress重新安装即可
+
+服务器ip==yundback.javalebogame002.com
+lpm替换静态文件替换web     跑整个npm-admin-product--发布
+
+域名劫持是使解析到的IP地址不正确，
+
+   客户访问域名，  通过dns解析得到ip，   访问对应的(代理)服务器，代理服务器访问后端服务器，后端服务器能够返回请求结果。
+域名被墙或被污染 可能解析不稳定(转圈圈)  防火墙报错403/404。。。    报错403/404。。。           其它报错
+
+清redis
+redis-cli -h 127.0.0.1 -p 17693
+auth 密码
+flushall
+要发布需要起服务
+更新hostlist状态
+
+运维发布群也是要关注的。
+
+阿里云404是没重启nginx ，404/nginx 是没加白   403到了nginx但被限制
+404 在ip.conf     403在nginx blacklist.conf    无响应 在防火墙
+如果出现 客户反馈打开 403 ,首先看看 他的域名是不是走他自己的cdn 如果是 就去 /opt/apps/nginx/conf/vhosts/cdn_filter.conf 找C类地址看看在不在我们文件里，
+如果没有 请添加到这个文件， 并且 将IP从 blacklist.conf 移除
+404：域名没添加/被限制了 域名/ip被墙   解析有问题(dig)   IP或cdn节点没加白  cdn节点有问题
+
+棋牌刷cdn是刷一下lucky的cdn站点
+BL限制找开发
+
+
+
+查看是否被打：除了看监控和日志，还可以看备站副IP是否能ssh上
+
+添加白名单的时候，如果走cdn，需要把cdn也加到白名单里，而且要把已拉黑的恢复一下
+客户如果需要白名单情况(如设置公众号)，把网站的ip给客户
+
+
+添加域名，如果不是执行脚本，需要在cdn把域名也加进去
+
+起了线路还是卡的话，查看监控或者查看7001(admin)日志，5秒问题重启tomcat_7001
+
+被攻击可以看备站8001(前台)和nginx
+tail -10000 /opt/logs/tomcat/tomcat_8001/catalina.out|grep "v/user/login"|awk -F " IP" '{print $2}'|awk -F "]" '{print $1}'|sort -n|uniq -c|sort -n
+
+1. nginx 404 一般是geo IP模块对国家地区限制，这是国家IP加白，不区分走不走cdn， 需要在ip.conf 里面加白。
+2. nginx 403 是我们nginx 黑名单限制，现在我们加了realip 模块，如果业主走自己cdn，那需要把业主的cdn加到cdnfilter.conf这个文件，set_real_ip_from x.x.x.x/x, 同时需要在blacklist.conf 中把误封的cdn ip 注释掉。如果业主没走自己cdn 需要在blacklist.conf中把误封的ip 注释掉，一定是注释掉不要删除, 注释后面可以备注下客户ip误封什么的。
+3. 打不开页面，要判断是不是以前的firewalld里面封的，需要在blacklist.xml 中删除ip，如果blacklist.xml没有该ip 那么应该是网络问题或者被打机房封了ip。
+4.400可能是后台域名绑定带前台去，或者被绑定域名
+5.走cdn可能有500
+6.tomcat没起会有502，
+产生错误的原因：连接超时 我们向服务器发送请求 由于服务器当前链接太多，导致服务器方面无法给于正常的响应，产生此类报错
+7.504 Gateway Timeout Error  服务挂了，连接超时
+8.
+
+
+业主自有CDN会员登录，就会显示是同一个IP，要ip加到cdn_filter里面去
+
+原点ip：axpjback.javalebogame7.com
+
+刷新dns缓存：在电脑执行 win + r 输入 cmd  再ipconfig /flushdns
+
+大陆域名需要备案
+没绑定证书/证书过期/走自己cdn强制跳转或绑定证书：---警告：面临潜在的安全风险   可用ats检测----清缓存/重绑/重启
+
+遇上不清楚的问题，可以引用。
+
+总控就是jenkins里的生产管理后台，发布一下
+
+时间同步：/bin/rdate -s time.nist.gov 
+          /bin/rdate -s ntp-wwv.nist.gov
+
+麻烦查看一下他们家cms上没有其他棋牌的选项的呢---这句话的意思是cms后台上没有棋牌选项，把主站主ip加白就好。      
+
+一般前台解析到备站，但是解析到主站也可以，因为主站也有启动服务。
+
+不存在：找不到 linleyong.com 的服务器 IP 地址/123.com 未发送任何数据。
+
+查看监控--查看服务是否启动---查看日志---加白
+前后台可用dig解析查看
+异常ip登陆
+
+国内只允许agent ，不允许访问admin(数据)和cms(前台)
+
+切cdn或者高防，先切产品再改解析
+节点死了或者大批域名访问不了，切高防
+
+查代理ip：在备站查他人代理ip，在主站查自己cdn
+
+
+在测吧网站上，测试，
+
+cdn域名有jiasubook和国际域名(在cdn总后台站点列表切换套餐的地方可以切换)
+
+cdn也分韩国和香港,查日志有前后台查
+
+服务无法连接，内存大小，cpu负载，内网IP冲突(连接不稳定)
+
+
+域名被劫持是篡改dns，被污染是返回错误解析
+
+监控:
+mylsam索引与key缓存   innodb缓存池，读写，表锁，内存分配
+mysql：连接，线程，row操作，查询缓存，查询内存缓存，复制，命令统计，查询类型和种类，临时与表 
+nginx：连接(status) cpu负载 网卡流量(出入)  磁盘读写  io队伍及请求等待时间  写入耗时  写请求被合并次数
+       每秒读写次数及数据量  有效内存  磁盘使用空间  tomcat状态
+
+权限要在不同的时间开放。开放部分端口，备份，监控并执行报警后动作    根据用户设置目录权限
+
+jumpserver堡垒机：部署完成，收回权限，只允许从jumpserver进行密钥登陆。
+勤换密码，或者使用复杂度特别高的密码
+
+解析不稳定
+dig  域名 @dns服务器      #测试一个稳定的dns解析服务器
+
+查日志的时候，顺序是nginx--tomcat--mysql--redis
+
+域名是否被墙，ip被封，信号是否良好，有网络工具可以查，
+
+网速慢，可以切换线路
+
+Caused by：原因来自
+
+服务假死：日志不跟新，写有问题
+
+目录下存在高危文件
+
+mysql启动慢日志查询(1秒)
+
+cdn:可以按照文件类型（jpeg|jpg|png|gif）或者url正则  强制缓存  可以选择性对页面内容进行传输压缩（HTML/CSS/JS）
+
+cdnbest(cdn贝):是一套解决方案，是南昌邦腾科技有限公司从2010年起自主研发的是一款专业、可运营级别cdn系统。由该公司开发的easypanel多节点CDN功能升级而来。 CDNBEST集成第三方DNS功能，无缝衔接DNS，支持大规模节点部署(上千台服务器)。CDN节点支持自动升级,CDN节点反向代理软件采用该公司自主研发的 kangle web服务器(简称kangle)。CDNBEST大量采用开源软件，客户部署CDNBEST无需再购买其它的商业软件，大大节省成本，专业、可运营级别cdn系统平台。(百度百科)
+
+kangle也是一款专为做虚拟主机研发的web服务器。实现虚拟主机独立进程、独立身份运行。用户之间安全隔离，一个用户出问题不影响其他用户。安全支持php、asp、asp.net、vb.net、C#、java、ruby等多种动态开发语言。
+
+我方只支持多域名证书，最多绑定证书为3本，web一本，admin cms一本，app域名一本
+
+套壳APP：将app域名当作推广域名使用
+
+虚拟专用服务器（英语：Virtual private server，缩写为 VPS），是将一台服务器分割成多个虚拟专享服务器的服务。实现VPS的技术分为容器技术和虚拟机技术 
+
+互联网数据中心（Internet Data Center） 	

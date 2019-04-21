@@ -1,0 +1,42 @@
+
+
+Cmnd_Alias ADD_DOMAINS = /usr/bin/python /opt/scripts/add_domains.py
+######## 添加域名/证书的权限
+## 指定目录的cp, vim , mv权限
+Cmnd_Alias DO_NGINX = /usr/bin/cp -p /opt/apps/nginx/conf/vhosts/5hgd/* /opt/apps/nginx/conf/vhosts/5hgd/*, /usr/bin/vim /opt/apps/nginx/conf/vhosts/5hgd/*, /usr/bin/vim /opt/apps/
+nginx/conf/ip.conf, /usr/bin/rm /opt/logs/nginx/*.log
+
+## 复upload目录复制证书文件至key目录(保持swadmin的属性)
+Cmnd_Alias COPY_CRT = /usr/bin/cp -r /opt/src/upload/* /opt/apps/nginx/conf/keys/*
+
+######## 日志切割、备份、IP库更新等权限
+## 前台服务备份：日志切割、webapps备份、GeoIp库更新等权限
+Cmnd_Alias WEB_SERVICE_BACKUP = /usr/bin/bash /opt/scripts/backup_web_service.sh
+## ybdb给ybop用户提权备份数据库
+Cmnd_Alias DATA_BACK = /usr/bin/bash /opt/scripts/mysqlback.sh
+## 备份data views
+Cmnd_Alias DATA_VIEWS_BACK = /usr/bin/bash /opt/scripts/*webback.sh
+
+####### 其他权限
+## 服务启动脚本权限
+Cmnd_Alias START_SERVICES = /etc/init.d/all_tomcat, /etc/init.d/rsyncd, /etc/init.d/sersync_data, /etc/init.d/sersync_nginx, /etc/init.d/sersync_views, /etc/init.d/tomcat_7001, /etc/init.d/tomcat_7002, /etc/init.d/tomcat_7003, /etc/init.d/tomcat_8001, /etc/init.d/tomcat_8002, /etc/init.d/tomcat_8003, /etc/init.d/tomcat_9001, /etc/init.d/tomcat_9002, /etc/init.d/nginx, /etc/init.d/mysqld, /etc/init.d/redis
+## 代码回滚脚本权限
+Cmnd_Alias CODE_ROLL = /etc/init.d/code_rollback
+## 用来测试data和views是否同步
+Cmnd_Alias TONGBU_CHECK = /usr/bin/touch /opt/webapps/admin_7001/data/abctest, /usr/bin/touch /opt/webapps/cms_9001/views/abctest, /usr/bin/rm /opt/webapps/admin_7001/data/abctest, /usr/bin/rm /opt/webapps/cms_9001/views/abctest
+## webapps需要提权的：用来更改红包计划任务
+Cmnd_Alias MODIFY_BUG = /usr/bin/vim  /opt/webapps/admin_7001/WEB-INF/classes/spring/cfg-task.xml
+## ybdeploy给ybop提权使用更改pom文件配置
+Cmnd_Alias CHANGE_POM = /usr/bin/cp /opt/src/upload/temp_src/* /opt/webapps/admin_7001/WEB-INF/lib, /usr/bin/cp /opt/src/upload/temp_src/* /opt/webapps/agent_7003/WEB-INF/lib, /usr/bin/cp /opt/src/upload/temp_src/* /opt/webapps/web_8001/WEB-INF/lib, /usr/bin/cp /opt/src/upload/temp_src/* /opt/webapps/work_7002/WEB-INF/classes/spring/datasource-master.xml, /usr/bin/cp /opt/src/upload/temp_src/* /opt/webapps/work_7002/WEB-INF/classes/spring/datasource-slave.xml, /usr/bin/cp /opt/src/upload/temp_src/* /opt/webapps/work_7002/WEB-INF/classes/redis.properties, /usr/bin/cp /opt/src/upload/temp_src/* /opt/webapps/anls_api_8002/WEB-INF/classes/application.properties, /usr/bin/cp /opt/src/upload/temp_src/* /opt/webapps/c
+ms_9001/WEB-INF/classes/spring/datasource-master.xml, /usr/bin/cp /opt/src/upload/temp_src/* /opt/webapps/cms_9001/WEB-INF/classes/spring/datasource-slave.xml, /usr/bin/cp /opt/src/upload/temp_src/* /opt/webapps/cms_9001/WEB-INF/classes/redis.properties, /usr/bin/cp /opt/src/upload/temp_src/* /opt/webapps/live_work_9002/WEB-INF/classes/spring/datasource-master.xml, /usr/bin/cp /opt/src/upload/temp_src/* /opt/webapps/live_work_9002/WEB-INF/classes/spring/datasource-slave.xml,/usr/bin/cp /opt/src/upload/temp_src/* /opt/webapps/live_work_9002/WEB-INF/classes/redis.properties
+## rsync启动权限（root启动)
+Cmnd_Alias SUPRT_RSYNC = /opt/apps/rsync/bin/rsync
+## firewall权限
+Cmnd_Alias FIREWALL_SERVICE = /usr/bin/firewall-cmd, /usr/bin/vim /etc/firewalld/ipsets/*
+
+#### 根据不同用户提权
+ybop ALL=(ALL)NOPASSWD:DO_NGINX, START_SERVICES, MODIFY_BUG, FIREWALL_SERVICE, WEB_SERVICE_BACKUP, SUPRT_RSYNC
+ybop ALL=(ybweb:ybweb)NOPASSWD:TONGBU_CHECK
+ybop ALL=(swadmin:swadmin)NOPASSWD:ADD_DOMAINS, COPY_CRT
+ybop ALL=(ybdeploy:ybdeploy)NOPASSWD:CODE_ROLL, CHANGE_POM, DATA_VIEWS_BACK
+ybop ALL=(ybdb:ybdb)NOPASSWD:DATA_BACK

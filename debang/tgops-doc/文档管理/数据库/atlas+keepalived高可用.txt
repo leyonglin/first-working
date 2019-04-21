@@ -1,0 +1,5 @@
+
+
+Atlas是基于mysql-proxy做的二次开发。Atlas是一个位于应用程序与MySQL之间中间件。在后端DB看来，Atlas相当于连接它的客户端，在前端应用看来，Atlas相当于一个DB。对应用程序屏蔽了DB的细节，同时为了降低MySQL负担，它还维护了连接池。
+
+

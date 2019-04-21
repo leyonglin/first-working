@@ -1,0 +1,78 @@
+#!/usr/bin/env python
+# _*_ coding: utf-8 _*_
+
+import os, sys, re, commands
+
+# env
+old_code_path='/opt/backup/webapps_version_record'  # 代码备份目录
+webapp_path='/opt/webapps'                        # 代码目录
+ybweb_need_write_path=[
+'/opt/webapps/admin_7001/data/',
+'/opt/webapps/admin_7001/temp',
+'/opt/webapps/cms_9001/views/',
+'/opt/webapps/web_8001/data/',
+'/opt/webapps/web_8001/views/',
+'/opt/webapps/cms_9001/WEB-INF/classes/template',
+#'/opt/webapps/admin_7001/exportData'
+]
+cms_temp_path='/opt/webapps/cms_9001/WEB-INF/classes/template/'
+admin_temp_path='/opt/webapps/admin_7001/temp'
+cms_views='/opt/webapps/cms_9001/views'
+admin_data='/opt/webapps/admin_7001/data'
+web_data='/opt/webapps/web_8001/data'
+web_views='/opt/webapps/web_8001/views'
+
+# step 1: 获取历史代码, 结果为None代表没有历史码
+def get_history_codes(application):
+    if 'ls: cannot' not in commands.getoutput('ls %s/*%s*'%(old_code_path, application)):
+        all_code = commands.getoutput('ls %s/*%s*'%(old_code_path, application)).split('\n')
+        return all_code
+    else:
+        return None
+
+# step 2: 选择tomcat实例，根据实例，找代码目录，历史代码目录
+while True:
+    num = raw_input('\033[36m7001\t7002\t7003\t8001\t 8002\t8003\t9001\t9002\n\033[0m请输入您要回滚的tomcat实例:\t')
+    if num in ['7001', '7002', '7003', '8001', '8002', '8003', '9001', '9002']:
+           appliction = num
+           app_dir = commands.getoutput('/usr/bin/ls -ld  %s/* |egrep %s |awk "{print \$NF}"'%(webapp_path, appliction)) # /opt/webapps/admin_7001 /opt/webapps/web_8001 ...
+           all_code = get_history_codes(appliction) 
+           if app_dir:   
+               code_path = app_dir
+               break
+           else:
+               print('\n\033[31m tomcat_%s的代码目录不存在，请检查！！！\033[0m\n'%(appliction))
+               sys.exit()
+    else:
+           continue
+print("您选择的实例为%s, 代码目录为%s"%(appliction,code_path))
+
+# step 3: 回滚代码
+def rollback_code(all_code, appliction, code_path):
+    if all_code == None:
+        print('\n\033[31m tomcat_%s没有任何备份代码，请检查备份目录是否正确，或者没有跑该实例码\033[0m\n'%(appliction))
+    else:
+        if len(all_code) == 1:
+            print('\n\033[33m tomcat_%s只有当前版本代码备份，没有历史代码\033[0m\n'%(appliction))
+        if len(all_code) > 1:
+            valid_version = all_code[0:-1] # 最后一个元素是当前代码的版本
+            print('\n请选择要回滚的版本')
+            for i in valid_version:
+                print('\033[36m%s\033[0m'%(i))
+            while True:
+                chose_version = raw_input(': ').strip()
+                if chose_version in valid_version:
+                    print('即将回滚到：%s'%(chose_version))
+                    os.system('cd %s && ls --file-type|grep -v data|grep -v views|grep -v *.zip|xargs rm -rf '%(code_path))
+                    os.system('unzip -o %s -d %s'%(chose_version, code_path))
+                    # 回滚后重启tomcat
+                    os.system('sudo /etc/init.d/tomcat_%s stop && sudo /etc/init.d/tomcat_%s start'%(appliction, appliction))
+                    print('\n\033[33m已经重启tomcat %s\033[0m\n'%(appliction))
+                    break
+                else:
+                    print('\n\033[31m您选择版本不在历史版本，请重新选择\033[0m')
+                    continue
+
+
+# 根据前面配置回滚相关实例代码          
+rollback_code(all_code, appliction, code_path)

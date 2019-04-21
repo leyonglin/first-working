@@ -1,0 +1,41 @@
+## 目录
+NGINX_PATH="/opt/apps/nginx"
+
+## 
+start_nginx(){
+        ${NGINX_PATH}/sbin/nginx
+}
+
+stop_nginx(){
+	${NGINX_PATH}/sbin/nginx -s stop
+}
+reload_nginx(){
+	${NGINX_PATH}/sbin/nginx -s reload
+}
+check_nginx(){
+	${NGINX_PATH}/sbin/nginx -t
+}
+
+### Finally the input handling.
+
+case "$1" in
+  start)
+        start_nginx
+        ;;
+  stop)
+        stop_nginx
+        ;;
+  reload)
+        reload_nginx
+        ;;
+  -t)
+        check_nginx
+        ;;
+  *)
+        echo "Usage: service nginx {start|stop|reload|-t}"
+        exit 1
+        ;;
+esac
+
+exit
+

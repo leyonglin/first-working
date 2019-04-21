@@ -1,0 +1,52 @@
+## jdk环境变量
+export JAVA_HOME=/opt/apps/jdk
+export JRE_HOME=$JAVA_HOME/jre
+export CLASSPATH=$JAVA_HOME/lib:$JAVA_HOME/lib/tools.jar
+export PATH=$PATH:$JAVA_HOME/bin:$JAVA_HOME/jre/bin
+## 目录
+TOM_BIN_PATH='/opt/apps/tomcat/tomcat_8001/bin'
+
+## 开启Tomcat
+start_tomcat_8001(){
+        [ ! -d ${TOM_BIN_PATH} ] && echo -e "\n\033[31mtomcat_8001 not installed!\033[0m\n" && exit
+        su ybweb -s /bin/bash -c "source /etc/profile && $TOM_BIN_PATH/startup.sh"
+}
+## 关闭tomcat
+stop_tomcat_8001(){
+        tomcat_8001_pid=$( ps -ef |egrep tomcat_*8001/endorsed |egrep -v root |awk '{print $2}')
+        [ -z $tomcat_8001_pid ] && echo -e "\ntomcat_8001\033[31m not run ...\033[0m\n" && exit
+        kill -9 $tomcat_8001_pid
+}
+## 重启tomcat
+restart_tomcat_8001(){
+	stop_tomcat_8001
+	start_tomcat_8001
+}
+## 查看Tomcat状态(检查端口是否起来）
+status_tomcat_8001(){
+	tomcat_8001_status=$(netstat -antpu |egrep 8001 |egrep -i listen)
+        [ -z "$tomcat_8001_status" ] && echo -e "\ntomcat_8001\033[31m start failed ...\033[0m\n" || echo -e "\ntomcat_8001\033[32m is running ...\033[0m\n" 
+}
+
+### Finally the input handling.
+
+case "$1" in
+  start)
+			start_tomcat_8001
+			;;
+  stop)
+                        stop_tomcat_8001
+                        ;;
+  status)
+                        status_tomcat_8001
+                        ;;
+  restart)
+                        restart_tomcat_8001
+                        ;;
+  *)
+        echo "Usage: service tomcat_8001 {start|stop|restart|status}"
+        exit 1
+        ;;
+esac
+
+exit

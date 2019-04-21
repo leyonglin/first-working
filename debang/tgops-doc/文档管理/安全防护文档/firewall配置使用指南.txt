@@ -1,0 +1,18 @@
+firewall分9大区域，Public：只开放自己规则下的服务  ---默认区域
+firewall-cmd --list-all  --查看默认区域
+
+配置方法：（1）命令： firewall-cmd  （2）图形界面：需要安装firewall-config
+
+firewall-cmd --reload  临时添加规则重载
+firewall-cmd --permanent ... 永久添加，但需要重启
+
+
+
+添加防火墙：firewall时，提前收集好白名单和服务端口
+测试环境：firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="192.168.175.1" port port="1080" protocol="tcp" accept'
+
+firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="0.0.0.0/0" port port="1080" protocol="tcp" 
+            log prefix="attack" level="notice" limit value="2/s" audit limit value="2/s" accept limit value="2/s"'
+用途为限制每个Ip每秒钟最大连接数为2次，多余的拒绝链接，不会占用端口；超过次数将记录至日志，便于日志分析与检查。
+
+

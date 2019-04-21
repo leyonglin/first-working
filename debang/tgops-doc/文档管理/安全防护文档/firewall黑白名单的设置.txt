@@ -1,0 +1,8 @@
+
+Firewall所谓的黑白名单其实就是一个含有ip的名单，只是你把它们drop了就是黑名单，
+把它们添加服务了，它们就是白名单。而这个名单叫ipset
+
+firewall-cmd --get-ipsets   查看有什么名单
+ipset del hgcp_whitelist 103.35.118.19   删除单个IP
+ipset destroy blacklist  删除ipset   
+ipset restore -f blacklist.txt  导入ipset规则  

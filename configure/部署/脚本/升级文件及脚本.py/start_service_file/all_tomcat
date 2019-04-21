@@ -1,0 +1,38 @@
+## jdk环境变量
+export JAVA_HOME=/opt/apps/jdk
+export JRE_HOME=$JAVA_HOME/jre
+export CLASSPATH=$JAVA_HOME/lib:$JAVA_HOME/lib/tools.jar
+export PATH=$PATH:$JAVA_HOME/bin:$JAVA_HOME/jre/bin
+## 目录
+#TOM_BIN_PATH='/opt/apps/tomcat/all_tomcat/bin'
+
+## 开启Tomcat
+start_all_tomcat(){
+        for i in tomcat_7001 tomcat_7002 tomcat_7003 tomcat_8001 tomcat_8002 tomcat_8003 tomcat_9001 tomcat_9002;do
+        echo -e "\nstart $i ....." && sleep 2 && /etc/init.d/$i start
+        done
+}
+## 关闭tomcat
+stop_all_tomcat(){
+        all_tomcat_pid=$(ps -ef |egrep java |egrep -v root |awk '{print $2}')
+        [ -z "$all_tomcat_pid" ] && echo -e "\nno tomcat\033[31m run ...\033[0m\n" && exit
+        for i in ${all_tomcat_pid}; do
+        su ybweb -s /bin/bash -c "kill $i"
+        done
+}
+### Finally the input handling.
+
+case "$1" in
+  start)
+			start_all_tomcat
+			;;
+  stop)
+                        stop_all_tomcat
+                        ;;
+  *)
+        echo "Usage: service all_tomcat {start|stop}"
+        exit 1
+        ;;
+esac
+
+exit

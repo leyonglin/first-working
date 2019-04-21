@@ -1,0 +1,4 @@
+
+
+Twemproxy是一种代理分片机制，实现高可用，由Twitter开源。Twemproxy作为代理，性能有损失（20%），可接受来自多个程序的访问，按照路由规则，转发给后台的各个Redis服务器，再原路返回，twemproxy不光实现了redis协议，还实现了memcached协议，什么意思？换句话说，twemproxy不光可以代理redis，还可以代理memcached。通常会结合keepalived来实现Twemproxy的高可用
+Twemproxy本身不支持Auth，password ，但可以添加(源码安装添加)

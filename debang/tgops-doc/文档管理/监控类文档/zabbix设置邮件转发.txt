@@ -1,0 +1,14 @@
+
+依赖包mailx
+
+# vim /etc/mail.rc  （在尾行加入）
+set from=michael_0288@163.com     //设置发件人
+set smtp=smtp.163.com             //smtp服务器，此处为黄易163  
+set smtp-auth-user=michael_0288  //
+set smtp-auth-password=hahxixilele //就是上面设置的客户端密码  
+set smpt-auth=login
+
+
+报警邮件的设置
+http://blog.csdn.net/mchdba/article/details/51474893 
+http://www.jianshu.com/p/046314951af3

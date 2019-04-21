@@ -1,0 +1,178 @@
+
+
+install_master_mysql () {
+    server_id=`echo $default_ip | cut -d . -f 4`
+    if [ `echo ${#server_id}` -eq 1 ];then
+        server_id=00$server_id
+    elif [ `echo ${#server_id}` -eq 2 ]; then
+        server_id=0$server_id
+    fi
+    su  swadmin -c "
+    cd /opt/conf 
+    wget --http-user=${http_user}  --http-password=${http_password} --no-check-certificate   https://$downloadserver/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/db/my_16303.cnf
+	wget --http-user=${http_user}  --http-password=${http_password} --no-check-certificate   https://$downloadserver/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/db/syncdb-init/syncdb-init.sql -P /opt/src/
+	wget --http-user=${http_user}  --http-password=${http_password} --no-check-certificate   https://$downloadserver/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/db/syncdb-init/trigger.sql  -P /opt/src/
+    "
+    sed -i "s/^server-id = 16303110/server-id = 16303$server_id/g" /opt/conf/my_16303.cnf
+    su swadmin -c "
+    cd /opt/src
+    wget --http-user=${http_user}  --http-password=${http_password} --no-check-certificate   https://$downloadserver/%E9%80%9A%E7%94%A8%E5%8C%85/mysql-5.7.17-linux-glibc2.5-x86_64.tar.xz
+    tar -xf mysql-5.7.17-linux-glibc2.5-x86_64.tar.xz -C /opt/apps/
+    cd /opt/apps/
+    mv mysql-5.7.17-linux-glibc2.5-x86_64/ mysql
+    /opt/apps/mysql/bin/mysqld --defaults-file=/opt/conf/my_16303.cnf --initialize-insecure --user=swadmin
+    sleep 3
+    /opt/apps/mysql/bin/mysqld --defaults-file=/opt/conf/my_16303.cnf --user=swadmin &
+    "
+}
+
+install_slave_mysql () {
+    server_id=`echo $default_ip | cut -d . -f 4`
+    if [ `echo ${#server_id}` -eq 1 ];then
+        server_id=00$server_id
+    elif [ `echo ${#server_id}` -eq 2 ]; then
+        server_id=0$server_id
+    fi
+    su  swadmin -c "
+    cd /opt/conf/
+    wget --http-user=${http_user}  --http-password=${http_password} --no-check-certificate   https://$downloadserver/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/db/my_slave_16303.cnf
+    "
+    sed -i "s/^server-id = 16303220/server-id = 16303$server_id/g" /opt/conf/my_slave_16303.cnf
+    su swadmin -c "
+    cd /opt/src
+    wget --http-user=${http_user}  --http-password=${http_password} --no-check-certificate   https://$downloadserver/%E9%80%9A%E7%94%A8%E5%8C%85/mysql-5.7.17-linux-glibc2.5-x86_64.tar.xz
+    tar -xf mysql-5.7.17-linux-glibc2.5-x86_64.tar.xz -C /opt/apps/
+    cd /opt/apps/
+    mv mysql-5.7.17-linux-glibc2.5-x86_64/ mysql
+    /opt/apps/mysql/bin/mysqld --defaults-file=/opt/conf/my_slave_16303.cnf --initialize-insecure --user=swadmin
+    sleep 3
+    /opt/apps/mysql/bin/mysqld --defaults-file=/opt/conf/my_slave_16303.cnf --user=swadmin &
+    "
+}
+
+install_master_redis () {
+    su swadmin -c "
+    cd /opt/conf
+    wget --http-user=${http_user}  --http-password=${http_password} --no-check-certificate   https://$downloadserver/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/db/re_17693.conf
+    cd /opt/src/
+    wget --http-user=${http_user}  --http-password=${http_password} --no-check-certificate   https://$downloadserver/%E9%80%9A%E7%94%A8%E5%8C%85/redis-3.2.9.tar.gz
+    tar -xf redis-3.2.9.tar.gz -C /opt/apps/
+    cd /opt/apps/
+    mv redis-3.2.9/ redis 
+    cd redis
+    make MALLOC=libc 
+    make PREFIX=/opt/apps/redis install
+    /opt/apps/redis/src/redis-server  /opt/conf/re_17693.conf &
+    "
+}
+
+install_slave_redis () {
+    database_masterip=`echo $dbmasterip | awk '{print $1}'`
+    su swadmin -c "
+    cd /opt/src
+    wget --http-user=${http_user}  --http-password=${http_password} --no-check-certificate   https://$downloadserver/%E9%80%9A%E7%94%A8%E5%8C%85/redis-3.2.9.tar.gz
+    tar -xf redis-3.2.9.tar.gz -C /opt/apps/
+    cd /opt/apps
+    mv redis-3.2.9 redis
+    cd redis
+    make MALLOC=libc 
+    make PREFIX=/opt/apps/redis install
+    cd /opt/conf/
+    wget --http-user=${http_user}  --http-password=${http_password} --no-check-certificate   https://$downloadserver/%E7%BA%BF%E4%B8%8A%E7%8E%AF%E5%A2%83/%E7%BA%BF%E4%B8%8A%E5%8C%85%E4%B8%8E%E9%85%8D%E7%BD%AE/db/re_slave_17693.conf 
+    sed -i "s/XXX.XXX.XXX.XXX/$database_masterip/" re_slave_17693.conf
+    /opt/apps/redis/src/redis-server /opt/conf/re_slave_17693.conf &
+    "
+}
+
+grant_mysql_master_privileges () {
+	while ! ls /opt/data/data_16303/mysql.sock &>/dev/null 
+	do 
+		echo "wait for mysql-server to up ... ..."
+		sleep 1
+	done
+
+    for i in $dbslaveip;do
+expect << EOF
+        spawn /opt/apps/mysql/bin/mysql -uroot -p -S /opt/data/data_16303/mysql.sock -e "    
+        grant replication slave on *.* to myrync@'$i' identified by 'MyryncCloud';
+        flush privileges;
+	    reset master;
+        "
+        expect "Enter password:" {send "\r"}
+        expect eof
+EOF
+    done
+expect << EOF
+    spawn /opt/apps/mysql/bin/mysql -uroot -p -S /opt/data/data_16303/mysql.sock -e "
+    create database gameplat_analysis;
+    create database gameplat_sc_data;
+    create database gameplat_cms;
+	create user zabbixmonitor@localhost;
+    grant process,replication client,select on *.* to zabbixmonitor@localhost;
+	grant trigger on gameplat_sc_data.* to 'zabbixmonitor'@'localhost';
+    grant all privileges on gameplat_analysis.* TO 'tgadmin'@'113.61.35.%' identified by 'aNaMuxFJY64OK_4q${webname}';
+    grant all privileges on gameplat_sc_data.* TO 'tgadmin'@'113.61.35.%';
+    grant all privileges on gameplat_cms.* TO 'tgadmin'@'113.61.35.%';
+    grant select on gameplat_cms.* TO 'tgblog'@'113.61.35.%'  identified by '3JPBKSt_6kOiF2mD${webname}';
+    grant select on gameplat_analysis.* TO 'tgblog'@'113.61.35.%';
+    grant select on gameplat_sc_data.* TO 'tgblog'@'113.61.35.%';
+    "
+    expect "Enter password:" {send "\r"}
+    expect eof
+EOF
+
+    rand_pass=`echo "${webname}" |md5sum |cut -c 9-24`
+    for i in $webmasterip;do
+expect << EOF
+        spawn /opt/apps/mysql/bin/mysql -uroot -p -S /opt/data/data_16303/mysql.sock -e "    
+        grant all privileges on gameplat_analysis.* TO 'gameplat_analysis_dev'@'$i' identified by 'xjVXkB>Q6JpB61r${rand_pass}';
+        grant all privileges on gameplat_sc_data.* TO 'gameplat_sc_data_dev'@'$i' identified by 'OeJr)4uRGAuf(BH${rand_pass}';
+        grant all privileges on gameplat_cms.* TO 'gameplat_cms_dev'@'$i' identified by '9ckhq<64RZ2YUSR${rand_pass}';
+        "
+        expect "Enter password:" {send "\r"}
+        expect eof
+EOF
+    done
+
+    for i in $webslaveip;do
+expect << EOF
+        spawn /opt/apps/mysql/bin/mysql -uroot -p -S /opt/data/data_16303/mysql.sock -e "    
+        grant all privileges on gameplat_analysis.* TO 'gameplat_analysis_dev'@'$i' identified by 'xjVXkB>Q6JpB61r${rand_pass}';
+        grant all privileges on gameplat_sc_data.* TO 'gameplat_sc_data_dev'@'$i' identified by 'OeJr)4uRGAuf(BH${rand_pass}';
+        grant all privileges on gameplat_cms.* TO 'gameplat_cms_dev'@'$i' identified by '9ckhq<64RZ2YUSR${rand_pass}';
+        "
+        expect "Enter password:" {send "\r"}
+        expect eof
+EOF
+    done
+
+expect << EOF
+    spawn /opt/apps/mysql/bin/mysql -uroot -p -S /opt/data/data_16303/mysql.sock -e "    
+    set password=password('9tN6GFGK60Jk8BNkBJM611GwA66uDFeG');
+    flush privileges;
+    "
+    expect "Enter password:" {send "\r"}
+    expect eof
+EOF
+}
+
+init_db_trigger (){
+echo -e "\033[35m \t\t\t+-------------------正在初始化数据库,耐心等待！--------------------+\t\t\t \033[0m"
+/opt/apps/mysql/bin/mysql -uroot -p9tN6GFGK60Jk8BNkBJM611GwA66uDFeG -S /opt/data/data_16303/mysql.sock -A < /opt/src/syncdb-init.sql
+/opt/apps/mysql/bin/mysql -uroot -p9tN6GFGK60Jk8BNkBJM611GwA66uDFeG -S /opt/data/data_16303/mysql.sock -A < /opt/src/trigger.sql
+
+}
+
+grant_mysql_slave_replication () {
+    database_masterip=`echo $dbmasterip | awk '{print $1}'`
+expect << EOF
+    spawn /opt/apps/mysql/bin/mysql -uroot -p -S /opt/data/data_16303/mysql.sock -e "
+    change master to master_host='$database_masterip', master_port=16303, master_user='myrync', master_password='MyryncCloud', master_log_file='mysql-bin.000001', master_log_pos=154, master_connect_retry=15;
+    start slave;
+    show slave status\G
+    flush privileges;
+    "
+    expect "Enter password:" {send "\r"}
+    expect eof
+EOF
+}

@@ -1,0 +1,5 @@
+
+
+LNMP+zabbix+email   
+可视化图形监控:freetype*+grafana+fontconfig+urw-fonts
+PHP编译+php.ini+php-fpm.conf均可优化

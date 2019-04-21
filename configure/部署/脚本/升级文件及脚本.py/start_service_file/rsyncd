@@ -1,0 +1,30 @@
+#!/bin/bash
+
+start_rsync(){
+        /opt/apps/rsync/bin/rsync --daemon --config=/opt/apps/rsync/etc/rsyncd.conf --no-detach &
+}
+
+stop_rsync(){
+        rsync_pid=$(ps -ef |egrep rsync |egrep daemon |awk '{print $2}')
+        [ -z "$rsync_pid" ] && echo -e "\n\033[31mrsync not run ...\033[0m\n" && exit
+	kill $rsync_pid
+
+}
+
+### Finally the input handling.
+
+case "$1" in
+  start)
+        start_rsync
+        ;;
+  stop)
+        stop_rsync
+        ;;
+  *)
+        echo "Usage: service rsync {start|stop}"
+        exit 1
+        ;;
+esac
+
+exit
+
