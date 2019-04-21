@@ -298,6 +298,8 @@ DNSPod：是中国第一大DNS解析服务提供商，是一款免费智能DNS产品。 DNSPod 可以为同时
 
 python3.5.7：从官网上选择系统和版本下载，依赖包gcc，make，openssl-devel(其它报错自己看) ，成功安装会附带pip3
 
-
+SecureFX 支持三种文件传输协议：FTP、SFTP 和 FTP over SSH2。它可以提供安全文件传输。无论您连接的是任何一种操作系统的服务器，它都能提供安全的传输服务
+，可以但不仅用于window与vmware传输文件
  
+
  

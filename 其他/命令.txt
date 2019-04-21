@@ -133,7 +133,7 @@ scp -P 220 ubuntu.tar  192.168.126.128:/root      指定端口
 iconv命令是用来转换文件的编码方式:
 iconv -c -f utf-8 -t gb2312 docker_vmlist.csv -o docker_vmlist_`date+%H%M`.csv
 
-
+lrzsz该软件包含window与xshell相互传输数据的命令。
 
 
 

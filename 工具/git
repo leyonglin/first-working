@@ -114,14 +114,25 @@ git冲突：1.git push origin master   ---> caused by another repository pushing
 			5.原所有者：点击仓库 -- pull requests -- 点击消息 
 			  方式1：回消息，进行对话
 			  方式2：审核：commits--files changed -- conversation -- Merge pull request(合并) -- confirm merge -- 团队重新拉取就行了
+			
+			
+ssh免密推送：1.在家目录用ssh-keygen 生成密钥，并将 id_rsa.pub 的内容复制到github上
+			 2.账户 -- setting -- SSH and GPG keys -- New SSH key -- 将 id_rsa.pub 粘贴到key下面的输入框上(title随便写)
+			 3.到git目录下:git remote add  ssh地址别名  ssh地址链接      
+			 4.(1)查看：git remote -v       (2)推送：git push ssh别名 分支
 
 
 
+git工作流：1.集中式工作流：即不分支，类似svn
+		   2.GitFlow工作流：(master/develop/feature/hotfix/release)
+		   3.Forking工作流：跨团队协作
+		   
+	
+git图形化操作：	
+1.Eclipse中有git插件,可以实现图形化操作
+  Eclipse 是一个开放源代码的、基于Java的可扩展开发平台。就其本身而言，它只是一个框架和一组服务，用于通过插件组件构建开发环境。幸运的是，Eclipse 附带了一个标准的插件集，包括Java开发工具（Java Development Kit，JDK）
 
-
-
-
-
+2.TortoiseGit是一个Git版本控制客户端依赖git bash 也可以实现图形化操作      官网：https://www.git-scm.com/download/
 
 
 
