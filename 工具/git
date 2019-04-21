@@ -111,9 +111,9 @@ git冲突：1.git push origin master   ---> caused by another repository pushing
 			2.他人：git clone 链接(他人/仓库)
 		    3.他人：将修改提交到他人/仓库 -- git push origin master 
 			4.他人：点击仓库 -- pull requests -- new pull request -- create pull request -- 发消息给fork前所有人
-			5.原所有者：点击仓库 -- pull requests -- 点击消息 -- 1.回消息，进行对话
-																 2.审核：commits--files changed -- conversation -- Merge pull request(合并)--confirm merge
-																 3.团队重新拉取就行了
+			5.原所有者：点击仓库 -- pull requests -- 点击消息 
+			  方式1：回消息，进行对话
+			  方式2：审核：commits--files changed -- conversation -- Merge pull request(合并) -- confirm merge -- 团队重新拉取就行了
 
 
 
