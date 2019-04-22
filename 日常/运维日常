@@ -58,7 +58,7 @@ tail -10000 /opt/logs/tomcat/tomcat_8001/catalina.out|grep "v/user/login"|awk -F
 3. 打不开页面，要判断是不是以前的firewalld里面封的，需要在blacklist.xml 中删除ip，如果blacklist.xml没有该ip 那么应该是网络问题或者被打机房封了ip。
 4.400可能是后台域名绑定带前台去，或者被绑定域名
 5.走cdn可能有500
-6.tomcat没起会有502，
+6.tomcat没起会有502，或者连接数太多，响应时间长。
 产生错误的原因：连接超时 我们向服务器发送请求 由于服务器当前链接太多，导致服务器方面无法给于正常的响应，产生此类报错
 7.504 Gateway Timeout Error  服务挂了，连接超时
 8.

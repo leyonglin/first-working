@@ -57,7 +57,7 @@ git分支：在版本控制过程中  1.使用多条线同时推进多个任务 
 	合并分支：把hot_fix分支合并到master分支上
 			  1.切换到master:git checkout master   2.合并：git merge hot_fix
 			  
-	分支冲突：1.git merge hot_fix --- 合并冲突，然后处于正在合并状态
+	分支冲突：1.git merge hot_fix --- 合并冲突，然后处于（master|MERGING）正在合并状态
 			  2.到冲突的文件里，修改成最终版
 			  3.git status --- git add filename
 			  4.git status --- git commit -m ""   <---不带文件名
