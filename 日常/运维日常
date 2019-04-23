@@ -15,6 +15,8 @@
 服务器ip==yundback.javalebogame002.com
 lpm替换静态文件替换web     跑整个npm-admin-product--发布
 
+剔除彩票-85主机，可以先关了nginx，再
+
 域名劫持是使解析到的IP地址不正确，
 
    客户访问域名，  通过dns解析得到ip，   访问对应的(代理)服务器，代理服务器访问后端服务器，后端服务器能够返回请求结果。
@@ -153,3 +155,16 @@ kangle也是一款专为做虚拟主机研发的web服务器。实现虚拟主�
 虚拟专用服务器（英语：Virtual private server，缩写为 VPS），是将一台服务器分割成多个虚拟专享服务器的服务。实现VPS的技术分为容器技术和虚拟机技术 
 
 互联网数据中心（Internet Data Center） 	
+
+
+
+新站添加jenkins:  
+jenkins---addSites--- 1 -- 主1 -- 备1 -- y(核对) -- 2(台架构) -- HK(服务器地址) 
+        -- 6fpj(权限拒绝没问题) -- 6FPJ-新葡京娱乐城 -- y 
+
+添加zabbix：                                                                                                                                                                                  
+两台架构主机.xml：替换令牌码  主备(主)ip
+两台架构master.xml and 两台架构slave.xml：替换令牌码
+两台架构前后台.xml: 替换令牌码  网卡名称  磁盘名称  挂载目录
+
+

@@ -1,0 +1,202 @@
+
+Ansible：批量操作 1.自动化部署app   2.自动化管理配置项   3.自动化持续交付   4.自动化(AWS)云服务管理/
+文件：/etc/ansible    1.ansible.cfg    2.hosts    3.roles
+
+一.全局配置ansible.cfg
+inventory(财产清单)=/etc/ansible/hosts
+61  host_key_checking = False  
+
+
+二.主机管理HOSTS
+inventory参数：ansible_ssh_user="root"(连接用户)  ansible_ssh_pass="a"(连接密码)    ansible_ssh_port(连接端口)  
+			   ansible_connection(与主机的连接类型,默认ssh)   ansible_ssh_private_key_file(私钥文件,适用于多个密钥情况)
+			   ansible_shell_type(目标系统的shell类型sh/csh/fish)  ansible_python_interpreter(目标主机python路径,适用于多个Python)  
+			   
+[web]                              组名
+web1                               主机名
+web[1:50]                          相似主机名
+1.1.1.1                            ip
+web1                               设置账号密码
+
+[web0]                             组名
+web2  ansible_ssh_pass="a"         带参数的组名      
+
+[web:vars]                         为组设置变量
+ansible_ssh_user="root"            参数
+ansible_ssh_port="22"              参数
+
+[all:children]                     以组名为元素
+web                                组名
+
+ansible Inventory包含静态和动态的Inventory
+静态：/etc/ansible/hosts
+动态：通过外部脚本(json格式)获取主机列表，按照其要求格式返回给ansible命令
+注意：主机部分必须是列表格式，Hostdata行，其中的"hosts" 部分可以省略，但使用时，必须时"hosts"
+例如：ansible_host.py
+           #!/usr/bin/python
+           import json
+           hostlist={}
+           hostlist["git"]=["192.168.126.133"]
+           hostlist["192.168.126.131"] = {
+                   "ansible_ssh_user":"root","ansible_ssh_pass":"pwd"
+                   }
+           hostlist["ansible"]={
+                   "host":["192.168.126.133"],
+                   "vars":{
+                          "ansible_ssh_user":"root","ansible_ssh_pass":"pwd"
+                   }
+           }
+           print(json.dumps(hostlist))
+
+  chmod 755 ansible_host.py
+
+json语法规则：基于文本独立于语言的轻量级数据交换格式
+#表示注释
+数据在名称/值对中        
+数据由逗号分隔     
+大括号保存对象           
+中括号保存数组  
+         
+{ "诗人":
+  [{"李白":"诗仙","年代":"唐"},
+   {"杜甫":"诗圣","年代":"唐"}
+  ]
+}
+
+
+YAML基本语法：一个可读性高，用来表达数据序列的格式
+#表示注释
+YAML的结构通过空格来展示
+数组使用"-"来表示
+键值对使用":"来表示，后面必须有一个空格
+固定的缩进风格来表示数据层级结构关系
+一般每个缩进级别由两个以上空格组成
+注意：1.只能使用空格，不能使用tab     2.同一层次缩进必须对齐
+
+"诗人":
+  -
+     "李白": "诗仙"
+	 "年代": "唐"
+  -  
+     "杜甫": "诗圣"
+	 "年代": "唐"
+	 
+
+jinja2是基于python的模板引擎，包含变量和表达式两部分，两者在模板求值时会替换为值，模板还有标签，控制模板的逻辑
+playbook的模板使用python的jinja2模块来处理
+jinja2模板的基本语法：
+模板的表达式都是包含在分隔符"{{}}"内的
+控制语句都是包含在分隔符"{% %}"内的
+模板支持注释，包含在分隔符"{# #}"内，支持块注释
+
+调用变量{{varname}}
+计算    {{2+3}}
+判断    {{1 in [1,2,3]}}
+
+模板控制语句
+{% if name == '诗仙' %}
+   李白
+{% elif name == '诗圣' %} 
+  {% for method in [a,b,c] %}  
+    {{do method}}
+  {% endfor %}
+{% else %}  
+   李贺
+{% endif %}
+   
+jinja2过滤器
+变量可以通过过滤器修改，过滤器于变量用管道符号(|)分割，也可以用圆括号传递可选参数，多个过滤器可以链式调用，即前一个过滤器的输出会被作为后一个过滤器的输入
+帮助文档：http://docs.jinkan.org/docs/jinja2/
+          http://docs.jinkan.org/docs/jinja2/templates.html#builtin-filters 
+   
+
+
+自定义配置文件：1.创建自定义(myansible)目录    2.创建配置文件ansible.cfg --- [defaults]  inventory=myhost    
+				3.配置主机文件myhost    4.进入自定义配置目录执行命令  
+
+
+1.ad-hoc:用于临时性工作
+2.ansible-doc -l / ansible-doc  模块名                           查看ansible模块的文档
+3.ansible-console												 交互式工具
+4.ansible-galaxy                                                 管理roles的工具
+5.ansible-playbook												 批量管理操作，主机剧本
+6.ansible-vault                                                  用于加/解密配置文件
+7.ansible-pull                                                   有两种工作模式pull/push，默认使用push模式，适用于大批量机器需要配置，效率几乎无限提升，但灵活性稍有欠缺
+
+
+命令：
+ansible web[all] --list-host                                   显示web组的主机
+ansible-playbook --syntax-check playbook.yml                   检查playbook语法
+ansible-playbook playbook.yml --list-hosts                     显示受影响的主机
+ansible-playbook playbook.yml --list-tasks                     显示工作的task
+ansible-playbook playbook.yml --list-tags                      显示将要运行的tag
+ansible-playbook -C  playbook.yml                              测试运行
+
+
+ansible all -m ping
+ansible all -m command -a 'id' -k
+
+
+playbook构成：
+Target：定义将要执行playbook的远程主机组
+Variable：定义playbook运行时需要使用的变量
+Tasks：定义将要在远程主机上执行的主机列表
+Handler：定义task执行完成以后需要调用的任务
+
+playbook语法格式：
+由YAML语言编写，遵循YAML标准
+一个playbook有一到多个play组成
+play中hosts,variables,roles,tasks等对象的表示方法都是键值中间以": "分隔表示
+文件开始都是 ---
+
+执行输出结果为JSON格式
+绿色代表执行成功
+***代表系统状态发生改变
+红色代表执行失败
+
+cat user.yml
+---
+- hosts: all/组名/ip
+  remote_user: root
+  tasks:
+   - name: create user debang
+     user: group=wheel uid=1000 name=debang
+   - shell: echo debang | passwd --stdin debang 
+   
+ansible-playbook user.yml  -f 5 
+
+   
+1.hosts行，如果是多个主机的patterns，以逗号为分隔符  2.并发进程数量为5(默认为5)   3.remote_user帐户名  
+4.每一个play包含了一个task列表，多个task列表顺序执行                                      
+
+playbook语法进阶：变量，error，handlers，when，register，with_items，with_nested，tags，include and roles ，
+
+---
+- hosts: all/组名/ip
+  remote_user: root
+  vars:
+   username: debang
+  tasks:
+   - shell: chage -d 0 {{username}}        执行命令行命令
+
+设置用户密码：password={{'passwd'|password_hash('sha512')}}
+
+error错误跳过处理(默认$?不为0则报错停止)：
+1.shell: /usr/bin/somecommand || /bin/true    
+2.  - name: run some command
+      shell: /usr/bin/somecommand
+	  ignore_errors: True
+	  
+... - shell: setenfore 0 
+      ignore_errors: true                      跳过错误，前面不用定义
+	- shell: chage -d 0 {{username}}
+
+handlers：notify调用handler中定义的操作
+
+
+
+
+
+
+
+

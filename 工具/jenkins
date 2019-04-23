@@ -7,7 +7,7 @@ jenkins:
 依赖java环境
 安装并启动
 
-系统管理可设置相关配置：包括maven路径
+首页--系统管理可设置相关配置：包括maven路径
 svn：
 拉取代码：新建任务--创建自由风格的软件项目--源码管理---选择相关版本控制工具[svn地址@HEAD:这是为了钩子程序下载最新版本--仅针对某些版本]
 构建方式：首页--工程(右边)--configure--构建--Invoke top-level Mavven targets--调用maven target
@@ -24,4 +24,5 @@ svn：
    		     请求消息头信息：Crumb Algorithm:API Token
 
 github：
-github中的webhook=svn中的hooks
+github中的webhook=svn中的hooks      在项目的settings--webhooks  再把jenkins  首页--系统管理--全局安全配置--关闭防止网站点请求伪造
+首页---系统管理---全局工具配置---配置git 
