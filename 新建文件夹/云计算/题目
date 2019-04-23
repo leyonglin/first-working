@@ -1,0 +1,303 @@
+系统运维面试题
+1. linux文件权限一共10位长度，第三段表示的内容是：（c）
+A. 文件类型  B 文件所有者的权限  C文件所有者所载组的权限  D 其他用户权限
+2. 在使用mkdir命令创建新的目录时，在其父目录不存在时先创建父目录的选项是：（d）
+A、 -m  B、-d  C、-f  D、-p
+3. 进程有三种状态：（c）
+A. 准备态、执行态和退出态     B.精确态、模糊态和随机态
+C.运行态，就绪态和等待态     D.手工态、自动态和自由态
+4. 一共文件名字为rr.Z,可以用来解压缩的命令是：（d）
+A. tar   B gzip  C compress   D uncompress
+5. 文件exer1的访问权限为rw-r--r--，现要增加所有用户的执行权限和同组用户的写权限，下列命令正确的是：（a）
+A chmod a+x,g+w exer1    B chmod 756 exer1
+C.chmod o+x exer1        D.chmod g+x exer1
+6. 将/home/stud1/wang目录做归档压缩，压缩后生成wang.tar.gz文件，并将此文件保存到/home目录下，实现此任务的tar格式为：（a）
+A、 tar zcvf /home/stud1/wang.tar.gz /home/wang
+B、 tar xcvf /home/stud1/wang /home/wang
+C、 tar zcv /home/stud1/wang /home/wang
+D、 tar zcvf /home/stud1/wang /home/wang.tar.gz
+7. 当内网没有条件建立dns服务器，又不想用IP访问网站，英配置什么文件？a
+A、 hosts  B、sysconfig  C、network  D、Hostname
+8. 在DNS配置文件中，用于表示某主机别名是：（b）
+A、 NS  B、CNAME  C、NAME   D、CN
+9. crontab文件由六个域组成，每个域之间用空格分割，其排列如下：（b）
+A. MIN HOUR DAY MONTH YEAR COMMAND
+B. MIN HOUR DAY MONTH DAYOF WEEK COMMAND
+C. COMMAND HOUR DAY MONTH DAYOFWEEK
+D. COMMAND YEAR MONTH DAY HOUR MIN
+10 在DNS系统测试时，设named进程号是53，命令（d）通知进程重读配置文件。
+A. kill -USR2 53     B.Kill -USR1 53
+B. Kill -INT 63       D.Kill -HUP 53
+二、 问答题
+1. ps  aux中的VSZ代表什么意思，RSS代表什么意思？
+                 虚拟内存 和 物理内存
+2. linux文件系统不一致。如何检测并修复/dev/vda1
+             fsck
+
+3.符号连接与硬连接的区别
+   符号链接:跨区,跨机器与网络，对目录，源文件删除，则无法打开 
+   硬链接：不能跨区，只能对文件，源文件删除仍然能打开
+     
+运维工程师笔试题目
+一、 LINUX题
+1. Linux如何查看占用端口8080的进程   
+    pstree -p
+    ss  -anpltu
+    netstat
+
+2. 如何将本地80端口的请求转发到8080端口，当前主机IP为10.10.10.1，其中本地网卡eth0；
+   iptables -t nat -I PREROUTING -d 192.168.16.1 -p tcp --dport 80 -j DNAT --to 192.168.16.1:8080
+   iptables -t nat -A PREROUTING -i eth0 -d 192.168.16.1 -p tcp -m tcp --dport 80 -j REDIRECT --to-ports 8080
+
+3. 用iptables添加一个规则容许10.10.10.1访问本机3306端口
+   iptables -I INPUT 1 -p tcp -m tcp --dport 3306 -s 192.168.0.123 -j ACCEPT
+
+4. 在11月份内，每天的早上6点到12点中，每隔2小时执行一次/usr/bin/httpd.sh 怎么实现
+   0 6-12/2 * 11 * /usr/bin/httpd.sh
+
+5. 简述Apache几种工作模式，以及它们之间的区别
+ 　Apache 2.X  支持插入式并行处理模块，称为多路处理模块（MPM）
+   prefork是一个非线程型的、预派生的MPM
+   worker使用了多进程和多线程的混合模式
+    加强的worker，服务进程从连接中分离出来
+
+6. Linux下如何查看apache进程数
+   开启并查看Apache Server Status
+   ps -ef|grep httpd|wc -l        #并发
+netstat -nat|grep -i "80"|wc -l   #网络状态
+netstat -na|grep ESTABLISHED|wc -l    #tcp中11中状态中的已连接状态
+netstat -n | awk '/^tcp/ {++S[$NF]} END {for(a in S) print a, S[a]}'
+CLOSED  //无连接是活动的或正在进行
+LISTEN  //服务器在等待进入呼叫
+SYN_RECV  //一个连接请求已经到达，等待确认
+SYN_SENT  //应用已经开始，打开一个连接
+ESTABLISHED  //正常数据传输状态/当前并发连接数
+FIN_WAIT1  //应用说它已经完成
+FIN_WAIT2  //另一边已同意释放
+ITMED_WAIT  //等待所有分组死掉
+CLOSING  //两边同时尝试关闭
+TIME_WAIT  //另一边已初始化一个释放
+LAST_ACK  //等待所有分组死掉
+
+7. Centos6如何修改eth0网卡的IP地址
+   vim /etc/sysconfig/network-scripts/ifcfg-eth0
+   ADDR=
+
+8. Mysql中的数据存储引擎有几种，区别是？
+MyISAM：默认的MySQL插件式存储引擎，它是在Web、数据仓储和其他应用环境下最常使用的存储引擎之一。注意，通过更改STORAGE_ENGINE配置变量，能够方便地更改MySQL服务器的默认存储引擎。
+InnoDB：用于事务处理应用程序，具有众多特性，包括ACID事务支持。(提供行级锁)
+Memory：将所有数据保存在RAM中，在需要快速查找引用和其他类似数据的环境下，可提供极快的访问。
+BDB：可替代InnoDB的事务引擎，支持COMMIT、ROLLBACK和其他事务特性。
+Merge：允许MySQL DBA或开发人员将一系列等同的MyISAM表以逻辑方式组合在一起，并作为1个对象引用它们。对于诸如数据仓储等VLDB环境十分适合。
+Archive：为大量很少引用的历史、归档、或安全审计信息的存储和检索提供了完美的解决方案。
+Federated：能够将多个分离的MySQL服务器链接起来，从多个物理服务器创建一个逻辑数据库。十分适合于分布式环境或数据集市环境。
+Cluster/NDB：MySQL的簇式数据库引擎，尤其适合于具有高性能查找要求的应用程序，这类查找需求还要求具有最高的正常工作时间和可用性。
+Other：其他存储引擎包括CSV（引用由逗号隔开的用作数据库表的文件），Blackhole（用于临时禁止对数据库的应用程序输入），以及Example引擎（可为快速创建定制的插件式存储引擎提供帮助）。
+
+9. 你对现在运维工程师的理解和及时对其工作的认识
+   运维工程师是一个特别重要的岗位，工作中需要细心严谨，主要职责是负责服务环境的搭建，
+   维护服务器的日常运行，防止受到攻击，在服务器出现问题的时候需要以最快的速度解决问题，
+
+二简单题
+1. 如何防止DDOS攻击？如给攻击源了你做那些处理，公司提供足够资源给你，要你保证用户访问不影响，你有哪些有效方案？
+带宽攻击（检测宽闹），应用攻击（tcp/udp）   源地址欺骗
+cdn   云盾   查看网陆连接状态，对日志进行分析，
+IDS入侵检测系统是一个监听设备，是一种对网络传输进行即时监视
+
+2. 如何防止CC攻击，攻击原理、正在受攻击你如何处理？
+CC攻击是DDoS(分布式拒绝服务)的一种，原理就是攻击者控制某些主机不停地发大量数据包给对方服务器造成服务器资源耗尽
+直接攻击，代理攻击，僵尸网络攻击
+受CC攻击时，Web服务器会出现80端口对外关闭的现象，大量的垃圾数据堵塞了正常的连接被中止了
+netstat -an来查看
+取消域名绑定  域名欺骗解析  更改Web端口  防火墙屏蔽拦截
+
+
+3. 介绍一下你是如何防黑客入侵、安全防护？
+    负载均衡建立防火墙，牢笼政策
+
+
+4. 一千万并发访问量，你有哪些方案？
+    并发写多：消息队伍
+    并发读多：缓存服务器   
+
+5. 服务器IO性能不足，你如何调优？
+查看是哪个进程iostat，什么原因导致的
+ps -e -o 'pid,comm,args,pcpu,rsz,vsz,stime,user,uid' | grep oracle |  sort -nrk5
+数据库调优，硬件
+
+
+
+6. 如何优化MYSQL？
+带宽，硬件，最大并发数，超时时间，慢查询日志
+
+
+7. 你如何监视服务器质量和网络质量？用过哪些工具以及优缺点？
+zabbix     ss    mysqldump status    web status   
+
+
+
+运维工程师笔试题
+1. linux系统中的/proc文件系统有什么用？
+/proc文件系统是一个基于内存的文件系统，其维护着关于当前正在运行的内核状态信息，
+其中包括CPU、内存、分区划分、I/O地址、直接内存访问通道和正在运行的进程
+是一个虚拟文件系统
+
+2. KVM虚拟化实现原理？
+内核虚拟化技术kvm--->系统设备仿真qemu--->虚拟机管理程序libvirt
+虚拟化能更细致的切换物理资源，跨平台，不同系统
+
+3. 简单叙述下Redhat 6系列和7系列服务器的区别
+启动服务的方式不一样
+service 和 systemctl
+
+4. Docker运行的整体架构描述
+容器有效的将单个操作系统管理的资源划分到孤立的组中，以便更好的在孤立的组之间平衡有冲突的资源使用需求。
+与虚拟化相比，这样既不需要指令级模拟，也不需要即时编译。容器可以在核心CPU本地运行指令，而不需要任何专门的解释机制。
+
+5. Docker资源隔离的实现方式
+主机名uts、网络net、用户user、进程pid、根目录、信号向量ipc、挂载mnt
+
+
+6. Kubernetes组件有哪些，分别承担什么功能？
+
+
+
+
+7. Kubernetes网络解决方案有哪些，分别有何优势
+
+
+
+
+8. 您最擅长的是什么邻域？（Linux基础运维或私有云等）
+shel脚本及语言
+
+运维工程师笔试题
+1. debain的软件安装是与suse、centos、Ubuntu哪种类似
+   Ubuntu
+
+2. /etc/fstab里的init0 和init5分别是什么意思？运行级别0：系统停机状态，系统默认运行级别不能设为0，否则不能正常启动
+运行级别1：单用户工作状态，root权限，用于系统维护，禁止远程登陆
+运行级别2：多用户状态(没有NFS)
+运行级别3：完全的多用户状态(有NFS)，登陆后进入控制台命令行模式
+运行级别4：系统未使用，保留
+运行级别5：X11控制台，登陆后进入图形GUI模式
+运行级别6：系统正常关闭并重启，默认运行级别不能设为6，否则不能正常启动
+
+3. 创建一串空目录/a/b/c的命令是什么？
+   mkdir -p
+
+4. Chown和chmod这2个命令分别是干什么的？
+    改所属主和组  改权限
+
+5. 即能删除文件又能删除目录的命令是什么？
+   rm -rf 
+
+6. 如何彻底删除一个用户
+   userdel -r
+
+7. 如何获取分区/dev/vda1的UUID
+   blkid
+
+8. 如何用linux命令生成一个16为的密码
+    date +%s | md5sum | base64  | head -c 16
+
+9. Vim命令上插或下插一行用哪个字母。
+    i  a
+10. Vim移动到首行。移动到末行分别用什么？
+    gg   G
+
+11. 写出用tar打包压缩/home/目录所有文件为一个压缩文件home.tgz放到/root/目录的完整命令，并写出解压home.tgz到/aaa/bbb/目录的完整命令
+    tar -zcf /root/home.tgz /home/
+    tar -xf /root/home.tgz -C /aaa/bbb/
+
+12. Systats-10.1.5-12.el7.x86_64.rpm.如何查看这个rpm包里都有什么文件，如何查看/usr/bin/iostat这个文件属于哪个包
+    rpm -ql  Systats-10.1.5-12.el7.x86_64.rpm
+     yum provides /usr/bin/iostat
+
+13. 如何杀死一个进程名为fff的顽固进程。
+     killall -9  fff
+
+14. 用grep或egrep过滤文本信息时如何去除/etc/crontab里面所有以‘#’或“若干空格字符后紧跟#”开头的行。
+     grep   -v  "^#"       /etc/crontab
+     egrep  -v  "^\s*#"   /etc/crontab
+
+15. 抓包命令tcpdump -nn -i eth0 中的参数nn实现什么作用。
+      不将协议和端口号转换成名字
+
+16. 假如主机IP为114.114.114.114，端口为3366，用户名为root，密码为Password。数据库名为dataname，写出mysql登录。备份（备份到/data/目录），还原的完整命令
+      mysqldump -P3366 -h 114.114.114.114 -uroot -p'Password' -B dataname > /data/data.sql 
+        [先建库]  mysql -P3366 -h 114.114.114.114 -uroot -p'Password' < /data/data.sql
+
+17. 如果一台机器UP信息如下，子网掩码：10.212.192.0/19网关；10.133.192.1换算成255.255.255.0类似这种的子网掩码是什么？（提示：如果网关不变，子网掩码255.255.255.0即10.212.192.0/24）
+    255.255.224.0
+
+
+18. www.shawyang.cc 这个域名接入腾讯云CDN，如何用curl命令测试http://www.shawyang.cc/myson.mp4 在111.202.85.11这个CDN节点的访问情况。
+     Curl -I
+
+19. 云服务器里自建的mysql新建了3个库分别是test1、test2、test3，的往里面插入了数据，如何把3个库备份到1个sql文件test.sql?如何只还原test.sql里test1的数据到test1？
+     mysqldump -P3366 -h 114.114.114.114 -uroot -p'Password' -A > /data/data.sql 
+      
+20. Mysql -uroot -p登录时报错1045是什么原因
+     用户名或密码错误
+
+21. Linux系统盘满了但还可以执行命令。如何确定占用磁盘空间最大的那个文件（夹）在哪儿。
+du -sm * |sort -rn |head
+du -shck *|sort -rnk1  | head
+     
+22. root用户的根目录是/root，如何把根目录修改成/home
+     vim /etc/passwd
+
+23. Vim如何全局替换root为home？只替换50-100行的root为home又是怎么样操作？
+     :%s/foo/bar/g    :50,100s/root/home/g
+
+24. 以下服务的默认端口分别是什么
+Smtp:25            tdp         ssh : 22           mysql:3306   
+redis:6379        mongodb:27017       memcache:11211        ftp:21
+Sftp:115             http:80             https:443        Dns:63
+25. ls -ltr 和ls -lSr 分别是什么意思
+     按修改时间倒序   按文件大小倒序
+ 
+26. Window远程服务TermService的PID为332，用什么命令获取运程端口号？
+     tasklist  /svc
+
+运维工程师笔试题
+1. 已知某一主机IP地址是201.103.136.184，其子网掩码是255.255.255.192，则该主机是在 C 类网络中，其所在子网最多容许有 63 台主机。
+
+2. 写一个脚本将某目录下大于100K的文件移动至/tmp下
+#!/bin/bash
+for file in `ls /root`
+do
+if [ -f $file ]; then
+if [ `ls -l $file|awk '{print $5}'` -gt 10000 ]; then
+mv $file /tmp/
+fi
+fi
+done
+
+6. 如何查看当前Linux系统的状态，如CPU使用，内存使用，负载情况等。
+top uptime w  free  iostat
+
+
+7. MYSQL主从复制的关键配置项。
+服务器id，开启binlog日志
+从库指定服务器id并指定主库信息(change master)
+
+主库启用binlog日志，
+从库启用中继日志，io线程将主库sql命令读取到本及中继日志，sql线程执行中继日志
+
+
+8. Nginx的主要功能以及原理。
+轻量级web服务器，能提供网页服务，四七层代理(负载均衡)
+由内核及模块组成，可以根据需要添加模块
+
+9. 你使用过监控软件吗？说说其特点。
+zabbix:支持图形，支持自定义脚本，自带多种监控
+
+10. 写一个脚本解决DoS攻击生产案例。
+找出源ip进行屏蔽
+
+11. 使用过哪些集群或分布式系统？
+web集群    
+
+
