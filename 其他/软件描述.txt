@@ -333,6 +333,171 @@ SecureFX Ö§³ÖÈýÖÖÎÄ¼þ´«ÊäÐ­Òé£ºFTP¡¢SFTP ºÍ FTP over SSH2¡£Ëü¿ÉÒÔÌá¹©°²È«ÎÄ¼þ´«Ê
 	  ¸´ÖÆÊÇÍ¨¹ýÍøÂç´«ÊäÊý¾Ý¶ÔÏó£¨ÎÄ¼þ¡¢±í¸ñµÈ£©¡£´«ÊäÊÇ´ÓÏµÍ³µ½ÏµÍ³½øÐÐµÄ£¬¶ø²»ÊÇÔÚ´æ´¢Éè±¸Ö®¼ä»ò×ÓÏµÍ³Ö®¼ä½øÐÐ¡£¸´ÖÆÒ»°ãÒ²Õë¶Ô¾ßÌåÆ½Ì¨£¬Òò´ËÓÃÓÚWindows 2000¸´ÖÆ²úÆ·µÄÔËÐÐ·½Ê½ÓëUnixÆ½Ì¨´æÔÚºÜ´ó²»Í¬¡£
 
 
+OEMÊÇOriginal Equipment Manufacture(Ô­Ê¼Éè±¸ÖÆÔìÉÌ)µÄËõÐ´£¬ËüÊÇÖ¸Ò»ÖÖ"´ú¹¤Éú²ú"·½Ê½£¬Æäº¬ÒåÊÇÉú²úÕß²»Ö±½ÓÉú²ú²úÆ·£¬¶øÊÇÀûÓÃ×Ô¼ºÕÆÎÕµÄ"¹Ø¼üµÄºËÐÄ¼¼Êõ"£¬¸ºÔðÉè¼ÆºÍ¿ª·¢¡¢¿ØÖÆÏúÊÛ"ÇþµÀ"£¬¾ßÌåµÄ¼Ó¹¤ÈÎÎñ½»¸ø±ðµÄÆóÒµÈ¥×öµÄ·½Ê½
+
+OEMÏµÍ³£ºÉú²úµÄÆ·ÅÆ±Ê¼Ç±¾»òÒ»Ìå»úÓÐÔ¤×°windows²Ù×÷ÏµÍ³µÄ£¬¶¼ÊÇoemÏµÍ³
+OEMµÄÏµÍ³²»ÄÜ´Ó¾ÉÓÐ²Ù×÷ÏµÍ³Éý¼¶£¬Ö»ÄÜÈ«ÐÂ°²×°
+
+rc.localÊÇLinuxÆô¶¯³ÌÐòÔÚlogin³ÌÐòÇ°Ö´ÐÐµÄ×îºóÒ»¸ö½Å±¾£¬È·±£Ëü²»»áÆô¶¯Á½´ÎµÄÇé¿ö³öÏÖ¡£ ´æÔÚÔò²»»áÔÙÖ´ÐÐ
+
+/etc/issue¡¢/etc/issue.net À´¿ØÖÆ±¾µØ¼°Ô¶³ÌµÇÂ¼Ç°µÄÐÅÏ¢ÏÔÊ¾
+/etc/motd    µÇÂ½ºóµÄÐÅÏ¢ÏÔÊ¾
+
+ryslog ÊÇÒ»¸ö¿ìËÙ´¦ÀíÊÕ¼¯ÏµÍ³ÈÕÖ¾µÄ³ÌÐò£¬Ìá¹©ÁË¸ßÐÔÄÜ¡¢°²È«¹¦ÄÜºÍÄ£¿é»¯Éè¼Æ¡£rsyslog ÊÇsyslog µÄÉý¼¶°æ£¬Ëü½«¶àÖÖÀ´Ô´ÊäÈëÊä³ö×ª»»½á¹ûµ½Ä¿µÄµØ£¬¾Ý¹ÙÍø½éÉÜ£¬ÏÖÔÚ¿ÉÒÔ´¦Àí100ÍòÌõÐÅÏ¢¡£¿ÉÒÔ½«ÈÕÖ¾Êä³öµ½ÎÄ¼þ,Êý¾Ý¿âºÍÆäËü³ÌÐò¡£
+
+cdn£ºÓÉ±¾µØdns½âÎöµ½cdn×¨ÓÃdns½øÐÐÖÇÄÜ½âÎö£¬½Ó×ÅÔÚÖ¸Ïò¶ÔÓ¦¾Í½ü×ÊÔ´»º´æ½Úµã£¬Èç¹ûÕÒ²»µ½£¬ÔÙµ½ºó¶Ë·þÎñÆ÷½øÐÐ²éÕÒ¡£
+¸ß·Àcdn£ºËÄ²ãÓëÆß²ãÇåÏ´--¸ºÔØ¾ùºâ--Ó²¼þ·À»ðÇ½
+
+IP Ð­ÒéÖ»ÊÇÒ»¸öµØÖ·Ð­Òé£¬²¢²»±£Ö¤Êý¾Ý°üµÄÍêÕû
+TCP Ð­ÒéµÄ×÷ÓÃÊÇ£¬±£Ö¤Êý¾ÝÍ¨ÐÅµÄÍêÕûÐÔºÍ¿É¿¿ÐÔ£¬·ÀÖ¹¶ª°ü(ip+port)
+IP Êý¾Ý°üÔÚÒÔÌ«ÍøÊý¾Ý°üÀïÃæ£¬TCP Êý¾Ý°üÔÚ IP Êý¾Ý°üÀïÃæ
+TCP Êý¾Ý°üµÄ±àºÅ£¨SEQ£©
+ÂýÆô¶¯:Linux ÄÚºËÀïÃæÉè¶¨ÁË£¨³£Á¿TCP_INIT_CWND£©£¬¸Õ¿ªÊ¼Í¨ÐÅµÄÊ±ºò£¬·¢ËÍ·½Ò»´ÎÐÔ·¢ËÍ10¸öÊý¾Ý°ü£¬¼´¡±·¢ËÍ´°¿Ú¡±µÄ´óÐ¡Îª10
+
+maildropÊÇÒ»¸öÄãµÄ±¾µØÓÊ¼þÍ¶µÝ´úÀíµÄÌæ´úÆ·¡£´Ó±ê×¼ÊäÈë¶ÁÈ¡Ò»¸öÓÊ¼þÏûÏ¢£¬È»ºó½«ÏûÏ¢´«ËÍ¸øÄãµÄÓÊÏä¡£
+
+Ô´Â·ÓÉµÄÓÃ»§¿ÉÒÔÖ¸¶¨ËûËù·¢ËÍµÄÊý¾Ý°üÑØÍ¾¾­¹ýµÄ²¿·Ö»òÕßÈ«²¿Â·ÓÉÆ÷¡£ËüÇø±ðÓÚÓÉÖ÷»ú»òÕßÂ·ÓÉÆ÷µÄ»¥Áª²ã£¨IP£©Èí¼þ×ÔÐÐÑ¡ÔñÂ·ÓÉºóµÃ³öµÄÂ·¾¶Ô´µØÖ·ÆÛÆ­:×Ô·â°üºÍÐÞ¸ÄÍøÂç½ÚµãµÄIPµØÖ·£¬Ã°³äÄ³¸ö¿ÉÐÅ½ÚµãµÄIPµØÖ·
+1.Î±ÔìTCPÐòÁÐºÅ  2.SYN¹¥»÷(SYN Attack) 3.Teardrop¹¥»÷ºÍLand¹¥»÷
+
+Magic SysRq ×éºÏ¼ü ÊÇÒ»´®ÄÜÖ±½ÓÓëLinux ÄÚºË¹µÍ¨µÄ×éºÏ¼ü£¬ÔÊÐíÓÃ»§¾ÍËãÔÚÏµÍ³½øÈëËÀÑ­»·±ôÁÙ±ÀÀ£Ê±£¬Ö±½Óµ÷ÓÃÏµÍ³µ×²ã½«Êý¾ÝÐ´ÈëÎÄ¼þÏµÍ³»òÖØÆô,µ«linux ºËÐÄÍ£Ö¹ÔË×÷µÄÇé¿öÏÂ Magic SysRq ÎÞÐ§
+
+coreÎÄ¼þ£ºÔÚÒ»¸ö³ÌÐò±ÀÀ£Ê±£¬ËüÒ»°ã»áÔÚÖ¸¶¨Ä¿Â¼ÏÂÉú³ÉÒ»¸öcoreÎÄ¼þ¡£coreÎÄ¼þ½ö½öÊÇÒ»¸öÄÚ´æÓ³Ïó(Í¬Ê±¼ÓÉÏµ÷ÊÔÐÅÏ¢)£¬Ö÷ÒªÊÇÓÃÀ´¿ª·¢µ÷ÊÔµÄ
+
+FastoRedis ÎªÄãÌá¹©Ò»¸öÍ¼ÐÎ»¯µÄ½çÃæÀ´¹ÜÀí Redis ·þÎñÆ÷£¬Ê¹ÄãÄÜ¹»¿çÆ½Ì¨
+
+
+Navicat PremiumÊÇÒ»¿îGUIÊý¾Ý¿â¹ÜÀí¹¤¾ß£¬¿ÉÒÔÁ¬½Ómysql¡¢OracleµÈÊý¾Ý¿â£¬²¢½øÐÐsql²Ù×÷
+
+SQLyongÊÇµÇÂ¼Êý¾Ý¿âµÄ¿Í»§¶Ë£¬ ÊÇÒ»¸ö¿ìËÙ¶ø¼ò½àµÄÍ¼ÐÎ»¯¹ÜÀíMySQLÊý¾Ý¿âµÄ¹¤¾ß
+
+macOS[X]£ºÊÇÆ»¹û¹«Ë¾ÍÆ³öµÄ»ùÓÚÍ¼ÐÎÓÃ»§½çÃæ²Ù×÷ÏµÍ³£¬ÎªÂó½ðËþ£¨Macintosh£©µÄÖ÷²Ù×÷ÏµÍ³£¬ÀàunixÏµÍ³
+
+
+Gitbash£ºÔÚwindowsÉÏ¿ÉÒÔ¶ÔÃüÁîÐÐ½øÐÐ¼òµ¥µÄÑ§Ï°
+
+TortoiseGit£ºwindowsÏÂµÄ°æ±¾°É¿ØÖÆ¹¤¾ß£¬ÊÇÒ»¸ö¿ª·ÅµÄgit°æ±¾¿ØÖÆÏµÍ³µÄÔ´¿Í»§¶Ë£¬Ö§³ÖWinxp/vista/win7/Win10¡£¿ÉÒÔ»Ö¸´ÄúµÄÎÄ¼þµÄ¾É°æ±¾
+
+Òì²½·Ç×èÈû I/O£¨AIO£©
+
+xml¹ã·ºÓ¦ÓÃÓÚÍøÂçÊý¾Ý½»»»£¬ÅäÖÃÎÄ¼þ¡¢Web·þÎñµÈµÈ
+
+devel °üÖ÷ÒªÊÇ¹©¿ª·¢ÓÃ,ÖÁÉÙ°üÀ¨ÒÔÏÂ2¸ö¶«Î÷: 1. Í·ÎÄ¼þ 2. Á´½Ó¿â ÓÐµÄ»¹º¬ÓÐ¿ª·¢ÎÄµµ»òÑÝÊ¾´úÂë
+
+FreeTypeÊÇÒ»¸öÓÃCÓïÑÔÊµÏÖµÄÒ»¸ö×ÖÌå¹âÕ¤»¯¿â¡£Ëü¿ÉÒÔÓÃÀ´½«×Ö·ûÕ¤¸ñ»¯²¢Ó³Éä³ÉÎ»Í¼ÒÔ¼°Ìá¹©ÆäËû×ÖÌåÏà¹ØÒµÎñµÄÖ§³Ö¡£
+
+socketµÄÊý¾Ý½á¹¹£ºÒ»¸öÐ­Òé¡¢Ò»¸ösocketÀàÐÍºÍÒ»¸ö¹«¹²Ð­ÒéÀàÐÍ
+
+                 Ê¹ÓÃsocketÊý¾Ý½á¹¹¿ÉÒÔ½¨Á¢Ò»¸ö¿Í»§¶ËºÍ·þÎñÆ÷Ö®¼äµÄ»á»°¡£
+³éÏóÀà£º>½Ó¿Ú     Ò»¸öÀà¿ÉÒÔÊµÏÖ¶à¸öinterface£¬µ«Ò»¸öÀàÖ»ÄÜ¼Ì³ÐÒ»¸öabstract class
+                  interfaceÇ¿µ÷ÌØ¶¨¹¦ÄÜµÄÊµÏÖ£¬¶øabstract class(¼Ì³Ð)Ç¿µ÷ËùÊô¹ØÏµ
+
+PDOÊÇÌá¹©ÁËPHPÓ¦ÓÃ³ÌÐò²ãAPI½Ó¿Ú,¶ømysqlnd, libmysqlÔò¸ºÔðÓëmysql server½øÐÐÍøÂçÐ­Òé½»»¥
+
+grafanaÊÇÒ»¸öÓÑºÃµÄÊý¾Ý¿ÉÊÓ»¯Èí¼þ,Ìá¹©ÁË·Ç³£¶àµÄÍ¼ÐÎÑùÊ½
+
+FontconfigÊÇÒ»¸öÓÃÓÚÅäÖÃºÍ×Ô¶¨Òå×ÖÌå·ÃÎÊµÄ¿â£¬×Ô¶¯·¢ÏÖÐÂ×ÖÌå£¬Ö´ÐÐ×ÖÌåÃû³ÆÌæ»»£¬ÓÐGUIÅäÖÃ¹¤¾ß
+          ÓëX Render ExtensionºÍFreeTypeÐ­Í¬Ê¹ÓÃ
+
+urw-fonts£º×ÖÌåÊý×Ö»¯¹¤¾ßÌ×¼þºÍÎÄ¼þ¸ñÊ½±ê×¼½«×ÖÌå´¦ÀíÎªÎ»Í¼£¬»Ò¶È£¨Ïû³ý¾â³ÝÎ»Í¼£©£¬Ê¸Á¿ÂÖÀªºÍÇúÏßÂÖÀª
+
+DTD£ºÎÄµµÀàÐÍ¶¨Òå£¬¿É¶¨ÒåºÏ·¨µÄXMLÎÄµµ¹¹½¨Ä£¿é,DTDÓÐËÄ¸ö×é³ÉÈçÏÂ£ºÔªËØ£¨Elements£©ÊôÐÔ£¨Attribute£©
+     ÊµÌå£¨Entities£©×¢ÊÍ£¨Comments£©DTDÏÞÖÆ½Ï¶à£¬Ê¹ÓÃÊ±½Ï²»·½±ã£¬½üÀ´ÒÑ½¥±»XML SchemaËùÈ¡´ú
+
+boost£º¿ÉÒÆÖ²C ++Ô´´úÂë¿â£¬ÍØÕ¹¿â
+
+owncloud:¸öÈËÔÆ·þÎñÆ÷£¬ÔÚÄúµÄ¸öÈË·þÎñÆ÷ÉÏÔËÐÐ£¬¿ÉÒÔ´ÓÈÎºÎµØ·½·ÃÎÊÄúµÄÊý¾Ý²¢ÓëÆäËûÈË¹²Ïí
+
+Netlink ÓÃÓÚÔÚÄÚºËÄ£¿éÓëÔÚÓÃ»§µØÖ·¿Õ¼äÖÐµÄ½ø³ÌÖ®¼ä´«µÝÏûÏ¢µÄ£¬Òì²½Í¨ÐÅ»úÖÆ£¬±ê×¼µÄ socket API£¬ÈÝÒ×Ê¹ÓÃ
+
+BSD (Berkeley Software Distribution£¬²®¿ËÀûÈí¼þÌ×¼þ)£ºunixµÄÑÜÉúÏµÍ³
+
+Ctrl+R  ¿ì½Ý¼üÈÃÄã¶ÔÃüÁîÀúÊ·½øÐÐËÑË÷
+
+jenkinsµÄÈýÖÖ²¿Êð·½Ê½
+jenkins´¥·¢Ê½¹¹½¨£ºÓÃÓÚ¿ª·¢»·¾³²¿Êð£¬¿ª·¢ÈËÔ±push´úÂë»òÕßºÏ²¢´úÂëµ½gitlabÏîÄ¿µÄmaster·ÖÖ§£¬jenkins¾Í²¿Êð´úÂëµ½¶ÔÓ¦·þÎñÆ÷¡£
+jenkins²ÎÊý»¯¹¹½¨£ºÓÃÓÚ²âÊÔ»·¾³Ô¤ÉÏÏß»·¾³²¿Êð£¬¿ª·¢push´úÂë»òÕßºÏ²¢´úÂëµ½gitlabÏîÄ¿µÄmaster·ÖÖ§Ö®ºó£¬²¢²»»á²¿Êð´úÂë£¬¶øÊÇÐèÒªµÇÂ¼µ½jenkinsµÄweb½çÃæ£¬µã»÷¹¹½¨°´Å¥£¬´«Èë¶ÔÓ¦µÄ²ÎÊý£¨±ÈÈç²ÎÊýÐèÒª¹¹½¨µÄtag£¬ÐèÒª²¿ÊðµÄ·ÖÖ§£©È»ºó²Å»á²¿Êð¡£
+jenkins¶¨Ê±¹¹½¨£ºÓÃÓÚAPP×Ô¶¯´ò°ü£¬¶¨Ê±¹¹½¨ÊÇÔÚ²ÎÊý»¯¹¹½¨µÄ»ù´¡ÉÏÌí¼ÓµÄ£¬¿ª·¢ÈËÔ±¿ÉÒÔµÇÂ¼jenkinsÊÖ¶¯´«Èëtag½øÐÐ´ò°ü£¬Èç¹û²»ÊÖ¶¯´ò°ü£¬ÄÇÃ´jenkins¾ÍÃ¿ÌìÁè³¿´ÓgitlabÀ­È¡×îÐÂµÄAPP´úÂë´ò°ü¡£
+GitlabµÄWebhook¹¦ÄÜ£¬Í¨¹ýWebhookµÄÏà¹ØÉèÖÃ£¬¿ÉÒÔÊµÏÖ´úÂëPushºó×Ô¶¯È¥´¥·¢jenkinsÉÏµÄ¹¹½¨¶¯×÷£¬ÎÞÐèÒªÈË¹¤¸ÉÔ¤È¥Ö´ÐÐ·¢°æ²Ù×÷ÁË
+
+cdnbest+dnsdun+kangle
+cdnbest(cdn±´):ÊÇÒ»Ì×½â¾ö·½°¸£¬ÊÇÄÏ²ý°îÌÚ¿Æ¼¼ÓÐÏÞ¹«Ë¾´Ó2010ÄêÆð×ÔÖ÷ÑÐ·¢µÄÊÇÒ»¿î×¨Òµ¡¢¿ÉÔËÓª¼¶±ðcdnÏµÍ³¡£ÓÉ¸Ã¹«Ë¾¿ª·¢µÄeasypanel¶à½ÚµãCDN¹¦ÄÜÉý¼¶¶øÀ´¡£ CDNBEST¼¯³ÉµÚÈý·½DNS¹¦ÄÜ£¬ÎÞ·ìÏÎ½ÓDNS£¬Ö§³Ö´ó¹æÄ£½Úµã²¿Êð(ÉÏÇ§Ì¨·þÎñÆ÷)¡£CDN½ÚµãÖ§³Ö×Ô¶¯Éý¼¶,CDN½Úµã·´Ïò´úÀíÈí¼þ²ÉÓÃ¸Ã¹«Ë¾×ÔÖ÷ÑÐ·¢µÄ kangle-web·þÎñÆ÷(¼ò³Ækangle)¡£CDNBEST´óÁ¿²ÉÓÃ¿ªÔ´Èí¼þ£¬¿Í»§²¿ÊðCDNBESTÎÞÐèÔÙ¹ºÂòÆäËüµÄÉÌÒµÈí¼þ£¬´ó´ó½ÚÊ¡³É±¾£¬×¨Òµ¡¢¿ÉÔËÓª¼¶±ðcdnÏµÍ³Æ½Ì¨¡£(°Ù¶È°Ù¿Æ)
+
+dnsdun£ºÖÇÄÜDNS½âÎöÏµÍ³
+
+kangleÒ²ÊÇÒ»¿î×¨Îª×öÐéÄâÖ÷»úÑÐ·¢µÄweb·þÎñÆ÷ºÍ·½Ïò´úÀí¡£ÊµÏÖÐéÄâÖ÷»ú¶ÀÁ¢½ø³Ì¡¢¶ÀÁ¢Éí·ÝÔËÐÐ¡£ÓÃ»§Ö®¼ä°²È«¸ôÀë£¬Ò»¸öÓÃ»§³öÎÊÌâ²»Ó°ÏìÆäËûÓÃ»§¡£°²È«Ö§³Öphp¡¢asp¡¢asp.net¡¢vb.net¡¢C#¡¢java¡¢rubyµÈ¶àÖÖ¶¯Ì¬¿ª·¢ÓïÑÔ¡£
+easypanel£ºkangle-web·þÎñÆ÷»ù´¡ÉÏ´î½¨µÄ¡£easypanelÐéÄâÖ÷»ú¿ØÖÆÃæ°åÊÇÒ»¿îÃâ·ÑµÄ¡¢¿çÆ½Ì¨µÄ¼¯¿ªÍ¨ÐéÄâÖ÷»ú¡¢ftp¡¢¿Õ¼ä¡¢Êý¾Ý¿âµÈ¹¦ÄÜÎªÒ»ÌåµÄÐéÄâÖ÷»ú¿ØÖÆÃæ°å¡£
+vhms£ºvhmsÊÇÒ»¿îphp+mysqlµÄ¿ªÔ´µÄÐéÄâÖ÷»ú¹ÜÀíÏµÍ³£¬¿ÉÊ¹ÓÃu-center»áÔ±ºÍdiscuzÁ¬½Ó¡£Ö§³Ö¶àÖÖ¶¯Ì¬ÓïÑÔ(asp,asp.net,php,java,python)£¬Ö§³ÖeasypanelÃæ°å¡£ÏÖ´úÂëÍÐ¹ÜÔÚgithubÉÏ
+kangle vhmsÊÇÒ»¿î×¨ÎªÐéÄâÖ÷»úÉÌÑÐ·¢µÄÃâ·ÑÐéÄâÖ÷»ú¹ÜÀíÏµÍ³£»Ö§³Ö¹ÜÀí¶à¸öeasypanelÐéÄâÖ÷»ú¿ØÖÆÃæ°å£»Ö§³ÖvhmsÏà»¥´úÀí¹¦ÄÜ£»Ö§³ÖDNS×Ô¶¯¹ºÂò¹¦ÄÜ£»
+kangle-web½øÈë¹ÜÀíºóÌ¨°ó¶¨²»Í¬Ä¿Â¼ºÍÓòÃû/ip¾Í¿ÉÒÔ¼Ü¶à¸öÍøÕ¾¡£
+
+CloudXNSÊÇ±±¾©¿ìÍø×ÔÖ÷ÑÐ·¢È«ÐÂ¼Ü¹¹µÄÖÇÄÜDNS½âÎöÏµÍ³£¬Ìá¹©¶àÔª»¯ÖÇÄÜDNS½âÎö·þÎñ¡£ÔÚÏìÓ¦¡¢·Ö·¢¡¢´æ´¢¼°¸ºÔØ¾ùºâµÈÉè¼ÆÖÐÊ¹ÓÃ±±¾©¿ìÍøË½ÓÐDNSÐ­Òé£¬ËùÓÐµÄ½âÎöÉúÐ§¶¼ÊÇÊµÊ±ÉúÐ§,×ÔÖú½âÎö·Ç³£¼òµ¥·½±ã£¬Ò»Ä¿ÁËÈ»¡£
+
+
+bugfix£ºÂ©¶´ÐÞ¸´£¬Bugfix¾¡Á¿±ÜÃâÒýÆð¸ü¶àµÄside effect(¸±×÷ÓÃ)
+
+npmÊÇJavaScriptÊÀ½çµÄ°ü¹ÜÀí¹¤¾ß£¬²¢ÇÒÊÇNode.jsÆ½Ì¨µÄÄ¬ÈÏ°ü¹ÜÀí¹¤¾ß¡£Í¨¹ýnpm¿ÉÒÔ°²×°¡¢¹²Ïí¡¢·Ö·¢´úÂë£¬¹ÜÀíÏîÄ¿ÒÀÀµ¹ØÏµ¡£ÄÜ½â¾öµÄNodeJS´úÂë²¿ÊðÉÏµÄºÜ¶àÎÊÌâ£¬ÔÊÐíÓÃ»§´ÓNPM·þÎñÆ÷ÏÂÔØ±ðÈË±àÐ´µÄµÚÈý·½°üµ½±¾µØÊ¹ÓÃ¡£ÔÊÐíÓÃ»§´ÓNPM·þÎñÆ÷ÏÂÔØ²¢°²×°±ðÈË±àÐ´µÄÃüÁîÐÐ³ÌÐòµ½±¾µØÊ¹ÓÃ¡£ÔÊÐíÓÃ»§½«×Ô¼º±àÐ´µÄ°ü»òÃüÁîÐÐ³ÌÐòÉÏ´«µ½NPM·þÎñÆ÷¹©±ðÈËÊ¹ÓÃ¡£
+npm µÄ scripts ÅäÖÃ¿ÉÒÔÊµÏÖÕâÐ©¹¹½¨¹¤¾ßµÄËùÓÐ¹¦ÄÜ£¬¶øÇÒ¸ü¼ò½à¡¢¸üÓÅÑÅºÍ½ÏÉÙµÄÄ£¿éÒÀÀµºÍÎ¬»¤¿ªÏú
+
+Node.js(Node):Ò»¸ö»ùÓÚChromeV8ÒýÇæµÄJavaScriptÔËÐÐ»·¾³¡£Node.jsÊ¹ÓÃÁËÒ»¸öÊÂ¼þÇý¶¯¡¢·Ç×èÈûÊ½I/OµÄÄ£ÐÍ£¬Ê¹ÆäÇáÁ¿ÓÖ¸ßÐ§¡£Node.jsµÄ°ü¹ÜÀíÆ÷npm£¬ÊÇÈ«Çò×î´óµÄ¿ªÔ´¿âÉúÌ¬ÏµÍ³¡£Node.jsÊÇÒ»¸öÔËÐÐÔÚ·þÎñ¶ËµÄ¿ò¼Ü£¬ËüµÄµ×²ã¾ÍÊ¹ÓÃÁËV8ÒýÇæ¡£ÎÒÃÇÖªµÀ Apache + PHP ÒÔ¼°JavaµÄServlet¶¼¿ÉÒÔÓÃÀ´¿ª·¢¶¯Ì¬ÍøÒ³£¬Node.jsµÄ×÷ÓÃÓëËûÃÇÀàËÆ£¬Ö»²»¹ýÊÇÊ¹ÓÃJavaScript À´¿ª·¢¡£´«Í³ÒâÒåÉÏµÄ JavaScript ÔËÐÐÔÚä¯ÀÀÆ÷ÉÏ£¬ÕâÊÇÒòÎªä¯ÀÀÆ÷ÄÚºËÊµ¼ÊÉÏ·ÖÎªÁ½¸ö²¿·Ö:äÖÈ¾ÒýÇæºÍ JavaScript ÒýÇæ¡£Ç°Õß¸ºÔðäÖÈ¾ HTML + CSS£¬ºóÕßÔò¸ºÔðÔËÐÐ JavaScript¡£Chrome Ê¹ÓÃµÄ JavaScript ÒýÇæÊÇ V8£¬ËüµÄËÙ¶È·Ç³£¿ì¡£
+
+npm½Å±¾µÄÔ­Àí·Ç³£¼òµ¥¡£Ã¿µ±Ö´ÐÐnpm-run£¬¾Í»á×Ô¶¯ÐÂ½¨Ò»¸öShell£¬ÔÚÕâ¸öShellÀïÃæÖ´ÐÐÖ¸¶¨µÄ½Å±¾ÃüÁî£¬npm-scriptÊÇ¼ÇÂ¼ÔÚpackage.json ÖÐµÄscripts ×Ö¶ÎÖÐµÄÒ»Ð©×Ô¶¨Òå½Å±¾
+
+Gulp.js ÊÇÒ»¸ö×Ô¶¯»¯¹¹½¨¹¤¾ß£¬¿ª·¢Õß¿ÉÒÔÊ¹ÓÃËüÔÚÏîÄ¿¿ª·¢¹ý³ÌÖÐ×Ô¶¯Ö´ÐÐ³£¼ûÈÎÎñ¡£Gulp.js ÊÇ»ùÓÚNode.js ¹¹½¨µÄ£¬ÀûÓÃNode.js Á÷µÄÍþÁ¦£¬Äã¿ÉÒÔ¿ìËÙ¹¹½¨ÏîÄ¿
+
+LinuxÖÐµÄso£¨shared-object£¬¹²Ïí¶ÔÏó£©Ò²½Ð×ö¶¯Ì¬Á´½Ó¿â(ÄÚ´æ£¬¹²Ïí)£¬ÔÚLinuxÖÐÊÇÒ»ÏµÁÐÒÔ.soÎªºó×ºÃûµÄÎÄ¼þ¡£Óë¶¯Ì¬Á´½Ó¿âËù¶ÔÓ¦µÄÊÇ¾²Ì¬¿â£¬¾²Ì¬¿âÎÄ¼þÊÇÒÔ .a Îªºó×ºÃûµÄÎÄ¼þ
+ÔÚLinuxÏµÍ³ÖÐ£¬¹²Ïí¶ÔÏóÒ»¹²ÓÐ3¸öÃû×Ö£º
+soname°üº¬¡°lib¡±Ç°×º£¬¿âÃû³Æ¡±.so¡±ºó×º£¬×îºó¸úÉÏ¸üÐÂÊ±»áÔö³¤µÄ°æ±¾ºÅ(/lib64/libgmodule-2.0.so.0)Í¨³£ÊÇÒ»¸öÖ¸ÏòÕæÕý¿âÎÄ¼þÃû( real name )µÄÈíÁ´½Ó
+real name:soname+´Î°æ±¾ºÅºÍ·¢²¼°æ±¾ºÅÄÜ¹»±êÃ÷¸Ã¿âÎÄ¼þµÄ¾ßÌå°æ±¾¡£(libgmodule-2.0.so.0.1200.3)
+
+linker name ÊÇ±àÒëÆ÷Á´½ÓÆ÷Ê¹ÓÃ¿âÎÄ¼þÊ±ËùÊ¹ÓÃµÄÃû×Ö£¬linker name ÊÇ soname È¥µô°æ±¾ºÅ£¬Èç libgmodule-2.0.so
+³ÌÐòÔÚÄÚ²¿Ê¹ÓÃ¿âÎÄ¼þÊ±£¬Ó¦¸ÃÊ¹ÓÃ soname£¬ÕâÑù¼´Ê¹¿âÎÄ¼þÉý¼¶£¬ÕæÊµÎÄ¼þÃû( real name )¸Ä±ä£¬soname ÈÔÈ»¿ÉÒÔ±£³ÖÃû³Æ²»±ä£¬Ö¸ÐèÒªÖØÐÂÖ¸ÏòÐÂÎÄ¼þ¼´¿É¡£
+
+µ±´´½¨Ò»¸ö¿âÎÄ¼þÊ±£¬ÊÇÐèÒª´´½¨ real name µÄ¿âÎÄ¼þ£¨°üº¬¾ßÌåµÄ°æ±¾ÐÅÏ¢£©¡£µ±°²×°ÐÂ°æ±¾µÄ¿âÎÄ¼þÊ±£¬½«ËüÃÇ°²×°ÔÚÏµÍ³Ä¬ÈÏµÄ¼¸¸öÎÄ¼þ¼ÐÖÐ(/lib£¬/lib64£¬/usr/lib£¬/usr/lib64)£¬Ö´ÐÐ ldconfig ÃüÁî£¬ldconfig »áÔÚÏµÍ³Ä¬ÈÏµÄ¿âÎÄ¼þÄ¿Â¼ºÍÖ¸¶¨Ä¿Â¼( /etc/ld.so.conf ºÍ /etc/ld.so.conf.d/*.conf )ÖÐ¼ìË÷ËùÓÐµÄÎÄ¼þ£¬²¢×Ô¶¯¶Ô real name µÄÕæÊµ¿âÎÄ¼þ´´½¨ soname µÄÈíÁ´½Ó£¬²¢½«ÎÄ¼þÂ·¾¶»º´æÖÁ /etc/ld.so.cache ÎÄ¼þÖÐ¡£
+
+ldconfig ²»»áÉèÖÃ¿âÎÄ¼þµÄ linker name£¬ÕâÍ¨³£ÊÇ¿âÎÄ¼þ°²×°Ê±ÉèÖÃµÄ£¬linker name Í¨³£ÊÇÖ¸Ïò¶ÔÓ¦×îÐÂ°æ±¾¿âÎÄ¼þ soname µÄÈíÁ´½ÓÎÄ¼þ¡£²»×Ô¶¯ÉèÖÃ linker name µÄÔ­ÒòÊÇ¿ª·¢Ê±£¬¿ÉÄÜ»áÐèÒªÊ¹ÓÃ¾É°æ±¾µÄ¿âÎÄ¼þ¡£
+
+pv·ÃÎÊÁ¿£¨Page View£©£¬¼´Ò³Ãæ·ÃÎÊÁ¿£¬Ã¿´ò¿ªÒ»´ÎÒ³ÃæPV¼ÆÊý+1£¬Ë¢ÐÂÒ³ÃæÒ²ÊÇ¡£
+UV·ÃÎÊÊý£¨Unique Visitor£©Ö¸¶ÀÁ¢·Ã¿Í·ÃÎÊÊý£¬Ò»Ì¨µçÄÔÖÕ¶ËÎªÒ»¸ö·Ã¿Í¡£
+IVÊÇ³õÊ¼ÏòÁ¿£¨IV£¬Initialization Vector£©¡£IP·ÃÎÊÊýÖ¸¶ÀÁ¢IP·ÃÎÊÊý£¬¼ÆËãÊÇÒÔÒ»¸ö¶ÀÁ¢µÄIPÔÚÒ»¸ö¼ÆËãÊ±¶ÎÄÚ·ÃÎÊÍøÕ¾¼ÆËãÎª1´ÎIP·ÃÎÊÊý
+pvÒ²¿ÉÒÔÊÇÒ»¸ölinuxÃüÁî
+PE¡¡¡¡(Physical Extend)¡¡¡¡ÎïÀíÍØÕ¹
+PV¡¡¡¡(Physical Volume)¡¡¡¡ÎïÀí¾í
+VG¡¡¡¡(Volume Group)¡¡¡¡   ¾í×é
+LV¡¡¡¡(Logical Volume)¡¡ ¡¡Âß¼­¾í
+
+
+LDAPÊÇÒ»ÖÖÍ¨Ñ¶Ð­Òé£¬LDAPÖ§³ÖTCP/IP£¬AD£¨Active Directory£©ÊÇÎ¢Èí³öµÄÒ»Ì×ÊµÏÖ£¬AD =LDAP·þÎñÆ÷£«LDAPÓ¦ÓÃ
+LDAPµÄ½á¹¹ÓÃÊ÷À´±íÊ¾£¬¶ø²»ÊÇÓÃ±í¸ñ¡£ÕýÒòÎªÕâÑù£¬¾Í²»ÄÜÓÃSQLÓï¾äÁË¡£
+LDAP¿ÉÒÔºÜ¿ìµØµÃµ½²éÑ¯½á¹û£¬²»¹ýÔÚÐ´·½Ãæ£¬¾ÍÂýµÃ¶à¡£
+LDAPÌá¹©ÁË¾²Ì¬Êý¾ÝµÄ¿ìËÙ²éÑ¯·½Ê½¡£
+LDAPÊÇÒ»ÖÖ¿ª·ÅInternet±ê×¼£¬LDAPÐ­ÒéÊÇ¿çÆ½Ì¨µÄInterentÐ­Òé¡£
+Client/serverÄ£ÐÍ£¬Server ÓÃÓÚ´æ´¢Êý¾Ý£¬ClientÌá¹©²Ù×÷(ÔöÉ¾²é¸Ä)Ä¿Â¼ÐÅÏ¢Ê÷µÄ¹¤¾ß¡£
+LDAPÊ÷ÐÎÊý¾Ý¿âÈçÏÂ£º
+dn £ºÒ»Ìõ¼ÇÂ¼µÄÏêÏ¸Î»ÖÃ
+dc £ºÒ»Ìõ¼ÇÂ¼ËùÊôÇøÓò    (ÄÄÒ»¿ÅÊ÷)
+ou £ºÒ»Ìõ¼ÇÂ¼ËùÊô×éÖ¯    £¨ÄÄÒ»¸ö·ÖÖ§£©
+cn/uid£ºÒ»Ìõ¼ÇÂ¼µÄÃû×Ö/ID   (ÄÄÒ»¸öÆ»¹ûÃû×Ö)
+LDAPÄ¿Â¼Ê÷µÄ×î¶¥²¿¾ÍÊÇ¸ù£¬Ò²¾ÍÊÇËùÎ½µÄ¡°»ù×¼DN"¡£
+
+
+linuxÏÂÉèÖÃÃÜÂë¸´ÔÓ¶ÈÏÞÖÆ:
+/etc/login.defs        /etc/pam.d/system-auth
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

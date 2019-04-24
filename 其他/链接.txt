@@ -1,4 +1,7 @@
 
+资源查询：https://github.com        github上有很多开源的源代码及文档
+
+notepad++：https://notepad-plus-plus.org
 
 VMware：https://www.52pojie.cn/thread-801613-1-1.html
 
@@ -26,6 +29,5 @@ jumpserver：http://docs.jumpserver.org/zh/docs/    （简书：jumpserver）
 
 视频网站：bilibili
 
-notepad++：https://notepad-plus-plus.org
-
+https://linuxtoy.org/
 

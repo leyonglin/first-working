@@ -135,6 +135,13 @@ iconv -c -f utf-8 -t gb2312 docker_vmlist.csv -o docker_vmlist_`date+%H%M`.csv
 
 lrzsz该软件包含window与xshell相互传输数据的命令。
 
+midecode命令可以让你在Linux系统下获取有关硬件方面的信息。dmidecode的作用是将DMI数据库中的信息解码，以可读的文本方式显示。由于DMI信息可以人为修改
+
+查看服务器型号：dmidecode | grep 'Product Name'
+查看主板的序列号：dmidecode |grep 'Serial Number'
+查看系统序列号：dmidecode -s system-serial-number
+查看内存信息：dmidecode -t memory
+查看OEM信息：dmidecode -t 11
 
 
 

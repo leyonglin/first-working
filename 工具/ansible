@@ -1,4 +1,6 @@
 
+
+
 Ansible：批量操作 1.自动化部署app   2.自动化管理配置项   3.自动化持续交付   4.自动化(AWS)云服务管理/
 文件：/etc/ansible    1.ansible.cfg    2.hosts    3.roles
 
