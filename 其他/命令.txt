@@ -143,7 +143,7 @@ midecodeÃüÁî¿ÉÒÔÈÃÄãÔÚLinuxÏµÍ³ÏÂ»ñÈ¡ÓĞ¹ØÓ²¼ş·½ÃæµÄĞÅÏ¢¡£dmidecodeµÄ×÷ÓÃÊÇ½«DMIÊ
 ²é¿´ÄÚ´æĞÅÏ¢£ºdmidecode -t memory
 ²é¿´OEMĞÅÏ¢£ºdmidecode -t 11
 
-
+tar£ºcafÑ¹Ëõ  tvfÔ¤ÀÀ  xf½âÑ¹
 
 
 

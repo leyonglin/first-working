@@ -1,12 +1,24 @@
 
 
-
+github文档：https://github.com/ansible
 Ansible：批量操作 1.自动化部署app   2.自动化管理配置项   3.自动化持续交付   4.自动化(AWS)云服务管理/
-文件：/etc/ansible    1.ansible.cfg    2.hosts    3.roles
+操作对象：1.hosts主机        2.networking网络设备
+ansible依赖python，需要python版本2.6以上，执行ansible的主机一般称为主控端，中控，master/堡垒机，window不能作为主控端
+组成部分：ansible-playbook,inventory,modules,plugins,api,ansible
+管理方式:ad-hoc,ansible-playbook
+命令执行来源:user -- ansible -- ansible-playbook -- CMDB(配置管理数据库)API调用 -- PUBLIC/PRIVATE CLOUD API调用 
+查看主机列表：ansible web[all] --list[--list-host]      显示web组的主机
+
+
+相关文件：
+/etc/ansible                 默认配置目录   
+1.ansible.cfg                默认主配置文件，配置ansible工作特性   
+2.hosts(host-pattern)        默认主机清单(Inventory)
+3.roles                      默认存放角色的目录
 
 一.全局配置ansible.cfg
 inventory(财产清单)=/etc/ansible/hosts
-61  host_key_checking = False  
+ 
 
 
 二.主机管理HOSTS
@@ -15,7 +27,8 @@ inventory参数：ansible_ssh_user="root"(连接用户)  ansible_ssh_pass="a"(�
 			   ansible_shell_type(目标系统的shell类型sh/csh/fish)  ansible_python_interpreter(目标主机python路径,适用于多个Python)  
 			   
 [web]                              组名
-web1                               主机名
+web1
+web1:222                               主机名
 web[1:50]                          相似主机名
 1.1.1.1                            ip
 web1                               设置账号密码
@@ -112,32 +125,76 @@ jinja2过滤器
           http://docs.jinkan.org/docs/jinja2/templates.html#builtin-filters 
    
 
-
 自定义配置文件：1.创建自定义(myansible)目录    2.创建配置文件ansible.cfg --- [defaults]  inventory=myhost    
 				3.配置主机文件myhost    4.进入自定义配置目录执行命令  
 
-
-1.ad-hoc:用于临时性工作
-2.ansible-doc -l / ansible-doc  模块名                           查看ansible模块的文档
+常用程序：
+1.ansible(ad-hoc)                                                用于临时性工作
+2.ansible-doc -l[-a] / ansible-doc [-s] 模块名                   查看ansible模块的文档
 3.ansible-console												 交互式工具
-4.ansible-galaxy                                                 管理roles的工具
+4.ansible-galaxy                                                 管理roles的工具/上传或下载优秀代码
 5.ansible-playbook												 批量管理操作，主机剧本
-6.ansible-vault                                                  用于加/解密配置文件
+6.ansible-vault                                                  管理加/解密yml文件
 7.ansible-pull                                                   有两种工作模式pull/push，默认使用push模式，适用于大批量机器需要配置，效率几乎无限提升，但灵活性稍有欠缺
 
 
-命令：
-ansible web[all] --list-host                                   显示web组的主机
+Ansible <host-pattern> [-m module] [-a args] [-v]
+--version   -vv -vvv      -T超时时间  {-u远程执行用户 -k}  {-b sudo -K(sudo)}
+host-pattern支持ip ，组名 ，all ，通配符 ，'ip1/组名:ip2' ，':&(并集)' ，':!' ，综合逻辑 ， 正则
+[普通用户可通过授权得到高权限，sudo，可设置nopasswd]  [echo export EDITOR=vim >> /etc/profile.d/vim.sh -- source /etc/profile  -- visudo]
+
+
+ansible all -m ping  :  ping模块，回应pong,使用ssh协议
+执行过程：1.加载配置文件  2.加载对应模块  3.生成临时文件并传送到远程服务器  4.加+x执行权限  5.执行并返回结果  6.删除临时文件
+把ping转换成python脚本，放到~/把ping转换成python脚本，放到~/.ansible/tmp目录下面，再复制到远程~/.ansible/tmp目录下面，在远程主机上执行脚本
+ 
+执行输出结果为JSON格式
+执行结果状态：在配置文件里面有定义，每个版本默认的可能不一样
+绿色代表执行成功并且无改变操作
+黄色代表执行成功且系统状态发生改变/执行结果错误
+红色代表执行失败             
+
+ansible  all  -m  model_name  -a  "argument"
+查看模块名：ansible-doc [-s] 模块名
+模块：默认是command                         命令行执行命令，对特殊符号支持性差
+      shell模块                           类似command，但对特殊符号支持性强
+      script模块                          自动复制本机脚本到运程运行脚本
+	  cron                                计划任务
+	  fetch                               从远程拉取单文件到本机服务器，多文件需要打包
+		   copy                             复制文件到远程，加参数可自定义权限和备份/创建文件并写入内容		   
+		   archive/unarchive                压缩/解压
+		   file                             设置文件属性，创建d/f/l 
+		   hostname                         修改主机名
+		   yum                              管理软件包
+		   service                          管理服务
+		   user                             管理用户
+		   group                            管理组
+
+
+Ansible-galaxy:管理roles的工具/上传或下载优秀代码        参考文档:https://galaxy.ansible.com
+查看：ansible-galaxy list    geerlingguy.docker
+下载：ansible-galaxy install geerlingguy.docker
+删除：ansible-galaxy remove  geerlingguy.docker
+
+Ansible-vault：管理加/解密yml文件
+ansible-vault [encrypt|decrypt|view|edit|rekey|create] playbook.yml
+
+Ansible-console:交互式工具
+执行ansible-console --- root@all (3)[f:5] --- 当前用户@所有主机 (主机数量)[并发进程]
+1.进入对应hosts：cd 组名/ip   2.修改并发：forks 10     3.查看用法：？  4.查看受影响主机：list  5.执行命令： 模块 参数  
+
+
+
+Ansible-playbook
+ansible-playbook [options] playbook.yml [playbook2 ...]
+查看命令：
 ansible-playbook --syntax-check playbook.yml                   检查playbook语法
 ansible-playbook playbook.yml --list-hosts                     显示受影响的主机
 ansible-playbook playbook.yml --list-tasks                     显示工作的task
 ansible-playbook playbook.yml --list-tags                      显示将要运行的tag
 ansible-playbook -C  playbook.yml                              测试运行
 
-
-ansible all -m ping
-ansible all -m command -a 'id' -k
-
+编写playbook，使用ansible，调用有一个/多个play，一个play之间有一个/多个任务tasks，有顺序，调用1个/多个模块/插件，查看主机清单，通过ssh连接主机
 
 playbook构成：
 Target：定义将要执行playbook的远程主机组
@@ -151,11 +208,6 @@ playbook语法格式：
 play中hosts,variables,roles,tasks等对象的表示方法都是键值中间以": "分隔表示
 文件开始都是 ---
 
-执行输出结果为JSON格式
-绿色代表执行成功
-***代表系统状态发生改变
-红色代表执行失败
-
 cat user.yml
 ---
 - hosts: all/组名/ip
@@ -163,7 +215,7 @@ cat user.yml
   tasks:
    - name: create user debang
      user: group=wheel uid=1000 name=debang
-   - shell: echo debang | passwd --stdin debang 
+     shell: echo debang | passwd --stdin debang 
    
 ansible-playbook user.yml  -f 5 
 
@@ -196,6 +248,8 @@ error错误跳过处理(默认$?不为0则报错停止)：
 handlers：notify调用handler中定义的操作
 
 
+优化：关闭ssh的DNS查询
+      打开ansible配置文件的 1.host_key_checking = False 2.log日志
 
 
 
