@@ -190,11 +190,15 @@ ansible-playbook [options] playbook.yml [playbook2 ...]
 查看命令：
 ansible-playbook --syntax-check playbook.yml                   检查playbook语法
 ansible-playbook playbook.yml --list-hosts                     显示受影响的主机
+ansible-playbook playbook.yml --limit ip/组名                  限制受影响的主机
 ansible-playbook playbook.yml --list-tasks                     显示工作的task
 ansible-playbook playbook.yml --list-tags                      显示将要运行的tag
-ansible-playbook -C  playbook.yml                              测试运行
+ansible-playbook -C/--check  playbook.yml                      测试运行
 
-编写playbook，使用ansible，调用有一个/多个play，一个play之间有一个/多个任务tasks，有顺序，调用1个/多个模块/插件，查看主机清单，通过ssh连接主机
+
+编写playbook，使用ansible，调用有一个/多个play，一个play之间有一个/多个任务tasks，有顺序，调用1个模块/插件，查看主机清单，通过ssh连接主机
+一个tasks里面相同字段只能有一个，不然会提示重复，仅执行最新的字段。
+
 
 playbook构成：
 Target：定义将要执行playbook的远程主机组
@@ -213,10 +217,11 @@ cat user.yml
 - hosts: all/组名/ip
   remote_user: root
   tasks:
-   - name: create user debang
-     user: group=wheel uid=1000 name=debang
+   - name: create user debang                              一个name只能调用一个模块    
+     user: group=wheel uid=1000 name=debang	 
+   - name: modify user passwd
      shell: echo debang | passwd --stdin debang 
-   
+ 
 ansible-playbook user.yml  -f 5 
 
    
@@ -236,16 +241,106 @@ playbook语法进阶：变量，error，handlers，when，register，with_items�
 设置用户密码：password={{'passwd'|password_hash('sha512')}}
 
 error错误跳过处理(默认$?不为0则报错停止)：
-1.shell: /usr/bin/somecommand || /bin/true    
+1.  - shell: setenfore 0
+      shell: /usr/bin/somecommand || /bin/true    
 2.  - name: run some command
       shell: /usr/bin/somecommand
 	  ignore_errors: True
-	  
-... - shell: setenfore 0 
-      ignore_errors: true                      跳过错误，前面不用定义
-	- shell: chage -d 0 {{username}}
 
-handlers：notify调用handler中定义的操作
+handlers和notify结合使用触发条件
+handlers：是tasks列表，用于当关注资源发生变化时，才会采取一定的操作
+Norify，可用于每个play的最后出发，避免多次有改变发生时执行同样操作，在notify中列出的操作称作handler，即notify中调用handler中定义的操作
+
+tags:给tasks起一个标签，在执行playbook的时候，添加参数-t可仅执行对应tasks任务
+
+cat test.yml
+---
+- hosts: git
+  remote_user: root
+
+  tasks:
+    - name: install
+      yum: name=httpd
+	  tags: httpd                                            为tasks添加一个tags标签，一个标签可定义多个动作
+    - name: copy
+      copy: src=/etc/ansible/httpd.conf dest=/etc/httpd/conf 
+	  tags: httpd                                            一个标签可定义多个动作
+      notify:                                                可触发多个handlers，以name区分
+       - restart service     
+       - check service 
+    - name: start service
+      service: name=httpd state=started enabled=yes
+	  tags: rehttpd
+
+  handlers:                                                   定义handlers
+    - name: restart service
+      service: name=httpd state=restarted
+    - name: check service
+      shell: kill -0 httpd
+
+
+ansible-playbook test.yml               修改httpd配置文件，重新执行ansible-playbook,copy任务的执行(修改)会触发服务的重启
+
+ansible git -m server -a "name=httpd state=stopped"
+ansible git -m shell -a "ss -antlup"
+ansible git -m yum -a "name=httpd state=absent"
+ansible git -m shell -a "rpm -q httpd"
+ansible-playbook -t installhttpd,rehttpd   test.yml           仅执行tags标签对应的tasks任务，多个标签以逗号隔开
+
+
+1.变量名：由字母开头，仅能由字母，数字，下划线组成
+  来源：ansible setup facts 远程主机的变量都可直接调用
+  ansible git -m setup [-a 'filter=ansible_hostname'] --- 过滤支持通配符，这些变量可直接调用
+2.在/etc/ansible/hosts中定义：
+  普通变量，主机组中主机单独定义，优先级高于公共变量
+  公共变量，针对主机组中所有主机定义统一变量
+3.通过命令行指定变量，优先级最高
+  ansible-playbook -e varname=value
+4.在playbook中定义
+  vars:
+  - var1: value1
+  - var2: value2
+5.在role中定义
+	
+cat playbook.yml
+...
+  vars:
+    - pkname1: httpd
+	- pkname2: vsftpd
+  tasks:
+    - name: install
+      yum: name={{ pkname }}                                 多个变量逗号隔开，{{ varname }}前后有空格
+    - name: start service
+      service: name={{ pkname }} state=started enabled=yes
+
+ansible-playbook -e 'pkname=vsftpd' playbook.yml              命令行指定变量值，多个变量空格隔开
+ansible-playbook  playbook.yml                                playbook已经指定变量值
+
+在/etc/ansible/hosts中定义：
+[test1]
+1.1.1.1 http_port=81       端口不一样，同时在playbook上就可以调用{{http_port}}
+[test1:vars]               针对整个主机组设置变量
+domainname=lly.com         在playbook上就可以调用{{domainname}}
+
+另起文件存放变量：         
+cat vars.yml
+var1: httpd
+var2: vsftpd
+playbook调用变量：
+cat test.yml
+...
+  vars_files:  
+    - vars.yml
+
+
+
+
+
+
+
+
+
+
 
 
 优化：关闭ssh的DNS查询
