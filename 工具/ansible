@@ -1,5 +1,6 @@
 
 
+
 github文档：https://github.com/ansible
 Ansible：批量操作 1.自动化部署app   2.自动化管理配置项   3.自动化持续交付   4.自动化(AWS)云服务管理/
 操作对象：1.hosts主机        2.networking网络设备
@@ -8,7 +9,7 @@ ansible依赖python，需要python版本2.6以上，执行ansible的主机一般
 管理方式:ad-hoc,ansible-playbook
 命令执行来源:user -- ansible -- ansible-playbook -- CMDB(配置管理数据库)API调用 -- PUBLIC/PRIVATE CLOUD API调用 
 查看主机列表：ansible web[all] --list[--list-host]      显示web组的主机
-
+查看主机信息：ansible git -m setup [-a 'filter="ansible_hostname"']    过滤支持通配符*
 
 相关文件：
 /etc/ansible                 默认配置目录   
@@ -103,6 +104,16 @@ jinja2模板的基本语法：
 模板的表达式都是包含在分隔符"{{}}"内的
 控制语句都是包含在分隔符"{% %}"内的
 模板支持注释，包含在分隔符"{# #}"内，支持块注释
+字符串：使用单/双引号
+数字：整数和浮点数(小数)
+列表：[item1,item2..]
+元组: (item1,item2..)
+字典：{key1:value1,key2:value2..}
+布尔型:true/false
+算术运算：+ - * /  //(取整) %(取余)  **
+比较操作： ==  !=  >  >=  <  <= 
+逻辑运算:  and  or  not  
+流表达式：For  If  When
 
 调用变量{{varname}}
 计算    {{2+3}}
@@ -247,7 +258,7 @@ error错误跳过处理(默认$?不为0则报错停止)：
       shell: /usr/bin/somecommand
 	  ignore_errors: True
 
-handlers和notify结合使用触发条件
+handlers和notify结合使用触发条件,与tasks是同一级别缩进的
 handlers：是tasks列表，用于当关注资源发生变化时，才会采取一定的操作
 Norify，可用于每个play的最后出发，避免多次有改变发生时执行同样操作，在notify中列出的操作称作handler，即notify中调用handler中定义的操作
 
@@ -287,10 +298,10 @@ ansible git -m yum -a "name=httpd state=absent"
 ansible git -m shell -a "rpm -q httpd"
 ansible-playbook -t installhttpd,rehttpd   test.yml           仅执行tags标签对应的tasks任务，多个标签以逗号隔开
 
-
+优先级：命令行 > 当前playbook定义的变量普通变量 > 当前playbook定义的变量全局变量 > 主机清单(由近及远)
 1.变量名：由字母开头，仅能由字母，数字，下划线组成
   来源：ansible setup facts 远程主机的变量都可直接调用
-  ansible git -m setup [-a 'filter=ansible_hostname'] --- 过滤支持通配符，这些变量可直接调用
+  ansible git -m setup [-a 'filter="ansible_hostname"'] --- 过滤支持通配符*，这些变量可直接调用
 2.在/etc/ansible/hosts中定义：
   普通变量，主机组中主机单独定义，优先级高于公共变量
   公共变量，针对主机组中所有主机定义统一变量
@@ -301,6 +312,7 @@ ansible-playbook -t installhttpd,rehttpd   test.yml           仅执行tags标�
   - var1: value1
   - var2: value2
 5.在role中定义
+
 	
 cat playbook.yml
 ...
@@ -331,6 +343,99 @@ cat test.yml
 ...
   vars_files:  
     - vars.yml
+  ...
+
+Template模板(是一个仅用于playbook的模块)：用法参看上面jinja2模板引擎
+mkdir templates
+mv /etc/nginx/nginx.conf  templates/nginx.conf.j2
+
+cat nginx.conf.j2
+worker_processes  {{ ansible_processor_vcpus*2 }}
+
+cat template.yml
+...
+  tasks:
+  - name: copy template
+    template: src=nginx.conf.j2 dest=/etc/nginx/nginx.conf            类似copy用法，使用ansible-doc template了解更多
+
+template for it:模板控制语句
+cat temnginx.yml
+...
+  vars:
+    ports:
+      - 80                                  这里可以是键值对,如listen_port: 80 对应模板也需要改(键值对是可以嵌套的)
+      - 81                                                     listen_port: 81
+  tasks:
+    - name: copy conf
+    - template: src=for1.conf.j2 dest=/data/for1.conf
+
+cat templates/for1.conf.j2
+  {% for port in ports %}                    取上面的一组字符串或一组键值对
+  server {
+     listen {{ port }}                       1.如果变量是键值对，port改成：port.listen_port  2.嵌套的时候不一定键值对数量一致，使用{% if p.name is defined %} 内容 {% endif %} 进行差异生成
+  }
+  {% endfor %}
+
+生成结果
+server{
+   listen 80
+}
+server{
+   listen 80
+}
+
+
+When判断：根据变量/任务执行结果作为前提条件，判断某个name是否执行(判断系统/软件版本，cpu...)
+在task后添加when子句即可使用条件测试，支持jinja2表达式语法
+...
+  tasks:
+    - name: "shutdown"
+      shell: /sbin/shutdown -h now
+      when: ansible_os_family == "RedHat"             判断条件是否成立，成立则执行name模块，双引号一定要加
+
+with_items:迭代，执行重复性执行的任务
+对迭代项的引用，固定变量名为"item"
+要在task中使用with_items给定要迭代的元素列表，列表格式：1.字符串  2.字典
+...
+  tasks:
+    - name: create some file
+      file: name=/root/{{ item }} state=touch
+      with_items:
+        - file1
+        - file2
+    - name: install package
+      yum: name={{ item }}
+      with_items:
+        - httpd
+
+迭代嵌套自变量：
+...
+  tasks:
+    - name: create some user
+	  user: name={{ item.name }} group={{ item.group }} state=present
+	  with_items: 
+	    - { name: 'user1', group: 'group1' }
+        - { name: 'user2', group: 'group2' }
+
+
+Roles：模块化。用于层次性，结构化的组织playbook。roles能够根据层次型结构自动装载变量文件，tasks以及handlers等，使用roles只需在playbook中使用include指令即可
+       通过将变量,文件,任务,模板及处理器放置于单独的目录中，并通过include加载的一种机制。
+场景：复制场景，建议使用roles，代码复用度高
+
+roles目录结构：1.playbook.yml   2.roles  2.1project   2.2tasks  2.3files 2.4vars  2.5 default  2.6templates  2.7handlers  2.8meta
+根据需要，创建响应的目录与playbook.yml文件
+
+在tasks目录里
+cat main.yml
+- include: playbook.yml
+
+在roles目录同级：执行playbook就是执行这个文件
+cat nginx_role.yml
+--- 
+- hosts: git
+  remote_user: root
+  roles:
+    - role: nginx 
 
 
 
@@ -345,7 +450,8 @@ cat test.yml
 
 优化：关闭ssh的DNS查询
       打开ansible配置文件的 1.host_key_checking = False 2.log日志
-
+      使用通用的ssh协议，优点是简单省事，缺点是不是针对ansible开发优化过的，效率慢。需要提高效率，可以装专用的服务端与客户端，走特有协议，可以自动化安装。
+	  
 
 
 
