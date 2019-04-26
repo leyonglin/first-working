@@ -1,17 +1,72 @@
 
+FIREWALL分9大区域，Public：只开放自己规则下的服务  ---默认区域
+firewall-cmd --list-all  --查看默认区域
+
+配置方法：（1）命令： firewall-cmd  （2）图形界面：需要安装firewall-config
+防火墙有永久和临时，临时的重载/重启会失效，永久的添加(--permanent)需要重载(--reload)或者重启(restart)
 
 查看帮助：man firewall-cmd
+查看防火墙：sudo firewall-cmd --list-all
+查看ipset的ip：sudo firewall-cmd --info-ipset=db_whitelist
+查看ipset文件：firewall-cmd --get-ipsets
 
-黑白名单
-sudo firewall-cmd --list-all
-sudo firewall-cmd --info-ipset=db_whitelist
-sudo firewall-cmd --permanent --ipset=db_whitelist --add-entry=${i}
+设置端口转发
+firewall-cmd --add-forward-port=port=80:proto=tcp:toport=8000 --permanent  
+
+Firewall所谓的黑白名单ipset其实就是一个含有ip的名单，drop了就是黑名单，accept就是白名单。
+
+导入ipset：提前写好白名单IP文档，便于直接导入firewall
+创建文件：cat firewall.txt        
+103.232.87.0/24
+103.35.118.19
+创建ipset：firewall-cmd --permanent --new-ipset=hgcp_whitelist --type=hash:ip                 
+重新加载：firewall-cmd --reload                                                             
+导入白名单文件内容：firewall-cmd --ipset=hgcp_whitelist  --add-entries-from-file=/opt/dfcp_whitelist   
+
+添加/删除rich rules：存放在/etc/firewalld/zones/public.xml
+firewall-cmd --permanent --add-rich-rule='rule family="ipv4"  source ipset/address="hgcp_whitelist" port port="80" protocol="tcp" accept'
+firewall-cmd --permanent --remove-rich-rule="rule family="ipv4" source ipset="XXXX_whitelist" port port="1873" protocol="tcp" accept"
+
+web端口（80）对白名单单位时间不限制连接数，其他IP每秒限制2次                   
+firewall-cmd --permanent --add-rich-rule='rule family="ipv4"  source address="0.0.0.0/0" port port="80" protocol="tcp" accept limit value="2/s"'    ip每秒限制2次
+
+用途为限制每个Ip每秒钟最大连接数为2次，多余的拒绝链接，不会占用端口；超过次数将记录至日志，便于日志分析与检查。
+firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="0.0.0.0/0" port port="1080" protocol="tcp" 
+            log prefix="attack" level="notice" limit value="2/s" audit limit value="2/s" accept limit value="2/s"'
+
+
+添加/删除ipset：存放路径/etc/firewalld/ipsets
+firewall-cmd --permanent --new-ipset=hgcp_whitelist --type=hash:ip
+firewall-cmd --permanent --delete-ipset=XXXX_whitelist
+添加/删除ipset中的ip：
+sudo firewall-cmd --permanent --ipset=db_whitelist --add-entry=${i}       
 sudo firewall-cmd --permanent --ipset=db_whitelist --remove-entry=${i}
 
-删除rich rules:针对白名单开放端口
-firewall-cmd --permanent --remove-rich-rule="rule family="ipv4" source ipset="XXXX_whitelist" port port="1873" protocol="tcp" accept“
-删除ipset:删除白名单
-firewall-cmd --permanent --delete-ipset=XXXX_whitelist
-删除全局模式的服务|端口：
+添加/删除全局模式的服务|端口：存放在/etc/firewalld/zones/public.xml
+firewall-cmd --permanent --add-service=http
+firewall-cmd --permanent --add-port=port/protocol
 firewall-cmd --permanent --remove-service=XXXX
-firewall-cmd --permanent --remove-port=XXXX
+firewall-cmd --permanent --remove-port=XXXX/protocol
+
+
+
+
+
+
+
+
+
+IPTABLES
+
+
+ipset del hgcp_whitelist 103.35.118.19   删除单个IP
+ipset destroy blacklist  删除ipset   
+ipset restore -f blacklist.txt  导入ipset规则  
+
+
+
+
+
+
+
+
