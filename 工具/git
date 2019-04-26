@@ -4,7 +4,7 @@ git和代码托管中心(git服务器:维护远程库)
 局域网环境下：gitlab服务器
 外网环境：github和码云
 gitlab官网：https://about.gitlab.com/
-参考文档：https://about.gitlab.com/install/
+gitlab参考文档：https://about.gitlab.com
 通过快照方式，以行为单位
 团队内部写作：
 --pull--工作区(写代码)--git add . -- 暂存区(临时存储,方便撤销)-- git commit --本地库(历史版本)--git push --远程库(代码托管中心)  
@@ -127,6 +127,29 @@ git工作流：1.集中式工作流：即不分支，类似svn
 		   2.GitFlow工作流：(master/develop/feature/hotfix/release)
 		   3.Forking工作流：跨团队协作
 		   
+	
+
+安装部署gitlab服务器：gitlab-ce参考文档：https://about.gitlab.com/install/
+软件包位置：https://packages.gitlab.com/gitlab/gitlab-ce/packages/el/7/gitlab-ce-10.8.2-ce.0.el7.x86_64.rpm                          
+步骤：rpm -ivh gitlab-ce-10.8.2-ce.0.el7.x86_64.rpm
+      yum install -y curl policycoreutils-python openssh-server cronie
+	  lokkit -s http -s ssh     (yum install lokkit，lokkit 可以帮助我们设定iptables 打开http和ssh)
+	  systemctl restart sshd
+      systemctl enable sshd
+	  curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh |  bash
+      sudo EXTERNAL_URL="https://gitlab.example.com" yum install -y gitlab-ce
+	  reboot 
+	  gitlab-ctl reconfigure       ----  初始化配置gitlab
+	  gitlab-ctl start|stop        ----  启动|停止
+	  firefox  ip                  ----  注意事项(安全策略，详见注意)
+	  
+	  [yum install postfix
+	  systemctl start postfix
+	  systemctl restart postfix         支持邮件通知]
+      [firewall-cmd --permanent --add-service=http  && systemctl reload firewalld]
+     
+
+	
 	
 git图形化操作：	
 1.Eclipse中有git插件,可以实现图形化操作

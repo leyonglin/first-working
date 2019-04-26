@@ -1,6 +1,6 @@
 
 有些东西有标志性总结，例如：数据库1032=数据库主从数据不一致
-
+重启可以解决很多问题
 不开奖：重启tomcat_7002(work) /5分钟后 重启8002(走势) 
 
 后台默认开放：PH菲律宾|AU澳大利亚|MY马来西亚|HK香港|KH柬埔寨|KR	韩国
@@ -13,6 +13,8 @@
 
 如果ybop执行数据库备份计划的时候报这个错误：You need to be root to perform this command.
 是由于安装xtrbackup工具失败所致，请将/etc/yum.repos.d/percona-release.repo文件里面的gpgcheck = 1改为gpgcheck = 0 然后um -y install percona-xtrabackup-24 qpress重新安装即可
+
+绑定域名证书，这份文档客户说是验证文件，只有验证了才可以能颁发证书-----这个比较麻烦，需要将文件上传到服务器上去访问，这样会加快文件颁发速度--回复：为了安全考虑，不支持，因为要上传文件到服务器
 
 服务器ip==yundback.javalebogame002.com
 lpm替换静态文件替换web     跑整个npm-admin-product--发布

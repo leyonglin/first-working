@@ -21,7 +21,6 @@ ansible依赖python，需要python版本2.6以上，执行ansible的主机一般
 inventory(财产清单)=/etc/ansible/hosts
  
 
-
 二.主机管理HOSTS
 inventory参数：ansible_ssh_user="root"(连接用户)  ansible_ssh_pass="a"(连接密码)    ansible_ssh_port(连接端口)  
 			   ansible_connection(与主机的连接类型,默认ssh)   ansible_ssh_private_key_file(私钥文件,适用于多个密钥情况)
@@ -182,7 +181,7 @@ ansible  all  -m  model_name  -a  "argument"
 		   group                            管理组
 
 
-Ansible-galaxy:管理roles的工具/上传或下载优秀代码        参考文档:https://galaxy.ansible.com
+Ansible-galaxy:管理roles的工具/上传或下载优秀代码(下载默认存放在/etc/ansible/roles目录下)        参考文档:https://galaxy.ansible.com
 查看：ansible-galaxy list    geerlingguy.docker
 下载：ansible-galaxy install geerlingguy.docker
 删除：ansible-galaxy remove  geerlingguy.docker
@@ -424,22 +423,42 @@ Roles：模块化。用于层次性，结构化的组织playbook。roles能够�
 
 roles目录结构：1.playbook.yml   2.roles  2.1project   2.2tasks  2.3files 2.4vars  2.5 default  2.6templates  2.7handlers  2.8meta
 根据需要，创建响应的目录与playbook.yml文件
+可以借助ansible-galaxy,下载他人的roles进行学习
 
-在tasks目录里
-cat main.yml
-- include: playbook.yml
-
-在roles目录同级：执行playbook就是执行这个文件
+执行playbook.yml文件
 cat nginx_role.yml
 --- 
 - hosts: git
   remote_user: root
+  vars:
+    git_install_from_source: false
+    git_install_path: /usr/local
+
+  pre_tasks:
+    - name: Update apt cache.
+      apt: update_cache=true cache_valid_time=600
+      when: ansible_os_family == 'Debian'
+      changed_when: false
+
   roles:
-    - role: nginx 
+    - role: nginx                                                                              可执行多个roles
+	- { role: nginx, tags: "web" }                                                             添加标签
+    - { role: nginx, tags: ['web','nginx'] }                                                   为httpd添加两个标签
+    - { role: nginx, tags: ['web','nginx'],when: ansible_distribution_major_version == "7" }   条件
 
 
+tasks/main.yml：include指令定义顺序加载
+cat main.yml
+- name: Ensure git is installed (RedHat).
+  package:
+    name: "{{ git_packages }}"
+    state: present
+    enablerepo: "{{ git_enablerepo | default(omit, true) }}"
+- import_tasks: install-from-source.yml                     调用，相对路径，跨项目调用也可以(从roles目录写起，例:roles/httpd/tasks/copyfile.yml)
+  when: git_install_from_source
 
-
+- include: playbook.yml         
+ 
 
 
 
