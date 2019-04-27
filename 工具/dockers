@@ -186,7 +186,7 @@ dockerfile构建过程：从基础镜像运行容器--执行命令，修改同�
 查看构建过程：docker history [image]
 
 
-docker容器的网络基础
+docker容器的网络基础(pipework:容器间网络设置)
 互联理论基础
 docker的守护进程时通过docker0为容器提供网络连接的，docker0是linux的虚拟网桥
 网桥：根据osi七层模型，网桥是数据链路层的一个设备，通过网络设备的物理地址进行划分网络，在不同网络之间传递数据
@@ -281,8 +281,7 @@ docker容器的跨主机连接
 			 weave run ip/mask(本容器) -it --name new_cname ubuntu /bin/bash                     通过weave指定IP地址启动容器，网络设备ethwe
 			 
 			 
-	 
-补充：
+
 docker镜像的导出：docker save -o  名称.tar  存在的镜像名     --- 类似压缩
 docker镜像的导入：docker load -i  名称.tar	           
 	 
@@ -381,20 +380,110 @@ Grafana(容器)：
 
 
 
-yum -y install docker-mapper*
-pipework:容器间网络设置
+Docker-compose:是 Docker 容器进行编排的工具，定义和运行多容器的应用，可以一条命令启动多个容器。
+Docker Compose 将所管理的容器分为三层，分别是工程（project）、服务（service）、容器（container）
+Docker Compose 运行目录下的所有文件（docker-compose.yml）组成一个工程,一个工程包含多个服务，每个服务中定义了容器运行的镜像、参数、依赖，一个服务可包括多个容器实例
+使用Compose 基本上分为三步：
+   1.Dockerfile 定义应用的运行环境
+   2.docker-compose.yml 定义组成应用的各服务
+   3.docker-compose up 启动整个应用
+1.创建一个Python应用， 使用Flask，将数值记入Redis
+1.1 建立一个应用的目录，创建Python文件
+     mkdir python
+     cd python
+	   cat app.py
+         from flask import Flask
+         from redis import Redis
+         
+         app = Flask(__name__)
+         redis = Redis(host='redis', port=6379)
+         
+         @app.route('/')
+         def hello():
+             redis.incr('hits')
+             return 'Hello World! I have been seen %s times.' % redis.get('hits')
+         
+         if __name__ == "__main__":
+             app.run(host="0.0.0.0", debug=True)
+			 
+       cat requirements.txt 
+	     flask
+         redis
+     
+在同一目录下，创建Dockerfile
+	   cat Dockerfile
+	    FROM python:2.7
+        ADD . /code
+        WORKDIR /code
+        RUN pip install -r requirements.txt
+        CMD python app.py
+说明：容器使用Python 2.7的镜像
+      将当前目录下文件拷贝到容器内/code
+      指定工作目录为/code
+      安装python需要的库：flask, redis
+      容器执行命令 python app.py	
 
+在同一目录下，创建 docker-compose.yml
+       cat docker-compose.yml 
+         version: '2'
+         services:
+           web:
+             build: .
+             ports:
+              - "5000:5000"
+             volumes:
+              - .:/code
+             depends_on:
+              - redis
+           redis:
+             image: redis
+说明：version:指定 docker-compose.yml 文件的写法格式
+      services:这个应用定义了两个服务：web, redis
+      web容器通过当前路径下的Dockerfile生成
+      web容器内的5000端口映射到主机的5000端口
+      将当前目录挂载到web容器内/code
+      web容器依赖于redis容器
+      redis容器从Docker Hub获取镜像
+ 
+启动应用：docker-compose up [-d]          构建且启动
 
-
-
-
-
-
-
-
-
-
-
+停止应用：docker-compose stop
+查看信息：docker-compose ps
+执行命令：docker-compose run services cmd   例：查看环境变量，docker-compose run web env
+打印绑定的公共端口:docker-compose port eureka 8761
+##构建或者重新构建服务:docker-compose build
+scale：设置指定服务运行容器的个数，以 service=num 形式指定：docker-compose scale user=3 movie=3
+配置dns服务器：dns:   dns: 8.8.8.8
+    - 8.8.8.8
+    - 9.9.9.9
+dns，配置dns搜索域：dns_search ：dns_search: example.com 
+dns_search:
+    - dc1.example.com
+    - dc2.example.com
+environment：环境变量配置
+env_file：从文件中获取环境变量
+expose：暴露端口
+image：指定服务所使用的镜像
+  network_mode：设置网络模式
+  network_mode: "bridge"
+  network_mode: "host"
+  network_mode: "none"
+  network_mode: "service:[service name]"
+  network_mode: "container:[container name/id]"
+ports：对外暴露的端口定义，和 expose 对应
+  ports:   # 暴露端口信息  - "宿主机端口:容器暴露端口"
+    - "8763:8763"
+links：将指定容器连接到当前连接，可以设置别名，避免ip方式导致的容器重启动态改变的无法连接情况
+  links:    # 指定服务名称:别名 
+    - docker-compose-eureka-server:compose-eureka
+  links:
+    - "db:database"
+volumes：卷挂载路径
+logs：日志输出信息
+  --no-color          单色输出，不显示其他颜.
+  -f, --follow        跟踪日志输出，就是可以实时查看日志
+  -t, --timestamps    显示时间戳
+  --tail              从日志的结尾显示，--tail=200
 
 
 
