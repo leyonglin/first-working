@@ -153,7 +153,7 @@ docker的c/s模式
 守护进程的配置和操作
 启动docker，并查询进程--进程显示docker -d [OPTIONS] 信息
 与守护进程运行相关:目录，日志级别，进程id，写入文件地址，驱动模式，debug模式调试
--D --debug=false   -e，--exec-driver="native"   -g，--graph="/var/lib/docker"
+-D --debug=false   -e，--exec-driver="native"   -g，--graph="/var/lib/docker"   -d，--detach=true
 --icc=true   -l，--log-level="info"
 --label=[]   -p，--pidfile="/var/run/docker.pid"  -------例子[--label name="container01"]
 与服务器连接相关：用户组，安全相关tls  连接socket配置(-H)
@@ -299,10 +299,85 @@ docker镜像的导入：docker load -i  名称.tar
 
 
 docker监控：
+1.命令行监控：Docker Stats container
+2.图形监控：下载并运行google/cadvisor:latest容器，开源免费
+   docker run                                      \
+   --volume=/:/rootfs:ro                         \
+   --volume=/var/run:/var/run:rw                 \
+   --volume=/sys:/sys:ro                         \
+   --volume=/var/lib/docker/:/var/lib/docker:ro  \
+   --publish=8080:8080                           \
+   --detach=true                                 \
+   --name=cadvisor                               \
+   google/cadvisor:latest
+3.Scout：被托管的服务，一个应用监控服务。在scoutapp.com注册一个Scout帐户，免费的试用账号用来集成测试。获取account_key并创建scoutd.yml,使用docker-scout指定改文件启动
+4.Data Dog：被托管的服务，监控同时支持一种称为Monitors的警报功能。
+5.Sensu Monitoring Framework：使用插件系统才能监控docker，运行hiroakis/docker-sensu-server容器
+创建一个名为check-docker.json的文件并添加以下内容到此文件。这个文件告诉Sensu服务器在所有有docker标签的客户端上每十秒运行一个名为load-docker-metrics.sh的脚本。
+cat  check-docker.json
+{
+"checks": {
+"load_docker_metrics": {
+  "type": "metric",
+  "command": "load-docker-metrics.sh",
+  "subscribers": [
+    "docker"
+  ],
+  "interval": 10
+}
+}
+}
+运行容器：
+docker run -d --name sensu-server                                           \
+-p 3000:3000                                                            \
+-p 4567:4567                                                            \
+-p 5671:5671                                                            \
+-p 15672:15672                                                          \
+-v $PWD/check-docker.json:/etc/sensu/conf.d/check-docker.json           \
+hiroakis/docker-sensu-server
+脚本：定义了Docker载入指标检查
+cat  load-docker-metrics.sh
+#!/bin/bash
+set -e
 
+# Count all running containers
+running_containers=$(echo -e "GET /containers/json HTTP/1.0\r\n" | nc -U /var/run/docker.sock \
+| tail -n +5                                                           \
+| python -m json.tool                                                  \
+| grep \"Id\"                                                          \
+| wc -l)
+echo "docker.HOST_NAME.running_containers ${running_containers}"
+if [ ${running_containers} -lt 3 ]; then
+exit 1;
+fi
+使用usman/sensu-client容器来启动sensu客户端
+docker run -d --name sensu-client --privileged                                \
+-v $PWD/load-docker-metrics.sh:/etc/sensu/plugins/load-docker-metrics.sh  \
+-v /var/run/docker.sock:/var/run/docker.sock                              \
+usman/sensu-client SENSU_SERVER_IP RABIT_MQ_USER RABIT_MQ_PASSWORD CLIENT_NAME CLIENT_IP
 
-
-
+6. cadvisor(收集)+influxdb(存储)+grafana（web展示）     参考网址：https://blog.csdn.net/qq_22211217/article/details/80867801
+框架名称	特点、作用	                                                                                                                                                                       角色                                                             
+cadvisor	Google开源的用于监控基础设施应用的工具，可以零配置运行在docker主机上来监控Docker主机以及Docker容器。其为但节点监控，只能监控一个主机。多节点监控可参考Google的Kubernetes。	       作为docker服务的监控数据收集器，提供给influxdb
+influxdb	InfluxDB 是用Go语言编写的一个开源分布式时序、事件和指标数据库，无需外部依赖、提供管理界面。提供基于时间序列，基于事件的可度量的实时计算功能。	                                   作为数据存储器以及分析函数支持，与elk中elasticsearch作用类似，但此数据库偏向存储实时数据。
+grafana	    Grafana可视化大型测量数据的开源程序，有灵活丰富的图形化选项，可以混合多种风格，多个数据源例如Graphite、zabbix、InfluxDB、Prometheus、mysql和OpenTSDB 详见配置页面。	               作为数据分析的可视化展示，与influxdb配合实现监控目的。与elk中kibana类似，但此可视化偏向实时监控数据展示
+时间序列数据库，最简单的定义就是数据格式里包含Timestamp字段的数据，比如某一时间环境的温度，CPU的使用率等。
+部署：
+     docker network create docker-monitor  #为docker主机创建一个网卡名为docker-monitor
+     docker network inspect docker-monitor #查看网卡信息
+Influxdb(容器):
+     docker search tutum/influxdb  && docker pull tutum/influxdb
+     docker run -d --name influxdb --net docker-monitor -p 8083:8083 -p 8086:8086 tutum/influxdb     # --net：加入到网络docker-monitor上，8083为infuxdb后台控制端口，8086是infuxdb的数据端口
+       访问：ip:8083        
+         CREATE USER "root" WITH PASSWORD 'root' WITH ALL PRIVILEGES ##创建管理员角色 root 密码 root 供使用
+         CREATE DATABASE "cadvisor"                                  ##创建数据库 cadvisor 用于接收cadvisor的监控数据
+Cadvisor(容器):
+     docker run --privileged=true --net docker-monitor --volume=/:/rootfs:ro --volume=/var/run:/var/run:rw --volume=/sys:/sys:ro --volume=/var/lib/docker:/var/lib/docker:ro --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro -p 8087:8080 --detach=true --name=cadvisor google/cadvisor -storage_driver=influxdb -storage_driver_db=cadvisor -storage_driver_host=influxdb:8086
+       --privileged=true 设置挂载目录权限为最大,否则挂载出错  -storage_driver=influxdb 绑定存储驱动为influxdb   -storage_driver_db=cadvisor对应数据库名为cadvisor    -storage_driver_host=influxdb:8086 绑定数据库管理地址，容器名:容器端口
+         访问：ip:8087
+Grafana(容器)：
+     docker run -d --name grafana --net docker-monitor -p 3000:3000   grafana/grafana
+       访问：ip:3000
 
 
 

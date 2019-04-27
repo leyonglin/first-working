@@ -248,20 +248,23 @@ playbook语法进阶：变量，error，handlers，when，register，with_items�
   tasks:
    - shell: chage -d 0 {{username}}        执行命令行命令
 
-设置用户密码：password={{'passwd'|password_hash('sha512')}}
+设置用户密码：password={{'passwd'|password_hash('sha512')}}      因为shadow保存的密码都是经过加密的
 
-error错误跳过处理(默认$?不为0则报错停止)：
+error错误模块跳过处理(默认$?不为0则报错停止)：
 1.  - shell: setenfore 0
-      shell: /usr/bin/somecommand || /bin/true    
+      shell: /usr/bin/somecommand || /bin/true         跳过错误
 2.  - name: run some command
-      shell: /usr/bin/somecommand
-	  ignore_errors: True
+      shell: setenfore 0
+	  ignore_errors: True                              error模块跳过错误
 
-handlers和notify结合使用触发条件,与tasks是同一级别缩进的
-handlers：是tasks列表，用于当关注资源发生变化时，才会采取一定的操作
-Norify，可用于每个play的最后出发，避免多次有改变发生时执行同样操作，在notify中列出的操作称作handler，即notify中调用handler中定义的操作
+handlers和notify结合使用触发条件,handlers与tasks是同一级别缩进的,notify与模块是同一级别的
+handlers：是tasks任务列表，用于当关注资源发生变化时，才会采取一定的操作
+Norify，相当于是一个模块缩进，可用于每个play的最后出发，避免多次有改变发生时执行同样操作，同一服务只会触发一次，在notify中列出的操作称作handler，即notify中调用handler中定义的操作
+
+register变量注册:使用register模块来保存前一个命令的返回状态，在后面进行调用
 
 tags:给tasks起一个标签，在执行playbook的时候，添加参数-t可仅执行对应tasks任务
+参数：[-t TAGS, --tags=TAGS]  [--skip-tags=SKIP_TAGS]  [--start-at-task=START_AT]
 
 cat test.yml
 ---
@@ -271,18 +274,21 @@ cat test.yml
   tasks:
     - name: install
       yum: name=httpd
-	  tags: httpd                                            为tasks添加一个tags标签，一个标签可定义多个动作
+	  tags: httpd                                               为tasks添加一个tags标签，一个标签可定义多个动作
+    - shell: uptime |awk '{print($(NF-2))}'| sed 's/,//'
+      register: result                                          保存命令的执行结果/返回状态，在后面可以调用	
     - name: copy
       copy: src=/etc/ansible/httpd.conf dest=/etc/httpd/conf 
-	  tags: httpd                                            一个标签可定义多个动作
-      notify:                                                可触发多个handlers，以name区分
+	  tags: httpd                                               一个标签可定义多个动作
+      notify:                                                   可触发多个handlers，以name区分
        - restart service     
        - check service 
     - name: start service
       service: name=httpd state=started enabled=yes
 	  tags: rehttpd
-
-  handlers:                                                   定义handlers
+      when: result.stdout|float > 0.5                             调用上面的执行结果,并超过一定值的时候进行特殊处理                                            
+	  
+  handlers:                                                       定义handlers
     - name: restart service
       service: name=httpd state=restarted
     - name: check service
@@ -399,9 +405,8 @@ with_items:迭代，执行重复性执行的任务
   tasks:
     - name: create some file
       file: name=/root/{{ item }} state=touch
-      with_items:
-        - file1
-        - file2
+      with_items: ["file1", "file2"]                   
+
     - name: install package
       yum: name={{ item }}
       with_items:
@@ -415,6 +420,19 @@ with_items:迭代，执行重复性执行的任务
 	  with_items: 
 	    - { name: 'user1', group: 'group1' }
         - { name: 'user2', group: 'group2' }
+
+
+with_items是playbook标准循环，可以用于迭代一个列表或字典(结果有点问题)
+---
+  vars:
+    un: [a, b, c]
+    id: [1, 2, 3]
+  tasks:
+    - name: echo
+      shell: echo {{ item }} >> id.txt
+      with_nested:
+       - "{{ un }}"
+       - "{{ id }}"
 
 
 Roles：模块化。用于层次性，结构化的组织playbook。roles能够根据层次型结构自动装载变量文件，tasks以及handlers等，使用roles只需在playbook中使用include指令即可
@@ -454,10 +472,15 @@ cat main.yml
     name: "{{ git_packages }}"
     state: present
     enablerepo: "{{ git_enablerepo | default(omit, true) }}"
+	
+1.
+- include: playbook.yml user=w                              在这里也可以指定变量值,其它的也一样include进来
+  	
+2.	
 - import_tasks: install-from-source.yml                     调用，相对路径，跨项目调用也可以(从roles目录写起，例:roles/httpd/tasks/copyfile.yml)
   when: git_install_from_source
 
-- include: playbook.yml         
+     
  
 
 
