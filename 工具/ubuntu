@@ -2,8 +2,8 @@
 
 Ubuntu：网卡配置文件/etc/network/*     关闭网卡 ifdown eth0   开启网卡 ifup eth0
         /etc/apt/source.list 配置软件包来源，也就是上面说的软件仓库
-        /ect/apt/apt.conf.d 存在apt的零碎配置文件
-        /ect/apt/preferences 制定软件包的版本参数
+        /etc/apt/apt.conf.d 存在apt的零碎配置文件
+        /etc/apt/preferences 制定软件包的版本参数
         /var/cache/apt/archives 存放已下载的软件包
         /var/cache/apt/archives/partial 存放正在下载的软件包
         /var/lib/apt/lists 存放已下载的软件包详细信息
@@ -20,6 +20,6 @@ Ubuntu：网卡配置文件/etc/network/*     关闭网卡 ifdown eth0   开启�
 	查询包含文件:apt-file list package     查询文件归属:apt-file search  filename
 	查询已安装包:apt-cache package
 	当apt-get install package，读取包源地址/etc/apt/source.list,读取到后把包下载到/var/cache/apt/archives，有关包的说明信息会存储在/var/lib/apt/lists(运行apt-cache show package就是读取这个目录) 
-	常用：Ubuntu的软件管理中心
+	常用：Ubuntu软件管理中心
 	了解：apt前端程序:1.aptitude:apt的高级的字符和命令行前端 2.aynaptic:图形界面的apt前端  3.dselect:使用菜单界面的包管理工具  4.gnome-apt:图形界面的apt前端
 	包的安装有解压和配置两个阶段   remove卸载(配置文件保留)，purge清除是有区别的，hold保持版本

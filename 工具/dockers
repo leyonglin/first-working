@@ -94,7 +94,7 @@ docker run [-P映射所有端口] [-p指定映射端口  宿主机端口:容器�
 
 查看信息：docker info
 查看镜像：docker images [OPTION] [REPOSITORY]
--a --all=false(列出中间层镜像)  -f --filter=[] 过滤条件  --no-trunc=false 不截断数据    -q --quiet=false 只显示镜像的唯一id
+-a --all=false(列出中间层镜像)  -f --filter=[] 过滤条件  --no-trunc=true 不截断数据    -q --quiet=false 只显示镜像的唯一id
 
 REPOSITORY 仓库，指一系列关联镜像的集合，以标签名TAGS区分的，默认使用latest镜像，可为同一个镜像(id相同)打上不同标签
 REGISTRY组件仓库，docker镜像的存储服务，包含很多REPOSITORY 仓库     
@@ -130,7 +130,7 @@ RUN  CMD                                    构建时执行的命令
 	两种模式：1.shell模式：/bin/sh -c CMD     2.exec模式：(可以指定其它的shell模式)["executable" , "param" , "param..."]
 EXPOSE  port                               开放的端口(容器运行时，仍需要在run命令中指定)
 CMD ["","",""...]                                      与RUN相似，但是是在容器启动是执行的，如果容器启动是指定命令，则会被覆盖。一般搭配ENTERYPOINT，为其提供默认参数
-ENTERYPOINT                               于CMD区别是不会被覆盖，除非添加参数docker run --entrypoint,因此可以是ENTERYPOINT指定命令，CMD指定参数
+ENTERYPOINT                               与CMD区别是不会被覆盖，除非添加参数docker run --entrypoint,因此可以是ENTERYPOINT指定命令，CMD指定参数
 ADD <src> <dest>  ["<src>"..."<dest>"]     src是本地相对路径，dest是本地绝对路径，对于远程url，建议使用wget或者curl获取文件,包含类似tar的解压功能
 COPY <src> <dest> ["<src>"..."<dest>"]     src是本地相对路径，dest是本地绝对路径，对于远程url，建议使用wget或者curl获取文件，适合单纯复制文件
 VOLUME ["/data"]                           卷，存在一个或多个容器，绕过联合文件系统，提供数据共享或数据持久化功能
@@ -226,8 +226,8 @@ docker的数据卷容器
 		挂载数据卷的容器，且被其它容器通过挂载这个容器实现数据共享，叫做数据卷容器
 		docker run --volumes-from [CONTAINER NAME]
 		docker run -it --name new_cname --volumes-from old_dcname  image  CMD   创建挂载数据卷容器的容器
-		docker rm 容器名 -- 数据卷容器被删除，挂载了数据卷容器的容器也可以访问数据，即数据卷容器只传递了数据卷篇配置的信息
-		docker rm -v 容器名 -- 删除容器及数据卷，但是不能删除仍被使用的数据卷(被挂载)
+		docker rm 容器名             数据卷容器被删除，挂载了数据卷容器的容器也可以访问数据，即数据卷容器只传递了数据卷篇配置的信息
+		docker rm -v 容器名          删除容器及数据卷，但是不能删除仍被使用的数据卷(被挂载)
 		
 docker数据卷的备份和还原
 		docker run --volumes-from back_cname -v 宿主机目录:容器目录 --name new_bcname  ubuntu  tar cvf 容器目录/backup.tar  容器备份目录
@@ -387,6 +387,7 @@ Docker Compose 运行目录下的所有文件（docker-compose.yml）组成一�
    1.Dockerfile 定义应用的运行环境
    2.docker-compose.yml 定义组成应用的各服务
    3.docker-compose up 启动整个应用
+   
 1.创建一个Python应用， 使用Flask，将数值记入Redis
 1.1 建立一个应用的目录，创建Python文件
      mkdir python

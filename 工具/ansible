@@ -47,21 +47,22 @@ ansible Inventory包含静态和动态的Inventory
 静态：/etc/ansible/hosts
 动态：通过外部脚本(json格式)获取主机列表，按照其要求格式返回给ansible命令
 注意：主机部分必须是列表格式，Hostdata行，其中的"hosts" 部分可以省略，但使用时，必须时"hosts"
-例如：ansible_host.py
-           #!/usr/bin/python
-           import json
-           hostlist={}
-           hostlist["git"]=["192.168.126.133"]
-           hostlist["192.168.126.131"] = {
-                   "ansible_ssh_user":"root","ansible_ssh_pass":"pwd"
-                   }
-           hostlist["ansible"]={
-                   "host":["192.168.126.133"],
-                   "vars":{
-                          "ansible_ssh_user":"root","ansible_ssh_pass":"pwd"
-                   }
-           }
-           print(json.dumps(hostlist))
+例如：ansible-hoc 通过-i参数可指定自定义动态主机清单文件
+cat ansible_host.py
+#!/usr/bin/python
+import json
+hostlist={}
+hostlist["git"]=["192.168.126.133"]
+hostlist["192.168.126.131"] = {
+        "ansible_ssh_user":"root","ansible_ssh_pass":"pwd"
+        }
+hostlist["ansible"]={
+        "host":["192.168.126.133"],
+        "vars":{
+               "ansible_ssh_user":"root","ansible_ssh_pass":"pwd"
+        }
+}
+print(json.dumps(hostlist))
 
   chmod 755 ansible_host.py
 
@@ -238,7 +239,7 @@ ansible-playbook user.yml  -f 5
 1.hosts行，如果是多个主机的patterns，以逗号为分隔符  2.并发进程数量为5(默认为5)   3.remote_user帐户名  
 4.每一个play包含了一个task列表，多个task列表顺序执行                                      
 
-playbook语法进阶：变量，error，handlers，when，register，with_items，with_nested，tags，include and roles ，
+playbook语法进阶：变量，error，handlers，when，register，with_items，with_nested，tags，include and roles 
 
 ---
 - hosts: all/组名/ip
@@ -326,7 +327,7 @@ cat playbook.yml
 	- pkname2: vsftpd
   tasks:
     - name: install
-      yum: name={{ pkname }}                                 多个变量逗号隔开，{{ varname }}前后有空格
+      yum: name={{ pkname }}                                 
     - name: start service
       service: name={{ pkname }} state=started enabled=yes
 
@@ -377,7 +378,7 @@ cat temnginx.yml
 cat templates/for1.conf.j2
   {% for port in ports %}                    取上面的一组字符串或一组键值对
   server {
-     listen {{ port }}                       1.如果变量是键值对，port改成：port.listen_port  2.嵌套的时候不一定键值对数量一致，使用{% if p.name is defined %} 内容 {% endif %} 进行差异生成
+     listen {{ port }}                       1.如果变量是键值对，port改成：port.listen_port  2.嵌套的时候不一定键值对数量一致，使用{% if p.name is defined %} content {% endif %} 进行差异生成
   }
   {% endfor %}
 
@@ -482,14 +483,6 @@ cat main.yml
 
      
  
-
-
-
-
-
-
-
-
 优化：关闭ssh的DNS查询
       打开ansible配置文件的 1.host_key_checking = False 2.log日志
       使用通用的ssh协议，优点是简单省事，缺点是不是针对ansible开发优化过的，效率慢。需要提高效率，可以装专用的服务端与客户端，走特有协议，可以自动化安装。

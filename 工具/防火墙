@@ -11,7 +11,8 @@ firewall-cmd --list-all  --查看默认区域
 查看ipset文件：firewall-cmd --get-ipsets
 
 设置端口转发
-firewall-cmd --add-forward-port=port=80:proto=tcp:toport=8000 --permanent  
+firewall-cmd --add-forward-port=port=80:proto=tcp:toport=8000 --permanent 
+firewall-cmd --add-forward-port=proto=80:proto=tcp:toaddr=192.168.1.0.1 # 将80端口的流量转发至192.168.0.1 
 
 Firewall所谓的黑白名单ipset其实就是一个含有ip的名单，drop了就是黑名单，accept就是白名单。
 

@@ -38,10 +38,6 @@ flushall
 
 运维发布群也是要关注的。
 
-阿里云404是没重启nginx ，404/nginx 是没加白   403到了nginx但被限制
-404 在ip.conf     403在nginx blacklist.conf    无响应 在防火墙
-如果出现 客户反馈打开 403 ,首先看看 他的域名是不是走他自己的cdn 如果是 就去 /opt/apps/nginx/conf/vhosts/cdn_filter.conf 找C类地址看看在不在我们文件里，
-如果没有 请添加到这个文件， 并且 将IP从 blacklist.conf 移除
 404：域名没添加/被限制了 域名/ip被墙   解析有问题(dig)   IP或cdn节点没加白  cdn节点有问题
 
 棋牌刷cdn是刷一下lucky的cdn站点
@@ -62,17 +58,16 @@ BL限制找开发
 被攻击可以看备站8001(前台)和nginx
 tail -10000 /opt/logs/tomcat/tomcat_8001/catalina.out|grep "v/user/login"|awk -F " IP" '{print $2}'|awk -F "]" '{print $1}'|sort -n|uniq -c|sort -n
 
-1. nginx 404 一般是geo IP模块对国家地区限制，这是国家IP加白，不区分走不走cdn， 需要在ip.conf 里面加白。
-2. nginx 403 是我们nginx 黑名单限制，现在我们加了realip 模块，如果业主走自己cdn，那需要把业主的cdn加到cdnfilter.conf这个文件，set_real_ip_from x.x.x.x/x, 同时需要在blacklist.conf 中把误封的cdn ip 注释掉。如果业主没走自己cdn 需要在blacklist.conf中把误封的ip 注释掉，一定是注释掉不要删除, 注释后面可以备注下客户ip误封什么的。
-3. 打不开页面，要判断是不是以前的firewalld里面封的，需要在blacklist.xml 中删除ip，如果blacklist.xml没有该ip 那么应该是网络问题或者被打机房封了ip。
-4.400可能是后台域名绑定带前台去，请求无效 (Bad request);出现这个请求无效报错说明请求没有进入到后台服务里；
-5.走cdn可能有500
-6.tomcat没起会有502，或者连接数太多，响应时间长。nginx和tomcat域名错乱
-产生错误的原因：连接超时 我们向服务器发送请求 由于服务器当前链接太多，导致服务器方面无法给于正常的响应，产生此类报错
-7.504 Gateway Timeout Error  服务挂了，连接超时
-8.阿里云404没绑定域名或没重启nginx，自定义
-9.nginx/404 被拉入黑名单
-10.nginx/forbidden  理解但拒绝处理
+ nginx 404 被拉入黑名单，一般是geo IP模块对国家地区限制，这是国家IP加白，不区分走不走cdn， 需要在ip.conf 里面加白。
+ nginx 403 是我们nginx 黑名单限制，现在我们加了realip 模块，如果业主走自己cdn，那需要把业主的cdn加到cdnfilter.conf这个文件，set_real_ip_from x.x.x.x/x, 同时需要在blacklist.conf 中把误封的cdn ip 注释掉。如果业主没走自己cdn 需要在blacklist.conf中把误封的ip 注释掉，一定是注释掉不要删除, 注释后面可以备注下客户ip误封什么的。
+ 阿里云404没绑定域名或没重启nginx，自定义
+ 转圈圈：打不开页面，要判断是不是以前的firewalld里面封的，需要在blacklist.xml 中删除ip，如果blacklist.xml没有该ip 那么应该是网络问题或者被打机房封了ip。
+ 400可能是后台域名绑定带前台去(cdn没绑定)，请求无效 (Bad request);出现这个请求无效报错说明请求没有进入到后台服务里；
+ 走cdn可能有500
+ tomcat没起会有502，或者连接数太多，响应时间长。nginx和tomcat域名错乱
+   产生错误的原因：连接超时 我们向服务器发送请求 由于服务器当前链接太多，导致服务器方面无法给于正常的响应，产生此类报错
+ 504 Gateway Timeout Error  服务(器)挂了，连接超时
+
 
 
 

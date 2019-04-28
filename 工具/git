@@ -90,7 +90,7 @@ git分支管理的本质是创建和移动指针，新创建分支的时候，�
 
 GITHUB操作：
 邀请成员：点击仓库--setting--collaborators(协作者)--输入成员github账号--并复制链接发送给对方--对方接受即可      window10--控制面板--用户账号--凭据管理器会记住账号密码
-拉去运程库修改:pull=fetch+merge
+拉取远程库修改:pull=fetch+merge
 			   1.git fetch origin master(仅下载到本地，但并不合并工作区文件)   
 			   2.git checkout origin/master  
 			   3.cat filename  

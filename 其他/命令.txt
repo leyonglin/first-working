@@ -145,8 +145,9 @@ midecodeÃüÁî¿ÉÒÔÈÃÄãÔÚLinuxÏµÍ³ÏÂ»ñÈ¡ÓÐ¹ØÓ²¼þ·½ÃæµÄÐÅÏ¢¡£dmidecodeµÄ×÷ÓÃÊÇ½«DMIÊ
 
 tar£ºcafÑ¹Ëõ  tvfÔ¤ÀÀ  xf½âÑ¹
 
-
-
+tree£º-L(ÏÔÊ¾²ãÊý)
+-C(color) -f(ÍêÕûµÄÏà¶ÔÂ·¾¶) -d(½öÄ¿Â¼) -D(ÐÞ¸ÄÊ±¼ä) -t(ÐÞ¸ÄÊ±¼äÅÅÐò) -g(×é)-u(ËùÓÐÕß) -p(È¨ÏÞ) -s(´óÐ¡) 
+-F ÔÚÖ´ÐÐÎÄ¼þ£¬Ä¿Â¼£¬Socket£¬·ûºÅÁ¬½Ó£¬¹ÜµÀÃû³ÆÃû³Æ£¬¸÷×Ô¼ÓÉÏ"*","/","=","@","|"ºÅ
 
 
 
