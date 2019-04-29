@@ -12,7 +12,7 @@ firewall-cmd --list-all  --查看默认区域
 
 设置端口转发
 firewall-cmd --add-forward-port=port=80:proto=tcp:toport=8000 --permanent 
-firewall-cmd --add-forward-port=proto=80:proto=tcp:toaddr=192.168.1.0.1 # 将80端口的流量转发至192.168.0.1 
+firewall-cmd --add-forward-port=proto=80:proto=tcp:toaddr=192.168.1.1[:toport=8080] # 将80端口的流量转发至192.168.0.1 
 
 Firewall所谓的黑白名单ipset其实就是一个含有ip的名单，drop了就是黑名单，accept就是白名单。
 
@@ -67,9 +67,10 @@ iptables [-t 表名] 选项 [链名] [条件] [-j 目标操作]
 目标操作：ACCEPT：允许通过/放行  DROP：直接丢弃，不给出任何回应  REJECT：拒绝通过，必要时给出提示   LOG：记录日志，然后传给下一条规则
 选项：
 添加规则：-I 在链的开头(或指定序号)插入一条规则   -A 在链的末尾追加一条规则  
-查看规则：-L 列出所有的规则条目   -n 以数字形式显示地址，端口等信息   --line-numbers  查看规则时，显示规则的序号
+查看规则：-n 以数字形式显示地址，端口等信息    -L 列出所有的规则条目   --line-numbers  查看规则时，显示规则的序号
 删除规则：-D 删除链内指定序号(或内容)的一条规则       -F 清空指定表中所有的规则
 默认策略：-P 为指定的链设置默认规则
+
 通用匹配：[协议匹配：-p+protocol]  [地址匹配：-s 源地址 , -d 目标地址] [接口匹配：-i 接受数据的网卡 , -o 发数据的网卡]          可直接使用
 隐含匹配: [-p+protocol --sport 源端口 ,-p+protocol --dport 目标端口]  [ICMP类型匹配：--icmp-type+ICMP类型 ]                     要求以特定的协议匹配作为条件
 取反操作： ! 有空格

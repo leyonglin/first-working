@@ -38,15 +38,16 @@ ngx_http_core_module(模块) -- Embedded Variables        内置变量解释
 
 
 
-
+kill -SIGTERM pid  子进程向父进程告知，要退出了
 nginx命令行
-格式:nginx -s reload
+格式:nginx -s reload   /  kill -SIGHUP  pid  重载
 帮助:-? -h   使用指定的配置文件:-c  指定(覆盖)配置指令:-g  指定运行目录:-p  发送信号:-s  stop|quit|reload|reopen(重新开始日志记录)  语法检查:-t/T   版本信息:-v/V 
 
 热部署:1.备份旧的二进制文件nginx命令,复制objs目录下nginx到对应目录(make)  
     2.kill -USR2 PID(会再启动一个nginx的master进程)进行平滑升级
-      kill -winch PID  旧的master下worker进程优雅退出，不在接受请求，但master进程不会自动退出，便于回退版本(reload旧的master起worker进程)
+      kill -WINCH PID  旧的master下worker进程优雅退出，不在接受请求，但master进程不会自动退出，便于回退版本(reload旧的master起worker进程)
 日志备份：1.将旧的改名    2.1 nginx -s reopen   2.2  kill -USR1 `cat ${pid_path}`(推荐)
+
 
 
 1.网站根目录  
@@ -73,6 +74,28 @@ TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256   TLS_ECDHE(密钥交换)_RSA(身份验证
 证书订阅人向登记机构申请并验证身份，通过CSR向CA申请颁发，CA传给证书订阅人公钥和私钥，并保留私钥，浏览器将证书部署在服务器上
 客户访问web服务器，得到公钥，去向CRL服务器/OCSP响应程序验证是否有效，也可以由web服务器帮助客户端进项验证
 证书类型：1.域名验证(DV)证书：仅验证域名归属(免费)  <  2.组织验证(OV)证书：验证机构信息(价格) <  3.拓展验证(EV)证书：更严格认证，浏览器url栏有可能会显示机构信息
+部署nginx证书：1.下载软件包：python2-certbot-nginx          2.certbot --nginx --nginx-server-root=/usr/local/nginx/conf  -d  域名
+
+openresty:整合了Nginx和lua的框架：下载openresty源码包 --在bundle目录下有相关模块(nginx(c模块)和lua模块)  http://openresty.org/cn/
+
+nginx采用事件驱动的模型：master进程(监控) work进程(与cpu数量一致/绑定)处理请求  CM进程(缓存管理)  CL进程(缓存载入)   
+
+进程间管理：使用信号(也可以使用共享内存)
+信号：master进程：监控worker进程-->CHLD      worker进程：TERM/INT(stop)立刻停止   QUIT(quit)优雅停止  HUP(reload)重载  USR1(reopen)重新打开日志文件(日志切割)  USR2  WINCH
+
+重载流程：1.向master进程发送HUP信号(reload命令) 2.master进程校验配置语法是否正确(nginx -t) 3.master进程打开可能打开新配置的监听端口 4.master进程用新配置启动新的worker子进程  5.master进程向老worker子进程发送QUIT信号  6.老worker进程关闭监听句柄，处理完当前连接后结束进程
+
+热升级：1.将旧nginx文件换成新nginx文件(备份nginx命令) 2.向master进程发送USR2信号  3.master进程修改pid文件名，加后缀.oldbin  4.master进程用新nginx文件启动新master进程  5.向老master进程发送WINCH信号，关闭老worker  6.回滚：向老nginx发送HUP，向新master发送QUIT
+
+优雅的关闭：针对http请求。1.设置定时器  2.关闭监听句柄(socker)  3.关闭空闲连接   4.在循环中等待全部连接关闭  5.退出进程
+
+网络收发：数据流：应用层(浏览器)--传输层(双方端口)--网络层(双方ip)--链路层-以太网(网线)-路由器-广域网-路由器-以太网--链路层--网络层--传输层--应用层(nginx)
+http数据会被切割成众多报文mtu(网络层1500)：mss：即报文大小，tcp层指中间每个环节最大的mtu值(最终几百字节)  ：每收到一个mss就是一个网络事件(读写事件?)
+每个(服务端)框架都有一个事件收集，分发者，再去连接对应的方法/api/接口
+
+epoll事件驱动模型：启动nginx--listern状态(epoll)(sleep)--tcp创建了三次握手--操作系统通知epoll--找操作系统(内核)要事件---放到事件队列中--顺序获取
+
+
 
 
 

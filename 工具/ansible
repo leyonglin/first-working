@@ -183,7 +183,7 @@ ansible  all  -m  model_name  -a  "argument"
 
 
 Ansible-galaxy:管理roles的工具/上传或下载优秀代码(下载默认存放在/etc/ansible/roles目录下)        参考文档:https://galaxy.ansible.com
-查看：ansible-galaxy list    geerlingguy.docker
+查看：ansible-galaxy list    [geerlingguy.docker]
 下载：ansible-galaxy install geerlingguy.docker
 删除：ansible-galaxy remove  geerlingguy.docker
 
@@ -315,8 +315,8 @@ ansible-playbook -t installhttpd,rehttpd   test.yml           仅执行tags标�
   ansible-playbook -e varname=value
 4.在playbook中定义
   vars:
-  - var1: value1
-  - var2: value2
+    - var1: value1
+    - var2: value2
 5.在role中定义
 
 	
@@ -432,8 +432,8 @@ with_items是playbook标准循环，可以用于迭代一个列表或字典(结�
     - name: echo
       shell: echo {{ item }} >> id.txt
       with_nested:
-       - "{{ un }}"
-       - "{{ id }}"
+        - "{{ un }}"
+        - "{{ id }}"
 
 
 Roles：模块化。用于层次性，结构化的组织playbook。roles能够根据层次型结构自动装载变量文件，tasks以及handlers等，使用roles只需在playbook中使用include指令即可

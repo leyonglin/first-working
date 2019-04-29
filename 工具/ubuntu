@@ -23,3 +23,11 @@ Ubuntu：网卡配置文件/etc/network/*     关闭网卡 ifdown eth0   开启�
 	常用：Ubuntu软件管理中心
 	了解：apt前端程序:1.aptitude:apt的高级的字符和命令行前端 2.aynaptic:图形界面的apt前端  3.dselect:使用菜单界面的包管理工具  4.gnome-apt:图形界面的apt前端
 	包的安装有解压和配置两个阶段   remove卸载(配置文件保留)，purge清除是有区别的，hold保持版本
+	
+    ubuntu网卡配置文件设置：/etc/network/interfaces
+      auth br0                    网桥名称         
+      iface br0 inet static       ip分配方式(静态)
+      address  ip                 ip
+      netmask 
+      gateway
+      bridge_ports eth0            将本地网卡连接到网桥上
