@@ -30,12 +30,13 @@ nginx配置语法：
 http配置的指令块:http  server  upstream(反代)  location 
 nginx的下游(客户端)---nginx(反代)---nginx的上游(后端服务器)
 
-模块文档：http://nginx.org/en/docs
+
+模块文档1：http://nginx.org/en/docs
 ngx_http_autoindex_module                               使网站访问目录结构与服务器一致(共享)
 ngx_http_core_module(模块) -- Embedded Variables        内置变量解释
 
-
-
+模块文档2：./configure   1. cd objs/    2.vim ngx_modules.c(编译文档)  3. cd src/http/modules/  
+                         4. src(框架源代码目录)/http(框架文件)/modules/(第三方模块源代码存放路径)搜索ngx_command_t
 
 
 kill -SIGTERM pid  子进程向父进程告知，要退出了
@@ -55,15 +56,15 @@ nginx命令行
     1.root dlib/;
     2.alias dlib/;
   }
-2.压缩：gzip on;
-3.显示结构:autoindex on;
-4.限制大文件传输速度set $limit_rate 1K;
-5.日志格式: 1. log_format  main(名字)  $...            不同url可以设置不同日志格式
-            2. access_log  logs/access.log  main
-6.listen ip/port    只监听ip的端口(默认0.0.0.0，所有IP)
-7.upstream：反向代理 ngx_http_upstream_module 
-8.cache缓存：ngx_http_proxy_module
-9.GoAccess：日志可视化 https://goaccess.io/[get-started]    相当于生成html文件并启动进程，然后nginx访问该进程接口，由该进程推送最新变更。   
+压缩：gzip on;
+显示结构:autoindex on;
+限制大文件传输速度set $limit_rate 1K;
+日志格式: 1. log_format  main(名字)  $...            不同url可以设置不同日志格式
+          2. access_log  logs/access.log  main
+listen ip/port    只监听ip的端口(默认0.0.0.0，所有IP)
+upstream：反向代理 ngx_http_upstream_module 
+cache缓存：ngx_http_proxy_module
+GoAccess：日志可视化 https://goaccess.io/[get-started]    相当于生成html文件并启动进程，然后nginx访问该进程接口，由该进程推送最新变更。   
   1.安装软件包，启动：goaccess log_path -o html_path(生成结果存放路径) --real-time-html --time-format='%H:%M:%S' --date-format='%d/%b/%Y' --log-format=COMBINED
   2.在nginx配置文件里添加locate--指向生成的html路径
 
@@ -80,8 +81,10 @@ openresty:整合了Nginx和lua的框架：下载openresty源码包 --在bundle�
 
 nginx采用事件驱动的模型：master进程(监控) work进程(与cpu数量一致/绑定)处理请求  CM进程(缓存管理)  CL进程(缓存载入)   
 
+
 进程间管理：使用信号(也可以使用共享内存)
 信号：master进程：监控worker进程-->CHLD      worker进程：TERM/INT(stop)立刻停止   QUIT(quit)优雅停止  HUP(reload)重载  USR1(reopen)重新打开日志文件(日志切割)  USR2  WINCH
+
 
 重载流程：1.向master进程发送HUP信号(reload命令) 2.master进程校验配置语法是否正确(nginx -t) 3.master进程打开可能打开新配置的监听端口 4.master进程用新配置启动新的worker子进程  5.master进程向老worker子进程发送QUIT信号  6.老worker进程关闭监听句柄，处理完当前连接后结束进程
 
@@ -94,6 +97,13 @@ http数据会被切割成众多报文mtu(网络层1500)：mss：即报文大小�
 每个(服务端)框架都有一个事件收集，分发者，再去连接对应的方法/api/接口
 
 epoll事件驱动模型：启动nginx--listern状态(epoll)(sleep)--tcp创建了三次握手--操作系统通知epoll--找操作系统(内核)要事件---放到事件队列中--顺序获取
+
+单进程阻塞状态，需要在进程需要不断切换(操作系统的进程调度)，5微秒
+work的优先级调高，分配的事件片多
+阻塞：调用的方法因不满足条件而被切换到别的进程去。   非阻塞：不会在事件片没用完时被切换到别的进程
+同步(可同时调用多个方法)与异步是相对于调用方法而言：同步非阻塞方法，相对简单
+
+
 
 
 
