@@ -327,9 +327,9 @@ cat playbook.yml
 	- pkname2: vsftpd
   tasks:
     - name: install
-      yum: name={{ pkname }}                                 
+      yum: name={{ pkname1 }}                                 
     - name: start service
-      service: name={{ pkname }} state=started enabled=yes
+      service: name={{ pkname2 }} state=started enabled=yes
 
 ansible-playbook -e 'pkname=vsftpd' playbook.yml              命令行指定变量值，多个变量空格隔开
 ansible-playbook  playbook.yml                                playbook已经指定变量值
@@ -373,7 +373,7 @@ cat temnginx.yml
       - 81                                                     listen_port: 81
   tasks:
     - name: copy conf
-    - template: src=for1.conf.j2 dest=/data/for1.conf
+      template: src=for1.conf.j2 dest=/data/for1.conf
 
 cat templates/for1.conf.j2
   {% for port in ports %}                    取上面的一组字符串或一组键值对

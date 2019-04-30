@@ -145,7 +145,7 @@ docker的c/s模式
 2.通过remoteAPI可以自己编写程序调用接口进行集成(也可交互，即输入输出)   docker文档：https://docs.docker.com
 
 客户端和守护进程通过socker进行连接
-1.unix:///var/run/docker.sock(默认)     nc -U /var/run/docker.sock -- GET /info HTTP/1.1(查看remoteAPI的接口信息) 
+1.unix:///var/run/docker.sock(默认)     nc -U /var/run/docker.sock --> GET /info HTTP/1.1(查看remoteAPI的接口信息) 
 2.tcp://host:port
 3.fd://socketfd
 
@@ -176,7 +176,7 @@ docker服务器：客户端可以curl http://ip:port/info
 				
 在客户端命令行：-H  1.tcp://host:port(2375)     2.unix:///path/to/socket(默认)    3.fd://* or fd://socketfd 
     命令行实例 docker -H tcp://ip:port info  				
-使用环境变量DOCKER_HOST    export DOCKER_HOST="tcp://ip:port"
+ 设置环境变量DOCKER_HOST    export DOCKER_HOST="tcp://ip:port"   (设置变量可以不用-H指定路径)
 
 
 dockerfile构建过程：从基础镜像运行容器--执行命令，修改同期--提交新的镜像层--再运行新的容器--...(构建过程会删除中间层容器，但不会删除中间层镜像)
@@ -199,7 +199,7 @@ docker守护进程(host)有虚拟网桥docker0并且打开veth*的接口 与 容
 
 同一宿主机容器的互联
 --icc=true  选项默认同一宿主机内的容器是互联的，但是重启容器，默认情况下是会变的(如果配置文件--icc=false,则会拒绝容器间的连接)
-docker run -it --name=自定义名称  --link=[CONTAINER_NAMR已存在容器名]:[ALIAS别名]  [IMAGE] [COMMOND]  新启动容器，能通过别名连接到已存在容器[名]上，重启也可以用别名连接(会改变新生成容器的ENV和hosts本地解析)
+docker run -it --name=自定义名称  --link=[CONTAINER_NAMR已存在容器名]:[ALIAS别名]  [IMAGE] [COMMOND]          新启动容器，能通过别名连接到已存在容器[名]上，重启也可以用别名连接(会改变新生成容器的ENV和hosts本地解析)
 允许特定容器间的互联,需要3个选项：
 1.--icc=false(阻断互联)     2.--link(特定互联)      3.--iptables=true(允许docker将规则添加到linux的iptables设置中)
 iptables [-t filter] -L -n    (默认查filter表)查看规则(从上往下匹配，匹配即停止)
