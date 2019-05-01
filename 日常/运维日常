@@ -5,7 +5,13 @@
 web：lpmweb.javawebdata5.com     work:javawebdata7.com
 不开奖：重启tomcat_7002(work) /5分钟后 重启8002(走势) 
 
+修改内存java：/opt/apps/tomcat/tomcat_7001/bin
+
 后台默认开放：PH菲律宾|AU澳大利亚|MY马来西亚|HK香港|KH柬埔寨|KR	韩国
+
+第三方中转域名：在公共主机的”三方支付“主机上绑定  ---  用swadmin直连上去绑定
+
+live16-lvs-hk.javagamecollect8.com:6088：进到相对应的线上服务器，curl -X GET ”从日志查询到的“  查询得到就是正确的，查询不到就看报错信息
 
 ##支付接口：
 /api/recharge/onlinePayAsyncCallback 支付异步回调
@@ -21,7 +27,7 @@ web：lpmweb.javawebdata5.com     work:javawebdata7.com
 服务器ip==yundback.javalebogame002.com
 lpm替换静态文件替换web     跑整个npm-admin-product--发布
 
-剔除彩票-85主机，可以先关了nginx，再
+剔除彩票-85主机，可以先关了nginx
 
 域名劫持是使解析到的IP地址不正确，
 

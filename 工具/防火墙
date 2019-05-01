@@ -52,11 +52,6 @@ firewall-cmd --permanent --remove-port=XXXX/protocol
 
 
 
-
-
-
-
-
 IPTABLES：
 四表：filter(过滤表) nat(地址转换表) mangle(包标记表) raw(状态跟踪表)
 五链：PREROUTING(路由前) POSTROUTING(路由后)  INPUT(入站)  OUTPUT(出站)  FORWARD(转发)

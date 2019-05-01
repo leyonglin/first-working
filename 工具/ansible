@@ -260,7 +260,7 @@ error错误模块跳过处理(默认$?不为0则报错停止)：
 
 handlers和notify结合使用触发条件,handlers与tasks是同一级别缩进的,notify与模块是同一级别的
 handlers：是tasks任务列表，用于当关注资源发生变化时，才会采取一定的操作
-Norify，相当于是一个模块缩进，可用于每个play的最后出发，避免多次有改变发生时执行同样操作，同一服务只会触发一次，在notify中列出的操作称作handler，即notify中调用handler中定义的操作
+Notify，相当于是一个模块缩进，可用于每个play的最后出发，避免多次有改变发生时执行同样操作，同一服务只会触发一次，在notify中列出的操作称作handler，即notify中调用handler中定义的操作
 
 register变量注册:使用register模块来保存前一个命令的返回状态，在后面进行调用
 

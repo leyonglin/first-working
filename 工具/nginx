@@ -11,10 +11,10 @@ Tengine是由淘宝网发起的Web服务器项目。它在Nginx的基础上,针�
 
 wget http://nginx.org/download/nginx-1.14.2.tar.gz  && tar -xf nginx-1.14.2.tar.gz && cd nginx-1.14.2
 cp -r contrib/vim/* ~/.vim/      语法高亮
-src目录：源代码目录(框架)
+src目录：./src源代码目录(框架)
 查看可用参数：./configure --help | more      1.预编译时，找哪些文件作为辅助文件 */PATH    2.模块使用:添加--with-*   移除--without 
 产生的中间文件会放在objs目录下，ngx_modules.c文件决定有哪些模块会被编译进去   
-make编译，编译完成产生中间文件和二进制文件，存放在objs目录下。
+make编译，编译完成产生中间文件和二进制文件(已将所有的源码编译进来了)，存放在objs目录下。
 make install 安装
 
 nginx配置语法：
@@ -56,6 +56,7 @@ nginx命令行
     1.root dlib/;
     2.alias dlib/;
   }
+2.location / {return 200 "reback message"}
 压缩：gzip on;
 显示结构:autoindex on;
 限制大文件传输速度set $limit_rate 1K;
@@ -102,6 +103,69 @@ epoll事件驱动模型：启动nginx--listern状态(epoll)(sleep)--tcp创建了
 work的优先级调高，分配的事件片多
 阻塞：调用的方法因不满足条件而被切换到别的进程去。   非阻塞：不会在事件片没用完时被切换到别的进程
 同步(可同时调用多个方法)与异步是相对于调用方法而言：同步非阻塞方法，相对简单
+
+内存池：可以减少内存碎片,分配小块内存,或者可以整合小块内存     大块内存走的操作系统的cache分配内存
+请求内存池：4K         连接内存池(预分配)：256|512B    header_buffer：1K    request_pool：4K   
+一个tcp连接可以有多的http请求
+
+worker进程之间使用共享内存来共享数据(slab内存管理器)，管理使用信号管理。
+
+nginx动态库和静态库：静态库会直接编译进nginx的二进制可执行文件(nginx)以.a结尾，动态库只保留调用地址，以.so结尾的(window是以.dll结尾的)
+1.由源文件编译生成一堆.o，每个.o里都包含这个编译单元的符号表   2.ar命令将很多.o转换成.a，成为静态库
+1.动态模块编译时./configure --prefix=/usr/local/nginx --with-http_image_filter_module=dynamic    
+2.替换动态库     3.通过nginx配置文件配置load_module+动态模块路径   
+
+nginx配置的context:1.指令允许出现在哪些块下(模块文档)    合并
+
+1.nginx框架进行客户端建立连接   2.接收http的请求行(line)  3.解析url  4.接收http的请求头(header)  5.nginx选择配置块  6.处理请求方式
+
+元字符:(1) . 匹配除换行符外的字符   (2)\w 匹配字母/数字/下划线/汉字   (3)\s 匹配任意空白符  (4)\d匹配数字  (5)\b匹配单词开始或结束  (6)^ 匹配字符串开始  (7)$匹配字符串结束
+重 复 :(1)* 零或以上  (2)+ 最少一次    (3)?  0或1   (4){n} n次  (5){n,} n次或以上    (6)(n,m) n-m次
+ 
+server块：1.精确匹配   2.*在前的泛域名   3.*在后的泛域名   4.按正则表达式匹配   5. default server / listen default
+return块：context：server,location,if    状态码：444：关闭连接   301永久 302临时  303:临时允许改变方法  307：临时不允许改变方法  308永久不允许改变方法
+		  1.return code [text]    2.return code URL   3.return URL
+error_page code ...[=[response]] uri;    context: http,server,location,if in location     1.error_page 403 404 /400.html  2.error_page 404=[200] /empty.gif/[url]  3. location / {error_page 404 = @123;}  location @123 {}
+rewrite:rewrite regex(正则) replacement [flag:行为]   context:server,location,if    flag:last break redirect permanent          rewrite_log on;(会在error.log中出现)
+if：context:server,location    if (condition) {...} 
+表达式：1.变量是否为空/0   2比较：=或!=  3.正则:大小写敏感~或!~ 不敏感~*或!~*   4.文件是否存在-f 或!-f  5.-d或!d  6.-e !-e   7.-x或!-x
+location： context：server,location    location [=|~|~*|^~] uri {...}   location @name {...}     1.精确匹配  2.匹配正则优先
+merge_slashes on|off   context:http,server
+http_limit_conn(req优先)_module:限制单位时间连接数与并发数， zone就是定义共享内存池
+http_access_module:限制ip访问顺序执行    context: http,server,location,limit_except
+ngx_http_auth_basic_module：http basic authentication协议(认证：隐形401)    context: http,server,location,limit_except   (htpasswd)
+ngx_http_auth_request_module:原理:收到请求后，生成子请求，通过反向代理技术把请求传递给上游服务，2xx继续执行，4xx，返回响应状态码客户端(统一认证)
+satisfy指令：satisfy all|any;     any是仅有一个access/auth通过就可以...    all需要所有通过
+ngx_http_try_files_module：框架模块，无法without的。context：server,location     syntax：try_file file...uri; 或 try_file file...=code(文件是由root/alias指令指定的)
+   上面的file也可以是$uri 或者 @lasturl  --- location @lasturl {}
+ngx_http_mirro_module:实时拷贝流量,处理请求时，生成子请求访问其它服务(测试环境),但对子请求的返回值不做处理
+
+
+
+
+
+
+
+
+
+
+真实ip:  1.tcp四元组(网络五元组)  2.http头部X-Forwarded-For用于传递ip   3.HTTP头部X-Real-ip用于传递用户IP   4.网络存在方向代理(前提)
+realip模块：
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
