@@ -1,5 +1,6 @@
 
 Nginx：
+参考文档：1.http://nginx.org/en/docs/    2.http://tengine.taobao.org/book/index.html
 优点：1.高并发-高性能   2.可拓展性好   3.高可靠性   4.热部署   5.BSD许可证
 组成：1.nginx二进制可执行文件：由各模块源码编译出的一个文件
       2.nginx.conf配置文件：控制nginx的行为
@@ -48,7 +49,7 @@ nginx命令行
     2.kill -USR2 PID(会再启动一个nginx的master进程)进行平滑升级
       kill -WINCH PID  旧的master下worker进程优雅退出，不在接受请求，但master进程不会自动退出，便于回退版本(reload旧的master起worker进程)
 日志备份：1.将旧的改名    2.1 nginx -s reopen   2.2  kill -USR1 `cat ${pid_path}`(推荐)
-
+nginx是用户态
 
 
 1.网站根目录  
@@ -139,13 +140,31 @@ satisfy指令：satisfy all|any;     any是仅有一个access/auth通过就可�
 ngx_http_try_files_module：框架模块，无法without的。context：server,location     syntax：try_file file...uri; 或 try_file file...=code(文件是由root/alias指令指定的)
    上面的file也可以是$uri 或者 @lasturl  --- location @lasturl {}
 ngx_http_mirro_module:实时拷贝流量,处理请求时，生成子请求访问其它服务(测试环境),但对子请求的返回值不做处理
-
-
-
-
-
-
-
+ngx_http_static_module：提供了root和alias指令，alias_con：location    root_con：http,server,location,if in location 
+index(返回文件内容)先执行于autoindex(目录结构)
+ngx_http_concat_module:当页面需要访问多个小文件时，把内容合并到一次http响应中返回，提高性能。用法：在url后加上??，后通过多个，逗号分隔文件，有参数通过?添加参数
+		Tengine(https://github.com/alibaba/nginx-http-concat)   编译时：--add-module=../nginx-http-concat/  
+ngx_http_log_module：缓存大小，缓存事件，缓存压缩
+ngx_http_image_filter_module：过滤模块
+变量提供模块和变量使用模块可以不一样
+HTTP框架提供的变量：
+1.http请求相关的变量：arg_参数名(url中某个具体参数的值) query_string=args=全部url参数  is_args 有参数为?,否则返回值   content_length：标识包体长度的值
+                     content_type标识请求包体类型头部的值   uri=document_uri(不同于url，不包括?后面参数)  request_uri=url   scheme协议名
+					 request_method 请求方法  request_length 所有请求内容的大小   remote_user 用户名   request含方法于协议  request_body(请求中的包体，当且仅当反向代理同时设定用内存存放) request_body(临时存放请求包体的文件) 
+2.tcp连接相关的变量   3.nginx处理请求过程中产生的变量   4.nginx系统变量
+referer模块：简单有效的防盗链手段
+map模块：1.变量与字符串组合  2.default规则(没有则返回空字符串)  3.case规则(hostnames 前后* / ~和~*)   4.include语法 / volatile禁止变量缓存
+         map $var..$new_var {匹配内容 返回值;...;}   context：http 
+ngx_http_split_clients_module:生成新的百分比的变量,支持小数点后2位，为其它ab测试提供更多的可能性   context：http
+ab测试：在同一时间维度，分别让组成成分相同（相似）的访客群组（目标人群）随机的访问这些版本，收集各群组的用户体验数据和业务数据，最后分析、评估出最好版本，正式采用
+geo模块:可以根据ip及子网掩码生成新的返回值
+geoip:https://dev.maxmind.com/geoip/legacy/
+http的keepalive：多个http请求通过复用tcp连接
+对上游服务使用keeplive长连接(默认编译进去的: ngx_http_upstream_keepalive_module模块)
+AKF拓展立方体上：1.x轴(水平)拓展:无差别为客户服务   2.y轴(垂直):功能上进行拆分,处理不同url(需要更改代码)    3.z轴:引流(根据ip/用户) 成本居中
+反向代理：四层简单(udp--udp, tcp--tcp)，七层复杂(可以引流到不同功能服务器(redis/mysql/uwsgi...))
+          1.round-robin   2.ip_hash与hash算法
+缓存:时间缓存    空间缓存(使用少)
 
 
 

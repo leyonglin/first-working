@@ -18,7 +18,7 @@ Apache jmeter 可以用于对静态的和动态的资源（文件，Servlet，Perl脚本，java 对象，
 notepad++  也叫npp
 文件对比(插件) ，Alt列模式编辑，支持备份  
 支持代码折叠，支持多种格式文件，语法高亮，轻量级支持插件，显示行号，放大缩小，隐藏，
-导出城不同格式(NppExport插件)，直接拉入，Ctrl+Tab多文件切换  
+导出成不同格式(NppExport插件)，直接拉入，Ctrl+Tab多文件切换  
 
 
 宏语言的释义：

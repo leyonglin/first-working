@@ -10,7 +10,7 @@ jenkins:
 首页--系统管理可设置相关配置：包括maven路径
 svn：
 拉取代码：新建任务--创建自由风格的软件项目--源码管理---选择相关版本控制工具[svn地址@HEAD:这是为了钩子程序下载最新版本--仅针对某些版本]
-构建方式：首页--工程(右边)--configure--构建--Invoke top-level Mavven targets--调用maven target
+构建方式：首页--工程(右边)--configure--构建--Invoke top-level Maven targets--调用maven target
 查看构建：首页--工程(右边)---立即构建---点击左下角构建进度的三角号---console output可以看到构建过程
 查看代码：首页--工程(右边)--工作区--可以看见拉取的代码
 查看状态：首页--可以通过M的标识看见成功率(Legend)
