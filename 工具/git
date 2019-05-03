@@ -3,7 +3,6 @@
 git和代码托管中心(git服务器:维护远程库)
 局域网环境下：gitlab服务器
 外网环境：github和码云
-gitlab官网：https://about.gitlab.com/
 gitlab参考文档：https://about.gitlab.com
 通过快照方式，以行为单位
 团队内部写作：

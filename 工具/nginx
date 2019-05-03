@@ -1,6 +1,8 @@
 
 Nginx：
 参考文档：1.http://nginx.org/en/docs/    2.http://tengine.taobao.org/book/index.html
+nginx组成部分:any(包含全部),main(Core functionality),events(Core functionality),http(对应core),server,location,mail,stream, 
+
 优点：1.高并发-高性能   2.可拓展性好   3.高可靠性   4.热部署   5.BSD许可证
 组成：1.nginx二进制可执行文件：由各模块源码编译出的一个文件
       2.nginx.conf配置文件：控制nginx的行为
