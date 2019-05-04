@@ -1,5 +1,7 @@
  
-https://hub.docker.com/
+ 
+官方帮助文档：https://docs.docker.com/ 
+官方仓库：https://hub.docker.com/
 https://github.com/docker
  
 Docker：把应用程序自动部署到容器，go语言编写。部署引擎，方便部署应用程序
@@ -97,7 +99,13 @@ docker run [-P映射所有端口] [-p指定映射端口  宿主机端口:容器�
 -a --all=false(列出中间层镜像)  -f --filter=[] 过滤条件  --no-trunc=true 不截断数据    -q --quiet=false 只显示镜像的唯一id
 
 REPOSITORY 仓库，指一系列关联镜像的集合，以标签名TAGS区分的，默认使用latest镜像，可为同一个镜像(id相同)打上不同标签
-REGISTRY组件仓库，docker镜像的存储服务，包含很多REPOSITORY 仓库     
+REGISTRY组件仓库，docker镜像的存储服务，包含很多REPOSITORY仓库,可以自定义共享镜像的服务器
+定义一个私有仓库
+cat /etc/docker/daemon.json //不写这个文件会报错
+{
+"insecure-registries" : ["192.168.1.10:5000"] //使用私有仓库运行容器
+}   
+   
 
 查看镜像：docker inspect [OPTIONS] CONTAINER|IMAGE [CONTAINER|IMAGE...]    -f --format=""
 删除镜像docker rmi     [OPTIONS] IMAGE  [IMAGE...] -f --force=false Force removal of the image    --no-prune=false Do not delete untagged parents

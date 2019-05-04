@@ -5,6 +5,9 @@
 web：lpmweb.javawebdata5.com     work:javawebdata7.com
 不开奖：重启tomcat_7002(work) /5分钟后 重启8002(走势) 
 
+https://proxy-kr.ybproxylive.com/     liveapis/external_pgasia-cdn_com/        v1/Player/Check 这台反代服务器pg 也404了
+反代域名，ping一下就知道ip，然后进去   真人，访问到后端服务器(在vhosts目录下)   完整路径           ----   重启，在live里面访问完整路径
+
 修改内存java：/opt/apps/tomcat/tomcat_7001/bin
 
 后台默认开放：PH菲律宾|AU澳大利亚|MY马来西亚|HK香港|KH柬埔寨|KR	韩国
