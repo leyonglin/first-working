@@ -152,6 +152,65 @@ tree：-L(显示层数)
 
 
 
+Journalctl：日志查询    
+man systemd.journal-fields  /  man journalctl
+    journalctl                                  查看所有日志(默认只保存本次启动日志) 
+    journalctl -k                               查看内核日志
+    journalctl -b                               查看系统本次启动的日志
+    journalctl --list-boots / journalctl -b -1
+    journalctl --since="2017-10-30 18:10:30"    ["2017-01-10"|"yesterday"|"09:00"|"1 hour ago"|"20 min ago"]   可以使用--since和--until选项过滤任意时间限制
+    journalctl -u httpd.service  --since today
+    journalctl _PID=8088                        使用_UID或者_GID (id user)
+    journalctl -F _UID/_GID                     id  UID/GID
+    journalctl -p err/3 -b                      优先级(0: emerg  1: alert  2: crit  3: err  4: warning  5: notice  6: info  7: debug)
+	journalctl -n20                             显示倒数20行
+	journalctl -f                               追踪
+	journalctl /usr/bin/bash                    按可执行文件的路径过滤
+	journalctl  -u httpd -o json/json-pretty    输出格式
+		cat: 只显示信息字段本身。
+		export: 适合传输或备份的二进制格式。
+		json: 标准JSON，每行一个条目。
+		json-pretty: JSON格式，适合人类阅读习惯。
+		json-sse: JSON格式，经过打包以兼容server-sent事件。
+		short: 默认syslog类输出格式。
+		short-iso: 默认格式，强调显示ISO 8601挂钟时间戳。
+		short-monotonic: 默认格式，提供普通时间戳。
+		short-precise: 默认格式，提供微秒级精度。
+		verbose: 显示该条目的全部可用journal字段，包括通常被内部隐藏的字段。
+		
+  systemd-journald 服务收集到的日志默认保存在 /run/log 目录中，重启系统会丢掉以前的日志信息。 我们可以通过两种方式让 systemd-journald 服务把所有的日志都保存到文件中，这样重新启动后就不会丢掉以前的日志。
+     方法一：创建目录 /var/log/journal，然后重启日志服务 systemd-journald.service。
+     方法二：修改配置文件 /etc/systemd/journald.conf，把 Storage=auto 改为 Storage=persistent，并取消注释，然后重启日志服务 systemd-journald.service。
+
+	
+ 维护：1.journalctl --disk-usage(当前已使用空间)    2.journalctl --vacuum-size=1G(最大空间)   3.journalctl --vacuum-time=1years(保存时间)
+   配置文件/etc/systemd/journald.conf(该Storage=选项设置为“persistent”以启用持久记录 Storage=persistent) 
+   SystemMaxUse=: 指定journal所能使用的最高持久存储容量。
+   SystemKeepFree=: 指定journal在添加新条目时需要保留的剩余空间。
+   SystemMaxFileSize=: 控制单一journal文件大小，符合要求方可被转为持久存储。
+   RuntimeMaxUse=: 指定易失性存储中的最大可用磁盘容量（/run文件系统之内）。
+   RuntimeKeepFree=: 指定向易失性存储内写入数据时为其它应用保留的空间量（/run文件系统之内）。
+   RuntimeMaxFileSize=: 指定单一journal文件可占用的最大易失性存储容量（/run文件系统之内）
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
