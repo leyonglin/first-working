@@ -484,6 +484,7 @@ linux下设置密码复杂度限制:
 /etc/login.defs        /etc/pam.d/system-auth
 
 
+IBM：Netcool是指一套解决方案产品。OMNIBus是其核心组成部分，一个内存数据库。Impact算是一个扩展平台。
 
 
 

@@ -154,6 +154,7 @@ tree：-L(显示层数)
 
 Journalctl：日志查询    
 man systemd.journal-fields  /  man journalctl
+  journalctl -u httpd.service  --since today -o json/json-pretty  -n20[-f]
     journalctl                                  查看所有日志(默认只保存本次启动日志) 
     journalctl -k                               查看内核日志
     journalctl -b                               查看系统本次启动的日志

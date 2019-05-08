@@ -1,0 +1,128 @@
+????:0: ????  $: ????  ^: ??????????????  H:?????????   M:?????????  L:?????????
+          nx: ????????????n???     ??u????????n?????  
+          G ????(vim + filename)    gg ???
+		  dw ?????????????(???????????)?   d$ ?????????????? daw????????(???)
+w?????????????,e???????/????????,b???????/????????;
+4w??????4???,W, B, E???????,??????????????,??????~
+
+:%s/foo/bar/gc
+
+Ctrl + a - ????????
+Ctrl + e - ????????
+Ctrl + k - ????????????
+Ctrl + u - ????????????
+Ctrl + w - ???????????(?????????)
+Ctrl + y - ????????????????(???????????)????????
+Ctrl + xx - ?????????????????(?????)
+ 
+jinja2模板的基本语法：Template模板
+模板的表达式都是包含在分隔符"{{}}"内的
+控制语句都是包含在分隔符"{% %}"内的
+模板支持注释，包含在分隔符"{# #}"内，支持块注释
+字符串：使用单/双引号
+数字：整数和浮点数(小数)
+列表：[item1,item2..]
+元组: (item1,item2..)
+字典：{key1:value1,key2:value2..}
+布尔型:true/false
+算术运算：+ - * /  //(取整) %(取余)  **
+比较操作： ==  !=  >  >=  <  <= 
+逻辑运算:  and  or  not  
+流表达式：For  If  When
+
+常用程序：
+1.ansible(ad-hoc)                                                用于临时性工作
+2.ansible-doc -l[-a] / ansible-doc [-s] 模块名                   查看ansible模块的文档
+3.ansible-console												 交互式工具
+4.ansible-galaxy                                                 管理roles的工具/上传或下载优秀代码
+5.ansible-playbook												 批量管理操作，主机剧本
+6.ansible-vault                                                  管理加/解密yml文件
+7.ansible-pull                                                   有两种工作模式pull/push，默认使用push模式，适用于大批量机器需要配置，效率几乎无限提升，但灵活性稍有欠缺
+
+Ansible <host-pattern> [-m module] [-a args] [-v]
+--version   -vv -vvv      -T超时时间  {-u远程执行用户 -k}  {-b sudo -K(sudo)}
+host-pattern支持ip ，组名 ，all ，通配符 ，'ip1/组名:ip2' ，':&(并集)' ，':!' ，综合逻辑 ， 正则
+[普通用户可通过授权得到高权限，sudo，可设置nopasswd]  [echo export EDITOR=vim >> /etc/profile.d/vim.sh -- source /etc/profile  -- visudo]
+
+查看命令：
+ansible-playbook --syntax-check playbook.yml                   检查playbook语法
+ansible-playbook playbook.yml --list-hosts                     显示受影响的主机
+ansible-playbook playbook.yml --limit ip/组名                  限制受影响的主机
+ansible-playbook playbook.yml --list-tasks                     显示工作的task
+ansible-playbook playbook.yml --list-tags                      显示将要运行的tag
+ansible-playbook -C/--check  playbook.yml                      测试运行
+
+playbook语法进阶：变量，error，handlers，when，register，with_items，with_nested，tags，include and roles 
+
+Roles：模块化。用于层次性，结构化的组织playbook
+
+查看状态：git status
+本地库：git help reset
+
+	查看分支：git branch -v
+	创建分支：git branch 分支名(hot_fix)
+	切换分支：git checkout hot_fix
+	合并分支：把hot_fix分支合并到master分支上
+			  1.切换到master:git checkout master   2.合并：git merge hot_fix
+
+查看远程库地址别名：git remote -v		fetch：取回    push：推送  fatal：致命的
+创建远程库地址别名：git remote add 地址别名  地址(https://github.com/leyonglin/first-2019-4-21.git)     这个建立在之前已经签名的基础上。
+					
+推送(push)远程库：
+01.mkdir git目录                     											创建目录                                                                   
+02.git init                                                            			初始化
+03.git config user.name zhigao													签名
+04.git config user.email zhigao@google.com										签名
+05.git add .   [或者提交资源名称]												将文件从工作区添加到暂存区
+06.git commit -m "message"														将文件从暂存区提交到本地库
+07.git remote add video https://github.com/leyonglin/video-public.git			设置远程库别名
+08.git remote -v																查看远程库
+09.git push video master														提交到远程库别名的master分支
+
+拉取(pull)及同步操作:
+01.git clone https://github.com/leyonglin/first-2019-4-21.git  			1.将远程库下载到本地  2.初始化本地库  3.常见origin远程地址别名   
+02.git remote add video https://github.com/leyonglin/video-public.git
+03.git pull 地址别名 分支
+
+integration集成
+external 外部的
+Internal 内部的
+contained包含
+evaluated估计
+subsequent后续
+deploy部署
+development发展
+instance情况/实例
+generic一般的
+rectify the issue纠正这个问题
+previous以前的
+preserved correctly保存正确
+instruction 指令
+tutorial辅导的
+Release notes发行说明
+concept概念
+expect期望
+Choose a tab below to see how this plays out in various contexts.
+选择下面的一个标签，看看这在不同的环境中是如何进行的。
+instructions说明
+clicking点(单)击
+orientation：方向
+Troubleshooting寻找故障
+prerequisites先决条件
+strategies策略
+constraint：限制
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

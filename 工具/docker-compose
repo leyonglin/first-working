@@ -1,0 +1,283 @@
+
+Proxy server settings
+# Set proxy server, replace host:port with values for your servers
+ENV http_proxy host:port
+ENV https_proxy host:port
+cat /etc/docker/daemon.json 
+{
+  "dns": ["your_dns_address", "8.8.8.8"]
+}
+
+
+On Windows systems, CTRL+C does not stop the container.need docker container stop <Container NAME or ID>
+
+共享镜像：
+docker image -h
+docker tag image username/repository:tag
+docker push username/repository:tag
+
+
+负载均衡:container---services(docker stack负载均衡)---docker-machine(添加节点:分布式)---docker-machine(多服务Persist the data)
+docker swarm init(manager)  --  (node)添加节点：docker swarm join --token SWMTKN-1-0ooivfyx2yigd10p4bsy04n7n8a474xwlwwep2tcyqhvojmjlt-1n57pq2p78s4o2qbhk51uuh4z 192.168.126.133:2377
+                                (node)删除节点：docker swarm leave
+docker stack deploy -c docker-compose.yml getstartedlab    创建名为getstartedlab服务(修改compose可重新运行)
+docker service ls / docker stack services getstartedlab
+docker service ps getstartedlab_web 
+docker ps[container ls] -q  
+docker stack rm getstartedlab    删除
+docker swarm leave --force       关闭集群
+
+
+docker swarm:
+安装docker-machine:Docker Machine 是 Docker 官方提供的一个工具，它可以帮助我们在远程的机器上安装 Docker，或者在虚拟机 host 上直接安装虚拟机并在虚拟机中安装 Docker。我们还可以通过 docker-machine 命令来管理这些虚拟机和 Docker。
+安装virtualbox,如果只有一台机器的情况下
+
+Docker Compose:#开头的行被视为注释，并被忽略。空行也被忽略。
+version: "3.7"                                            指定compose版本
+services:                                                 构建服务
+  webapp:                                                 服务名称
+    build: ./dir                                          1.从指定路径找寻Dockerfile构建
+    build:                                                2.从指定路径找指定文件构建
+      context: ./dir                                      
+      dockerfile: Dockerfile-alternate                    
+	image: webapp:tag                                     构建后镜像名称与标签(在部署swarm集群时不生效)  
+	args:                                                 构建参数(YAML布尔值需要用引号括起来)
+        buildno: 1                                        
+      - buildno=1                                         
+	cache_from:                                           指定缓存
+      - alpine:latest                                     
+    labels:                                               标签
+        com.example.description: "Accounting webapp"      
+      - "com.example.description=Accounting webapp"       
+	shm_size: '2gb'                                       设置容器/dev/shm容量大小(默认以字节为单位)
+	target: name									      用于多阶段构建(指定构建阶段FROM ... as name)
+	cap_add:                                              一种权限设置(man 7 capabilities)
+      - ALL                                               
+    cap_drop:                                             
+      - NET_ADMIN                                         
+      - SYS_ADMIN                                         
+    cgroup_parent: m-executor-abcd                        指定父cgroup组，意味着将继承该组的资源限制(集群无效)
+    command: bundle exec thin -p 3000                     覆盖容器启动后默认执行的命令
+	command: ["bundle", "exec", "thin", "-p", "3000"]     
+    configs:											  授予容器对配置的访问权限，并将其装载在容器内
+      - my_config
+	configs:
+      my_config:
+        file: ./my_config.txt
+      my_other_config:
+        external: true
+		  name: redis_config
+	 configs:
+      - source: my_config
+        target: /redis_config
+        uid: '103'
+        gid: '103'
+        mode: 0440
+    container_name: my-web-container                      指定容器名称后，该服务将无法进行扩展，因为Docker不允许多个容器具有相同的名称，默认将会使用“项目名称_服务名称_序号”这样的格式
+    credential_spec                                       为所管理的服务账户配置证书规则。仅用于使用 Windows 类容器的服务。 
+	  file: my-credential-spec.json	                      C:\ProgramData\Docker\CredentialSpecs\my-credential-spec.json
+      registry: my-credential-spec                        HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Virtualization\Containers\CredentialSpecs
+    deploy:                                               指定与服务部署和运行相关的配置，仅用于部署集群
+      mode：replicas                                      可为 global(每个swarm节点只有一个容器)或者replicated(可有多个容器,默认)	
+      replicas: 6                                         运行的容器的数量。
+      update_config:
+        parallelism: 2                                    每次要更新的容器数量
+        delay: 10s 										  在下次尝试重启之前需要等待的时间，默认为 0。
+        failure_action：                                  更新失败时要采取的动作。为 continue、rollback 或 pause 之一，默认为 pause。 
+        monitor：                                         判定一次更新失败前要持续的时间，默认为 0s。 
+        max_failure_ratio：                               能容忍的最大更新失败率。 		
+      restart_policy:                                     重启策略，一个或多个值
+        condition: on-failure    						  值为 none、on-failure 或者 any 之一，默认为 any
+        delay：                                           在下次尝试重启之前需要等待的时间，默认为 0。 
+        max_attempts：                                    最多尝试重启的次数，默认从不放弃。 
+        window：                                          判定一次重启失败前要等待的时间，默认立即判定
+      rollbck_config  
+        parallelism                                       并行性:一次回滚的容器数量。如果设置为0，所有容器将同时回滚。     
+        delay                                             延迟:每个容器组回滚之间的等待时间(默认为0)。
+        failure_action                                    失败_操作:如果回滚失败，continue or pause(默认暂停)
+        monitor                                           监视器:每次任务更新后监视失败的持续时间(ns|us|ms|s|m|h)(默认为0)。
+        max_failure_ratio                                 失败比率：回滚期间容许的故障率(默认为0)。
+        order	   										  顺序:回滚期间的操作顺序。stop-first(旧任务在开始新任务前停止)或start-first(新任务先开始，正在运行的任务短暂重叠)(默认先停止)。            
+	resources:                                            资源限制策略cpu_quota, cpuset, mem_limit, memswap_limit, mem_swappiness
+      limits:
+        cpus: '0.50'
+        memory: 50M
+      reservations:
+        cpus: '0.25'
+        memory: 20M	
+	placement:                                           指定布置约束。 
+       constraints:                                      指定节点id/名称/角色/labels/引擎标签(ubuntu 14.04)
+	     - node.role == manager
+	   preferences:                                      服务中任务分配策略
+         - spread: node.labels.zone  
+    endpoint_mode: vip/dnsrr                             为连接到服务的外部客户端指定服务发现的方式(1.vip:由Docker为服务赋一个虚拟IP(默认) 2.dnsrr:使用DNS服务发现,负载均衡器等情况下时是有用的)
+	labels:                                              为服务（而非容器）设置标签
+        com.example.description: "This label will appear on the web service"
+The following sub-options (supported for docker-compose up and docker-compose run) are not supported for docker stack deploy or the deploy key.		
+	devices:                                              设备映射
+      - "/dev/ttyUSB0:/dev/ttyUSB0"
+    depends_on:                                           服务依赖
+      - db
+      - redis	  
+	dns: 8.8.8.8
+	dns:
+      - 8.8.8.8
+      - 9.9.9.9
+	dns_search: example.com  
+	dns_search:
+      - dc1.example.com
+      - dc2.example.com
+	entrypoint: /code/entrypoint.sh                       如果在文件中有CMD指令，它将被忽略
+	entrypoint:
+      - php
+      - -d
+      - zend_extension=/usr/local/lib/php/extensions/no-debug-non-zts-20100525/xdebug.so
+      - -d
+      - memory_limit=-1
+      - vendor/bin/phpunit
+	env_file: .env                                       
+	env_file:
+      - ./common.env
+      - ./apps/web.env
+      - /opt/secrets.env
+	# a.env                                                单个环境变量
+        VAR=1
+	environment:                                            优先级高于env_file
+        RACK_ENV: development
+	  - RACK_ENV=development
+	expose:
+      - "3000"
+      - "8000"
+	external_links:                                        关联到 Compose 之外启动的容器，尤其是那些提供了共享和常用服务的容器。
+      - redis_1 
+	extra_hosts:                                           添加主机名映射，还要在提供服务的容器的 /etc/hosts 文件中指明该映射关系。 
+      - "somehost:162.242.195.82"
+    healthcheck:                                           配置运行的检查，与dockerfile的健康检查一样
+      test: ["CMD", "curl", "-f", "http://localhost"]      必须是列表，同时第一项是["NONE"] CMD or CMD-SHELL，或者test: curl -f https://localhost || exit 1
+      interval: 1m30s 
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+	image: redis											指定容器所使用的镜像。
+	init: true                                              初始化
+	isolation                                               linux仅支持默认值，window上支持default, process and hyperv
+    links:                                                  过时技术
+      - db	
+	logging:                                                日志配置
+      driver: syslog                                        "json-file"和"syslog"(其它不能在这里用)
+      options:
+        syslog-address: "tcp://192.168.0.42:123"
+		max-size: "200k"
+        max-file: "10"
+	networks:                                              指定服务要加入的网络,  "bridge" "host" "none" "service:[service name]" "container:[container name/id]"
+      - some-network:
+	      name: my-app-net
+		  driver: overlay
+          attachable: true
+		  ipv4_address: 172.16.238.10                      ip地址
+          aliases:                                         创建服务在某个网络下的别名列表，这样该网络中的其他容器除了使用服务名（默认的）外还可使用别名访问该服务中的容器。 
+            - alias1
+		  ipam:
+            driver: default
+            config:
+              - subnet: 172.28.0.0/16
+          pid: "host"
+		  ports:                                           支持LONG SYNTAX(target  published  protocol  mode与host模式不兼容)
+		    - "3000-3005"
+		    - "6060:6060/udp"
+		  restart: "no"                                    always  on-failure  unless-stopped
+		  secrets:                                         授予对机密的访问权限SHORT SYNTAX:/run/secrets/<secret_name>  LONG SYNTAX:like config
+            my_secret:                                     服务范围下的该选项应该与顶层范围下的 secrets 选项同时指定。 
+              file: ./my_secret.txt
+		  security_opt                                     覆盖每个容器的默认标记方案
+			- label:user:USER
+		  stop_grace_period: 1s                            before sending SIGKILL
+		  stop_signal: SIGUSR1							   设置停止容器时要发送的信号，默认为 SIGTERM。 
+		  sysctls:                                         内核优化，集群模式不生效
+            net.core.somaxconn: 1024
+			- net.core.somaxconn=1024
+        - type: tmpfs 										临时文件系统
+            target: /app
+            tmpfs:
+			  - /run
+              size: 1000									   
+          ulimits:
+           nproc: 65535
+           nofile:
+             soft: 20000   
+		  userns_mode: "host"                              Disables the user namespace for this service，集群不起作用
+		  volumes:                                         挂载
+             - type: volume
+               source: mydata
+               target: /data
+			   read_only
+               volume:
+                 nocopy: true
+             - type: bind
+               source: ./static
+               target: /opt/app/static
+		  volumes:
+             - "/var/run/postgres/postgres.sock:/var/run/postgres/postgres.sock"
+			 - .:/var/www/project:cached
+		  volumes:
+             example:
+               driver_opts:
+                 type: "nfs"
+                 o: "addr=10.40.0.199,nolock,soft,rw"
+                 device: ":/docker/example"
+		  volumes:
+             data:
+               external: true                      文件外提前创建好了
+		       name: my-app-data
+			 
+			 
+			 
+	labels:
+      - "com.example.description=Database volume"		 
+	user: postgresql                这些不知道放在哪里
+    working_dir: /code    
+    domainname: foo.com
+    hostname: foo
+    ipc: host
+    mac_address: 02:42:ac:11:65:43    
+    privileged: true    
+    read_only: true
+    shm_size: 64M
+    stdin_open: true
+    tty: true		 
+
+volumes:
+  mydata:
+  dbdata:
+
+secrets:
+  my_secret:
+    file: ./my_secret.txt
+  my_other_secret:
+    external: true
+	name: redis_secret
+networks:
+  new:
+  legacy:
+
+     Specifying durations          Some configuration check durations，(us, ms, s, m and h.)
+	 Specifying byte values        b, k, m , g , kb, mb and gb
+
+
+
+
+
+daemon.json
+{
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "10m",
+    "max-file": "3",
+    "labels": "production_status",
+    "env": "os,customer"
+  }
+}
+
+
+
+

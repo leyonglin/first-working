@@ -2,11 +2,15 @@
  
 官方帮助文档：https://docs.docker.com/ 
 官方仓库：https://hub.docker.com/
-https://github.com/docker
+docker中文文档：http://www.docker.org.cn/faq/global/c95.html
+github文档：https://github.com/docker
  
 Docker：把应用程序自动部署到容器，go语言编写。部署引擎，方便部署应用程序
 		提供简单轻量的建模方式，启动快。职责的逻辑分离，一致性的环境。缩短开发生命周期。鼓励使用面向服务的架构，[启动一个进程]
+		优点：Flexible(灵活) Lightweight(轻量级) Interchangeable(可交换) Portable(可移植性) Scalable(可伸缩性) Stackable(可堆叠)
 容器是一种虚拟化的方案，运行在操作系统之上的，操作系统虚拟化，依赖linux内核的namespace和cgroup，资源占用少
+
+镜像保存：/var/lib/docker 
 
 docker基本组成：
 docker client    客户端
@@ -56,7 +60,7 @@ os x :(通过虚拟机) boot2docker组件提供运行环境与命令工具
 
 容器基础操作：docker run NAME/TAGS CMD
 docker start|stop|restart 容器名     启动/停止/重启容器
-docker run -it --name=自定义名称  IMAGE CMD  [-g "daemon off;"]
+docker run -it --name=自定义名称  IMAGE CMD  [-g "daemon off;"]  --restart always开机自启
 -i --interactive=true|false 默认是false(标准输入)   -t --tty=true|false  默认是false 伪终端  
 
 docker run -d centos /bin/sh -c "while true;do echo hello docker;sleep 1;done"
@@ -64,7 +68,7 @@ docker run -d centos /bin/sh -c "while true;do echo hello docker;sleep 1;done"
 docker start [-i] 容器名        重新启动停止的容器
 docker rm  ID                   删除停止的容器
 
-docker ps  默认是正在运行的容器    -l 最新的容器  -a 包括停止的容器
+docker ps[container ls]  默认是正在运行的容器    -l 最新的容器  -a 包括停止的容器
 
 docker inspect ID   详细信息
  实例：docker inspect --format="{{.Volums}}"  容器名     查看数据卷信息
@@ -99,7 +103,7 @@ docker run [-P映射所有端口] [-p指定映射端口  宿主机端口:容器�
 -a --all=false(列出中间层镜像)  -f --filter=[] 过滤条件  --no-trunc=true 不截断数据    -q --quiet=false 只显示镜像的唯一id
 
 REPOSITORY 仓库，指一系列关联镜像的集合，以标签名TAGS区分的，默认使用latest镜像，可为同一个镜像(id相同)打上不同标签
-REGISTRY组件仓库，docker镜像的存储服务，包含很多REPOSITORY仓库,可以自定义共享镜像的服务器
+REGISTRY组件仓库，集中存储与分发镜像服务，包含很多REPOSITORY仓库,可以自定义共享镜像的服务器
 定义一个私有仓库
 1.在镜像仓库服务器(192.168.1.10)和docker主机的配置文件上添加该配置信息，然后重启docker
 cat /etc/docker/daemon.json //不写这个文件会报错
@@ -138,14 +142,19 @@ docker build [OPTIONS] PATH | URL | -
 实例：docker build -t="REPOSITORY:TAGS" .
 
 dockerfile文件的命令：顺序执行
+#escape                                   escape指令设置用于在Dockerfile中转义字符的字符。如果未指定，则缺省转义字符为\
 #添加注释信息
 FROM  REPOSITORY:TAGS                     第一条非注释指令
+ARG[=<value>]							  也可以命令行传参build-args <arg>=<value>  或者 ${user:-some_user} 设置默认值  但遇到ENV后会被覆盖
+										  预定义变量HTTP_PROXY  http_proxy  HTTPS_PROXY  https_proxy  FTP_PROXY  ftp_proxy  NO_PROXY  no_proxy
 MAINTAINER  Author or message             维护人
 RUN  CMD                                    构建时执行的命令
-	两种模式：1.shell模式：/bin/sh -c CMD     2.exec模式：(可以指定其它的shell模式)["executable" , "param" , "param..."]
+	两种模式：1.shell模式：/bin/sh -c CMD     2.exec模式：(可以指定其它的shell模式)["executable" , "param" , "param..."]*.md 或者 !README.md
 EXPOSE  port                               开放的端口(容器运行时，仍需要在run命令中指定)
-CMD ["","",""...]                                      与RUN相似，但是是在容器启动是执行的，如果容器启动是指定命令，则会被覆盖。一般搭配ENTERYPOINT，为其提供默认参数
-ENTERYPOINT                               与CMD区别是不会被覆盖，除非添加参数docker run --entrypoint,因此可以是ENTERYPOINT指定命令，CMD指定参数
+[HEALTHCHECK]CMD ["","",""...]             [健康检查--interval= --timeout= --start-period= --retries=]
+										   与RUN相似，但是是在容器启动是执行的，如果容器启动是指定命令，则会被覆盖。一般搭配ENTERYPOINT，为其提供默认参数
+SHELL ["executable", "parameters"]
+ENTERYPOINT                                与CMD区别是不会被覆盖，除非添加参数docker run --entrypoint,因此可以是ENTERYPOINT指定命令，CMD指定参数
 ADD <src> <dest>  ["<src>"..."<dest>"]     src是本地相对路径，dest是本地绝对路径，对于远程url，建议使用wget或者curl获取文件,包含类似tar的解压功能
 COPY <src> <dest> ["<src>"..."<dest>"]     src是本地相对路径，dest是本地绝对路径，对于远程url，建议使用wget或者curl获取文件，适合单纯复制文件
 VOLUME ["/data"]                           卷，存在一个或多个容器，绕过联合文件系统，提供数据共享或数据持久化功能
@@ -153,7 +162,7 @@ WORKDIR                                    工作目录，指定命令都在改�
 ENV <key><value>   <key>=<value>           设置环境变量，构建和运行中都有效                            
 USER                                       以什么用户执行  user/user:group/user:gid/uid...
 ONBUILD                                    触发器，当镜像被其它镜像当作基础镜像执行时，或出发[dockerfile--image--image(触发)]
-
+LABEL <key>=<value> <key>=<value> <key>=<value> ...
 
 docker的c/s模式
 1.user --- docker client(命令行接口--docker二进制程序--输入docker命令) --传递--> docker daemon(负责实现功能) 处理  --返回客户端
@@ -231,8 +240,8 @@ iptables -I DOCKER -s ip -d ip -p tcp --dport 80 -j DROP
 
 
 docker容器的数据管理：dockerfile---VOLUME ["/data"]---会自动创建数据卷，无法共享
-docker容器的数据卷：是经过特殊设计的目录，，独立于容器的存在，存在于宿主机中的文件系统(目录/文件)，可以绕过联合文件系统(UFS),可共享为一个或多个容器提供访问
-					将应用与运行环境打包，环境生存周期与应用程序相一致，数据需要是持久化的，数据卷在容器删除的时候不会被删除，并且能共享的
+docker容器的数据卷：volume是经过特殊设计的目录，由docker统一管理，独立于容器的存在，存在于宿主机中的文件系统(目录/文件)，可以绕过联合文件系统(UFS),可共享为一个或多个容器提供访问
+					将应用与运行环境打包，环境生存周期与应用程序相一致，数据需要是持久化的，数据卷在容器删除的时候不会被删除，并且能共享的      
 		docker run -it --name 容器名 -v  宿主机目录:容器目录:访问权限(ro/w)  容器名 CMD  --- 可以挂载已有目录
 		docker ps -l  
 		docker inspect ID
@@ -395,6 +404,37 @@ Grafana(容器)：
 
 
 
+网络：容器默认通讯是使用网桥，也可以使用转发 1.sysctl net.ipv4.conf.all.forwarding=1   2.iptables -P FORWARD ACCEPT   (物理机上)
+bridge:Bridge networks are usually used when your applications run in standalone containers that need to communicate(daemon.json，详查链接跳转)
+   docker network create[rm] my-net                           创建/删除网桥
+   docker network [dis]connect my-net  nginx                  使用新网桥连接已运行容器
+host:直接使用主机的网络(仅linux)
+
+overlay：distributed network(different Docker hosts/using swarm services.)
+ docker network create -d overlay --attachable my_overlay     既可以使用于swarm集群服务，也可以使用单独容器间通讯的网路(--attachable)
+macvlan：Macvlan networks allow you to assign a MAC address to a container(migrating from a VM setup/look like physical hosts)
+ docker network create -d macvlan --subnet=192.168.32.0/24 --ip-range=192.168.32.128/25 --gateway=192.168.32.254  --aux-address="my-router=192.168.32.129" -o parent=eth0 macnet32
+none: For this container, disable all networking
+
+数据卷：/var/lib/docker/volumes/
+实名(命名)卷：
+匿名卷：名字由docker随机命名，添加了-rm参数，则匿名卷会随着容器的删除而删除
+
+1.volume和bind mounts允许您在主机和容器之间共享文件，以便即使在容器停止后也可以保留数据	2.tmpfs挂载是临时的，并且仅保留在主机内存中，无法共享
+创建数据卷：docker volume create my-vol
+数据卷列表：docker volume ls
+查看数据卷具体信息：docker volume inspect my-vol
+删除数据卷：docker volume rm my-vol
+根据名字移除卷:docker volume rm awesome
+清除无挂载的数据卷：docker volume prune
+
+#用于为单一容器创建数据卷
+docker run -v myvol2:/app[:ro].....
+#用于为集群服务创建数据卷
+docker run -mount source=myvol2,target=/app[,readonly].....    (推荐,且不用实现创建数据卷)
+
+如果容器中用于映射的文件或目录不为空，则其中的数据或是文件会拷贝到数据卷中
+
 Docker-compose:是 Docker 容器进行编排的工具，定义和运行多容器的应用，可以一条命令启动多个容器。
 Docker Compose 将所管理的容器分为三层，分别是工程（project）、服务（service）、容器（container）
 Docker Compose 运行目录下的所有文件（docker-compose.yml）组成一个工程,一个工程包含多个服务，每个服务中定义了容器运行的镜像、参数、依赖，一个服务可包括多个容器实例
@@ -402,64 +442,32 @@ Docker Compose 运行目录下的所有文件（docker-compose.yml）组成一�
    1.Dockerfile 定义应用的运行环境
    2.docker-compose.yml 定义组成应用的各服务
    3.docker-compose up 启动整个应用
-   
-1.创建一个Python应用， 使用Flask，将数值记入Redis
-1.1 建立一个应用的目录，创建Python文件
-     mkdir python
-     cd python
-	   cat app.py
-         from flask import Flask
-         from redis import Redis
-         
-         app = Flask(__name__)
-         redis = Redis(host='redis', port=6379)
-         
-         @app.route('/')
-         def hello():
-             redis.incr('hits')
-             return 'Hello World! I have been seen %s times.' % redis.get('hits')
-         
-         if __name__ == "__main__":
-             app.run(host="0.0.0.0", debug=True)
-			 
-       cat requirements.txt 
-	     flask
-         redis
-     
-在同一目录下，创建Dockerfile
-	   cat Dockerfile
-	    FROM python:2.7
-        ADD . /code
-        WORKDIR /code
-        RUN pip install -r requirements.txt
-        CMD python app.py
-说明：容器使用Python 2.7的镜像
-      将当前目录下文件拷贝到容器内/code
-      指定工作目录为/code
-      安装python需要的库：flask, redis
-      容器执行命令 python app.py	
 
 在同一目录下，创建 docker-compose.yml
        cat docker-compose.yml 
          version: '2'
          services:
            web:
-             build: .
-             ports:
-              - "5000:5000"
-             volumes:
-              - .:/code
-             depends_on:
-              - redis
+            build: ./dir                        1.dockerfile文件的相对路径，默认命名名称是当前目录名称_服务名
+			[context: ./dir                     2.构建当前dir目录下的Dockerfile-alternate文件
+            dockerfile: Dockerfile-alternate]
+			image: webapp:tag                   自定义镜像名称与标签, deploying a stack in swarm mode该选项会被忽略
+			args:
+			  buildno: 1                        变量(可以在FROM之前声明)
+            cache_from:                         使用缓存构建
+			  alpine:latest 		  
+			labels:                             添加构建的标签信息，键值对形式，使用双引号，使用反斜杠可以被当做一个命令行解析，每个LABEL指令都能产生一个新的层
+              com.example.description: "Accounting webapp"  
+			shm_size: '2gb'                      指定/dev/shm大小
+            ports:
+             - "5000:5000"
+            volumes:
+             - .:/code
+            depends_on:
+             - redis
            redis:
              image: redis
-说明：version:指定 docker-compose.yml 文件的写法格式
-      services:这个应用定义了两个服务：web, redis
-      web容器通过当前路径下的Dockerfile生成
-      web容器内的5000端口映射到主机的5000端口
-      将当前目录挂载到web容器内/code
-      web容器依赖于redis容器
-      redis容器从Docker Hub获取镜像
+
  
 启动应用：docker-compose up [-d]          构建且启动
 
@@ -500,6 +508,77 @@ logs：日志输出信息
   -f, --follow        跟踪日志输出，就是可以实时查看日志
   -t, --timestamps    显示时间戳
   --tail              从日志的结尾显示，--tail=200
+
+
+docker swarm集群：
+docker service create --name hello --replicas 3 --detach=false --publish 8080:80 nginx
+
+
+原始镜像:体积大，可以调试
+Alpine：体积最小，基于muslc的——C语言的一个替代标准库(多数Linux发行版如Ubuntu、Debian和CentOS都是基于glibc的)可能会时不时地遇到一些兼容性问题
+distroless：只在容器中安装一个二进制文件可以降低总体风险。
+
+
+
+
+
+容器本质上是受到资源限制，彼此间相互隔离的若干个linux进程的集合
+OCI：多家公司共同成立的项目，并由linux基金会进行管理
+dockerd:docker的守护进程,dockerd 由libcontainerd负责和containerd模块进行交换， dockerd 和 containerd 通信socket文件：docker-containerd.sock
+containerd:在dockerd 启动时被启动,启动grpc请求监听,容器运行时相关的程序从docker daemon剥离出来。Containerd向dockerd提供运行容器的API，二者通过grpc进行交互。containerd最后会通过runc来实际运行容器。
+docker-shim:直接通过指定的三个参数：容器id，boundle目录（containerd的对应某个容器生成的目录，一般位于：/var/run/docker/libcontainerd/containerID）,运行是二进制（默认为runc）来调用runc的api创建一个容器,（比如创建容器：最后拼装的命令如下：runc create 。。。。。）,containerd包含了container-shim代码。同一份代码，通过Makefile编译控制，编译成两个二级制文件。
+container runtime，主要负责的是容器的生命周期的管理，对于容器的状态描述，以及对于容器的创建、删除、查看等操作进行了定义
+runc 是对于OCI标准的一个参考实现，是一个可以用于创建和运行容器的CLI(command-line interface)工具。runc直接与容器所依赖的cgroup/linux kernel等进行交互，负责为容器配置cgroup/namespace等启动容器所需的环境，创建启动容器的相关进程
+RunC 是一个轻量级的工具，它是用来运行容器的，只用来做这一件事，并且这一件事要做好。我们可以认为它就是个命令行小工具，可以不用通过 docker 引擎，直接运行容器
+cri与kubernetes的概念更加贴合，并紧密绑定。cri不仅定义了容器的生命周期的管理，还引入了k8s中pod的概念，并定义了管理pod的生命周期。在kubernetes中，pod是由一组进行了资源限制的，在隔离环境中的容器组成
+docker-cli(客户端)---dockerd --(grpc)-- containerd -- containerd-shim --- runc --container
+
+
+
+
+Docker Cloud是一个公共仓库,是docker默认的仓库,拉取，推送镜像到设定仓库。
+Docker store允许用户购买和出售自己的镜像，也可以免费发布自己的镜像。
+Docker objects(组件):在使用docker的时候，将会涉及到创建、使用镜像、容器、网络、卷、插件或者其他的对象。
+Docker镜像是一个只读模板，容器是镜像的可运行实例
+
+
+Docker Swarm:Swarm非常容易入门,分布式系统通常是非常复杂的。与其他容器集群系统(Mesos, Kubernetes)相比，Swarm的学习曲线最低
+docker service ls                                                                            查看所有服务    
+docker service create --image nginx --replicas 2 nginx                                       创建服务
+docker service inspect nginx                                                                 查看服务的详细信息  
+docker service ps nginx                                                                      查看服务的容器状态
+docker service update --image nginx:alpine nginx                                             更新服务
+docker service scale nginx=5 redis=1..                                                       增加服务实例 
+docker service scale nginx=0                                                                 减少服务实例（这比直接删除服务要好）
+docker service rm nginx                                                                      删除服务 
+docker service update --env-add VAR=NEW_VALUE --env-rm VAR                                   增加、删除环境变量
+docker service update --update-parallelism 10 nginx                                          将同时更新的容器数设为10
+docker service update --limit-cpu 0.25 \     --reserve-cpu 0.1 webapp                        限制webapp服务占用的CPU资源，配额0.1核，浮动上限0.25核
+有状态服务（数据库、缓存、队列等）不适合部署在Swarm集群内
+无状态服务（代理、网页服务器、应用服务器等中间件、监控）非常适合部署在Swarm集群内
+日志管理：[docker service update --log-driver gelf --log-opt gelf-address=udp://monitoring.example.com:12201 --log-opt tag=example-tag example-service]
+  对服务器程序来说，究竟是有状态服务，还是无状态服务，其判断依旧是指两个来自相同发起者的请求在服务器端是否具备上下文关系。如果是状态化请求，那么服务器端一般都要保存请求的相关信息，每个请求可以默认地使用以前的请求信息。而对于无状态请求，服务器端所能够处理的过程必须全部来自于请求所携带的信息，以及其他服务器端自身所保存的、并且可以被所有请求所使用的公共信息。
+  无状态的服务器程序，最著名的就是WEB服务器。每次HTTP请求和以前都没有啥关系，只是获取目标URI。得到目标内容之后，这次连接就被杀死，没有任何痕迹。在后来的发展进程中，逐渐在无状态化的过程中，加入状态化的信息，比如COOKIE
+
+
+systemctl服务的配置文件目录：/usr/lib/systemd/system/
+
+
+Storage driver	                Supported backing filesystems
+overlay2(推荐) overlay	        xfs with ftype=1, ext4
+aufs(特殊指明/额外安装包)	    xfs, ext4
+devicemapper	                direct-lvm
+btrfs	                        btrfs
+zfs	                            zfs
+vfs	                            any filesystem
+
+
+
+
+
+
+
+
 
 
 
