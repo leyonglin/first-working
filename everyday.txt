@@ -111,14 +111,17 @@ Troubleshooting寻找故障
 prerequisites先决条件
 strategies策略
 constraint：限制
-
-
-
-
-
-
-
-
+Scope：范围
+infrastructure基础设施
+customize定制
+bypass绕过
+Procedure程序
+detached分离的,后台
+recommended被推荐的
+inspect检查
+prompted提示
+along(延伸)with  以及
+goal目标
 
 
 
