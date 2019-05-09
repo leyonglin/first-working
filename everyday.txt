@@ -122,9 +122,12 @@ inspect检查
 prompted提示
 along(延伸)with  以及
 goal目标
-
-
-
+manipulate手动
+complicated复杂的
+explicitly明确的
+significant意义
+comma-separated逗号分隔
+metrics度量
 
 
 

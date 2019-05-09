@@ -1,6 +1,7 @@
 
 
 如果是默认非自定义的，只能通过IP通信。
+bridge  host  macvlan  overlay
 
 Bridge：相同网络可以通讯，不同网络不能通讯
 docker network create my-net

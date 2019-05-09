@@ -1,0 +1,127 @@
+
+
+docker数据：
+数据卷：/var/lib/docker/volumes/   由数据卷纳管，非docker程序不能修改
+绑定挂载：可以是任何目录，非docker程序也可以修改
+tmpfs挂载：仅保存在主机的系统内存，并不会写进文件系统,与容器的生存周期一直
+
+
+数据卷：分为命名卷和匿名卷,可以被挂载载多个容器中，不会被自动删除(-v/--mount 直接挂载)
+
+
+绑定挂载：使用-v/--mount 直接挂载,因此依赖文件系统,文件/目录为空则会自动创建,不为空,则会将存在的数据加载到容器中去
+    允许访问敏感数据，也能通过容器直接修改主机文件/目录(危险)，文件/目录的变动同时影响主机和容器
+	需要和容器共享的资源，如配置文件..
+	
+临时挂载：它可以在容器的生命周期中被容器用来存储非持久状态或敏感信息，例如：swarm服务使用tmpfs挂载将(Docker secrets集中管理这些数据)挂载到服务的容器中
+
+Volumes:
+卷比绑定装载更容易备份或迁移。
+可以使用目录命令行界面命令或目录应用编程接口来管理卷(被dockers纳管)。
+卷可以在Linux和windos容器上工作。
+卷可以在多个容器之间更安全地共享。
+卷驱动程序允许您将卷存储在远程主机或云提供商上，以加密卷的内容，或添加其他功能。
+新卷可以用容器预先填充其内容。
+卷不会增加使用它的容器的大小，并且卷的内容存在于给定容器的生命周期之外。
+
+挂载非空目录，容器里的目录内容会被覆盖掉，且不存在则会创建
+-v会将所有选项组合成一个字段(service不支持)   
+:: 第一个字段是卷名，匿名卷省略  第二字段是容器路径   第三是劝你西安
+--mount以键值对<key>=<value>的形式分开选项，看起来更有意义
+  docker service create \
+  --mount 'type=volume,src=<VOLUME-NAME>,dst=<CONTAINER-PATH>,volume-driver=local,volume-opt=type=nfs,volume-opt=device=<nfs-server>:<nfs-path>,"volume-opt=o=addr=<nfs-address>,vers=4,soft,timeo=180,bg,tcp,rw"'
+  --name myservice <IMAGE>
+
+创建数据卷：docker volume create my-vol
+数据卷列表：docker volume ls
+查看数据卷具体信息：docker volume inspect my-vol
+删除数据卷：docker volume rm my-vol
+根据名字移除卷:docker volume rm awesome
+清除无挂载的数据卷：docker volume prune
+
+创建容器同时创建命名卷
+单个
+ docker run -d \
+  --name devtest \
+  --mount source=myvol2,target=/app \
+  nginx:latest
+服务
+ docker service create -d \
+  --replicas=4 \
+  --name devtest-service \
+  --mount source=myvol2,target=/app \
+  nginx:latest
+ docker service ps devtest-service
+ docker service rm devtest-service
+
+Populate a volume using a container
+ docker run -d \
+  --name=nginxtest \
+  --mount source=nginx-vol,destination=/usr/share/nginx/html \
+  nginx:latest
+ ls /var/lib/docker/volumes  
+
+Use a read-only volume
+ docker run -d \
+  --name=nginxtest \
+  --mount source=nginx-vol,destination=/usr/share/nginx/html,readonly \
+  nginx:latest
+
+Share data among machines
+ 1.docker plugin install --grant-all-permissions vieux/sshfs   下载存储引擎
+ 2.docker volume create --driver vieux/sshfs \
+     -o sshcmd=test@node2:/home/test \
+     -o password=testpassword \
+     sshvolume
+ 3.docker run -d \
+     --name sshfs-container \
+     --volume-driver vieux/sshfs \
+     --mount src=sshvolume,target=/app,volume-opt=sshcmd=test@node2:/home/test,volume-opt=password=testpassword \
+     nginx:latest
+
+绑定挂载：挂载非空目录，容器里的目录内容会被覆盖掉
+-v 会自动创建
+--mount '""'不会自动创建
+
+
+临时挂载：
+-tmpfs     仅支持选项tmpfs-size    tmpfs-mode(权限)
+--mount 
+
+
+docker ps -s 查看大小
+size:用于每个容器的可写层的数据量(磁盘上)。
+虚拟大小:容器使用的只读图像数据的数据量加上容器的可写层大小。
+
+
+挂载就相当于有一个最上层
+存储驱动：原理是写时复制，用时分配
+1.AUFS:文件级存储,image(多层只读)和container(可写)
+2.Overlay:文件级存储,只有两层,一个upper文件系统和一个lower文件系统
+3.Device mapper:块级存储,逻辑设备到物理设备的映射框架机制,用户可以很方便的根据自己的需要制定实现存储资源的管理策略
+  Device mapper驱动会先在块设备上创建一个资源池，然后在资源池上创建一个带有文件系统的基本设备，所有镜像都是这个基本设备的快照，而容器则是镜像的快照
+  当要写入一个新文件时，在容器的镜像内为其分配新的块并写入数据，这个叫用时分配。当要修改已有文件时，再使用CoW为容器快照分配块空间，将要修改的数据复制到在容器快照中新的块里再进行修改
+4.Btrfs:文件级级存储, 把文件系统的一部分配置为一个完整的子文件系统，称之为subvolume, 
+5.ZFS:文件系统,把所有设备集中到一个存储池中来进行管理
+
+
+
+docker --  docker swarm --  docker deploy
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
