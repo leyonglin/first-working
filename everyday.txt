@@ -128,7 +128,7 @@ explicitly明确的
 significant意义
 comma-separated逗号分隔
 metrics度量
-
-
+revision修订本
+dashboards仪表盘
 
 

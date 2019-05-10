@@ -41,6 +41,7 @@ ngx_http_core_module(模块) -- Embedded Variables        内置变量解释
 模块文档2：./configure   1. cd objs/    2.vim ngx_modules.c(编译文档)  3. cd src/http/modules/  
                          4. src(框架源代码目录)/http(框架文件)/modules/(第三方模块源代码存放路径)搜索ngx_command_t
 
+$http_host 则是读取请求头header里面的key，所有请求头里面的key再nginx里面都可以通过小写和下划线来让nginx读取。例如header里面的Host就能转成$http_host, user_agent可以转成$http_user_agent。
 
 kill -SIGTERM pid  子进程向父进程告知，要退出了
 nginx命令行

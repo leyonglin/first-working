@@ -240,6 +240,135 @@ docker port cct1
 iptables -I DOCKER -s ip -d ip -p tcp --dport 80 -j DROP
 
 
+
+
+
+docker数据：
+数据卷：/var/lib/docker/volumes/   由数据卷纳管，非docker程序不能修改
+绑定挂载：可以是任何目录，非docker程序也可以修改
+tmpfs挂载：仅保存在主机的系统内存，并不会写进文件系统,与容器的生存周期一直
+
+
+数据卷：分为命名卷和匿名卷,可以被挂载载多个容器中，不会被自动删除(-v/--mount 直接挂载)
+
+
+绑定挂载：使用-v/--mount 直接挂载,因此依赖文件系统,文件/目录为空则会自动创建,不为空,则会将存在的数据加载到容器中去
+    允许访问敏感数据，也能通过容器直接修改主机文件/目录(危险)，文件/目录的变动同时影响主机和容器
+	需要和容器共享的资源，如配置文件..
+	
+临时挂载：它可以在容器的生命周期中被容器用来存储非持久状态或敏感信息，例如：swarm服务使用tmpfs挂载将(Docker secrets集中管理这些数据)挂载到服务的容器中
+
+Volumes:
+卷比绑定装载更容易备份或迁移。
+可以使用目录命令行界面命令或目录应用编程接口来管理卷(被dockers纳管)。
+卷可以在Linux和windos容器上工作。
+卷可以在多个容器之间更安全地共享。
+卷驱动程序允许您将卷存储在远程主机或云提供商上，以加密卷的内容，或添加其他功能。
+新卷可以用容器预先填充其内容。
+卷不会增加使用它的容器的大小，并且卷的内容存在于给定容器的生命周期之外。
+
+挂载非空目录，容器里的目录内容会被覆盖掉，且不存在则会创建
+-v会将所有选项组合成一个字段(service不支持)   
+:: 第一个字段是卷名，匿名卷省略  第二字段是容器路径   第三是劝你西安
+--mount以键值对<key>=<value>的形式分开选项，看起来更有意义
+  docker service create \
+  --mount 'type=volume,src=<VOLUME-NAME>,dst=<CONTAINER-PATH>,volume-driver=local,volume-opt=type=nfs,volume-opt=device=<nfs-server>:<nfs-path>,"volume-opt=o=addr=<nfs-address>,vers=4,soft,timeo=180,bg,tcp,rw"'
+  --name myservice <IMAGE>
+
+创建数据卷：docker volume create my-vol
+数据卷列表：docker volume ls
+查看数据卷具体信息：docker volume inspect my-vol
+删除数据卷：docker volume rm my-vol
+根据名字移除卷:docker volume rm awesome
+清除无挂载的数据卷：docker volume prune
+
+创建容器同时创建命名卷
+单个
+ docker run -d \
+  --name devtest \
+  --mount source=myvol2,target=/app \
+  nginx:latest
+服务
+ docker service create -d \
+  --replicas=4 \
+  --name devtest-service \
+  --mount source=myvol2,target=/app \
+  nginx:latest
+ docker service ps devtest-service
+ docker service rm devtest-service
+
+Populate a volume using a container
+ docker run -d \
+  --name=nginxtest \
+  --mount source=nginx-vol,destination=/usr/share/nginx/html \
+  nginx:latest
+ ls /var/lib/docker/volumes  
+
+Use a read-only volume
+ docker run -d \
+  --name=nginxtest \
+  --mount source=nginx-vol,destination=/usr/share/nginx/html,readonly \
+  nginx:latest
+
+Share data among machines
+ 1.docker plugin install --grant-all-permissions vieux/sshfs   下载存储引擎
+ 2.docker volume create --driver vieux/sshfs \
+     -o sshcmd=test@node2:/home/test \
+     -o password=testpassword \
+     sshvolume
+ 3.docker run -d \
+     --name sshfs-container \
+     --volume-driver vieux/sshfs \
+     --mount src=sshvolume,target=/app,volume-opt=sshcmd=test@node2:/home/test,volume-opt=password=testpassword \
+     nginx:latest
+
+绑定挂载：挂载非空目录，容器里的目录内容会被覆盖掉
+-v 会自动创建
+--mount '""'不会自动创建
+
+
+临时挂载：
+-tmpfs     仅支持选项tmpfs-size    tmpfs-mode(权限)
+--mount 
+
+
+docker ps -s 查看大小
+size:用于每个容器的可写层的数据量(磁盘上)。
+虚拟大小:容器使用的只读图像数据的数据量加上容器的可写层大小。
+
+
+挂载就相当于有一个最上层
+存储驱动：原理是写时复制，用时分配
+1.AUFS:文件级存储,image(多层只读)和container(可写)
+2.Overlay:文件级存储,只有两层,一个upper文件系统和一个lower文件系统
+3.Device mapper:块级存储,逻辑设备到物理设备的映射框架机制,用户可以很方便的根据自己的需要制定实现存储资源的管理策略
+  Device mapper驱动会先在块设备上创建一个资源池，然后在资源池上创建一个带有文件系统的基本设备，所有镜像都是这个基本设备的快照，而容器则是镜像的快照
+  当要写入一个新文件时，在容器的镜像内为其分配新的块并写入数据，这个叫用时分配。当要修改已有文件时，再使用CoW为容器快照分配块空间，将要修改的数据复制到在容器快照中新的块里再进行修改
+4.Btrfs:文件级级存储, 把文件系统的一部分配置为一个完整的子文件系统，称之为subvolume, 
+5.ZFS:文件系统,把所有设备集中到一个存储池中来进行管理
+
+
+
+数据卷：/var/lib/docker/volumes/
+实名(命名)卷：
+匿名卷：名字由docker随机命名，添加了-rm参数，则匿名卷会随着容器的删除而删除
+
+1.volume和bind mounts允许您在主机和容器之间共享文件，以便即使在容器停止后也可以保留数据	2.tmpfs挂载是临时的，并且仅保留在主机内存中，无法共享
+创建数据卷：docker volume create my-vol
+数据卷列表：docker volume ls
+查看数据卷具体信息：docker volume inspect my-vol
+删除数据卷：docker volume rm my-vol
+根据名字移除卷:docker volume rm awesome
+清除无挂载的数据卷：docker volume prune
+
+#用于为单一容器创建数据卷
+docker run -v myvol2:/app[:ro].....
+#用于为集群服务创建数据卷
+docker run -mount source=myvol2,target=/app[,readonly].....    (推荐,且不用实现创建数据卷)
+
+如果容器中用于映射的文件或目录不为空，则其中的数据或是文件会拷贝到数据卷中
+
+
 docker容器的数据管理：dockerfile---VOLUME ["/data"]---会自动创建数据卷，无法共享
 docker容器的数据卷：volume是经过特殊设计的目录，由docker统一管理，独立于容器的存在，存在于宿主机中的文件系统(目录/文件)，可以绕过联合文件系统(UFS),可共享为一个或多个容器提供访问
 					将应用与运行环境打包，环境生存周期与应用程序相一致，数据需要是持久化的，数据卷在容器删除的时候不会被删除，并且能共享的      
@@ -257,6 +386,164 @@ docker的数据卷容器
 docker数据卷的备份和还原
 		docker run --volumes-from back_cname -v 宿主机目录:容器目录 --name new_bcname  ubuntu  tar cvf 容器目录/backup.tar  容器备份目录
 		执行备份命令的容器，即挂载了数据存放目录，且挂载了备份数据存放目录
+
+
+
+
+
+如果是默认非自定义的，只能通过IP通信。
+网络模式：bridge  host  macvlan  overlay
+
+Bridge：相同网络可以通讯，不同网络不能通讯
+docker network create my-net
+docker network ls
+docker network inspect my_bridge
+docker network rm my-net
+创建网络时，可以指定-ipv6标志来启用ipv6。
+cat daemon.json        一旦配置ipv6，则无法选择性关闭
+{
+  "bip": "192.168.1.5/24",
+  "fixed-cidr": "192.168.1.5/25",
+  "fixed-cidr-v6": "2001:db8::/64",
+  "mtu": 1500,
+  "default-gateway": "10.20.1.1",
+  "default-gateway-v6": "2001:db8:abcd::89",
+  "dns": ["10.20.1.2","10.20.1.3"]
+}
+
+docker create --name my-nginx --network my-net --publish 8080:80 nginx:latest
+docker network connect my-net my-nginx
+docker network disconnect my-net my-nginx
+
+
+Overlay：分布式网络
+如果是初始化swarm，会自动创建docker_gwbridge(负责dockerd间通讯,存在主机内核上)和ingress(overlay类型)两个网络
+docker network create -d overlay [--attachable单独容器通讯] [--opt encrypted加密通讯,但影响性能] my-attachable-overlay
+docker network rm ingress 如果不存在入口网络，会影响端口发布和负载均衡
+docker network create \                       
+  --driver overlay \
+  --ingress \
+  --subnet=10.11.0.0/16 \
+  --gateway=10.11.0.2 \
+  --opt com.docker.network.driver.mtu=1200 \
+  my-ingress
+
+Customize the docker_gwbridge interface
+1.stop docker
+2.delete the existing docker_gwbridge interface 
+    ip link set docker_gwbridge down
+    ip link del dev docker_gwbridge
+3.Start Docker.
+4.docker network create \
+  --subnet 10.11.0.0/16 \
+  --opt com.docker.network.bridge.name=docker_gwbridge \
+  --opt com.docker.network.bridge.enable_icc=false \
+  --opt com.docker.network.bridge.enable_ip_masquerade=true \
+  docker_gwbridge
+Publish ports on an overlay network
+  using the -p or --publish flag on docker service create or docker service update  
+Bypass the routing mesh for a swarm service
+  --mode global    --endpoint-mode flag to dnsrr   
+Separate control and data traffic
+  --advertise-addr and --datapath-addr
+  
+
+Host：如果服务容器绑定了80端口，相当于进程直接在主机上运行，这是其它方面是隔离的
+docker container create --network host
+
+Macvlan：
+  docker network create -d macvlan  \
+  --subnet=192.168.32.0/24  \
+  --ip-range=192.168.32.128/25 \
+  --gateway=192.168.32.254  \
+  --aux-address="my-router=192.168.32.129" \
+  -o parent=eth0 macnet32
+
+禁用一个容器的网络：删除容器会删除网络
+  docker run --rm -dit \
+  --network none \
+  --name no-net-alpine \
+  alpine:latest \
+  ash
+
+
+docker run --rm -d --network host --name my_nginx nginx  ---  --rm means Automatically remove the container when it exits
+
+
+overlay：swarm
+Use the default overlay network
+  1.docker swarm init --advertise-addr=<IP-ADDRESS-OF-MANAGER>
+  2.docker swarm join --token <TOKEN> --advertise-addr <IP-ADDRESS-OF-WORKER-1> <IP-ADDRESS-OF-MANAGER>:2377
+  3.docker node ls  / docker node ls --filter role=manager
+  4.docker network ls   (The docker_gwbridge connects the ingress network to the Docker host’s network interface so that traffic can flow to and from swarm managers and workers)
+Use a user-defined overlay network：
+  1.docker network create -d overlay nginx-net   (manager：worker会自动创建该网络)         
+  2.docker service create \                      (manager:All of the service task containers can communicate with each other without opening any ports.)    
+    --name my-nginx \
+    --publish target=80,published=80 [mode=host] \    如果使用host模式，副本集也要改
+    --replicas=5 [/--mode global]\
+    --network nginx-net \
+    nginx
+  1.docker network create -d overlay nginx-net-2
+  2.docker service update \
+    --network-add nginx-net-2 \
+    --network-rm nginx-net \
+    my-nginx
+删除服务与网络：
+docker service rm my-nginx 
+docker network rm nginx-net nginx-net-2
+
+Use an overlay network for standalone containers
+1.docker swarm init  (host1)
+2.docker swarm join --token SWMTKN-1-3s9fdqc7mc73z8aaucxrhwd6lerq3283asuwe7fdfv88xuerru-cyscavkonox925ig9sbduw12z 192.168.126.133:2377(host2)  
+3.docker network create --driver=overlay --attachable test-net(host1)  
+4.docker run -it --name alpine1 --network test-net alpine(host1)  
+5.docker network ls(host1)   docker network ls (host2) 
+6.docker run -dit --name alpine2 --network test-net alpine(host2)  
+7.docker network ls(host2)  
+8.docker run -it --rm --name alpine3 --network test-net alpine  
+9.docker container stop alpine2   docker container rm alpine1   docker network rm test-net
+  
+  
+Macvlan：  
+1.docker network create -d macvlan \
+  --subnet=172.16.86.0/24 \
+  --gateway=172.16.86.1 \
+  -o parent=eth0 \
+  my-macvlan-net  
+2.docker run --rm -itd \
+  --network my-macvlan-net \
+  --name my-macvlan-alpine \
+  alpine:latest \
+  ash  
+3.docker container inspect my-macvlan-alpine
+4.docker exec my-macvlan-alpine ip addr show eth0 &&  docker exec my-macvlan-alpine ip route
+IEEE 802.1q以及VLAN Tagging属于互联网下IEEE 802.1的标准规范，允许多个网桥(Bridge)在信息不被外泄的情况下公开的共享同一个实体网上。IEEE 802.1q-英文缩写写为dot1q，经常在实现以太网封装协议的架构下被提及。  
+802.1q trunked bridge example : 没啥不一样的
+1.docker network create -d macvlan \
+  --subnet=172.16.86.0/24 \
+  --gateway=172.16.86.1 \
+  -o parent=eth0.10 \
+  my-8021q-macvlan-net
+2.docker run --rm -itd \
+  --network my-8021q-macvlan-net \
+  --name my-second-macvlan-alpine \
+  alpine:latest \
+  ash
+
+
+
+网络：容器默认通讯是使用网桥，也可以使用转发 1.sysctl net.ipv4.conf.all.forwarding=1   2.iptables -P FORWARD ACCEPT   (物理机上)
+bridge:Bridge networks are usually used when your applications run in standalone containers that need to communicate(daemon.json，详查链接跳转)
+   docker network create[rm] my-net                           创建/删除网桥
+   docker network [dis]connect my-net  nginx                  使用新网桥连接已运行容器
+host:直接使用主机的网络(仅linux)
+
+overlay：distributed network(different Docker hosts/using swarm services.)
+ docker network create -d overlay --attachable my_overlay     既可以使用于swarm集群服务，也可以使用单独容器间通讯的网路(--attachable)
+macvlan：Macvlan networks allow you to assign a MAC address to a container(migrating from a VM setup/look like physical hosts)
+ docker network create -d macvlan --subnet=192.168.32.0/24 --ip-range=192.168.32.128/25 --gateway=192.168.32.254  --aux-address="my-router=192.168.32.129" -o parent=eth0 macnet32
+none: For this container, disable all networking
 
 
 docker容器的跨主机连接
@@ -405,36 +692,8 @@ Grafana(容器)：
 
 
 
-网络：容器默认通讯是使用网桥，也可以使用转发 1.sysctl net.ipv4.conf.all.forwarding=1   2.iptables -P FORWARD ACCEPT   (物理机上)
-bridge:Bridge networks are usually used when your applications run in standalone containers that need to communicate(daemon.json，详查链接跳转)
-   docker network create[rm] my-net                           创建/删除网桥
-   docker network [dis]connect my-net  nginx                  使用新网桥连接已运行容器
-host:直接使用主机的网络(仅linux)
 
-overlay：distributed network(different Docker hosts/using swarm services.)
- docker network create -d overlay --attachable my_overlay     既可以使用于swarm集群服务，也可以使用单独容器间通讯的网路(--attachable)
-macvlan：Macvlan networks allow you to assign a MAC address to a container(migrating from a VM setup/look like physical hosts)
- docker network create -d macvlan --subnet=192.168.32.0/24 --ip-range=192.168.32.128/25 --gateway=192.168.32.254  --aux-address="my-router=192.168.32.129" -o parent=eth0 macnet32
-none: For this container, disable all networking
 
-数据卷：/var/lib/docker/volumes/
-实名(命名)卷：
-匿名卷：名字由docker随机命名，添加了-rm参数，则匿名卷会随着容器的删除而删除
-
-1.volume和bind mounts允许您在主机和容器之间共享文件，以便即使在容器停止后也可以保留数据	2.tmpfs挂载是临时的，并且仅保留在主机内存中，无法共享
-创建数据卷：docker volume create my-vol
-数据卷列表：docker volume ls
-查看数据卷具体信息：docker volume inspect my-vol
-删除数据卷：docker volume rm my-vol
-根据名字移除卷:docker volume rm awesome
-清除无挂载的数据卷：docker volume prune
-
-#用于为单一容器创建数据卷
-docker run -v myvol2:/app[:ro].....
-#用于为集群服务创建数据卷
-docker run -mount source=myvol2,target=/app[,readonly].....    (推荐,且不用实现创建数据卷)
-
-如果容器中用于映射的文件或目录不为空，则其中的数据或是文件会拷贝到数据卷中
 
 Docker-compose:是 Docker 容器进行编排的工具，定义和运行多容器的应用，可以一条命令启动多个容器。
 Docker Compose 将所管理的容器分为三层，分别是工程（project）、服务（service）、容器（container）
@@ -444,30 +703,273 @@ Docker Compose 运行目录下的所有文件（docker-compose.yml）组成一�
    2.docker-compose.yml 定义组成应用的各服务
    3.docker-compose up 启动整个应用
 
-在同一目录下，创建 docker-compose.yml
-       cat docker-compose.yml 
-         version: '2'
-         services:
-           web:
-            build: ./dir                        1.dockerfile文件的相对路径，默认命名名称是当前目录名称_服务名
-			[context: ./dir                     2.构建当前dir目录下的Dockerfile-alternate文件
-            dockerfile: Dockerfile-alternate]
-			image: webapp:tag                   自定义镜像名称与标签, deploying a stack in swarm mode该选项会被忽略
-			args:
-			  buildno: 1                        变量(可以在FROM之前声明)
-            cache_from:                         使用缓存构建
-			  alpine:latest 		  
-			labels:                             添加构建的标签信息，键值对形式，使用双引号，使用反斜杠可以被当做一个命令行解析，每个LABEL指令都能产生一个新的层
-              com.example.description: "Accounting webapp"  
-			shm_size: '2gb'                      指定/dev/shm大小
-            ports:
-             - "5000:5000"
-            volumes:
-             - .:/code
-            depends_on:
-             - redis
-           redis:
-             image: redis
+
+
+Proxy server settings
+# Set proxy server, replace host:port with values for your servers
+ENV http_proxy host:port
+ENV https_proxy host:port
+cat /etc/docker/daemon.json 
+{
+  "dns": ["your_dns_address", "8.8.8.8"]
+}
+
+
+On Windows systems, CTRL+C does not stop the container.need docker container stop <Container NAME or ID>
+
+共享镜像：
+docker image -h
+docker tag image username/repository:tag
+docker push username/repository:tag
+
+
+负载均衡:container---services(docker stack负载均衡)---docker-machine(添加节点:分布式)---docker-machine(多服务Persist the data)
+docker swarm init(manager)  --  (node)添加节点：docker swarm join --token SWMTKN-1-0ooivfyx2yigd10p4bsy04n7n8a474xwlwwep2tcyqhvojmjlt-1n57pq2p78s4o2qbhk51uuh4z 192.168.126.133:2377
+                                (node)删除节点：docker swarm leave
+docker stack deploy -c docker-compose.yml getstartedlab    创建名为getstartedlab服务(修改compose可重新运行)
+docker service ls / docker stack services getstartedlab
+docker service ps getstartedlab_web 
+docker ps[container ls] -q  
+docker stack rm getstartedlab    删除
+docker swarm leave --force       关闭集群
+
+
+docker swarm:
+安装docker-machine:Docker Machine 是 Docker 官方提供的一个工具，它可以帮助我们在远程的机器上安装 Docker，或者在虚拟机 host 上直接安装虚拟机并在虚拟机中安装 Docker。我们还可以通过 docker-machine 命令来管理这些虚拟机和 Docker。
+安装virtualbox,如果只有一台机器的情况下
+
+Docker Compose:#开头的行被视为注释，并被忽略。空行也被忽略。
+version: "3.7"                                            指定compose版本
+services:                                                 构建服务
+  webapp:                                                 服务名称
+    build: ./dir                                          1.从指定路径找寻Dockerfile构建
+    build:                                                2.从指定路径找指定文件构建
+      context: ./dir                                      
+      dockerfile: Dockerfile-alternate                    
+	image: webapp:tag                                     构建后镜像名称与标签(在部署swarm集群时不生效)  
+	args:                                                 构建参数(YAML布尔值需要用引号括起来)
+        buildno: 1                                        
+      - buildno=1                                         
+	cache_from:                                           指定缓存
+      - alpine:latest                                     
+    labels:                                               标签
+        com.example.description: "Accounting webapp"      
+      - "com.example.description=Accounting webapp"       
+	shm_size: '2gb'                                       设置容器/dev/shm容量大小(默认以字节为单位)
+	target: name									      用于多阶段构建(指定构建阶段FROM ... as name)
+	cap_add:                                              一种权限设置(man 7 capabilities)
+      - ALL                                               
+    cap_drop:                                             
+      - NET_ADMIN                                         
+      - SYS_ADMIN                                         
+    cgroup_parent: m-executor-abcd                        指定父cgroup组，意味着将继承该组的资源限制(集群无效)
+    command: bundle exec thin -p 3000                     覆盖容器启动后默认执行的命令
+	command: ["bundle", "exec", "thin", "-p", "3000"]     
+    configs:											  授予容器对配置的访问权限，并将其装载在容器内
+      - my_config
+	configs:
+      my_config:
+        file: ./my_config.txt
+      my_other_config:
+        external: true
+		  name: redis_config
+	 configs:
+      - source: my_config
+        target: /redis_config
+        uid: '103'
+        gid: '103'
+        mode: 0440
+    container_name: my-web-container                      指定容器名称后，该服务将无法进行扩展，因为Docker不允许多个容器具有相同的名称，默认将会使用“项目名称_服务名称_序号”这样的格式
+    credential_spec                                       为所管理的服务账户配置证书规则。仅用于使用 Windows 类容器的服务。 
+	  file: my-credential-spec.json	                      C:\ProgramData\Docker\CredentialSpecs\my-credential-spec.json
+      registry: my-credential-spec                        HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Virtualization\Containers\CredentialSpecs
+    deploy:                                               指定与服务部署和运行相关的配置，仅用于部署集群
+      mode：replicas                                      可为 global(每个swarm节点只有一个容器)或者replicated(可有多个容器,默认)	
+      replicas: 6                                         运行的容器的数量。
+      update_config:
+        parallelism: 2                                    每次要更新的容器数量
+        delay: 10s 										  在下次尝试重启之前需要等待的时间，默认为 0。
+        failure_action：                                  更新失败时要采取的动作。为 continue、rollback 或 pause 之一，默认为 pause。 
+        monitor：                                         判定一次更新失败前要持续的时间，默认为 0s。 
+        max_failure_ratio：                               能容忍的最大更新失败率。 		
+      restart_policy:                                     重启策略，一个或多个值
+        condition: on-failure    						  值为 none、on-failure 或者 any 之一，默认为 any
+        delay：                                           在下次尝试重启之前需要等待的时间，默认为 0。 
+        max_attempts：                                    最多尝试重启的次数，默认从不放弃。 
+        window：                                          判定一次重启失败前要等待的时间，默认立即判定
+      rollbck_config  
+        parallelism                                       并行性:一次回滚的容器数量。如果设置为0，所有容器将同时回滚。     
+        delay                                             延迟:每个容器组回滚之间的等待时间(默认为0)。
+        failure_action                                    失败_操作:如果回滚失败，continue or pause(默认暂停)
+        monitor                                           监视器:每次任务更新后监视失败的持续时间(ns|us|ms|s|m|h)(默认为0)。
+        max_failure_ratio                                 失败比率：回滚期间容许的故障率(默认为0)。
+        order	   										  顺序:回滚期间的操作顺序。stop-first(旧任务在开始新任务前停止)或start-first(新任务先开始，正在运行的任务短暂重叠)(默认先停止)。            
+	resources:                                            资源限制策略cpu_quota, cpuset, mem_limit, memswap_limit, mem_swappiness
+      limits:
+        cpus: '0.50'
+        memory: 50M
+      reservations:
+        cpus: '0.25'
+        memory: 20M	
+	placement:                                           指定布置约束。 
+       constraints:                                      指定节点id/名称/角色/labels/引擎标签(ubuntu 14.04)
+	     - node.role == manager
+	   preferences:                                      服务中任务分配策略
+         - spread: node.labels.zone  
+    endpoint_mode: vip/dnsrr                             为连接到服务的外部客户端指定服务发现的方式(1.vip:由Docker为服务赋一个虚拟IP(默认) 2.dnsrr:使用DNS服务发现,负载均衡器等情况下时是有用的)
+	labels:                                              为服务（而非容器）设置标签
+        com.example.description: "This label will appear on the web service"
+The following sub-options (supported for docker-compose up and docker-compose run) are not supported for docker stack deploy or the deploy key.		
+	devices:                                              设备映射
+      - "/dev/ttyUSB0:/dev/ttyUSB0"
+    depends_on:                                           服务依赖
+      - db
+      - redis	  
+	dns: 8.8.8.8
+	dns:
+      - 8.8.8.8
+      - 9.9.9.9
+	dns_search: example.com  
+	dns_search:
+      - dc1.example.com
+      - dc2.example.com
+	entrypoint: /code/entrypoint.sh                       如果在文件中有CMD指令，它将被忽略
+	entrypoint:
+      - php
+      - -d
+      - zend_extension=/usr/local/lib/php/extensions/no-debug-non-zts-20100525/xdebug.so
+      - -d
+      - memory_limit=-1
+      - vendor/bin/phpunit
+	env_file: .env                                       
+	env_file:
+      - ./common.env
+      - ./apps/web.env
+      - /opt/secrets.env
+	# a.env                                                单个环境变量
+        VAR=1
+	environment:                                            优先级高于env_file
+        RACK_ENV: development
+	  - RACK_ENV=development
+	expose:
+      - "3000"
+      - "8000"
+	external_links:                                        关联到 Compose 之外启动的容器，尤其是那些提供了共享和常用服务的容器。
+      - redis_1 
+	extra_hosts:                                           添加主机名映射，还要在提供服务的容器的 /etc/hosts 文件中指明该映射关系。 
+      - "somehost:162.242.195.82"
+    healthcheck:                                           配置运行的检查，与dockerfile的健康检查一样
+      test: ["CMD", "curl", "-f", "http://localhost"]      必须是列表，同时第一项是["NONE"] CMD or CMD-SHELL，或者test: curl -f https://localhost || exit 1
+      interval: 1m30s 
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+	image: redis											指定容器所使用的镜像。
+	init: true                                              初始化
+	isolation                                               linux仅支持默认值，window上支持default, process and hyperv
+    links:                                                  过时技术
+      - db	
+	logging:                                                日志配置
+      driver: syslog                                        "json-file"和"syslog"(其它不能在这里用)
+      options:
+        syslog-address: "tcp://192.168.0.42:123"
+		max-size: "200k"
+        max-file: "10"
+	networks:                                              指定服务要加入的网络,  "bridge" "host" "none" "service:[service name]" "container:[container name/id]"
+      - some-network:
+	      name: my-app-net
+		  driver: overlay
+          attachable: true
+		  ipv4_address: 172.16.238.10                      ip地址
+          aliases:                                         创建服务在某个网络下的别名列表，这样该网络中的其他容器除了使用服务名（默认的）外还可使用别名访问该服务中的容器。 
+            - alias1
+		  ipam:
+            driver: default
+            config:
+              - subnet: 172.28.0.0/16
+          pid: "host"
+		  ports:                                           支持LONG SYNTAX(target  published  protocol  mode与host模式不兼容)
+		    - "3000-3005"
+		    - "6060:6060/udp"
+		  restart: "no"                                    always  on-failure  unless-stopped
+		  secrets:                                         授予对机密的访问权限SHORT SYNTAX:/run/secrets/<secret_name>  LONG SYNTAX:like config
+            my_secret:                                     服务范围下的该选项应该与顶层范围下的 secrets 选项同时指定。 
+              file: ./my_secret.txt
+		  security_opt                                     覆盖每个容器的默认标记方案
+			- label:user:USER
+		  stop_grace_period: 1s                            before sending SIGKILL
+		  stop_signal: SIGUSR1							   设置停止容器时要发送的信号，默认为 SIGTERM。 
+		  sysctls:                                         内核优化，集群模式不生效
+            net.core.somaxconn: 1024
+			- net.core.somaxconn=1024
+        - type: tmpfs 										临时文件系统
+            target: /app
+            tmpfs:
+			  - /run
+              size: 1000									   
+          ulimits:
+           nproc: 65535
+           nofile:
+             soft: 20000   
+		  userns_mode: "host"                              Disables the user namespace for this service，集群不起作用
+		  volumes:                                         挂载
+             - type: volume
+               source: mydata
+               target: /data
+			   read_only
+               volume:
+                 nocopy: true
+             - type: bind
+               source: ./static
+               target: /opt/app/static
+		  volumes:
+             - "/var/run/postgres/postgres.sock:/var/run/postgres/postgres.sock"
+			 - .:/var/www/project:cached
+		  volumes:
+             example:
+               driver_opts:
+                 type: "nfs"
+                 o: "addr=10.40.0.199,nolock,soft,rw"
+                 device: ":/docker/example"
+		  volumes:
+             data:
+               external: true                      文件外提前创建好了
+		       name: my-app-data
+			 
+			 
+			 
+	labels:
+      - "com.example.description=Database volume"		 
+	user: postgresql                这些不知道放在哪里
+    working_dir: /code    
+    domainname: foo.com
+    hostname: foo
+    ipc: host
+    mac_address: 02:42:ac:11:65:43    
+    privileged: true    
+    read_only: true
+    shm_size: 64M
+    stdin_open: true
+    tty: true		 
+
+volumes:
+  mydata:
+  dbdata:
+
+secrets:
+  my_secret:
+    file: ./my_secret.txt
+  my_other_secret:
+    external: true
+	name: redis_secret
+networks:
+  new:
+  legacy:
+
+     Specifying durations          Some configuration check durations，(us, ms, s, m and h.)
+	 Specifying byte values        b, k, m , g , kb, mb and gb
+
+
 
  
 启动应用：docker-compose up [-d]          构建且启动
@@ -620,8 +1122,27 @@ Configure Docker to use a proxy server
 
 
 
+日志设置
+daemon.json
+{
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "10m",
+    "max-file": "3",
+    "labels": "production_status",
+    "env": "os,customer"
+  }
+}
 
 
+用文档内容信任签署图像....未完成
+docker trust key generate jeff                 生成
+docker trust key load key.pem --name jeff      已存在
+docker trust signer add --key cert.pem jeff dtr.example.com/admin/demo   
+docker trust sign dtr.example.com/admin/demo:1
+export DOCKER_CONTENT_TRUST=1
+docker trust inspect --pretty dtr.example.com/admin/demo:1
+docker trust revoke dtr.example.com/admin/demo:1
 
 
 
