@@ -130,5 +130,5 @@ comma-separated逗号分隔
 metrics度量
 revision修订本
 dashboards仪表盘
-
+scenario方案
 

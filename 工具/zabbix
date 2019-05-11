@@ -1,0 +1,62 @@
+
+Zabbix：
+
+图形化操作：https://www.zabbix.com/documentation/4.2/manual/web_interface
+            https://www.zabbix.com/documentation/3.4/zh/manual/web_interface
+
+Zabbix server:服务器执行数据轮询和捕获，计算及触发器，向用户发送通知。它是Zabbix代理和代理向其报告系统可用性和完整性数据的核心组件
+			  基本三组件：Zabbix server, web frontend and database storage.  zabbix前端更改---数据库---server查询并显示在web中
+Zabbix agent:部署在监控目标上，以主动监控本地资源和应用程序并传递给服务器进行处理
+			 主动检查:重服务器获取检查项,获取到检查数据后向服务端报告   被动检查:响应服务器的数据请求
+Zabbix proxy:分布式监控，Zabbix代理是可以从一个或多个被监控设备收集监控数据并将信息发送到Zabbix服务器的过程，本质上代表服务器工作。所有收集的数据都在本地缓冲，然后传输到代理所属的Zabbix服务器。
+Zabbix Java gateway：监控JMX
+Zabbix sender：通常用于长时间运行的用户脚本检测，客户端自己通过zabbix_sender提交数据给zabbix，这个通道便是trapper
+Zabbix get：测试自定义监控的时候特别有用，用于检测 agent 端的配置是否正确，可以很方便地知道 key 是否能正常获取到数据
+
+
+添加主机
+添加主机组
+应用集：模板的集合
+模板：监控项的集合，可以从其它模板添加进来，也可以加入自定义监控项
+ 链接模板：允许您将一个或多个“嵌套”模板链接到此模板
+监控项：即zabbix通过监控项来获取真正的数据，存储及作为其它判断的标准(可批量修改)
+触发器：为一个监控项定义多个具有不同阈值的触发器,可以实现不同级别的报警(可批量修改)
+触发器依赖：依赖关系设置的通知可能会被抑制，而只发送根本问题的通知
+触发器的严重性：自带6种(颜色不同)，也可自定义
+预测触发功能：Zabbix具有基于历史数据预测受监视系统的未来行为的工具。这些工具通过预测触发功能实现。提供了2个函数timeleft和forecast用于趋势预测
+事件:当触发器的状态变化的时候，一个event发生了(触发器事件,发现事件,自动注册事件,内部事件)，在Zabbix中正常事件会关闭所有的问题事件
+事件标签：stopped -- restarted  -->  “Application1  stopped”和“Application2  restarted”
+事件关联: stopped 与 restarted 不能关闭所有问题事件，标签匹配“Application1  stopped”和“Application2  restarted”才能关闭  
+事件确认：Zabbix中的问题事件可以由用户确认。
+动作：用来应对一个event的动作叫做action，一个action是一个操作及其结果，例如发送邮件通知。
+      只有在事件与定义的条件匹配的情况下才执行操作(发送消息和执行远程命令(zabbix_agentd.conf:EnableRemoteCommands 参数设置为 1 并取消注释)) 
+Escalations:升级动作，可以创建发送通知或执行远程命令的自定义场景。
+警报脚本：服务器配置文件中定义的目录中AlertScriptsPath.
+图形：将数据可视化，简单图形(自带)  自定义图形(定制)  特制图形(多个监控项比较) 
+拓扑图：架构图形
+聚合图形：把从各种来源的信息聚合到一起，以便在单个屏幕上快速查看
+宏：是一个变量{MACRO} ，根据在上下文中，宏解析为一个特殊的值。
+宏函数：提供自定义宏值的功能。{<macro>.<func>(<params>)}，需要在受宏支持的位置使用函数
+用户宏：{$MACRO}  主机级别(主机上定义) > 链接模板 > 全局宏
+自动发现(LLD):提供了一种在计算机上为不同实体自动创建/移除监控项,触发器和图形的方法(用户可以自己定义发现类型,只要它们遵循特定的JSON协议.)
+              配置”→“模板”→“发现”列中创建一个发现规则,然后在该规则种创建“图形原型”
+服务监控(services monitoring)旨在帮助那些想要高级(业务)基础设施的监控的人。最底层的服务必须依赖触发器
+web检测：监控web是否可用、是否正常工作以及响应速度
+维护：可以为Zabbix中为主机和主机组定义维护周期，有两种维护类型 - 继续对目标进行监控数据的收集和停止对目标进行监控数据的收集。
+手动关闭问题:可以通过检查关闭问题选项通过确认屏幕手动关闭问题,需在触发器配置中选中了允许手动关闭选项,才可以以这种方式解决问题
+配置的导入导出：主机组/模板/主机/网络拓扑图/聚合图形
+网络发现：无需过多管理就能在快速变化的环境中使用Zabbix，由两个阶段组成:发现(discovery)和动作(actions)(不支持加密)。
+          间隔扫描---条件(存在时间/属性)---动作(操作,例如将活动的Zabbix agent可以自动注册到服务器进行监控)
+加密：可以使用证书和共享密钥加密(源码编译--with-mbedtls[=DIR] --with-gnutls[=DIR] --with-openssl[=DIR])
+
+
+
+
+SNMP OID(对象标识符)
+ODBC 开放数据库连接
+PSK是预共享密钥
+PMI是智能型平台管理接口(Intelligent Platform Management Interface)独立于处理器,bios,操作系统
+
+
+
+

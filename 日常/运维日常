@@ -8,6 +8,9 @@ web：lpmweb.javawebdata5.com     work:javawebdata7.com
 
 live_collect-40发布：在jenkins上直接找"采集collect-live，然后找到响应的序号发布
 
+回滚：code_rollback(ybop)
+批量发布:jenkins--release
+
 https://proxy-kr.ybproxylive.com/     liveapis/external_pgasia-cdn_com/        v1/Player/Check 这台反代服务器pg 也404了
 反代域名，ping一下就知道ip，然后进去   真人，访问到后端服务器(在vhosts目录下)   完整路径           ----   重启，在live里面访问完整路径
 
