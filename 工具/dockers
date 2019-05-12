@@ -222,8 +222,8 @@ docker守护进程(host)有虚拟网桥docker0并且打开veth*的接口 与 容
               brctl addbr  br0 添加虚拟网桥(并在docker配置文件中添加-b=br0)
               ifconfig docker0 ip netmask 掩码     临时修改ip
 
-同一宿主机容器的互联
---icc=true  选项默认同一宿主机内的容器是互联的，但是重启容器，默认情况下是会变的(如果配置文件--icc=false,则会拒绝容器间的连接)
+#同一宿主机容器的互联
+#--icc=true  选项默认同一宿主机内的容器是互联的，但是重启容器，默认情况下是会变的(如果配置文件--icc=false,则会拒绝容器间的连接)
 docker run -it --name=自定义名称  --link=[CONTAINER_NAMR已存在容器名]:[ALIAS别名]  [IMAGE] [COMMOND]          新启动容器，能通过别名连接到已存在容器[名]上，重启也可以用别名连接(会改变新生成容器的ENV和hosts本地解析)
 允许特定容器间的互联,需要3个选项：
 1.--icc=false(阻断互联)     2.--link(特定互联)      3.--iptables=true(允许docker将规则添加到linux的iptables设置中)
@@ -242,21 +242,21 @@ iptables -I DOCKER -s ip -d ip -p tcp --dport 80 -j DROP
 
 
 
-
+***
 docker数据：
 数据卷：/var/lib/docker/volumes/   由数据卷纳管，非docker程序不能修改
 绑定挂载：可以是任何目录，非docker程序也可以修改
 tmpfs挂载：仅保存在主机的系统内存，并不会写进文件系统,与容器的生存周期一直
 
 
-数据卷：分为命名卷和匿名卷,可以被挂载载多个容器中，不会被自动删除(-v/--mount 直接挂载)
+数据卷(volume)：分为命名卷和匿名卷,可以被挂载载多个容器中，不会被自动删除(-v/--mount 直接挂载)
 
 
-绑定挂载：使用-v/--mount 直接挂载,因此依赖文件系统,文件/目录为空则会自动创建,不为空,则会将存在的数据加载到容器中去
+绑定挂载(bind)：使用-v/--mount 直接挂载,因此依赖文件系统,文件/目录为空则会自动创建,不为空,则会将存在的数据加载到容器中去
     允许访问敏感数据，也能通过容器直接修改主机文件/目录(危险)，文件/目录的变动同时影响主机和容器
 	需要和容器共享的资源，如配置文件..
 	
-临时挂载：它可以在容器的生命周期中被容器用来存储非持久状态或敏感信息，例如：swarm服务使用tmpfs挂载将(Docker secrets集中管理这些数据)挂载到服务的容器中
+临时挂载(tmpfs)：它可以在容器的生命周期中被容器用来存储非持久状态或敏感信息，例如：swarm服务使用tmpfs挂载将(Docker secrets集中管理这些数据)挂载到服务的容器中
 
 Volumes:
 卷比绑定装载更容易备份或迁移。
@@ -348,7 +348,6 @@ size:用于每个容器的可写层的数据量(磁盘上)。
 5.ZFS:文件系统,把所有设备集中到一个存储池中来进行管理
 
 
-
 数据卷：/var/lib/docker/volumes/
 实名(命名)卷：
 匿名卷：名字由docker随机命名，添加了-rm参数，则匿名卷会随着容器的删除而删除
@@ -361,10 +360,10 @@ size:用于每个容器的可写层的数据量(磁盘上)。
 根据名字移除卷:docker volume rm awesome
 清除无挂载的数据卷：docker volume prune
 
-#用于为单一容器创建数据卷
+用于为单一容器创建数据卷
 docker run -v myvol2:/app[:ro].....
-#用于为集群服务创建数据卷
-docker run -mount source=myvol2,target=/app[,readonly].....    (推荐,且不用实现创建数据卷)
+用于为集群服务创建数据卷
+docker run -mount source=myvol2,target=/app[,readonly].....    (推荐,且不用事先创建数据卷)
 
 如果容器中用于映射的文件或目录不为空，则其中的数据或是文件会拷贝到数据卷中
 
@@ -390,7 +389,7 @@ docker数据卷的备份和还原
 
 
 
-
+***
 如果是默认非自定义的，只能通过IP通信。
 网络模式：bridge  host  macvlan  overlay
 
@@ -530,6 +529,7 @@ IEEE 802.1q以及VLAN Tagging属于互联网下IEEE 802.1的标准规范，允�
   --name my-second-macvlan-alpine \
   alpine:latest \
   ash
+
 
 
 
@@ -694,7 +694,7 @@ Grafana(容器)：
 
 
 
-
+**
 Docker-compose:是 Docker 容器进行编排的工具，定义和运行多容器的应用，可以一条命令启动多个容器。
 Docker Compose 将所管理的容器分为三层，分别是工程（project）、服务（service）、容器（container）
 Docker Compose 运行目录下的所有文件（docker-compose.yml）组成一个工程,一个工程包含多个服务，每个服务中定义了容器运行的镜像、参数、依赖，一个服务可包括多个容器实例
@@ -971,7 +971,9 @@ networks:
 
 
 
- 
+
+
+--- 
 启动应用：docker-compose up [-d]          构建且启动
 
 停止应用：docker-compose stop
@@ -1013,16 +1015,17 @@ logs：日志输出信息
   --tail              从日志的结尾显示，--tail=200
 
 
-docker swarm集群：
-docker service create --name hello --replicas 3 --detach=false --publish 8080:80 nginx
+
+***
+container:单个docker
+services:不同服务的docker(通过*.yml定义：docker services)
+swarms：多台主机(集群:#docker-machine ssh myvm1 "docker node ls"可以在一台机器上管理)
+stacks：分布式(在services+swarms:docker stack deploy -c docker-compose.yml getstartedlab)
 
 
 原始镜像:体积大，可以调试
 Alpine：体积最小，基于muslc的——C语言的一个替代标准库(多数Linux发行版如Ubuntu、Debian和CentOS都是基于glibc的)可能会时不时地遇到一些兼容性问题
 distroless：只在容器中安装一个二进制文件可以降低总体风险。
-
-
-
 
 
 容器本质上是受到资源限制，彼此间相互隔离的若干个linux进程的集合
@@ -1037,8 +1040,6 @@ cri与kubernetes的概念更加贴合，并紧密绑定。cri不仅定义了容�
 docker-cli(客户端)---dockerd --(grpc)-- containerd -- containerd-shim --- runc --container
 
 
-
-
 Docker Cloud是一个公共仓库,是docker默认的仓库,拉取，推送镜像到设定仓库。
 Docker store允许用户购买和出售自己的镜像，也可以免费发布自己的镜像。
 Docker objects(组件):在使用docker的时候，将会涉及到创建、使用镜像、容器、网络、卷、插件或者其他的对象。
@@ -1046,6 +1047,7 @@ Docker镜像是一个只读模板，容器是镜像的可运行实例
 
 
 Docker Swarm:Swarm非常容易入门,分布式系统通常是非常复杂的。与其他容器集群系统(Mesos, Kubernetes)相比，Swarm的学习曲线最低
+结合分布式网络overlay进行部署
 docker service ls                                                                            查看所有服务    
 docker service create --image nginx --replicas 2 nginx                                       创建服务
 docker service inspect nginx                                                                 查看服务的详细信息  
@@ -1066,7 +1068,6 @@ docker service update --limit-cpu 0.25 \     --reserve-cpu 0.1 webapp           
 
 systemctl服务的配置文件目录：/usr/lib/systemd/system/
 
-
 Storage driver	                Supported backing filesystems
 overlay2(推荐) overlay	        xfs with ftype=1, ext4
 aufs(特殊指明/额外安装包)	    xfs, ext4
@@ -1085,7 +1086,7 @@ systemctl reload docker
 
 
 
-
+***
 docker and iptable:别手动添加规则到docker链中，如果需要添加，添加到DOCKER-USER链中，该链优先于docker链被加载
 1.iptables -I DOCKER-USER -i ext_if ! -s 192.168.1.1 -j DROP         仅允许192.168.1.1地址访问
 2.iptables -I DOCKER-USER -i ext_if ! -s 192.168.1.0/24 -j DROP      仅允许192.168.1.0/24地址访问

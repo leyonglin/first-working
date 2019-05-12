@@ -1,0 +1,12 @@
+
+
+man bash 如果写shell脚本一定要提前阅读该说明
+
+#!/bin/bash   或者 #!/usr/bin/env bash
+set -e        执行错误即退出(man bash查看该命令错误的定义)
+set -x        输出执行代码(变量会被替换)与执行结果
+              shellcheck,不写进代码行中,代码检测网站https://www.shellcheck.net/，也可以下载命令行，并且可以集成到编辑器中(但是效果并不是很好)
+			  变量操作(man bash  全文查找Parameter Expansion)
+              函数中，局部变量加local
+              trap信号(trap sighandler INT)
+			  

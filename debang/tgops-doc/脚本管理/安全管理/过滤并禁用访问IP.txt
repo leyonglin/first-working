@@ -1,5 +1,5 @@
 #!/bin/bash
-# athor: michael
+
 
 ######### relation dir #######################
 NGINX_CMD=/usr/local/nginx/sbin/nginx

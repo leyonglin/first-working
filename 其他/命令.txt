@@ -194,10 +194,137 @@ man systemd.journal-fields  /  man journalctl
    RuntimeMaxFileSize=: 指定单一journal文件可占用的最大易失性存储容量（/run文件系统之内）
 
 
+more：需要是可以编辑
+按空白键（space）就往下一页显示，按 b 键就会往回（back）一页显示，而且还有搜寻字串的功能 ，在启动时就加载整个文件
+参数：-n  定义屏幕大小为n(数字)行  -c   置顶显示   -s   把连续的多个空行显示为一行  +/pattern 在每个档案显示前搜寻该字串（pattern），然后从该字串前两行之后开始显示 
+命令：=  输出当前行的行号    :f   输出文件名和当前行的行号    !命令  调用Shell，并执行命令
+
+less:只能查看    可以向前向后翻页/查找   /keyword：从文件首部向文件尾部依次查找，不区分字符大小写   ？keyword：从文件尾部向文件首部依次查找
+参数：-m  显示类似more命令的百分比    -N  显示每行的行号  -s  显示连续空行为一行   -i  忽略搜索时的大小写
+命令：/字符串：向下搜索“字符串”的功能  ?字符串：向上搜索“字符串”的功能  [pagedown]：向下翻动一页  [pageup]：向上翻动一页
+    浏览多个文件： :p 切换到file1   :n 切换到file2...    当正在浏览一个文件时，也可以使用 :e命令 打开另一个文件
+     ma 使用 a 标记文本的当前位置   'a  导航到标记 a 处
+
+mtr：遇到数据传输延迟失败的问题，检测丢包率
+参数:-r 以报告模式显示  -c 设置每秒发送数据包的数量 -s 用来指定ping数据包的大小  -4/6 IPv4/6 
+
+
+Vim： 
+行内跳转：0: 绝对行首  $: 绝对行尾  ^: 跳转至行首的第一个非空白字符  H：移动光标到屏幕上面   M：移动光标到屏幕中间  L：移动光标到屏幕下面
+          nx: 删除光标所在处及向后的共n个字符     连续u命令可撤消此前的n次编辑操作  
+          G 最后一行(vim + filename)    gg 第一行
+		  dw 删除光标之后的单词剩余部分。   d$ 删除光标之后的该行剩余部分。 daw删除光标所在单词
+
+多屏
+  在命令模式下：      :sp {filename}   再打开一个文件   ctrl+w+上下键可切换     :qa可关闭其它窗口(无修改)
+  多文件编辑  vim FILE1 FILE2 FILE3 …  :next 下一个  :prev前一个  :first 第一个  :last 最后一个  :wall 保存所有  :qall退出所有  :wqall   
+  多文件分割  vim -o -O FILE1 FILE2 …  -o: 水平分割  -O: 垂直分割  在窗口间切换：Ctrl+w
+  单文件窗口分割：Ctrl+w,s: split, 水平分割    Ctrl+w,v: vertical, 垂直分割   ctrl+w,q：取消相邻窗口   ctrl+w,o:取消全部窗口  ：wqall退出
+可视化
+   按键组合	             说明
+      v	         字符选择，会将光标经过的地方反白选择
+      V	         行选择，会将光标经过的行反白选择
+    Ctrl+v	     块选择，用一个矩形选择文本
+   可以进行删复制粘贴
+   1 ctrl+v 进入列编辑模式
+   2 向下或向上移动光标
+   3 把需要注释的行的开头标记起来
+   4 然后按大写的I
+   5 再插入注释符,比如"#"
+   6 再按Esc,就会全部注释了
+
+Vim查找支持正则表达式，例如/vim$匹配行尾的"vim"		 
+   查找：/foo\c将会查找所有的"foo","FOO","Foo"等字符串  \c表示大小写不敏感查找，\C表示大小写敏感查找
+   替换：连续字符替换：命令模式按R    跟shell交互 :! COMMAND
+   :{作用范围}s/{目标}/{替换}/{替换标志}    :%s/foo/bar/g会在全局范围(%)查找foo并替换为bar，所有出现都会被替换（g）
+ !!!   :%s/foo/bar/gc   replace with bar (y/n/a/q/l/^E/^Y)?
+   按下y表示替换，n表示不替换，a表示替换所有，q表示退出查找模式， l表示替换当前位置并退出。^E与^Y是光标移动快捷键
+   行移动：通过h← j↓ k↑ l→ i来进行左下上右的光标移动。10j可以向下移动10行(方向键也可以)
+  单词移动：
+   w移动光标到下一个单词的词首，e移动光标到当前/下一个单词的结尾，b移动光标到当前/上一个单词的词首；
+   4w可以向后移动4个单词，W, B, E具有同样的功能，只不过它是用空格来分隔单词的，可以跳地更远~
+  读存：r {filename}  当前行读入文件    w {filename} 另存为
+  拷贝整个文件：ggyG
+插入模式：i：在当前字符的左边插入 I：在当前行首插入
+          a：在当前字符的右边插入 A：在当前行尾插入
+          o：在当前行下面插入一个新行 O：在当前行上面插入一个新行
+
+1 yy        　　//复制当前行
+2 yw     　　　　//当前光标下面的这个单词
+3 yit        　//复制一个html标签中的内容
+4 yft        　//复制当前行上光标到第一个t之间的所有内容
+
+vim普通模式下按Q进入ex      ex命令模式下按：vi进入命令模式
+ 
+宏复制：   命令行模式qw---x-j-q--100@w(w与前面w对应)    qw---i-123-Esc-hhj-q---100@w（或者上下键）     
+ 
+寄存器：拷贝当前行到寄存器 a 或者其他字母。你应该按 “ayy。现在当前行已存在寄存器 a 里面直到你又拷贝了一些东西进入寄存器 a。你可以使用命令 “ap 来粘贴寄存器 a 里面的内容到你想要的位置
 
 
 
-
+在linux环境下，任何事物都以文件的形式存在，通过文件不仅仅可以访问常规数据，还可以访问网络连接和硬件。所以如传输控制协议 (TCP) 和用户数据报协议 (UDP) 套接字等，系统在后台都为该应用程序分配了一个文件描述符，是基于函数生成的，
+无论这个文件的本质如何，该文件描述符为应用程序与基础操作系统之间的交互提供了通用接口。因为应用程序打开文件的描述符列表提供了大量关于这个应用程序本身的信息，因此通过lsof工具能够查看这个列表对系统监测以及排错将是很有帮助的。
+lsof -R  参数详解：
+COMMAND：进程的名称   PID：进程标识符    PPID：父进程标识符（需要指定-R参数）   USER：进程所有者    PGID：进程所属组
+FD：文件描述符，应用程序通过文件描述符识别该文件
+   cwd：应用程序的当前工作目录    
+   txt ：该类型的文件是程序代码,如应用程序二进制文件(程序)本身或共享库
+   lnn：library references (AIX);
+   er：FD information error (see NAME column);
+   jld：jail directory (FreeBSD);
+   ltx：shared library text (code and data);
+   mxx ：hex memory-mapped type number xx.
+   m86：DOS Merge mapped file;
+   mem：memory-mapped file;
+   mmap：memory-mapped device;
+   pd：parent directory;
+   rtd：root directory;
+   tr：kernel trace file (OpenBSD);
+   v86  VP/ix mapped file;
+   0：表示标准输出
+   1：表示标准输入
+   2：表示标准错误
+一般在标准输出、标准错误、标准输入后还跟着文件状态模式：r、w、u等
+   u：表示该文件被打开并处于读取/写入模式
+   r：表示该文件被打开并处于只读模式
+   w：表示该文件被打开并处于
+   空格：表示该文件的状态模式为unknow，且没有锁定
+同时在文件状态模式后面，还跟着相关的锁   
+   N：for a Solaris NFS lock of unknown type;   
+   r：for read lock on part of the file;  
+   R：for a read lock on the entire file;   
+   w：for a write lock on part of the file;（文件的部分写锁）   
+   W：for a write lock on the entire file;（整个文件的写锁）   
+   u：for a read and write lock of any length;   
+   U：for a lock of unknown type;   
+   x：for an SCO OpenServer Xenix lock on part of the file;   
+   X：for an SCO OpenServer Xenix lock on the  entire file;  
+   space：if there is no lock.
+TYPE：文件类型，如DIR、REG等，常见的文件类型
+   DIR：表示目录
+   CHR：表示字符类型
+   BLK：块设备类型
+   UNIX： UNIX 域套接字
+   FIFO：先进先出 (FIFO) 队列
+   IPv4：网际协议 (IP) 套接字
+DEVICE：指定磁盘的名称
+SIZE：文件的大小
+NODE：索引节点（文件在磁盘上的标识）
+NAME：打开文件的确切名称
+参数：支持正则和递归
+-R -u(用户) -g -p(pid 1,2,3)  -c(进程名)  -i(tcp/:port/udp:55)  -N(列出所有网络文件系统)  -d(fs 2-3)         
+-a 列出打开文件存在的进程
+-c<进程名> 列出指定进程所打开的文件
+-g  列出GID号进程详情
+-d<文件号> 列出占用该文件号的进程
++d<目录>  列出目录下被打开的文件
++D<目录>  递归列出目录下被打开的文件
+-n<目录>  列出使用NFS的文件
+-i<条件>  列出符合条件的进程。（4、6、协议、:端口、 @ip ）
+-p<进程号> 列出指定进程号所打开的文件
+-u  列出UID号进程详情
+-h 显示帮助信息
+-v 显示版本信息
 
 
 

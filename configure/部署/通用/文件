@@ -1,0 +1,22 @@
+
+
+
+安全
+firewalld
+/etc/hosts.deny
+/etc/sudoers  
+/etc/ssh/sshd_config
+/etc/issue、/etc/issue.net 来控制本地及远程登录前的信息显示
+/etc/motd    登陆后的信息显示
+
+linux下设置密码复杂度限制:
+/etc/login.defs        /etc/pam.d/system-auth
+
+
+/etc/rc.local(链接)是Linux启动程序在login程序前执行的最后一个脚本，确保它不会启动两次的情况出现。 存在则不会再执行
+/etc/hosts(本地dns解析，优先级最高)、/etc/host.conf(解析顺序)、/etc/resolv.conf(指定DNS服务器，优先级最高)（Linux下有三个网络配置文件）
+
+
+SSH由客户端和服务端(SSH Server/daemon)组成：
+/etc/ssh/ssh_config    客户端的配置文件(man 5 ssh_config)
+/etc/ssh/sshd_config   服务端的配置文件(man 5 sshd_config)

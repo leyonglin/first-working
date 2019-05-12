@@ -27,8 +27,8 @@ test    ALL=    NOPASSWD: /usr/bin/su [!-]*, !/usr/bin/su *root*		#ÆÕÍ¨ÓÃ»§Ö®¼ä¿
 cat  /var/log/secure | grep sudo | awk  -F ";" '{print $NF}'| awk -F "=" '{print $2}' | grep -v "^$"
 
 ±ğÃû£º
-¶¨ÒåÓÃ»§±ğÃû	User_Alias £¨´óĞ´£©Ãû³Æ = ÓÃ»§ÁĞ±í
-¶¨ÒåÖ÷»ú±ğÃû	Host_Alias £¨´óĞ´£©Ãû³Æ = Ö÷»úÃûÁĞ±í
-¶¨ÒåÃüÁî±ğÃû	Cmnd_Alias £¨´óĞ´£©Ãû³Æ = ÃüÁîÁĞ±í
-
+¶¨ÒåÓÃ»§±ğÃû	User_Alias Ãû³Æ(´óĞ´) = ÓÃ»§ÁĞ±í
+¶¨ÒåÖ÷»ú±ğÃû	Host_Alias Ãû³Æ(´óĞ´) = Ö÷»úÃûÁĞ±í
+¶¨ÒåÃüÁî±ğÃû	Cmnd_Alias Ãû³Æ(´óĞ´) = ÃüÁîÁĞ±í
+Cmnd_Alias ADD_DOMAINS = /usr/bin/python /opt/scripts/add_domains.py
 

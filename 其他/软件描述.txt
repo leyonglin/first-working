@@ -1,5 +1,4 @@
 
-Ó¢Óïµ¥´Ê£ºlagÑÓ³Ù  allocation·ÖÅä  raw£º×´Ì¬¸ú×Ù  backlog£º»ýÑ¹  pm£ºfpm½ø³Ì      buckets£ºÍ°£¬»º´æ   orphans£º¹Â¶ù£¬µ¥¶ÀÎÞ¹ØÁª   scaling£º¶¨±ê; Ëõ·Å±ÈÀý
 
 ¸ñÁ¦¿Õµ÷
 swing£º°Ú¶¯
@@ -89,6 +88,15 @@ jumpserver£º¿ÉÒÔÔÚxshellµÇÂ½£¬Ò²¿ÉÒÔÔÚÍøÒ³µÇÂ½£¬webÖÕ¶Ë¿ÉÒÔºÍxshellÒ»ÑùÊ¹ÓÃÃüÁî£
 5. Í£Ö¹(½ø³ÌÊÕµ½SIGSTOP, SIGSTP, SIGTIN, SIGTOUÐÅºÅºóÍ£Ö¹ÔËÐÐÔËÐÐ
     T Í£Ö¹ traced or stopped  
 
+runlevel¿É²é¿´
+0-Í£»ú(Ç§Íò²»Òª°ÑinitdefaultÉèÖÃÎª0)
+1-µ¥ÓÃ»§Ä£Ê½
+2-¶àÓÃ»§£¬Ã»ÓÐNFS
+3-multi-user.targetÍêÈ«¶àÓÃ»§Ä£Ê½£¨±ê×¼µÄÔËÐÐ¼¶£©
+4-±¸ÓÃ£¬Ã»ÓÐÓÃµ½
+5-GUIÄ£Ê½/GNOME/KDEÍ¼ÐÎ»¯½çÃæ£¨x11£ºxwindow£©
+6-ÖØÐÂÆô¶¯(Ç§Íò²»Òª°ÑinitdefaultÉèÖÃÎª6)
+
 yum search fortune      ¿ÉÊä³öËæ»ú¾ä×Ó
 http://code.google.com/p/chinese-fortune/downloads/list
 make install
@@ -113,142 +121,11 @@ songproses: ËÎ´Ê
 tang300: ÌÆÊ«300Ê×
 zengguang: Ôö¹ãÏÍÎÄ
 
-ÔÚlinux»·¾³ÏÂ£¬ÈÎºÎÊÂÎï¶¼ÒÔÎÄ¼þµÄÐÎÊ½´æÔÚ£¬Í¨¹ýÎÄ¼þ²»½ö½ö¿ÉÒÔ·ÃÎÊ³£¹æÊý¾Ý£¬»¹¿ÉÒÔ·ÃÎÊÍøÂçÁ¬½ÓºÍÓ²¼þ¡£ËùÒÔÈç´«Êä¿ØÖÆÐ­Òé (TCP) ºÍÓÃ»§Êý¾Ý±¨Ð­Òé (UDP) Ì×½Ó×ÖµÈ£¬ÏµÍ³ÔÚºóÌ¨¶¼Îª¸ÃÓ¦ÓÃ³ÌÐò·ÖÅäÁËÒ»¸öÎÄ¼þÃèÊö·û£¬ÊÇ»ùÓÚº¯ÊýÉú³ÉµÄ£¬
-ÎÞÂÛÕâ¸öÎÄ¼þµÄ±¾ÖÊÈçºÎ£¬¸ÃÎÄ¼þÃèÊö·ûÎªÓ¦ÓÃ³ÌÐòÓë»ù´¡²Ù×÷ÏµÍ³Ö®¼äµÄ½»»¥Ìá¹©ÁËÍ¨ÓÃ½Ó¿Ú¡£ÒòÎªÓ¦ÓÃ³ÌÐò´ò¿ªÎÄ¼þµÄÃèÊö·ûÁÐ±íÌá¹©ÁË´óÁ¿¹ØÓÚÕâ¸öÓ¦ÓÃ³ÌÐò±¾ÉíµÄÐÅÏ¢£¬Òò´ËÍ¨¹ýlsof¹¤¾ßÄÜ¹»²é¿´Õâ¸öÁÐ±í¶ÔÏµÍ³¼à²âÒÔ¼°ÅÅ´í½«ÊÇºÜÓÐ°ïÖúµÄ¡£
-lsof -R  ²ÎÊýÏê½â£º
-COMMAND£º½ø³ÌµÄÃû³Æ   PID£º½ø³Ì±êÊ¶·û    PPID£º¸¸½ø³Ì±êÊ¶·û£¨ÐèÒªÖ¸¶¨-R²ÎÊý£©   USER£º½ø³ÌËùÓÐÕß    PGID£º½ø³ÌËùÊô×é
-FD£ºÎÄ¼þÃèÊö·û£¬Ó¦ÓÃ³ÌÐòÍ¨¹ýÎÄ¼þÃèÊö·ûÊ¶±ð¸ÃÎÄ¼þ
-   cwd£ºÓ¦ÓÃ³ÌÐòµÄµ±Ç°¹¤×÷Ä¿Â¼    
-   txt £º¸ÃÀàÐÍµÄÎÄ¼þÊÇ³ÌÐò´úÂë,ÈçÓ¦ÓÃ³ÌÐò¶þ½øÖÆÎÄ¼þ(³ÌÐò)±¾Éí»ò¹²Ïí¿â
-   lnn£ºlibrary references (AIX);
-   er£ºFD information error (see NAME column);
-   jld£ºjail directory (FreeBSD);
-   ltx£ºshared library text (code and data);
-   mxx £ºhex memory-mapped type number xx.
-   m86£ºDOS Merge mapped file;
-   mem£ºmemory-mapped file;
-   mmap£ºmemory-mapped device;
-   pd£ºparent directory;
-   rtd£ºroot directory;
-   tr£ºkernel trace file (OpenBSD);
-   v86  VP/ix mapped file;
-   0£º±íÊ¾±ê×¼Êä³ö
-   1£º±íÊ¾±ê×¼ÊäÈë
-   2£º±íÊ¾±ê×¼´íÎó
-Ò»°ãÔÚ±ê×¼Êä³ö¡¢±ê×¼´íÎó¡¢±ê×¼ÊäÈëºó»¹¸ú×ÅÎÄ¼þ×´Ì¬Ä£Ê½£ºr¡¢w¡¢uµÈ
-   u£º±íÊ¾¸ÃÎÄ¼þ±»´ò¿ª²¢´¦ÓÚ¶ÁÈ¡/Ð´ÈëÄ£Ê½
-   r£º±íÊ¾¸ÃÎÄ¼þ±»´ò¿ª²¢´¦ÓÚÖ»¶ÁÄ£Ê½
-   w£º±íÊ¾¸ÃÎÄ¼þ±»´ò¿ª²¢´¦ÓÚ
-   ¿Õ¸ñ£º±íÊ¾¸ÃÎÄ¼þµÄ×´Ì¬Ä£Ê½Îªunknow£¬ÇÒÃ»ÓÐËø¶¨
-Í¬Ê±ÔÚÎÄ¼þ×´Ì¬Ä£Ê½ºóÃæ£¬»¹¸ú×ÅÏà¹ØµÄËø   
-   N£ºfor a Solaris NFS lock of unknown type;   
-   r£ºfor read lock on part of the file;  
-   R£ºfor a read lock on the entire file;   
-   w£ºfor a write lock on part of the file;£¨ÎÄ¼þµÄ²¿·ÖÐ´Ëø£©   
-   W£ºfor a write lock on the entire file;£¨Õû¸öÎÄ¼þµÄÐ´Ëø£©   
-   u£ºfor a read and write lock of any length;   
-   U£ºfor a lock of unknown type;   
-   x£ºfor an SCO OpenServer Xenix lock on part of the file;   
-   X£ºfor an SCO OpenServer Xenix lock on the  entire file;  
-   space£ºif there is no lock.
-TYPE£ºÎÄ¼þÀàÐÍ£¬ÈçDIR¡¢REGµÈ£¬³£¼ûµÄÎÄ¼þÀàÐÍ
-   DIR£º±íÊ¾Ä¿Â¼
-   CHR£º±íÊ¾×Ö·ûÀàÐÍ
-   BLK£º¿éÉè±¸ÀàÐÍ
-   UNIX£º UNIX ÓòÌ×½Ó×Ö
-   FIFO£ºÏÈ½øÏÈ³ö (FIFO) ¶ÓÁÐ
-   IPv4£ºÍø¼ÊÐ­Òé (IP) Ì×½Ó×Ö
-DEVICE£ºÖ¸¶¨´ÅÅÌµÄÃû³Æ
-SIZE£ºÎÄ¼þµÄ´óÐ¡
-NODE£ºË÷Òý½Úµã£¨ÎÄ¼þÔÚ´ÅÅÌÉÏµÄ±êÊ¶£©
-NAME£º´ò¿ªÎÄ¼þµÄÈ·ÇÐÃû³Æ
-²ÎÊý£ºÖ§³ÖÕýÔòºÍµÝ¹é
--R -u(ÓÃ»§) -g -p(pid 1,2,3)  -c(½ø³ÌÃû)  -i(tcp/:port/udp:55)  -N(ÁÐ³öËùÓÐÍøÂçÎÄ¼þÏµÍ³)  -d(fs 2-3)         
--a ÁÐ³ö´ò¿ªÎÄ¼þ´æÔÚµÄ½ø³Ì
--c<½ø³ÌÃû> ÁÐ³öÖ¸¶¨½ø³ÌËù´ò¿ªµÄÎÄ¼þ
--g  ÁÐ³öGIDºÅ½ø³ÌÏêÇé
--d<ÎÄ¼þºÅ> ÁÐ³öÕ¼ÓÃ¸ÃÎÄ¼þºÅµÄ½ø³Ì
-+d<Ä¿Â¼>  ÁÐ³öÄ¿Â¼ÏÂ±»´ò¿ªµÄÎÄ¼þ
-+D<Ä¿Â¼>  µÝ¹éÁÐ³öÄ¿Â¼ÏÂ±»´ò¿ªµÄÎÄ¼þ
--n<Ä¿Â¼>  ÁÐ³öÊ¹ÓÃNFSµÄÎÄ¼þ
--i<Ìõ¼þ>  ÁÐ³ö·ûºÏÌõ¼þµÄ½ø³Ì¡££¨4¡¢6¡¢Ð­Òé¡¢:¶Ë¿Ú¡¢ @ip £©
--p<½ø³ÌºÅ> ÁÐ³öÖ¸¶¨½ø³ÌºÅËù´ò¿ªµÄÎÄ¼þ
--u  ÁÐ³öUIDºÅ½ø³ÌÏêÇé
--h ÏÔÊ¾°ïÖúÐÅÏ¢
--v ÏÔÊ¾°æ±¾ÐÅÏ¢
-
-
-
-
-Vim£º 
-ÐÐÄÚÌø×ª£º0: ¾ø¶ÔÐÐÊ×  $: ¾ø¶ÔÐÐÎ²  ^: Ìø×ªÖÁÐÐÊ×µÄµÚÒ»¸ö·Ç¿Õ°××Ö·û  H£ºÒÆ¶¯¹â±êµ½ÆÁÄ»ÉÏÃæ   M£ºÒÆ¶¯¹â±êµ½ÆÁÄ»ÖÐ¼ä  L£ºÒÆ¶¯¹â±êµ½ÆÁÄ»ÏÂÃæ
-          nx: É¾³ý¹â±êËùÔÚ´¦¼°ÏòºóµÄ¹²n¸ö×Ö·û     Á¬ÐøuÃüÁî¿É³·Ïû´ËÇ°µÄn´Î±à¼­²Ù×÷  
-          G ×îºóÒ»ÐÐ(vim + filename)    gg µÚÒ»ÐÐ
-		  dw É¾³ý¹â±êÖ®ºóµÄµ¥´ÊÊ£Óà²¿·Ö¡£   d$ É¾³ý¹â±êÖ®ºóµÄ¸ÃÐÐÊ£Óà²¿·Ö¡£ dawÉ¾³ý¹â±êËùÔÚµ¥´Ê
-
-¶àÆÁ
-  ÔÚÃüÁîÄ£Ê½ÏÂ£º      :sp {filename}   ÔÙ´ò¿ªÒ»¸öÎÄ¼þ   ctrl+w+ÉÏÏÂ¼ü¿ÉÇÐ»»     :qa¿É¹Ø±ÕÆäËü´°¿Ú(ÎÞÐÞ¸Ä)
-  ¶àÎÄ¼þ±à¼­  vim FILE1 FILE2 FILE3 ¡­  :next ÏÂÒ»¸ö  :prevÇ°Ò»¸ö  :first µÚÒ»¸ö  :last ×îºóÒ»¸ö  :wall ±£´æËùÓÐ  :qallÍË³öËùÓÐ  :wqall   
-  ¶àÎÄ¼þ·Ö¸î  vim -o -O FILE1 FILE2 ¡­  -o: Ë®Æ½·Ö¸î  -O: ´¹Ö±·Ö¸î  ÔÚ´°¿Ú¼äÇÐ»»£ºCtrl+w
-  µ¥ÎÄ¼þ´°¿Ú·Ö¸î£ºCtrl+w,s: split, Ë®Æ½·Ö¸î    Ctrl+w,v: vertical, ´¹Ö±·Ö¸î   ctrl+w,q£ºÈ¡ÏûÏàÁÚ´°¿Ú   ctrl+w,o:È¡ÏûÈ«²¿´°¿Ú  £ºwqallÍË³ö
-¿ÉÊÓ»¯
-   °´¼ü×éºÏ	             ËµÃ÷
-      v	         ×Ö·ûÑ¡Ôñ£¬»á½«¹â±ê¾­¹ýµÄµØ·½·´°×Ñ¡Ôñ
-      V	         ÐÐÑ¡Ôñ£¬»á½«¹â±ê¾­¹ýµÄÐÐ·´°×Ñ¡Ôñ
-    Ctrl+v	     ¿éÑ¡Ôñ£¬ÓÃÒ»¸ö¾ØÐÎÑ¡ÔñÎÄ±¾
-   ¿ÉÒÔ½øÐÐÉ¾¸´ÖÆÕ³Ìù
-   1 ctrl+v ½øÈëÁÐ±à¼­Ä£Ê½
-   2 ÏòÏÂ»òÏòÉÏÒÆ¶¯¹â±ê
-   3 °ÑÐèÒª×¢ÊÍµÄÐÐµÄ¿ªÍ·±ê¼ÇÆðÀ´
-   4 È»ºó°´´óÐ´µÄI
-   5 ÔÙ²åÈë×¢ÊÍ·û,±ÈÈç"#"
-   6 ÔÙ°´Esc,¾Í»áÈ«²¿×¢ÊÍÁË
-
-Vim²éÕÒÖ§³ÖÕýÔò±í´ïÊ½£¬ÀýÈç/vim$Æ¥ÅäÐÐÎ²µÄ"vim"		 
-   ²éÕÒ£º/foo\c½«»á²éÕÒËùÓÐµÄ"foo","FOO","Foo"µÈ×Ö·û´®  \c±íÊ¾´óÐ¡Ð´²»Ãô¸Ð²éÕÒ£¬\C±íÊ¾´óÐ¡Ð´Ãô¸Ð²éÕÒ
-   Ìæ»»£ºÁ¬Ðø×Ö·ûÌæ»»£ºÃüÁîÄ£Ê½°´R    ¸úshell½»»¥ :! COMMAND
-   :{×÷ÓÃ·¶Î§}s/{Ä¿±ê}/{Ìæ»»}/{Ìæ»»±êÖ¾}    :%s/foo/bar/g»áÔÚÈ«¾Ö·¶Î§(%)²éÕÒfoo²¢Ìæ»»Îªbar£¬ËùÓÐ³öÏÖ¶¼»á±»Ìæ»»£¨g£©
- !!!   :%s/foo/bar/gc   replace with bar (y/n/a/q/l/^E/^Y)?
-   °´ÏÂy±íÊ¾Ìæ»»£¬n±íÊ¾²»Ìæ»»£¬a±íÊ¾Ìæ»»ËùÓÐ£¬q±íÊ¾ÍË³ö²éÕÒÄ£Ê½£¬ l±íÊ¾Ìæ»»µ±Ç°Î»ÖÃ²¢ÍË³ö¡£^EÓë^YÊÇ¹â±êÒÆ¶¯¿ì½Ý¼ü
-   ÐÐÒÆ¶¯£ºÍ¨¹ýh¡û j¡ý k¡ü l¡ú iÀ´½øÐÐ×óÏÂÉÏÓÒµÄ¹â±êÒÆ¶¯¡£10j¿ÉÒÔÏòÏÂÒÆ¶¯10ÐÐ(·½Ïò¼üÒ²¿ÉÒÔ)
-  µ¥´ÊÒÆ¶¯£º
-   wÒÆ¶¯¹â±êµ½ÏÂÒ»¸öµ¥´ÊµÄ´ÊÊ×£¬eÒÆ¶¯¹â±êµ½µ±Ç°/ÏÂÒ»¸öµ¥´ÊµÄ½áÎ²£¬bÒÆ¶¯¹â±êµ½µ±Ç°/ÉÏÒ»¸öµ¥´ÊµÄ´ÊÊ×£»
-   4w¿ÉÒÔÏòºóÒÆ¶¯4¸öµ¥´Ê£¬W, B, E¾ßÓÐÍ¬ÑùµÄ¹¦ÄÜ£¬Ö»²»¹ýËüÊÇÓÃ¿Õ¸ñÀ´·Ö¸ôµ¥´ÊµÄ£¬¿ÉÒÔÌøµØ¸üÔ¶~
-  ¶Á´æ£ºr {filename}  µ±Ç°ÐÐ¶ÁÈëÎÄ¼þ    w {filename} Áí´æÎª
-  ¿½±´Õû¸öÎÄ¼þ£ºggyG
-²åÈëÄ£Ê½£ºi£ºÔÚµ±Ç°×Ö·ûµÄ×ó±ß²åÈë I£ºÔÚµ±Ç°ÐÐÊ×²åÈë
-          a£ºÔÚµ±Ç°×Ö·ûµÄÓÒ±ß²åÈë A£ºÔÚµ±Ç°ÐÐÎ²²åÈë
-          o£ºÔÚµ±Ç°ÐÐÏÂÃæ²åÈëÒ»¸öÐÂÐÐ O£ºÔÚµ±Ç°ÐÐÉÏÃæ²åÈëÒ»¸öÐÂÐÐ
-
-1 yy        ¡¡¡¡//¸´ÖÆµ±Ç°ÐÐ
-2 yw     ¡¡¡¡¡¡¡¡//µ±Ç°¹â±êÏÂÃæµÄÕâ¸öµ¥´Ê
-3 yit        ¡¡//¸´ÖÆÒ»¸öhtml±êÇ©ÖÐµÄÄÚÈÝ
-4 yft        ¡¡//¸´ÖÆµ±Ç°ÐÐÉÏ¹â±êµ½µÚÒ»¸ötÖ®¼äµÄËùÓÐÄÚÈÝ
-
-vimÆÕÍ¨Ä£Ê½ÏÂ°´Q½øÈëex      exÃüÁîÄ£Ê½ÏÂ°´£ºvi½øÈëÃüÁîÄ£Ê½
- 
-ºê¸´ÖÆ£º   ÃüÁîÐÐÄ£Ê½qw---x-j-q--100@w(wÓëÇ°Ãæw¶ÔÓ¦)    qw---i-123-Esc-hhj-q---100@w£¨»òÕßÉÏÏÂ¼ü£©     
- 
-¼Ä´æÆ÷£º¿½±´µ±Ç°ÐÐµ½¼Ä´æÆ÷ a »òÕßÆäËû×ÖÄ¸¡£ÄãÓ¦¸Ã°´ ¡°ayy¡£ÏÖÔÚµ±Ç°ÐÐÒÑ´æÔÚ¼Ä´æÆ÷ a ÀïÃæÖ±µ½ÄãÓÖ¿½±´ÁËÒ»Ð©¶«Î÷½øÈë¼Ä´æÆ÷ a¡£Äã¿ÉÒÔÊ¹ÓÃÃüÁî ¡°ap À´Õ³Ìù¼Ä´æÆ÷ a ÀïÃæµÄÄÚÈÝµ½ÄãÏëÒªµÄÎ»ÖÃ
 
 
 Â·ÓÉÆ÷ÖÐ´æÔÚÁ½ÖÖÀàÐÍºÍ²ã´ÎµÄ±í£¬Ò»¸öÊÇÂ·ÓÉ±í(routing-table)£¬ÁíÒ»¸öÊÇ×ª·¢±í(forwording-table)¡£×ª·¢±íÊÇÓÉÂ·ÓÉ±íÓ³Éä¹ýÀ´µÄ£¬²ßÂÔÂ·ÓÉÖ±½Ó×÷ÓÃÓÚ×ª·¢±í£¬Â·ÓÉ²ßÂÔÖ±½Ó×÷ÓÃÓÚÂ·ÓÉ±í¡£ 
 ²ßÂÔÂ·ÓÉÔòÊÇÏÈÓÐ²ßÂÔÔÙÓÐÂ·ÓÉ£¬Í¨¹ý²ßÂÔ¾ö¶¨Ä³Ð©Êý¾ÝµÄ×ßÏò£¬µ±²ßÂÔºÍÕâÐ©Êý¾Ý²»Æ¥Åä£¬ÕâÐ©Êý¾Ý²Å»áÍ¨¹ý²éÑ¯Â·ÓÉ±íÀ´ÊµÏÖÊý¾Ý·ÃÎÊ 
  
-
-more£ºÐèÒªÊÇ¿ÉÒÔ±à¼­
-°´¿Õ°×¼ü£¨space£©¾ÍÍùÏÂÒ»Ò³ÏÔÊ¾£¬°´ b ¼ü¾Í»áÍù»Ø£¨back£©Ò»Ò³ÏÔÊ¾£¬¶øÇÒ»¹ÓÐËÑÑ°×Ö´®µÄ¹¦ÄÜ £¬ÔÚÆô¶¯Ê±¾Í¼ÓÔØÕû¸öÎÄ¼þ
-²ÎÊý£º-n  ¶¨ÒåÆÁÄ»´óÐ¡Îªn(Êý×Ö)ÐÐ  -c   ÖÃ¶¥ÏÔÊ¾   -s   °ÑÁ¬ÐøµÄ¶à¸ö¿ÕÐÐÏÔÊ¾ÎªÒ»ÐÐ  +/pattern ÔÚÃ¿¸öµµ°¸ÏÔÊ¾Ç°ËÑÑ°¸Ã×Ö´®£¨pattern£©£¬È»ºó´Ó¸Ã×Ö´®Ç°Á½ÐÐÖ®ºó¿ªÊ¼ÏÔÊ¾ 
-ÃüÁî£º=  Êä³öµ±Ç°ÐÐµÄÐÐºÅ    :f   Êä³öÎÄ¼þÃûºÍµ±Ç°ÐÐµÄÐÐºÅ    !ÃüÁî  µ÷ÓÃShell£¬²¢Ö´ÐÐÃüÁî
-
-less:Ö»ÄÜ²é¿´    ¿ÉÒÔÏòÇ°Ïòºó·­Ò³/²éÕÒ   /keyword£º´ÓÎÄ¼þÊ×²¿ÏòÎÄ¼þÎ²²¿ÒÀ´Î²éÕÒ£¬²»Çø·Ö×Ö·û´óÐ¡Ð´   £¿keyword£º´ÓÎÄ¼þÎ²²¿ÏòÎÄ¼þÊ×²¿ÒÀ´Î²éÕÒ
-²ÎÊý£º-m  ÏÔÊ¾ÀàËÆmoreÃüÁîµÄ°Ù·Ö±È    -N  ÏÔÊ¾Ã¿ÐÐµÄÐÐºÅ  -s  ÏÔÊ¾Á¬Ðø¿ÕÐÐÎªÒ»ÐÐ   -i  ºöÂÔËÑË÷Ê±µÄ´óÐ¡Ð´
-ÃüÁî£º/×Ö·û´®£ºÏòÏÂËÑË÷¡°×Ö·û´®¡±µÄ¹¦ÄÜ  ?×Ö·û´®£ºÏòÉÏËÑË÷¡°×Ö·û´®¡±µÄ¹¦ÄÜ  [pagedown]£ºÏòÏÂ·­¶¯Ò»Ò³  [pageup]£ºÏòÉÏ·­¶¯Ò»Ò³
-    ä¯ÀÀ¶à¸öÎÄ¼þ£º :p ÇÐ»»µ½file1   :n ÇÐ»»µ½file2...    µ±ÕýÔÚä¯ÀÀÒ»¸öÎÄ¼þÊ±£¬Ò²¿ÉÒÔÊ¹ÓÃ :eÃüÁî ´ò¿ªÁíÒ»¸öÎÄ¼þ
-     ma Ê¹ÓÃ a ±ê¼ÇÎÄ±¾µÄµ±Ç°Î»ÖÃ   'a  µ¼º½µ½±ê¼Ç a ´¦
-
-mtr£ºÓöµ½Êý¾Ý´«ÊäÑÓ³ÙÊ§°ÜµÄÎÊÌâ£¬¼ì²â¶ª°üÂÊ
-²ÎÊý:-r ÒÔ±¨¸æÄ£Ê½ÏÔÊ¾  -c ÉèÖÃÃ¿Ãë·¢ËÍÊý¾Ý°üµÄÊýÁ¿ -s ÓÃÀ´Ö¸¶¨pingÊý¾Ý°üµÄ´óÐ¡  -4/6 IPv4/6 
 
 °²È«¹·£ºÍøÕ¾°²È«¹·£¬·þÎñÆ÷°²È«¹·£¬°²È«¹··þÔÆ¡£»¥ÁªÍø°²È«Æ·ÅÆ£¬ÔÆ°²È«·þÎñÓë½â¾ö·½°¸Ìá¹©ÉÌ£¬Ìá¹©×¨ÒµµÄÔÆ°²È«·þÎñ£¬½â¾öÔÚ»ìºÏÔÆ¡¢Ë½ÓÐÔÆ¡¢¹«ÓÐÔÆ¼°´«Í³»·¾³ÏÂ¿ÉÄÜÓöµ½µÄ¸÷ÖÖ°²È«Óë¹ÜÀíÎÊÌâ£¬ÏÃÃÅ·þÔÆÐÅÏ¢¿Æ¼¼ÓÐÏÞ¹«Ë¾
 
@@ -278,16 +155,6 @@ NpmÊÇ½ÚµãJavaScriptÆ½Ì¨(Ç°¶Ë)µÄ°ü¹ÜÀíÆ÷¡£Ëü½«Ä£¿é·ÅÖÃµ½Î»£¬ÒÔ±ã½ÚµãÄÜ¹»ÕÒµ½ËüÃÇ£
 
 Jenkins ÄÜ½â¾öÒÔÏÂ¼¸ÀàÎÊÌâ£º1.×Ô¶¯»¯¹¹½¨Èí¼þ  2.×Ô¶¯»¯¼ì²é  3.¹¹½¨¿É³ÖÐøµÄ×Ô¶¯»¯²âÊÔ  4.×Ô¶¯»¯´ò°üºÍ·Ö·¢²¿Êð
         Ö´ÐÐÍêÒ»¸ötask£¬»á¸ú×ÅÖ´ÐÐÏÂÒ»¸ötask
-
-
-runlevel¿É²é¿´
-0-Í£»ú(Ç§Íò²»Òª°ÑinitdefaultÉèÖÃÎª0)
-1-µ¥ÓÃ»§Ä£Ê½
-2-¶àÓÃ»§£¬Ã»ÓÐNFS
-3-multi-user.targetÍêÈ«¶àÓÃ»§Ä£Ê½£¨±ê×¼µÄÔËÐÐ¼¶£©
-4-±¸ÓÃ£¬Ã»ÓÐÓÃµ½
-5-GUIÄ£Ê½/GNOME/KDEÍ¼ÐÎ»¯½çÃæ£¨x11£ºxwindow£©
-6-ÖØÐÂÆô¶¯(Ç§Íò²»Òª°ÑinitdefaultÉèÖÃÎª6)
 
 
 Python3:°²×°Íê³É»á°²×°ºÃpip3(setuptools)  ÒÀÀµ°ü(libffi-devel,gcc,make,zlib*)
@@ -338,10 +205,6 @@ OEMÊÇOriginal Equipment Manufacture(Ô­Ê¼Éè±¸ÖÆÔìÉÌ)µÄËõÐ´£¬ËüÊÇÖ¸Ò»ÖÖ"´ú¹¤Éú²ú"·
 OEMÏµÍ³£ºÉú²úµÄÆ·ÅÆ±Ê¼Ç±¾»òÒ»Ìå»úÓÐÔ¤×°windows²Ù×÷ÏµÍ³µÄ£¬¶¼ÊÇoemÏµÍ³
 OEMµÄÏµÍ³²»ÄÜ´Ó¾ÉÓÐ²Ù×÷ÏµÍ³Éý¼¶£¬Ö»ÄÜÈ«ÐÂ°²×°
 
-rc.localÊÇLinuxÆô¶¯³ÌÐòÔÚlogin³ÌÐòÇ°Ö´ÐÐµÄ×îºóÒ»¸ö½Å±¾£¬È·±£Ëü²»»áÆô¶¯Á½´ÎµÄÇé¿ö³öÏÖ¡£ ´æÔÚÔò²»»áÔÙÖ´ÐÐ
-
-/etc/issue¡¢/etc/issue.net À´¿ØÖÆ±¾µØ¼°Ô¶³ÌµÇÂ¼Ç°µÄÐÅÏ¢ÏÔÊ¾
-/etc/motd    µÇÂ½ºóµÄÐÅÏ¢ÏÔÊ¾
 
 ryslog ÊÇÒ»¸ö¿ìËÙ´¦ÀíÊÕ¼¯ÏµÍ³ÈÕÖ¾µÄ³ÌÐò£¬Ìá¹©ÁË¸ßÐÔÄÜ¡¢°²È«¹¦ÄÜºÍÄ£¿é»¯Éè¼Æ¡£rsyslog ÊÇsyslog µÄÉý¼¶°æ£¬Ëü½«¶àÖÖÀ´Ô´ÊäÈëÊä³ö×ª»»½á¹ûµ½Ä¿µÄµØ£¬¾Ý¹ÙÍø½éÉÜ£¬ÏÖÔÚ¿ÉÒÔ´¦Àí100ÍòÌõÐÅÏ¢¡£¿ÉÒÔ½«ÈÕÖ¾Êä³öµ½ÎÄ¼þ,Êý¾Ý¿âºÍÆäËü³ÌÐò¡£
 
@@ -478,10 +341,6 @@ dc £ºÒ»Ìõ¼ÇÂ¼ËùÊôÇøÓò    (ÄÄÒ»¿ÅÊ÷)
 ou £ºÒ»Ìõ¼ÇÂ¼ËùÊô×éÖ¯    £¨ÄÄÒ»¸ö·ÖÖ§£©
 cn/uid£ºÒ»Ìõ¼ÇÂ¼µÄÃû×Ö/ID   (ÄÄÒ»¸öÆ»¹ûÃû×Ö)
 LDAPÄ¿Â¼Ê÷µÄ×î¶¥²¿¾ÍÊÇ¸ù£¬Ò²¾ÍÊÇËùÎ½µÄ¡°»ù×¼DN"¡£
-
-
-linuxÏÂÉèÖÃÃÜÂë¸´ÔÓ¶ÈÏÞÖÆ:
-/etc/login.defs        /etc/pam.d/system-auth
 
 
 IBM£ºNetcoolÊÇÖ¸Ò»Ì×½â¾ö·½°¸²úÆ·¡£OMNIBusÊÇÆäºËÐÄ×é³É²¿·Ö£¬Ò»¸öÄÚ´æÊý¾Ý¿â¡£ImpactËãÊÇÒ»¸öÀ©Õ¹Æ½Ì¨¡£
