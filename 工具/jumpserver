@@ -1,7 +1,7 @@
 
 jumpserver：https://jumpserver.readthedocs.io/zh/docs
 RDP(桌面协议):远程桌面协议(RDP, Remote Desktop Protocol)是一个多通道(multi-channel)的协议,让用户(客户端或称“本地电脑”)连上提供微软终端机服务的电脑(服务器端或称“远程电脑”)
-systemd服务自启管理配置和nginx的rpm包yum源
+
 
 Multi-Factor Authentication(MFA:多因子认证)是一种简单有效的最佳安全实践方法，它能够在用户名和密码之外再额外增加一层安全保护
      有两种实现方式:硬件实现和软件实现。软件实现的MFA设备又被称为虚拟MFA设备,虚拟 MFA 设备是能产生6位数字认证码的应用程序,遵循基于时间的一次性密码(TOTP)标准(RFC 6238)。此类应用程序可在移动硬件设备(包括智能手机)上运行.Google Authenticator或身份验证器等。
@@ -9,6 +9,10 @@ Multi-Factor Authentication(MFA:多因子认证)是一种简单有效的最佳�
 目录服务是一个特殊的数据库，用来保存描述性的、基于属性的详细信息，支持过滤功能。动态的，灵活的，易扩展的。
 LDAP（Light Directory Access Portocol），它是基于X.500标准的轻量级目录访问协议。LDAP目录服务是由目录数据库和一套访问协议组成的系统。
 目录是一个为查询、浏览和搜索而优化的数据库，它成树状结构组织数据，类似文件目录一样。目录数据库和关系数据库不同，它有优异的读性能，但写性能差,是用来查询的
+
+授权：用户组授权优先于用户授权
+创建用户/用户组(账号)---添加管理用户---系统用户(登陆服务器的用户)---创建资产(即服务器,节点是指资产组)---权限管理(授权规则:用户/用户组--资产/节点)
+作业中心：批量命令(ansible)
 
 
 Nginx代理 : 反代
@@ -18,6 +22,43 @@ Jumpserver:管理后台，是核心组件(Core) 使用 Django Class Based View �
 Coco :  实现了SSH Server和Web Terminal Server的组件(xshell登陆--认证(LDAP)--jumpserver资产--选择主机--密钥/ssh--进入)
 Guacamole(Apache) : 是一款HTML5应用程序，可通过RDP，VNC和其他协议访问远程桌面。
 Luna:Web Terminal前端
+
+
+systemd服务自启管理配置
+vim /usr/lib/systemd/system/jms.service
+[Unit]
+Description=jms
+After=network.target mariadb.service redis.service
+Wants=mariadb.service redis.service
+
+[Service]
+Type=forking
+PIDFile=/opt/coco/coco.pid
+Environment="PATH=/opt/py3/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin"
+ExecStart=/opt/jumpserver/jms start all -d
+ExecReload=
+ExecStop=/opt/jumpserver/jms stop
+
+[Install]
+WantedBy=multi-user.target
+
+
+
+脚本自启：
+vim /opt/start_jms.sh
+
+#!/bin/bash
+set -e
+
+export LANG=zh_CN.UTF-8
+
+systemctl start jms
+docker start jms_coco
+docker start jms_guacamole
+
+exit 0
+chmod +x /etc/rc.d/rc.local
+if [ "$(cat /etc/rc.local | grep start_jms.sh)" == "" ]; then echo "sh /opt/start_jms.sh" >> /etc/rc.local; fi
 
 
 

@@ -25,7 +25,7 @@ Deployment为Pod和ReplicaSet提供了一个声明式定义(declarative)方法(�
 Deployment controller: 管理Deployment (revision及数量/状态)   
 Node是Pod真正运行的主机,每个Node节点上至少要运行container runtime(比如docker或者rkt),kubelet和kube-proxy服务。Kubernetes只是管理Node上的资源,Node Controller负责node状态(ip/hostname/condition/capacity/info)Taints和tolerations用于保证Pod不被调度到不合适的Node上，Taint应用于Node上，而toleration则应用于Pod上
 kube-proxy:这个应用监控着Kubermaster增加和删除服务，对于每一个服务，kube-proxy会随机开启一个本机端口，任何发向这个端口的请求都会被转发到一个后台的Pod当中
-Service:是一个定义了一组Pod的策略的抽象，我们也有时候叫做宏观服务。这些被服务标记的Pod都是(一般)通过label Selector(创建与Service同名的EndPoints对象)决定的,在kubernete集群中实现让这些前台能够持续的追踪到这些后台的,如果没有,可以指定kubernetes管理之外的数据库的物理IP进行连接,有三种类型：ClusterIP，NodePort，LoadBalancer
+Service:是一个定义了一组Pod的策略的抽象,也叫做宏观服务。在kubernete集群中实现让这些前台能够持续的追踪到这些后台的,这些被服务标记的Pod都是(一般)通过label Selector(创建与Service同名的EndPoints对象)决定的,如果没有,可以指定kubernetes管理之外的数据库的物理IP进行连接,有三种类型：ClusterIP，NodePort，LoadBalancer
        每个Service被创建的时候会被分配一个唯一的IP地址（也叫 clusterIP ）。这个地址和Service绑定，只要Service活着就不会改变。Pod可以配置成和Service交互，并且知道和Service的通信会被自动地负载均衡到Service成员中的某个Pod。
 	   Kubernetes提供了一个DNS集群插件Service，这个Service使用 skydns 自动给其他Service分配DNS
 Service account是为了方便Pod里面的进程调用Kubernetes API或其他外部服务而设计的，提供认证。。。
@@ -46,7 +46,7 @@ ThirdPartyResources是一种无需改变代码就可以扩展Kubernetes API的�
 ConfigMap用于保存配置数据的键值对，可以用来保存单个属性，也可以用来保存配置文件。ConfigMap跟secret很类似，但它可以更方便地处理不包含敏感信息的字符串。ConfigMap必须在Pod引用它之前创建
 PodPreset用来给指定标签的Pod注入额外的信息，如环境变量、存储卷等
 Horizontal Pod Autoscaling可以根据CPU使用率或应用自定义metrics自动扩展Pod数量 
-kubernetes ui Kubernetes有一个基于web的用户界面，它可以图表化显示当前集群状态。
+kubernetes ui：Kubernetes有一个基于web的用户界面，它可以图表化显示当前集群状态。
 Kubernetes API服务器为API对象验证和配置数据，这些对象包含Pod，Service，ReplicationController等等。API Server提供REST操作以及前端到集群的共享状态，所有其它组件可以通过这些共享状态交互。
 Admission Controller插件是一段代码，集群在接受一个请求之前，每一个Admission Controller插件都会按序运行。如果这个序列中的某个插件拒绝该请求，则整个的请求都会被立刻拒绝，返回一个错误给用户。
     

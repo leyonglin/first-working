@@ -1,11 +1,29 @@
-????:0: ????  $: ????  ^: ??????????????  H:?????????   M:?????????  L:?????????
-          nx: ????????????n???     ??u????????n?????  
-          G ????(vim + filename)    gg ???
-		  dw ?????????????(???????????)?   d$ ?????????????? daw????????(???)
-w?????????????,e???????/????????,b???????/????????;
-4w??????4???,W, B, E???????,??????????????,??????~
-
 :%s/foo/bar/gc
+
+yft        　//复制当前行上光标到第一个t之间的所有内容
+
+宏复制：   命令行模式qw---x-j-q--100@w
+
+an： 如man 5 ssh_config
+参数[-aw(显示所有手册路径)   -f简短描述信息 
+n(指定章节手册) 1用户命令 2系统调用 3 c库函数调用 4.设备文件及特殊文件(/dev下的各种设备文件) 5配置文件 6系统游戏使用帮助 7附件/变量 8管理工具(root)及守护进程 9含糊的内核规范和接口]  
+
+more：需要是可以编辑
+按空白键（space）就往下一页显示，按 b 键就会往回（back）一页显示，而且还有搜寻字串的功能 ，在启动时就加载整个文件
+参数：-n  定义屏幕大小为n(数字)行  -c   置顶显示   -s   把连续的多个空行显示为一行  +/pattern 在每个档案显示前搜寻该字串（pattern），然后从该字串前两行之后开始显示 
+命令：=  输出当前行的行号    :f   输出文件名和当前行的行号    !命令  调用Shell，并执行命令
+
+less:只能查看    可以向前向后翻页/查找   /keyword：从文件首部向文件尾部依次查找，不区分字符大小写   ？keyword：从文件尾部向文件首部依次查找
+参数：-m  显示类似more命令的百分比    -N  显示每行的行号  -s  显示连续空行为一行   -i  忽略搜索时的大小写
+命令：/字符串：向下搜索“字符串”的功能  ?字符串：向上搜索“字符串”的功能  [pagedown]：向下翻动一页  [pageup]：向上翻动一页
+    浏览多个文件： :p 切换到file1   :n 切换到file2...    当正在浏览一个文件时，也可以使用 :e命令 打开另一个文件
+     ma 使用 a 标记文本的当前位置   'a  导航到标记 a 处
+	 
+journalctl -u httpd.service  --since today -o json/json-pretty  -n20[-f]
+
+npm是JavaScript世界的包管理工具，并且是Node.js平台的默认包管理工具。通过npm可以安装、共享、分发代码，管理项目依赖关系。能解决的NodeJS代码部署上的很多问题，允许用户从NPM服务器下载别人编写的第三方包到本地使用。允许用户从NPM服务器下载并安装别人编写的命令行程序到本地使用。允许用户将自己编写的包或命令行程序上传到NPM服务器供别人使用。
+
+git status   git brach(-v checkout)   git remote   git reset
 
 Ctrl + a - ????????
 Ctrl + e - ????????
@@ -52,37 +70,10 @@ ansible-playbook playbook.yml --list-tasks                     显示工作的ta
 ansible-playbook playbook.yml --list-tags                      显示将要运行的tag
 ansible-playbook -C/--check  playbook.yml                      测试运行
 
-playbook语法进阶：变量，error，handlers，when，register，with_items，with_nested，tags，include and roles 
+playbook语法进阶：变量，error，handlers(Notify)，when，register，with_items，with_nested，tags，include and roles 
 
 Roles：模块化。用于层次性，结构化的组织playbook
 
-查看状态：git status
-本地库：git help reset
-
-	查看分支：git branch -v
-	创建分支：git branch 分支名(hot_fix)
-	切换分支：git checkout hot_fix
-	合并分支：把hot_fix分支合并到master分支上
-			  1.切换到master:git checkout master   2.合并：git merge hot_fix
-
-查看远程库地址别名：git remote -v		fetch：取回    push：推送  fatal：致命的
-创建远程库地址别名：git remote add 地址别名  地址(https://github.com/leyonglin/first-2019-4-21.git)     这个建立在之前已经签名的基础上。
-					
-推送(push)远程库：
-01.mkdir git目录                     											创建目录                                                                   
-02.git init                                                            			初始化
-03.git config user.name zhigao													签名
-04.git config user.email zhigao@google.com										签名
-05.git add .   [或者提交资源名称]												将文件从工作区添加到暂存区
-06.git commit -m "message"														将文件从暂存区提交到本地库
-07.git remote add video https://github.com/leyonglin/video-public.git			设置远程库别名
-08.git remote -v																查看远程库
-09.git push video master														提交到远程库别名的master分支
-
-拉取(pull)及同步操作:
-01.git clone https://github.com/leyonglin/first-2019-4-21.git  			1.将远程库下载到本地  2.初始化本地库  3.常见origin远程地址别名   
-02.git remote add video https://github.com/leyonglin/video-public.git
-03.git pull 地址别名 分支
 
 软件开发工具包（缩写：SDK、外语全称：Software Development Kit）一般都是一些软件工程师为特定的软件包、软件框架、硬件平台、操作系统等建立应用软件时的开发工具的集合。
 JDK是 Java 语言的软件开发工具包，主要用于移动设备、嵌入式设备上的java应用程序。JDK是整个java开发的核心，它包含了JAVA的运行环境（JVM+Java系统类库）和JAVA工具。
@@ -143,4 +134,5 @@ pm：fpm进程
 buckets：桶，缓存   
 orphans：孤儿，单独无关联   
 scaling：定标; 缩放比例
-
+fatal：致命的
+fetch：取回
