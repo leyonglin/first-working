@@ -1,0 +1,28 @@
+
+jenkins:
+持续集成(CI)：1.降低风险   2.减少重复过程   3.增强项目可见性  4.随时可以生成可部署软件
+持续部署/交付(CD)
+
+在官网下载软件包：https://jenkins.io/
+依赖java环境
+安装并启动
+
+首页--系统管理可设置相关配置：包括maven路径
+svn：
+拉取代码：新建任务--创建自由风格的软件项目--源码管理---选择相关版本控制工具[svn地址@HEAD:这是为了钩子程序下载最新版本--仅针对某些版本]
+构建方式：首页--工程(右边)--configure--构建--Invoke top-level Maven targets--调用maven target
+查看构建：首页--工程(右边)---立即构建---点击左下角构建进度的三角号---console output可以看到构建过程
+查看代码：首页--工程(右边)--工作区--可以看见拉取的代码
+查看状态：首页--可以通过M的标识看见成功率(Legend)
+部署代码：首页--工程(右边)--configure--构建后动作--Deploy war/ear to a container（需要插件） -- 部署完再构建会将war包部署到对应服务器上(console output/tomcat日志都可以查看)
+访问触发：首页--工程(右边)--configure--构建触发器--Trigger builds remotely--设置url
+		  浏览器访问这个地址：当前url去掉configure(JENKINS_URL/job/apple1/build?token=)TOKEN_NAME(自定义) 
+钩子程序：在版本控制工具的仓库/工程名称/hooks/post-commit(复制post-commit.tmpl)--配置完整的curl命令---755权限
+   curl  -X(请求方式)  -v(响应结果)  -u(携带用户名和密码)  -H(携带请求消息头信息) 
+   	   curl-X post -v -u[账号]:[密码]  -H"请求消息头信息"  [上述]url
+   	      首页--用户--用户id(标识)--configure--API Token
+   		     请求消息头信息：Crumb Algorithm:API Token
+
+github：
+github中的webhook=svn中的hooks      在项目的settings--webhooks  再把jenkins  首页--系统管理--全局安全配置--关闭防止网站点请求伪造
+首页---系统管理---全局工具配置---配置git 

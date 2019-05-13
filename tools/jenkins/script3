@@ -1,0 +1,101 @@
+#!/usr/bin/env python3
+# -*- coding: UTF-8 -*-
+# auther: admin
+# date: 2019-03-01
+import os,sys
+template_dir = "/opt/scripts/.update_branch_template/"
+job_basedir = "/home/swadmin/.jenkins/jobs"
+jenkins_restart = "/opt/apps/jdk/bin/java -jar /opt/scripts/.jenkins-cli.jar -s http://127.0.0.1:8001/jenkins -auth@/opt/scripts/.jenkins_scret safe-restart"
+def update_branch():
+    print("\033[36m \t\t\t+----------------------------------------------------------+\t\t\t \033[0m")
+    print("\033[36m \t\t\t|This scripts is used to update jenkins jobs's build branch|\t\t\t \033[0m")
+    print("\033[36m \t\t\t+----------------------------------------------------------+\t\t\t \033[0m")
+    #输入你要更新的站点token
+    while True:
+        update_token = input("\033[36m \t\t\tplease input the token you want to update:\033[0m")
+        token_confirm = input("\033[33m \t\t\tthe token is %s. yes|y/no|n   \033[0m"%update_token)
+        if token_confirm == "yes" or token_confirm == 'y':
+            break
+        else:
+            continue
+    #输入你要更新的yibo工程分支名称
+    while True:
+        update_branch = input("\033[36m \t\t\tplease input the branch of yibo project you want to update:\033[0m")
+        branch_confirm = input("\033[33m \t\t\tthe branch is %s. yes|y/no|n   \033[0m"%update_branch)
+        if branch_confirm == "yes" or branch_confirm == 'y':
+            break
+        else :
+            continue
+    #你需要更新的jenkins实例
+    default_confirm = input("\033[33m \t\t\tthe default job to be updated is admin work agent web livework. yes|y/no|n   \033[0m")
+    if default_confirm == "yes" or default_confirm == "y":
+        update_jobs = "admin work agent web livework"
+    else:
+        while True:
+            update_jobs = input("\033[36m \t\t\tplease input the jobs you want to update and it should be separatedby ' ':\033[0m")
+            job_confirm = input("\033[33m \t\t\tthe token is %s. yes|y/no|n   \033[0m"%update_jobs)
+            if job_confirm == "yes" or job_confirm == 'y':
+                break
+            else :
+                continue
+    #新分支脚本目录
+    branch_dir = "/opt/scripts/%s"%update_branch
+    if os.path.exists(branch_dir):
+        print("\033[32m \t\t\tthe branch_dir is already in the path\t\t\t \033[0m")
+    else:
+        os.system("cp -r %s %s"%(template_dir,branch_dir))
+        os.system("sed -i 's/issue-qxc/%s/g' %s/.*.sh"%(update_branch,branch_dir))
+        os.system("/opt/apps/rsync/bin/rsync -avz --password-file=/opt/scripts/.rsyncd.passwd --port=1873 --delete /opt/scripts/ rsync@103.23.46.151::jenkins_scripts >> /dev/null 2>&1")
+        os.system("/opt/apps/rsync/bin/rsync -avz --password-file=/opt/scripts/.rsyncd.passwd --port=1873 --delete /opt/scripts/ rsync@154.223.1.160::jenkins_scripts >> /dev/null 2>&1")
+        os.system("/opt/apps/rsync/bin/rsync -avz --password-file=/opt/scripts/.rsyncd.passwd --port=1873 --delete /opt/scripts/ rsync@103.116.132.35::jenkins_scripts >> /dev/null 2>&1")
+        os.system("/opt/apps/rsync/bin/rsync -avz --password-file=/opt/scripts/.rsyncd.passwd --port=1873 --delete /opt/scripts/ rsync@103.15.105.103::jenkins_scripts >> /dev/null 2>&1")
+        os.system("/opt/apps/rsync/bin/rsync -avz --password-file=/opt/scripts/.rsyncd.passwd --port=1873 --delete /opt/scripts/ rsync@103.116.133.106::jenkins_scripts >> /dev/null 2>&1")
+        os.system("/opt/apps/rsync/bin/rsync -avz --password-file=/opt/scripts/.rsyncd.passwd --port=1873 --delete /opt/scripts/ rsync@103.116.133.100::jenkins_scripts >> /dev/null 2>&1")
+        os.system("/opt/apps/rsync/bin/rsync -avz --password-file=/opt/scripts/.rsyncd.passwd --port=1873 --delete /opt/scripts/ rsync@103.86.87.142::jenkins_scripts >> /dev/null 2>&1")
+        os.system("/opt/apps/rsync/bin/rsync -avz --password-file=/opt/scripts/.rsyncd.passwd --port=1873 --delete /opt/scripts/ rsync@103.116.132.96::jenkins_scripts >> /dev/null 2>&1")
+    #每个job实例脚本目录修改
+    for eachjob in update_jobs.split():
+        os.system("sed -i 's#/opt/scripts#%s#' %s/%s-%s/config.xml"%(branch_dir,job_basedir,update_token,eachjob))
+    #重启jenkins
+    os.system(jenkins_restart)
+def reset_branch():
+    print("\033[36m \t\t\t+--------------------------------------------------------------------------+\t\t\t \033[0m")
+    print("\033[36m \t\t\t|This scripts is used to reset jenkins jobs's build branch to master branch|\t\t\t \033[0m
+")
+    print("\033[36m \t\t\t+--------------------------------------------------------------------------+\t\t\t \033[0m")
+    #输入你要更新的站点token
+    while True:
+        update_token = input("\033[36m \t\t\tplease input the token you want to update:\033[0m")
+        token_confirm = input("\033[33m \t\t\tthe token is %s. yes|y/no|n   \033[0m"%update_token)
+        if token_confirm == "yes" or token_confirm == 'y':
+            break
+        else:
+            continue
+    update_jobs = ['admin','work','agent','web','wechat','livework']
+    for eachjob in update_jobs:
+        if eachjob == "admin":
+            os.system("sed -i '/\/opt\/scripts/c source /opt/scripts/.production-adminxin.sh</command>' %s/%s-%s/config.xml"%(job_basedir,update_token,eachjob))
+        if eachjob == "work":
+            os.system("sed -i '/\/opt\/scripts/c source /opt/scripts/.production-workcf.sh</command>' %s/%s-%s/config.xml"%(job_basedir,update_token,eachjob))
+        if eachjob == "agent":
+            os.system("sed -i '/\/opt\/scripts/c source /opt/scripts/.production-agentcf.sh</command>' %s/%s-%s/config.xml"%(job_basedir,update_token,eachjob))
+        if eachjob == "web":
+            os.system("sed -i '/\/opt\/scripts/c source /opt/scripts/.production-webxin.sh</command>' %s/%s-%s/config.xml"%(job_basedir,update_token,eachjob))
+        if eachjob == "wechat":
+            os.system("sed -i '/\/opt\/scripts/c source /opt/scripts/.production-wechatcf.sh</command>' %s/%s-%s/config.xml"%(job_basedir,update_token,eachjob))
+        if eachjob == "livework":
+            os.system("sed -i '/\/opt\/scripts/c source /opt/scripts/.production-liveworkcf.sh</command>' %s/%s-%s/config.xml"%(job_basedir,update_token,eachjob))
+    #重启jenkins
+    os.system(jenkins_restart)
+if __name__ == '__main__':
+    while True:
+        which_do = input("\033[36m \t\t\twhat do you want to do? reset|update    \033[0m")
+        if which_do == "update":
+            update_branch()
+            break
+        elif which_do == "reset":
+            reset_branch()
+            break
+        else:
+            print("\033[36m \t\t\tplease input reset|update\033[0m")
+            continue

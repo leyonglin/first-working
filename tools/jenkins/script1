@@ -1,0 +1,378 @@
+#!/bin/bash
+
+source /etc/profile
+replace_token(){
+##替换token
+for i in `ls -d /home/swadmin/.jenkins/jobs/"$token"*`
+  do
+      sed -i 's/template/'"$token"'/g' $i/config.xml
+         case $i in
+         /home/swadmin/.jenkins/jobs/"$token"-web)
+           num=`grep 'admin(' /home/swadmin/.jenkins/jobs/"$token"-web/config.xml |  wc -l`
+           if [ $num != 1 ];then
+              echo "$token 备站发布已添加"
+           else
+             sed -n '/<jenkins.plugins.publish__over__ssh.BapSshPublisher plugin="publish-over-ssh@1.18">/,/<\/jenkins.plugins.publish__over__ssh.BapSshPublisher>/p'  $i/config.xml > /tmp/jenkins_webback
+             sed -i "s/"$token"_web_admin(ybdeploy)/备站"$token"_web_admin(ybdeploy)/g" /tmp/jenkins_webback
+             sed -i '/<\/jenkins.plugins.publish__over__ssh.BapSshPublisher>/r /tmp/jenkins_webback' $i/config.xml
+           fi
+           ;;
+         /home/swadmin/.jenkins/jobs/"$token"-cms)
+         sed -i "/setgid/,/<\/execCommand>/s/"$token"/template/g" /home/swadmin/.jenkins/jobs/"$token"-cms/config.xml
+           ;;
+         *)
+           continue
+           ;;
+         esac
+  done
+}
+location_confirm(){
+for i in `ls -d /home/swadmin/.jenkins/jobs/"$token"*`
+do
+  if [ $location == "HK" ];then
+     sed -i '/hudson.scm.NullSCM/a\ \ <assignedNode>HK-node-group<\/assignedNode>' $i/config.xml
+     sed -i 's/<canRoam>true<\/canRoam>/<canRoam>false<\/canRoam>/g' $i/config.xml
+  elif [ $location == "KR" ];then
+     sed -i '/hudson.scm.NullSCM/a\ \ <assignedNode>KR-node-group<\/assignedNode>' $i/config.xml
+     sed -i 's/<canRoam>true<\/canRoam>/<canRoam>false<\/canRoam>/g' $i/config.xml
+  fi
+done
+}
+add_views(){
+###添加视图
+sed -i '/<\/views>/i\    <listView>\n      <owner class="hudson" reference="../../.."/>\n      <name>'\(新\)"$viewsn
+ame"'_线上('"$token"')</name>\n      <filterExecutors>false</filterExecutors>\n      <filterQueue>false</filterQueue
+>\n      <properties class="hudson.model.View$PropertyList"/>\n      <jobNames>\n        <comparator class="hudson.u
+til.CaseInsensitiveComparator"/>\n        <string>'"$token"'-admin</string>\n        <string>'"$token"'-agent</strin
+g>\n        <string>'"$token"'-anls</string>\n        <string>'"$token"'-cms</string>\n        <string>'"$token"'-li
+vework</string>\n        <string>'"$token"'-web</string>\n        <string>'"$token"'-wechat</string>\n        <strin
+g>'"$token"'-work</string>\n      </jobNames>\n      <jobFilters/>\n      <columns>\n        <hudson.views.StatusCol
+umn/>\n        <hudson.views.WeatherColumn/>\n        <hudson.views.JobColumn/>\n        <hudson.views.LastSuccessCo
+lumn/>\n        <hudson.views.LastFailureColumn/>\n        <hudson.views.LastDurationColumn/>\n        <hudson.views
+.BuildButtonColumn/>\n      </columns>\n      <recurse>false</recurse>\n    </listView>' /home/swadmin/.jenkins/conf
+ig.xml
+
+}
+
+add_ssh_servers(){
+    space='    '
+    sec_pass_pre=`echo 'println(hudson.util.Secret.fromString("{}").getEncryptedValue())' | /opt/apps/jdk/bin/java -
+jar /opt/scripts/.jenkins-cli.jar -s http://127.0.0.1:8001/jenkins -auth @/opt/scripts/.jenkins_scret groovy =`
+    sec_pwd=`echo 'println(hudson.util.Secret.fromString("{}").getEncryptedValue())' | /opt/apps/jdk/bin/java -jar /
+opt/scripts/.jenkins-cli.jar -s http://127.0.0.1:8001/jenkins -auth @/opt/scripts/.jenkins_scret groovy =`
+
+    sed -i "/<\/hostConfigurations>/i\   <jenkins.plugins.publish__over__ssh.BapSshHostConfiguration>\n $space<name>
+${token}_web_admin(ybdeploy)</name>\n $space<hostname>$master_ip</hostname>\n $space<username>ybdeploy</username>\n
+$space<secretPassword>$sec_pwd</secretPassword>\n $space<remoteRootDir>./</remoteRootDir>\n $space<port>22</port>\n
+$space<commonConfig class=\"jenkins.plugins.publish_over_ssh.BapSshCommonConfiguration\" reference=\"../../jenkins.p
+lugins.publish__over__ssh.BapSshHostConfiguration/commonConfig\"/>\n $space<timeout>300000</timeout>\n $space<overri
+deKey>false</overrideKey>\n $space<disableExec>false</disableExec>\n $space<keyInfo>\n $space  <secretPassphrase>$se
+c_pass_pre</secretPassphrase>\n $space  <key></key>\n $space  <keyPath></keyPath>\n $space</keyInfo>\n $space<jumpHo
+st></jumpHost>\n $space<proxyType></proxyType>\n $space<proxyHost></proxyHost>\n $space<proxyPort>0</proxyPort>\n $s
+pace<proxyUser></proxyUser>\n $space<proxyPassword></proxyPassword>\n    </jenkins.plugins.publish__over__ssh.BapSsh
+HostConfiguration>" /home/swadmin/.jenkins/jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin.xml
+    sleep 1;
+    if [ $arch -eq 2 ];then
+        sec_pass_pre=`echo 'println(hudson.util.Secret.fromString("{}").getEncryptedValue())' | /opt/apps/jdk/bin/ja
+va -jar /opt/scripts/.jenkins-cli.jar -s http://127.0.0.1:8001/jenkins -auth @/opt/scripts/.jenkins_scret groovy =`
+        sec_pwd=`echo 'println(hudson.util.Secret.fromString("{}").getEncryptedValue())' | /opt/apps/jdk/bin/java -j
+ar /opt/scripts/.jenkins-cli.jar -s http://127.0.0.1:8001/jenkins -auth @/opt/scripts/.jenkins_scret groovy =`
+    else
+        sec_pass_pre=`echo 'println(hudson.util.Secret.fromString("{}").getEncryptedValue())' | /opt/apps/jdk/bin/ja
+va -jar /opt/scripts/.jenkins-cli.jar -s http://127.0.0.1:8001/jenkins -auth @/opt/scripts/.jenkins_scret groovy =`
+        sec_pwd=`echo 'println(hudson.util.Secret.fromString("{}").getEncryptedValue())' | /opt/apps/jdk/bin/java -j
+ar /opt/scripts/.jenkins-cli.jar -s http://127.0.0.1:8001/jenkins -auth @/opt/scripts/.jenkins_scret groovy =`
+    fi
+
+    sed -i "/<\/hostConfigurations>/i\   <jenkins.plugins.publish__over__ssh.BapSshHostConfiguration>\n $space<name>
+备站${token}_web_admin(ybdeploy)</name>\n $space<hostname>$slave_ip</hostname>\n $space<username>ybdeploy</username>
+\n $space<secretPassword>$sec_pwd</secretPassword>\n $space<remoteRootDir>./</remoteRootDir>\n $space<port>22</port>
+\n $space<commonConfig class=\"jenkins.plugins.publish_over_ssh.BapSshCommonConfiguration\" reference=\"../../jenkin
+s.plugins.publish__over__ssh.BapSshHostConfiguration/commonConfig\"/>\n $space<timeout>300000</timeout>\n $space<ove
+rrideKey>false</overrideKey>\n $space<disableExec>false</disableExec>\n $space<keyInfo>\n $space  <secretPassphrase>
+$sec_pass_pre</secretPassphrase>\n $space  <key></key>\n $space  <keyPath></keyPath>\n $space</keyInfo>\n $space<jum
+pHost></jumpHost>\n $space<proxyType></proxyType>\n $space<proxyHost></proxyHost>\n $space<proxyPort>0</proxyPort>\n
+ $space<proxyUser></proxyUser>\n $space<proxyPassword></proxyPassword>\n    </jenkins.plugins.publish__over__ssh.Bap
+SshHostConfiguration>" /home/swadmin/.jenkins/jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin.xml
+}
+
+reload_jobs(){
+#java -jar /opt/scripts/.jenkins-cli.jar -s http://127.0.0.1:8001/jenkins -auth @/opt/scripts/.jenkins_scret reload-
+configuration
+#jobs=`find /home/swadmin/.jenkins/jobs/  -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | sort -nr |grep $token`
+#for job in $jobs
+#do
+#     java -jar /opt/scripts/.jenkins-cli.jar -s http://127.0.0.1:8001/jenkins -auth @/opt/scripts/.jenkins_scret re
+load-job $job
+#done
+echo 'jenkins will be restart when all existing builds to be completed.'
+/opt/apps/jdk/bin/java -jar /opt/scripts/.jenkins-cli.jar -s http://127.0.0.1:8001/jenkins -auth @/opt/scripts/.jenk
+ins_scret safe-restart
+}
+
+add_parameters(){
+while true
+do
+    read -p "Please input your web master server ip address: " master_ip
+    read -p "Please input your web slave server ip address: " slave_ip
+    read -p "Your web master server ip address is: $master_ip. Your web slave server ip address is: $slave_ip. Are y
+ou sure?  (y/n)" answer
+    case $answer in
+    y|Y)
+    break;;
+    n|N)
+    continue;;
+    esac
+done
+
+while true
+do
+    read -p "Please select your web architacture, 2 was two servers, 4 was four servers. (2/4): " selection
+    case $selection in
+    2)
+    arch=2
+    break;;
+    4)
+    arch=4
+    break;;
+    *)
+    echo 'Your selection is invalid.'
+    continue;;
+    esac
+done
+
+while true
+do
+    read -p "Please select your webserver location, HK/hk is 香港服务器, KR/kr is 韩国服务器。(HK/KR)" server_locati
+on
+    case $server_location in
+    HK|hk)
+      location=HK
+      break;;
+    KR|kr)
+      location=KR
+      break;;
+    *)
+      echo "Your selection is invalid!"
+      continue;;
+   esac
+done
+
+for i in {1..3}
+do
+read -p "please input you token:" token
+jobexist=`/usr/bin/find /home/swadmin/.jenkins/jobs -name "$token-*" -type d`
+if [ ! -z "$jobexist" ];then
+echo "the jobs you want to add are existed"
+exit 2
+fi
+read -p "please input you viewsname:" viewsname
+read -p "the token is: $token ? and the viewsname is :$viewsname (y/n)" answer
+case $answer in
+y|Y)
+break;;
+n|N)
+continue;;
+esac
+done
+}
+delete_views_hosts_jobs(){
+read -p "请输入你想删除视图/主机/jobs的token,以空格隔开：" alltoken
+#######开始删除视图/主机/jobs
+for eachtoken in $alltoken
+do
+  #######删除视图
+  cd ~/.jenkins/
+  linenum=`grep -n 线上\($eachtoken\) config.xml|awk -F ':' '{print $1}'`
+  if [ -z $linenum ];then
+    echo "您输入的令牌码"$eachtoken" jenkins不存在！！！"
+    continue
+  fi
+  sublinenum=$[$linenum-1]
+  seclinenum=$[$linenum-2]
+  sed -i ''$seclinenum','$sublinenum'd' config.xml
+  sed -i '/线上('$eachtoken')/,/<\/listView>/d' config.xml
+  echo "#############$eachtoken视图已删除"
+  #######删除主机
+  ##主站
+  hostnum=`grep -n "<name>"$eachtoken"_web_admin" jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin.xml |awk -F
+ ':' '{print $1}'`
+  if [ ! -z "$hostnum" ];then
+  hostsubnum=$[$hostnum-1]
+  sed -i ''$hostsubnum'd' jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin.xml
+  sed -i '/<name>'$eachtoken'_web_admin/,/<\/jenkins.plugins.publish__over__ssh.BapSshHostConfiguration>/d' jenkins.
+plugins.publish_over_ssh.BapSshPublisherPlugin.xml
+  fi
+  ##备站
+  hostbaknum=`grep -n "<name>备站"$eachtoken"_web_admin" jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin.xml
+|awk -F ':' '{print $1}'`
+  if [ ! -z "$hostbaknum" ];then
+  hostbaksubnum=$[$hostbaknum-1]
+  sed -i ''$hostbaksubnum'd' jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin.xml
+  sed -i '/<name>备站'$eachtoken'_web_admin/,/<\/jenkins.plugins.publish__over__ssh.BapSshHostConfiguration>/d' jenk
+ins.plugins.publish_over_ssh.BapSshPublisherPlugin.xml
+  fi
+  ##备站1
+  hostbak1num=`grep -n "<name>备站1"$eachtoken"_web_admin" jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin.xm
+l |awk -F ':' '{print $1}'`
+  if [ ! -z "$hostbak1num" ];then
+  hostbak1subnum=$[$hostbak1num-1]
+  sed -i ''$hostbak1subnum'd' jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin.xml
+  sed -i '/<name>备站1'$eachtoken'_web_admin/,/<\/jenkins.plugins.publish__over__ssh.BapSshHostConfiguration>/d' jen
+kins.plugins.publish_over_ssh.BapSshPublisherPlugin.xml
+  fi
+  ##备站2
+  hostbak2num=`grep -n "<name>备站2"$eachtoken"_web_admin" jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin.xm
+l |awk -F ':' '{print $1}'`
+  if [ ! -z "$hostbak2num" ];then
+  hostbak2subnum=$[$hostbak2num-1]
+  sed -i ''$hostbak2subnum'd' jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin.xml
+  sed -i '/<name>备站2'$eachtoken'_web_admin/,/<\/jenkins.plugins.publish__over__ssh.BapSshHostConfiguration>/d' jen
+kins.plugins.publish_over_ssh.BapSshPublisherPlugin.xml
+  fi
+  ##备站3
+  hostbak3num=`grep -n "<name>备站3"$eachtoken"_web_admin" jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin.xm
+l |awk -F ':' '{print $1}'`
+  if [ ! -z "$hostbak3num" ];then
+  hostbak3subnum=$[$hostbak3num-1]
+  sed -i ''$hostbak3subnum'd' jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin.xml
+  sed -i '/<name>备站3'$eachtoken'_web_admin/,/<\/jenkins.plugins.publish__over__ssh.BapSshHostConfiguration>/d' jen
+kins.plugins.publish_over_ssh.BapSshPublisherPlugin.xml
+  fi
+  echo "#############$eachtoken主机已删除"
+  #######移除jobs
+  rm -rf ~/.jenkins/jobs/$eachtoken-*
+  echo "#############$eachtoken工程已删除"
+done
+echo "准备重启jenkins，请等待"
+/opt/apps/jdk/bin/java -jar /opt/scripts/.jenkins-cli.jar -s http://127.0.0.1:8001/jenkins -auth @/opt/scripts/.jenk
+ins_scret safe-restart
+}
+update_existed_jobs(){
+read -p "请输入准备升级jenkins的站点令牌码,并已空格隔开：" webtoken
+for eachtoken in $webtoken
+do
+  cd /home/swadmin/.jenkins/jobs
+  tokenjobs=`ls -d $eachtoken-*`
+  if [ -z "$tokenjobs" ];then
+    echo "您输入的$eachtoken jenkins不存在！！！"
+    continue
+  fi
+  if [ ! -z "$tokenjobs" ];then
+  for eachjob in $tokenjobs
+  do
+    case $eachjob in
+      $eachtoken-admin)
+        sed -i 's/(swadmin)/(ybdeploy)/g' $eachtoken-admin/config.xml
+        sed -i '/^token=/c token='$eachtoken'' /tmp/update-admin.txt
+        sed -i '/<execCommand>/,/<\/execCommand>/d' $eachtoken-admin/config.xml
+        sed -i '/patternSeparator/r /tmp/update-admin.txt' $eachtoken-admin/config.xml
+      ;;
+      $eachtoken-work)
+        sed -i 's/(swadmin)/(ybdeploy)/g' $eachtoken-work/config.xml
+        sed -i '/^token=/c token='$eachtoken'' /tmp/update-work.txt
+        sed -i '/<execCommand>/,/<\/execCommand>/d' $eachtoken-work/config.xml
+        sed -i '/patternSeparator/r /tmp/update-work.txt' $eachtoken-work/config.xml
+      ;;
+      $eachtoken-agent)
+        sed -i 's/(swadmin)/(ybdeploy)/g' $eachtoken-agent/config.xml
+        sed -i '/^token=/c token='$eachtoken'' /tmp/update-agent.txt
+        sed -i '/<execCommand>/,/<\/execCommand>/d' $eachtoken-agent/config.xml
+        sed -i '/patternSeparator/r /tmp/update-agent.txt' $eachtoken-agent/config.xml
+      ;;
+      $eachtoken-web)
+        sed -i 's/(swadmin)/(ybdeploy)/g' $eachtoken-web/config.xml
+        sed -i '/^token=/c token='$eachtoken'' /tmp/update-web.txt
+        sed -i '/<execCommand>/,/<\/execCommand>/d' $eachtoken-web/config.xml
+        sed -i '/patternSeparator/r /tmp/update-web.txt' $eachtoken-web/config.xml
+      ;;
+      $eachtoken-anls)
+        sed -i 's/(swadmin)/(ybdeploy)/g' $eachtoken-anls/config.xml
+        sed -i '/^token=/c token='$eachtoken'' /tmp/update-anls.txt
+        sed -i '/<execCommand>/,/<\/execCommand>/d' $eachtoken-anls/config.xml
+        sed -i '/patternSeparator/r /tmp/update-anls.txt' $eachtoken-anls/config.xml
+      ;;
+      $eachtoken-wechat)
+        sed -i 's/(swadmin)/(ybdeploy)/g' $eachtoken-wechat/config.xml
+        sed -i '/^token=/c token='$eachtoken'' /tmp/update-wechat.txt
+        sed -i '/<execCommand>/,/<\/execCommand>/d' $eachtoken-wechat/config.xml
+        sed -i '/patternSeparator/r /tmp/update-wechat.txt' $eachtoken-wechat/config.xml
+      ;;
+      $eachtoken-cms)
+        sed -i 's/(swadmin)/(ybdeploy)/g' $eachtoken-cms/config.xml
+        sed -i '/^token=/c token='$eachtoken'' /tmp/update-cms.txt
+        sed -i '/<execCommand>/,/<\/execCommand>/d' $eachtoken-cms/config.xml
+        sed -i '/patternSeparator/r /tmp/update-cms.txt' $eachtoken-cms/config.xml
+      ;;
+      $eachtoken-livework)
+        sed -i 's/(swadmin)/(ybdeploy)/g' $eachtoken-livework/config.xml
+        sed -i '/^token=/c token='$eachtoken'' /tmp/update-livework.txt
+        sed -i '/<execCommand>/,/<\/execCommand>/d' $eachtoken-livework/config.xml
+        sed -i '/patternSeparator/r /tmp/update-livework.txt' $eachtoken-livework/config.xml
+    esac
+  done
+  fi
+  cd /home/swadmin/.jenkins/
+  allhost=`egrep "<name>备站"$eachtoken"_web_admin\(swadmin\)|<name>"$eachtoken"_web_admin\(swadmin\)|<name>备站1"$e
+achtoken"_web_admin\(swadmin\)|<name>备站2"$eachtoken"_web_admin\(swadmin\)|<name>备站3"$eachtoken"_web_admin\(swadm
+in\)" jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin.xml`
+  if [ ! -z "$allhost" ];then
+    for eachhost in $allhost
+    do
+      eachlinenum=`grep -n "$eachhost" jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin.xml | awk -F ':' '{pri
+nt $1}'`
+      passlinenum=$[$eachlinenum+11]
+      konglinenum=$[$eachlinenum+3]
+      userlinenum=$[$eachlinenum+2]
+      host_pass=`echo 'println(hudson.util.Secret.fromString("{}").getEncryptedValue())' | /opt/apps/jdk/bin/java -jar /opt/scripts/.jenkins-cli.jar -s http://127.0.0.1:8001/jenkins -auth @/opt/scripts/.jenkins_scret groovy =`
+      kong_pass=`echo 'println(hudson.util.Secret.fromString("{}").getEncryptedValue())' | /opt/apps/jdk/bin/java -jar /opt/scripts/.jenkins-cli.jar -s http://127.0.0.1:8001/jenkins -auth @/opt/scripts/.jenkins_scret groovy =`
+      sed -i ''$konglinenum'c \ \ \ \ \ <secretPassword>'$kong_pass'</secretPassword>' jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin.xml
+      sed -i ''$passlinenum'c \ \ \ \ \ \ \ <secretPassphrase>'$host_pass'</secretPassphrase>' jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin.xml
+      sed -i ''$userlinenum'c \ \ \ \ \ \ <username>ybdeploy</username>' jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin.xml
+    done
+  fi
+  sed -i 's/<name>'$eachtoken'_web_admin(swadmin)/<name>'$eachtoken'_web_admin(ybdeploy)/g' jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin.xml
+  sed -i 's/<name>备站'$eachtoken'_web_admin(swadmin)/<name>备站'$eachtoken'_web_admin(ybdeploy)/g' jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin.xml
+  sed -i 's/<name>备站1'$eachtoken'_web_admin(swadmin)/<name>备站1'$eachtoken'_web_admin(ybdeploy)/g' jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin.xml
+  sed -i 's/<name>备站2'$eachtoken'_web_admin(swadmin)/<name>备站2'$eachtoken'_web_admin(ybdeploy)/g' jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin.xml
+  sed -i 's/<name>备站3'$eachtoken'_web_admin(swadmin)/<name>备站3'$eachtoken'_web_admin(ybdeploy)/g' jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin.xml
+done
+echo "更改完毕，准备重启jenkins，请等待"
+/opt/apps/jdk/bin/java -jar /opt/scripts/.jenkins-cli.jar -s http://127.0.0.1:8001/jenkins -auth @/opt/scripts/.jenkins_scret safe-restart
+}
+###########################################
+echo -e "\033[36m \t\t\t------welcome to jenkins world-------\t\t\t \033[0m"
+echo -e "\033[36m \t\t\t(1) clone production jenkins jobs\t\t\t \033[0m"
+echo -e "\033[33m \t\t\t(2) update existed jenkins jobs\t\t\t \033[0m"
+echo -e "\033[31m \t\t\t(3) delete jenkins project that you do not need\t\t\t \033[0m"
+echo -e "\033[32m \t\t\t(9) exit menu \t\t\t \033[0m"
+echo -e "\033[36m \t\t\t----------------------------------\t\t\t \033[0m"
+read -p "choice clone template:" input
+case $input in
+1)
+###复制模板
+add_parameters
+
+for i in ` ls -d /opt/scripts/.jenkins_release_update_jobs_template/template-* `
+do
+    cp -ar $i /home/swadmin/.jenkins/jobs/"$token"-${i#*-}
+done
+add_ssh_servers
+replace_token
+location_confirm
+add_views
+reload_jobs
+;;
+2)
+echo " This option is used to update existed jenkins jobs!"
+update_existed_jobs
+;;
+3)
+echo " This option is used to delete jenkins project that you do not need!"
+delete_views_hosts_jobs
+;;
+9)
+echo '退出!'
+exit
+;;
+esac

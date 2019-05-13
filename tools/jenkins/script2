@@ -1,0 +1,23 @@
+#!/bin/bash
+echo ''> /opt/src/jilu.txt
+base_dir=/home/swadmin/.jenkins/jobs
+while true
+do
+  read -p '请输入你想查询的日期(格式:"May  1""May 11" )' riqi
+  break
+done
+  cd $base_dir
+for job_name in `ls`
+do
+  cd $base_dir/$job_name/builds
+  build_num=`ls -l ./|egrep -v "last|legacyIds"|grep "$riqi"|awk '{print $9}'`
+  for num in $build_num
+  do
+     if_success=`tail -n 1 $num/log |awk '{print $2}'`
+     if [ $if_success = "SUCCESS" ];then
+       cd $base_dir/$job_name/builds
+       ls -l ./|egrep -v "last|legacyIds"|grep "$riqi"|grep "$num"|awk '{print "'$job_name'",$6,$7,$8}'  >> /opt/src/jilu.txt
+     fi
+  done
+done
+echo "你需要的发布记录已导出，请到/opt/src/jilu.txt中查看"
