@@ -19,7 +19,7 @@ Nginx代理 : 反代
 数据库:数据库，存储数据
 Redis : 内存存储数据库,做缓存
 Jumpserver:管理后台，是核心组件(Core) 使用 Django Class Based View 风格开发，支持 Restful API。
-Coco :  实现了SSH Server和Web Terminal Server的组件(xshell登陆--认证(LDAP)--jumpserver资产--选择主机--密钥/ssh--进入)
+Coco :  实现了SSH Server和Web Terminal Server的组件(xshell登陆--认证(LDAP)--jumpserver资产--选择主机--密钥/ssh--进入),在配置文件中可以修改文件传输目录
 Guacamole(Apache) : 是一款HTML5应用程序，可通过RDP，VNC和其他协议访问远程桌面。
 Luna:Web Terminal前端
 

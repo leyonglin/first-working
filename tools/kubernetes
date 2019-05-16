@@ -12,7 +12,7 @@ spec:
   limits:
     ...
 
-节点：Kubernetes集群中的服务器；
+
 集群：Kubernetes管理的一组服务器集合；
 边界路由器：为局域网和Internet路由数据包的路由器，执行防火墙保护局域网络；
 集群网络：遵循Kubernetes网络模型实现群集内的通信的具体实现  
@@ -28,6 +28,8 @@ kube-proxy:这个应用监控着Kubermaster增加和删除服务，对于每一�
 Service:是一个定义了一组Pod的策略的抽象,也叫做宏观服务。在kubernete集群中实现让这些前台能够持续的追踪到这些后台的,这些被服务标记的Pod都是(一般)通过label Selector(创建与Service同名的EndPoints对象)决定的,如果没有,可以指定kubernetes管理之外的数据库的物理IP进行连接,有三种类型：ClusterIP，NodePort，LoadBalancer
        每个Service被创建的时候会被分配一个唯一的IP地址（也叫 clusterIP ）。这个地址和Service绑定，只要Service活着就不会改变。Pod可以配置成和Service交互，并且知道和Service的通信会被自动地负载均衡到Service成员中的某个Pod。
 	   Kubernetes提供了一个DNS集群插件Service，这个Service使用 skydns 自动给其他Service分配DNS
+	service是一组pod的服务抽象，相当于一组pod的LB，负责将请求分发给对应的pod。service会为这个LB提供一个IP，一般称为cluster IP。
+    kube-proxy的作用主要是负责service的实现，具体来说，就是实现了内部从pod到service和外部的从node port向service的访问。   
 Service account是为了方便Pod里面的进程调用Kubernetes API或其他外部服务而设计的，提供认证。。。
 Volumes:与所在的Pod的生命周期相同(pod中容器共享数据卷)
 PV/PVC/StorageClass：PV是集群中的资源(PersistentVolume).PVC是对这些资源的请求(PersistentVolumeClaim).StorageClass为管理员提供了一种描述他们提供的存储的“类”的方法。 不同的类可能映射到服务质量级别，或备份策略

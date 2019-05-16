@@ -6,16 +6,55 @@ man systemd.service
 man systemd
 man systemd.exec
 
+systemctl路径：/etc/systemd/system/* 优先于 /usr/lib/systemd/system/*
+init路径：/etc/init.d/(脚本)      /etc/rc*  --> /etc/rc.d/rc*
+
 系统初始化级别脚本运行之后自动执行的：/etc/rc.local
 init.d目录下的脚本：以K开头的脚本运行在以S开头的脚本之前(开机自启:update-rc.d redis defaults)
                     service xxx启动/etc/init.d/目录下的xxx脚本(或者Redirecting to /bin/systemctl start docker.service)
-					
+
+systemctl get-default  && systemctl cat multi-user.target  (AllowIsolate：允许使用systemctl isolate命令切换到multi-user.target。)
+
+systemctl status:
+Loaded行：配置文件的位置，是否设为开机启动
+Active行：表示正在运行
+Main PID行：主进程ID
+Status行：由应用本身（这里是 httpd ）提供的软件当前状态
+CGroup块：应用的所有进程
+日志块：应用的日志
+
+	
+systemd(systemctl):基本用法  
+  systemctl start/stop/enable/disable/mask.. [service]
+  查看系统上上所有的服务systemctl [command:–list-units] [–type=TYPE] [–all]
+  getty.target:用来设置tty的数量  get-default:取得当前的target  isolate:切换到指定的运行级别
+  分析各服务之前的依赖关系:systemctl list-dependencies [unit]/[––reverse:用来检查寻哪个unit使用了这个unit]
+  关闭服务:systemctl list-units --all | grep sshd  (如果只闭关了 sshd.service 那么 sshd.socket还在监听网络，在网络上有要求连接 sshd 时就会启动 sshd.service 。因此如果想完全关闭sshd服务的话，需要同时停用sshd.service和sshd.socket)
+  分析systemd启动进程: systemd-analyze [blame][-h]
+  
+centos7之前是启动服务：service [service] 选项 自启：chkconfig [service] on/off   切换级别：init 0~6  
+systemd配置文件被称为unit单元，根据类型不同，以不同的扩展名结尾。
+ systemctl --type=service [systemctl list-units]
+  .service系统服务；
+  .target一组系统服务,引用其他 unit；
+  .slice一组分层次管理的系统进程；
+  .automount自动挂载点；
+  .device能被内核识别的设备；
+  .mount挂载点；
+  .path文件系统的文件或者目录；
+  .scope外部创建的进程；
+  .snapshot系统服务状态管理；
+  .socket进程间通讯套接字；
+  .swap定义swap文件或者设备；
+  .timer定义定时器。		
+
+		
+Systemd:
 	主要有四种类型文件
 	*.mount:定义了一个挂载点，[Mount]节点里配置了What,Where,Type三个数据项
 	*.service:文件定义了一个服务，[Unit]，[Service]，[Install]三个小节
 	*.target:定义了一些基础的组件，供.service文件调用
 	*.wants:定义了要执行的文件集合，每次执行，.wants文件夹里面的文件都会执行
-
 
 [Unit] 
 Description：描述及systemctl status 输出的此服务的说明
@@ -25,6 +64,7 @@ Before：最好在什么服务启动前启动这个服务(非强制)只涉及启
 Requires：明确的定义此unit需要在哪个daemon启动后才能够启动,若前导服务没有启动,那么此unit就不会被启动！
 Wants：规范的是这个unit之后最好还要启动什么服务比较好(弱依赖)
 Conflicts：冲突检查,这个项目后面接的服务如果有启动,那么我们这个unit本身就不能启动！
+AllowIsolate=yes   允许切换
 
 [Service] 
 Type：说明这个daemon启动的方式,会影响到ExecStart 
@@ -34,7 +74,7 @@ Type：说明这个daemon启动的方式,会影响到ExecStart
       dbus：类似于simple，但会等待 D-Bus 信号后启动（通常也要设置 BusName= 才行）
       notify：类似于simple，启动结束后会发出通知信号，然后 Systemd 再启动其他服务
       idle：类似于simple，但是要等到其他任务都执行完，才会启动该服务(通常是开机到最后才执行即可的服务)
-User=redis
+User=redis  指定启动用户
 EnvironmentFile:指定启动脚本的环境配置文件！
 或者Environment= 后面接多个不同的 Shell 变量来给予设置！
 ExecStart：实际执行此daemon的指令或脚本程序(仅接受“指令 参数 参数...”的格式)要使用这些特殊的字符( <, >, >>, |, & )时，最好直接写入到指令脚本里面去(只能有一行)
@@ -61,40 +101,7 @@ WantedBy:后面接的大部分是*.target unit,意思是,这个unit本身是附�
 Also:当目前这个unit本身被enable时，Also后面接的unit也请enable的意思！也就是具有相依性的服务可以写在这里呢！
 Alias:进行一个链接的别名的意思！
 
-systemctl get-default  && systemctl cat multi-user.target  (AllowIsolate：允许使用systemctl isolate命令切换到multi-user.target。)
 
-systemctl status:
-Loaded行：配置文件的位置，是否设为开机启动
-Active行：表示正在运行
-Main PID行：主进程ID
-Status行：由应用本身（这里是 httpd ）提供的软件当前状态
-CGroup块：应用的所有子进程
-日志块：应用的日志
-
-	
-systemd(systemctl):基本用法  
-  systemctl start/stop/enable/disable/mask.. [service]
-  查看系统上上所有的服务systemctl [command:–list-units] [–type=TYPE] [–all]
-  getty.target:用来设置tty的数量  get-default:取得当前的target  isolate:切换到指定的运行级别
-  分析各服务之前的依赖关系:systemctl list-dependencies [unit]/[–reverse:用来检查寻哪个unit使用了这个unit]
-  关闭服务:systemctl list-units --all | grep sshd  (如果只闭关了 sshd.service 那么 sshd.socket还在监听网络，在网络上有要求连接 sshd 时就会启动 sshd.service 。因此如果想完全关闭sshd服务的话，需要同时停用sshd.service和sshd.socket)
-  分析systemd启动进程: systemd-analyze [blame][-h]
-  
-centos7之前是启动服务：service [service] 选项 自启：chkconfig [service] on/off   切换级别：init 0~6  
-systemd配置文件被称为unit单元，根据类型不同，以不同的扩展名结尾。
- systemctl --type=service [systemctl list-units]
-  .service系统服务；
-  .target一组系统服务,引用其他 unit；
-  .automount自动挂载点；
-  .device能被内核识别的设备；
-  .mount挂载点；
-  .path文件系统的文件或者目录；
-  .scope外部创建的进程；
-  .slice一组分层次管理的系统进程；
-  .snapshot系统服务状态管理；
-  .socket进程间通讯套接字；
-  .swap定义swap文件或者设备；
-  .timer定义定时器。
   
 使用 systemctl 控制单元时，通常需要使用单元文件的全名，包括扩展名（例如 sshd.service）如果无扩展名，systemctl 默认把扩展名当作 .service。例如 netcfg 和 netcfg.service 是等价的。  
 如果服务没有Install段落，一般意味着应该通过其它服务自动调用它们。如果真的需要手动安装，可以直接连接服务  ln -s /usr/lib/systemd/system/foo.service /etc/systemd/system/graphical.target.wants/
@@ -107,7 +114,7 @@ systemd配置文件被称为unit单元，根据类型不同，以不同的扩展
            [Service]
            Nice=-5
 systemctl daemon-reload  重载目录下内容
-
+ 
 
 
   

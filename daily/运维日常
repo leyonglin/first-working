@@ -91,7 +91,9 @@ WinMTR：可以在windows上进行路由追踪的软件
 
 原点ip：axpjback.javalebogame7.com
 
+502   启动中...
 
+nginx后台打开空白，查一下nginx启动顺序
 
 大陆域名需要备案
 没绑定证书/证书过期/走自己cdn强制跳转或绑定证书：---警告：面临潜在的安全风险   可用ats检测----清缓存/重绑/重启
