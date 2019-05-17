@@ -1,10 +1,14 @@
 
-
-
 man n systemd.unit
 man systemd.service
 man systemd
 man systemd.exec
+
+systemctl list-dependencies httpd [--reverse]  查看依赖
+systemctl list-unit --all | grep sshd  /  systemctl --type=service
+systemd-analyze blame
+systemctl cat multi-user.target(httpd.service..)
+systemctl status httpd           /         systemctl get-default
 
 systemctl路径：/etc/systemd/system/* 优先于 /usr/lib/systemd/system/*
 init路径：/etc/init.d/(脚本)      /etc/rc*  --> /etc/rc.d/rc*
@@ -28,7 +32,7 @@ systemd(systemctl):基本用法
   systemctl start/stop/enable/disable/mask.. [service]
   查看系统上上所有的服务systemctl [command:–list-units] [–type=TYPE] [–all]
   getty.target:用来设置tty的数量  get-default:取得当前的target  isolate:切换到指定的运行级别
-  分析各服务之前的依赖关系:systemctl list-dependencies [unit]/[––reverse:用来检查寻哪个unit使用了这个unit]
+  分析各服务之前的依赖关系:systemctl list-dependencies [unit] [––reverse:用来检查寻哪个unit使用了这个unit]
   关闭服务:systemctl list-units --all | grep sshd  (如果只闭关了 sshd.service 那么 sshd.socket还在监听网络，在网络上有要求连接 sshd 时就会启动 sshd.service 。因此如果想完全关闭sshd服务的话，需要同时停用sshd.service和sshd.socket)
   分析systemd启动进程: systemd-analyze [blame][-h]
   
@@ -39,8 +43,8 @@ systemd配置文件被称为unit单元，根据类型不同，以不同的扩展
   .target一组系统服务,引用其他 unit；
   .slice一组分层次管理的系统进程；
   .automount自动挂载点；
-  .device能被内核识别的设备；
   .mount挂载点；
+  .device能被内核识别的设备；
   .path文件系统的文件或者目录；
   .scope外部创建的进程；
   .snapshot系统服务状态管理；

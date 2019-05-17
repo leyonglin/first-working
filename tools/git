@@ -1,6 +1,7 @@
 
 
-git和代码托管中心(git服务器:维护远程库)
+git:版本控制系统
+gitlab/github:代码托管中心(git服务器:维护远程库)
 局域网环境下：gitlab服务器
 外网环境：github和码云
 gitlab参考文档：https://about.gitlab.com
@@ -150,8 +151,48 @@ git工作流：1.集中式工作流：即不分支，类似svn
 	  systemctl start postfix
 	  systemctl restart postfix         支持邮件通知]
       [firewall-cmd --permanent --add-service=http  && systemctl reload firewalld]
-     
+配置文件:/etc/gitlab/gitlab.rb
+查看日志:gitlab-ctl tail
+检查:gitlab:gitlab-rake gitlab:check SANITIZE=true --trace
+查看日志：gitlab-ctl tail
+备份：gitlab-rake gitlab:backup:create
+     (将在/var/opt/gitlab/backups目录下创建一个名称类似为xxxxxxxx_gitlab_backup.tar的压缩包, 这个压缩包就是Gitlab整个的完整部分, 其中开头的xxxxxx是备份创建的时间戳。)
+     Gitlab 修改备份文件默认目录(修改/etc/gitlab/gitlab.rb来修改默认存放备份文件的目录:gitlab_rails['backup_path'] = '/mnt/backups')  
+	 修改后使用gitlab-ctl reconfigure命令重载配置文件。
+恢复：进入备份 gitlab 的目录，这个目录是配置文件中的 gitlab_rails['backup_path'] ，默认为 /var/opt/gitlab/backups 
+    停止 unicorn(gitlab-ctl stop unicorn ) 和 sidekiq (gitlab-ctl stop sidekiq) 
+	恢复数据:gitlab-rake gitlab:backup:restore BACKUP=xxxxxx (xxxxx为备份文件的时间戳) 
+启动Gitlab:gitlab-ctl start
+	
+配置https:
+ 	yum -y install openssl
+    mkdir -p /etc/gitlab/ssl
+    cd /etc/gitlab/ssl
+    openssl req -newkey rsa:2048 -x509 -nodes -days 3560 -out gitlab.crt -keyout gitlab.key
+vim /etc/gitlab/gitlab.rb
+external_url 'https://192.168.18.13:8888' (720-740之间,这是干啥用的？)
+nginx['enable'] = true
+nginx['redirect_http_to_https'] = true
+nginx['ssl_certificate'] = "/etc/gitlab/ssl/gitlab.crt"
+nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/gitlab.key"
+ 
+gitlab-ctl reconfigure
 
+忽略文件：gitignore文件(参考文档：https://github.com/github/gitignore)
+       (路径：/var/opt/gitlab/git-data/repositories/username/git.git/info/exclude )
+
+不使用默认的SSH端口(双端口)：在服务器sshd增加12345并放通外网对其的访问，内网不受影响扔可以使用默认的22号端口做版本控制。
+   客户端机创建key,然后将公钥丢到Gitlab上
+   在.ssh目录创建config文件
+   cat  ~/.ssh/config
+   Host gitlab.renn.top
+   User git
+   Port 12345
+   IdentityFile  ~/.ssh/id_rsa
+   2.3 测试连通性
+   ssh -T gitlab.renn.top
+
+	
 	
 	
 git图形化操作：	

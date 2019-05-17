@@ -4,8 +4,25 @@ jenkins:
 持续部署/交付(CD)
 
 在官网下载软件包：https://jenkins.io/
-依赖java环境
-安装并启动
+yum源
+wget http://pkg.jenkins.io/redhat/jenkins.repo
+rpm --import http://pkg.jenkins.io/redhat/jenkins.io.key
+
+安装：
+yum install java-1.8.0-openjdk.x86_64  &&  java -version  &&  rpm -ql java-1.8.0-openjdk.x86_64
+yum install maven git  && mvn -v  &&  git --version
+yum install jenkins(参考下载地址：https://pkg.jenkins.io/redhat-stable/)  &&  rpm -ql pk_name
+
+使用：
+访问：ip:8080(默认)  &&  安装Jenkins-Maven插件Maven Integration  && 安全设置
+系统管理 -- 全局配置 --  JDK(JAVA_HOME /usr/lib/jvm/java-1.8.0-openjdk) -- maven(MAVEN_HOME /usr/share/maven)
+注意：jenkins启动用户是默认连接用户
+Gitlab的Webhook功能，通过Webhook的相关设置，可以实现代码Push后自动去触发jenkins上的构建动作(插件:gitlab hook)
+
+
+
+
+一个view试图(公司),下面有job任务(应用程序:实例),创建实例的时候可以用复制。 
 
 首页--系统管理可设置相关配置：包括maven路径
 svn：

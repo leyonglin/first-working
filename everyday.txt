@@ -25,6 +25,12 @@ npm是JavaScript世界的包管理工具，并且是Node.js平台的默认包管
 
 git status   git brach(-v checkout)   git remote   git reset
 
+systemctl list-dependencies httpd [--reverse]  查看依赖
+systemctl list-unit --all | grep sshd  /  systemctl --type=service
+systemd-analyze blame
+systemctl cat multi-user.target(httpd.service..)
+systemctl status httpd           /         systemctl get-default
+
 Ctrl + a - 行前
 Ctrl + e - 行后
 Ctrl + k - 从光标删到行尾
@@ -85,6 +91,7 @@ Roles：模块化。用于层次性，结构化的组织playbook
 软件开发工具包（缩写：SDK、外语全称：Software Development Kit）一般都是一些软件工程师为特定的软件包、软件框架、硬件平台、操作系统等建立应用软件时的开发工具的集合。
 JDK是 Java 语言的软件开发工具包，主要用于移动设备、嵌入式设备上的java应用程序。JDK是整个java开发的核心，它包含了JAVA的运行环境（JVM+Java系统类库）和JAVA工具。
 
+realm领域
 Credentials证书
 specify指定(spec)
 kit装备/软件包
@@ -146,3 +153,12 @@ fatal：致命的
 fetch：取回
 demonstrates显示
 inventory 主机清单
+suppress 隐藏
+
+
+
+
+
+
+
+
