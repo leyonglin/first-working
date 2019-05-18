@@ -1,4 +1,5 @@
 
+rpm -ql systemd
 man n systemd.unit
 man systemd.service
 man systemd
@@ -10,8 +11,9 @@ systemd-analyze blame
 systemctl cat multi-user.target(httpd.service..)
 systemctl status httpd           /         systemctl get-default
 
-systemctl路径：/etc/systemd/system/* 优先于 /usr/lib/systemd/system/*
-init路径：/etc/init.d/(脚本)      /etc/rc*  --> /etc/rc.d/rc*
+systemctl路径：/etc/systemd/system/*(一般是链接文件) 优先于 /usr/lib/systemd/system/*
+               /run/systemd/generator.late 使用 systemd-sysv-generator工具处理 SysV init脚本（即：/etc/init.d/*自动生成.service文件
+init路径：/etc/init.d/(脚本)    /etc/rc*  --> /etc/rc.d/rc*
 
 系统初始化级别脚本运行之后自动执行的：/etc/rc.local
 init.d目录下的脚本：以K开头的脚本运行在以S开头的脚本之前(开机自启:update-rc.d redis defaults)
@@ -119,11 +121,15 @@ Alias:进行一个链接的别名的意思！
            Nice=-5
 systemctl daemon-reload  重载目录下内容
  
-
-
-  
-  
-  
-  
-  
+systemd -- [xinetd] -- daemon
+systemd:系统初始化进程是一个特殊的的守护进程，其PID为1，它是所有其他守护进程的父进程或者祖先进程
+daemon:守护进程，后台运行的，时刻地监听前台客户地服务请求，一旦客户发出了服务请求，守护进程便为它们提供服务。Windows系统中的守护进程被称为“服务”
+按照服务类型，守护进程可以分为如下两类：1.系统守护进程：如crond(周期任务)、rsyslogd(日志服务)、cpus等； 2.网络守护进程：如sshd、httpd、xinetd（托管）等。
+xinetd即extended internet daemon，xinetd是新一代的网络守护进程服务程序，又叫超级Internet服务器。经常用来管理多种轻量级Internet服务(/etc/xinetd.conf和/etc/xinetd.d/*)。
+Xinetd 托管服务(man xinetd.conf)。又名：超级守护进程，可以把一些小服务放到xinetd里进行托管。拖管后的好处就是可以使用xinetd强大的参数来控制这些服务，并且增强安全性。
+xinetd能够同时监听多个指定的端口，在接受用户请求时，它能够根据用户请求的端口的不同，启动不同的网络服务进程来处理这些用户请求。可以把xinetd看做一个管理启动服务的管理服务器，它决定把一个客户请求交给哪个程序处理，然后启动相应的守护进程  
+ TCP Wrappers是一个应用层的访问控制程序，其原理是在服务器向外提供的TCP服务上包裹一层安全检测机制。外来的连接请求首先要通过这层安全检测，获得认证之后才能被系统服务接收。 
+  TCP Wrappers的功能有两种实现方式：一种是由tcpd守护进程实现的，常被用于inetd(貌似xinetd已经取代了inetd) + TCP Wrappers的系统中（如FreeBSD等）；另一种是通过每种服务程序调用libwrap.so链接库实现的，即libwrap.so库支持的网络服务程序都能使用TCP Wrappers来实现访问控制，常用于xinetd + TCP Wrappers的系统中（如CentOS等）
+Xinetd的缺点:对RPC支持的不稳定性，但是可以启动protmap，使它与xinetd共存来解决这个问题。  
+RPC 全称 Remote Procedure Call——远程过程调用。在学校学编程，我们写一个函数都是在本地调用就行了。但是在互联网公司，服务都是部署在不同服务器上的分布式系统，  
   

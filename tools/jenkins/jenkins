@@ -18,7 +18,7 @@ yum install jenkins(参考下载地址：https://pkg.jenkins.io/redhat-stable/) 
 系统管理 -- 全局配置 --  JDK(JAVA_HOME /usr/lib/jvm/java-1.8.0-openjdk) -- maven(MAVEN_HOME /usr/share/maven)
 注意：jenkins启动用户是默认连接用户
 Gitlab的Webhook功能，通过Webhook的相关设置，可以实现代码Push后自动去触发jenkins上的构建动作(插件:gitlab hook)
-
+ 1.gitlab上项目设置--integrations-- 添加webhooks  2.admin区域设置--network(外发请求)
 
 
 

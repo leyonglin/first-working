@@ -6,8 +6,8 @@ firewall-cmd --list-all  --查看默认区域
 防火墙有永久和临时，临时的重载/重启会失效，永久的添加(--permanent)需要重载(--reload)或者重启(restart)
 
 查看帮助：man firewall-cmd
-查看防火墙：sudo firewall-cmd --list-all
-查看ipset的ip：sudo firewall-cmd --info-ipset=db_whitelist
+查看防火墙：firewall-cmd --list-all
+查看ipset的ip：firewall-cmd --info-ipset=db_whitelist
 查看ipset文件：firewall-cmd --get-ipsets
 
 设置端口转发

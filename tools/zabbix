@@ -2,7 +2,7 @@
 Zabbix：
 
 帮助文档：https://www.zabbix.com/documentation/4.2/manual/web_interface
-            https://www.zabbix.com/documentation/3.4/zh/manual/web_interface
+          https://www.zabbix.com/documentation/3.4/zh/manual/web_interface
 
 Zabbix server:服务器执行数据轮询和捕获，计算及触发器，向用户发送通知。它是Zabbix代理和代理向其报告系统可用性和完整性数据的核心组件
 			  基本三组件：Zabbix server, web frontend and database storage.  zabbix前端更改---数据库---server查询并显示在web中

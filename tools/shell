@@ -9,4 +9,4 @@ set -x        输出执行代码(变量会被替换)与执行结果
 			  变量操作(man bash  全文查找Parameter Expansion)
               函数中，局部变量加local
               trap信号(trap sighandler INT)
-			  
+			  https://explainshell.com/执行过程

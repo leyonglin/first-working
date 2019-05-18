@@ -23,13 +23,25 @@ journalctl -u httpd.service  --since today -o json/json-pretty  -n20[-f]
 
 npm是JavaScript世界的包管理工具，并且是Node.js平台的默认包管理工具。通过npm可以安装、共享、分发代码，管理项目依赖关系。能解决的NodeJS代码部署上的很多问题，允许用户从NPM服务器下载别人编写的第三方包到本地使用。允许用户从NPM服务器下载并安装别人编写的命令行程序到本地使用。允许用户将自己编写的包或命令行程序上传到NPM服务器供别人使用。
 
-git status   git brach(-v checkout)   git remote   git reset
+git status   git brach(-v checkout)   git remote   git reset  git merge
 
 systemctl list-dependencies httpd [--reverse]  查看依赖
 systemctl list-unit --all | grep sshd  /  systemctl --type=service
 systemd-analyze blame
 systemctl cat multi-user.target(httpd.service..)
 systemctl status httpd           /         systemctl get-default
+getty.target:用来设置tty的数量  get-default:取得当前的target  isolate:切换到指定的运行级别
+
+证书类型：1.域名验证(DV)证书：仅验证域名归属(免费)  <  2.组织验证(OV)证书：验证机构信息(价格) <  3.拓展验证(EV)证书：更严格认证，浏览器url栏有可能会显示机构信息
+
+元字符:(1) . 匹配除换行符外的字符   (2)\w 匹配字母/数字/下划线/汉字   (3)\s 匹配任意空白符  (4)\d匹配数字  (5)\b匹配单词开始或结束  (6)^ 匹配字符串开始  (7)$匹配字符串结束
+重 复 :(1)* 零或以上  (2)+ 最少一次    (3)?  0或1   (4){n} n次  (5){n,} n次或以上    (6)(n,m) n-m次
+表达式：1.变量是否为空/0   2比较：=或!=  3.正则:大小写敏感~或!~ 不敏感~*或!~*   4.文件是否存在-f 或!-f  5.-d或!d  6.-e !-e   7.-x或!-x
+AKF拓展立方体上：1.x轴(水平)拓展:无差别为客户服务   2.y轴(垂直):功能上进行拆分,处理不同url(需要更改代码)    3.z轴:引流(根据ip/用户) 成本居中
+
+网络收发：数据流：应用层(浏览器)--传输层(双方端口)--网络层(双方ip)--链路层-以太网(网线)-路由器-广域网-路由器-以太网--链路层--网络层--传输层--应用层(nginx)
+http数据会被切割成众多报文mtu(网络层1500)：mss：即报文大小，tcp层指中间每个环节最大的mtu值(最终几百字节)  ：每收到一个mss就是一个网络事件(读写事件?)
+每个(服务端)框架都有一个事件收集，分发者，再去连接对应的方法/api/接口
 
 Ctrl + a - 行前
 Ctrl + e - 行后

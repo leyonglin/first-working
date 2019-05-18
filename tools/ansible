@@ -239,7 +239,7 @@ ansible-playbook user.yml  -f 5
 1.hosts行，如果是多个主机的patterns，以逗号为分隔符  2.并发进程数量为5(默认为5)   3.remote_user帐户名  
 4.每一个play包含了一个task列表，多个task列表顺序执行                                      
 
-playbook语法进阶：变量，error，handlers，when，register，with_items，with_nested，tags，include and roles 
+playbook语法进阶：变量，error，handlers(notify)，when,register，with_items，with_nested，tags，include and roles 
 
 ---
 - hosts: all/组名/ip

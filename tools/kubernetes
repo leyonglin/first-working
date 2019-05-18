@@ -23,34 +23,35 @@ Replication Controller:保证了在所有时间内，都有特定数量的Pod副
 ReplicaSet是下一代复本控制器(Replication Controller)。
 Deployment为Pod和ReplicaSet提供了一个声明式定义(declarative)方法(创建/升级/回滚/扩缩容/暂停/启动)，用来替代以前的Replication Controller来方便的管理应用
 Deployment controller: 管理Deployment (revision及数量/状态)   
-Node是Pod真正运行的主机,每个Node节点上至少要运行container runtime(比如docker或者rkt),kubelet和kube-proxy服务。Kubernetes只是管理Node上的资源,Node Controller负责node状态(ip/hostname/condition/capacity/info)Taints和tolerations用于保证Pod不被调度到不合适的Node上，Taint应用于Node上，而toleration则应用于Pod上
-kube-proxy:这个应用监控着Kubermaster增加和删除服务，对于每一个服务，kube-proxy会随机开启一个本机端口，任何发向这个端口的请求都会被转发到一个后台的Pod当中
+Node是Pod真正运行的主机,每个Node节点上至少要运行container runtime(比如docker或者rkt),kubelet和kube-proxy服务。Kubernetes只是管理Node上的资源,
+     Node Controller负责node状态(ip/hostname/condition/capacity/info)Taints和tolerations用于保证Pod不被调度到不合适的Node上，Taint应用于Node上，而toleration则应用于Pod上
+kube-proxy:这个应用监控着Kubermaster增加和删除服务，为每一个服务，kube-proxy会随机开启一个本机端口，任何发向这个端口的请求都会被转发到一个后台的Pod当中
 Service:是一个定义了一组Pod的策略的抽象,也叫做宏观服务。在kubernete集群中实现让这些前台能够持续的追踪到这些后台的,这些被服务标记的Pod都是(一般)通过label Selector(创建与Service同名的EndPoints对象)决定的,如果没有,可以指定kubernetes管理之外的数据库的物理IP进行连接,有三种类型：ClusterIP，NodePort，LoadBalancer
        每个Service被创建的时候会被分配一个唯一的IP地址（也叫 clusterIP ）。这个地址和Service绑定，只要Service活着就不会改变。Pod可以配置成和Service交互，并且知道和Service的通信会被自动地负载均衡到Service成员中的某个Pod。
 	   Kubernetes提供了一个DNS集群插件Service，这个Service使用 skydns 自动给其他Service分配DNS
-	service是一组pod的服务抽象，相当于一组pod的LB，负责将请求分发给对应的pod。service会为这个LB提供一个IP，一般称为cluster IP。
+	service是一组pod的服务抽象，相当于一组pod的LB(负载均衡)，负责将请求分发给对应的pod。service会为这个LB提供一个IP，一般称为cluster IP。
     kube-proxy的作用主要是负责service的实现，具体来说，就是实现了内部从pod到service和外部的从node port向service的访问。   
 Service account是为了方便Pod里面的进程调用Kubernetes API或其他外部服务而设计的，提供认证。。。
-Volumes:与所在的Pod的生命周期相同(pod中容器共享数据卷)
-PV/PVC/StorageClass：PV是集群中的资源(PersistentVolume).PVC是对这些资源的请求(PersistentVolumeClaim).StorageClass为管理员提供了一种描述他们提供的存储的“类”的方法。 不同的类可能映射到服务质量级别，或备份策略
-Secret解决了密码、token、密钥等敏感数据的配置问题，而不需要把这些敏感数据暴露到镜像或者Pod Spec中。Secret可以以Volume或者环境变量的方式使用。 secret 数据卷可以让我们像内存目录一样来把秘密加载到容器里
+PodPreset用来给指定标签的Pod注入额外的信息，如环境变量、存储卷等
+Horizontal Pod Autoscaling可以根据CPU使用率或应用自定义metrics自动扩展Pod数量
 StatefulSet是为了解决有状态服务的问题(稳定的持久化存储,稳定的网络标志,有序部署,有序扩展,有序收缩,有序删除)
+ConfigMap用于保存配置数据的键值对，可以用来保存单个属性，也可以用来保存配置文件。ConfigMap跟secret很类似，但它可以更方便地处理不包含敏感信息的字符串。ConfigMap必须在Pod引用它之前创建
+Secret解决了密码、token、密钥等敏感数据的配置问题，而不需要把这些敏感数据暴露到镜像或者Pod Spec中。Secret可以以Volume或者环境变量的方式使用。 secret 数据卷可以让我们像内存目录一样来把秘密加载到容器里
+Admission Controller插件是一段代码，集群在接受一个请求之前，每一个Admission Controller插件都会按序运行。如果这个序列中的某个插件拒绝该请求，则整个的请求都会被立刻拒绝，返回一个错误给用户。
+Security Context的目的是限制不可信容器的行为，保护系统和其他容器不受其影响。
+Resource Quotas(资源配额)是用来限制用户资源用量的一种机制(内存，cpu，存储，对象)。
+PV/PVC/StorageClass：PV是集群中的资源(PersistentVolume).PVC是对这些资源的请求(PersistentVolumeClaim).StorageClass为管理员提供了一种描述他们提供的存储的“类”的方法。 不同的类可能映射到服务质量级别，或备份策略
+Network Policy提供了基于策略的网络控制(namespace/pod)，用于隔离应用并减少攻击面。
+Ingress controller，它监听Ingress和service的变化，并根据规则配置负载均衡并提供访问入口，为服务提供外网入口，Ingress可以给service提供集群外部访问的URL、负载均衡、SSL终止、HTTP路由等
+   service和pod的IP仅可在集群内部访问。集群外部的请求需要通过负载均衡转发到service在Node上暴露的NodePort上，然后再由kube-proxy将其转发给相关的Pod。
 DaemonSet保证在每个Node上都运行一个容器副本，常用来部署一些集群的日志、监控或者其他系统管理应用
 CronJob即定时任务，就类似于Linux系统的crontab，在指定的时间周期运行指定的任务
 Job负责批量处理短暂的一次性任务 (short lived one-off tasks)，即仅执行一次的任务，它保证批处理任务的一个或多个Pod成功结束
 Job Controller负责根据Job Spec创建Pod，并持续监控Pod的状态，直至其成功结束
-Security Context的目的是限制不可信容器的行为，保护系统和其他容器不受其影响。
-Resource Quotas(资源配额)是用来限制用户资源用量的一种机制(内存，cpu，存储，对象)。
-Network Policy提供了基于策略的网络控制(namespace/pod)，用于隔离应用并减少攻击面。
-Ingress controller，它监听Ingress和service的变化，并根据规则配置负载均衡并提供访问入口，为服务提供外网入口，Ingress可以给service提供集群外部访问的URL、负载均衡、SSL终止、HTTP路由等
-   service和pod的IP仅可在集群内部访问。集群外部的请求需要通过负载均衡转发到service在Node上暴露的NodePort上，然后再由kube-proxy将其转发给相关的Pod。
-ThirdPartyResources是一种无需改变代码就可以扩展Kubernetes API的机制，可以用来管理自定义对象。
-ConfigMap用于保存配置数据的键值对，可以用来保存单个属性，也可以用来保存配置文件。ConfigMap跟secret很类似，但它可以更方便地处理不包含敏感信息的字符串。ConfigMap必须在Pod引用它之前创建
-PodPreset用来给指定标签的Pod注入额外的信息，如环境变量、存储卷等
-Horizontal Pod Autoscaling可以根据CPU使用率或应用自定义metrics自动扩展Pod数量 
+ThirdPartyResources是一种无需改变代码就可以扩展Kubernetes API的机制，可以用来管理自定义对象。 
 kubernetes ui：Kubernetes有一个基于web的用户界面，它可以图表化显示当前集群状态。
 Kubernetes API服务器为API对象验证和配置数据，这些对象包含Pod，Service，ReplicationController等等。API Server提供REST操作以及前端到集群的共享状态，所有其它组件可以通过这些共享状态交互。
-Admission Controller插件是一段代码，集群在接受一个请求之前，每一个Admission Controller插件都会按序运行。如果这个序列中的某个插件拒绝该请求，则整个的请求都会被立刻拒绝，返回一个错误给用户。
+Volumes:与所在的Pod的生命周期相同(pod中容器共享数据卷)
     
 	
 Apache Spark是一个快速通用的集群计算系统。

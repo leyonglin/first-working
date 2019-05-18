@@ -105,9 +105,9 @@ http数据会被切割成众多报文mtu(网络层1500)：mss：即报文大小�
 epoll事件驱动模型：启动nginx--listern状态(epoll)(sleep)--tcp创建了三次握手--操作系统通知epoll--找操作系统(内核)要事件---放到事件队列中--顺序获取
 
 单进程阻塞状态，需要在进程需要不断切换(操作系统的进程调度)，5微秒
-work的优先级调高，分配的事件片多
+work的优先级调高，分配的时间片多
 阻塞：调用的方法因不满足条件而被切换到别的进程去。   非阻塞：不会在事件片没用完时被切换到别的进程
-同步(可同时调用多个方法)与异步是相对于调用方法而言：同步非阻塞方法，相对简单
+同步(可同时调用多个方法)与异步是相对于调用方法而言：同步非阻塞方法，相对简单 
 
 内存池：可以减少内存碎片,分配小块内存,或者可以整合小块内存     大块内存走的操作系统的cache分配内存
 请求内存池：4K         连接内存池(预分配)：256|512B    header_buffer：1K    request_pool：4K   
@@ -156,6 +156,7 @@ HTTP框架提供的变量：
                      content_type标识请求包体类型头部的值   uri=document_uri(不同于url，不包括?后面参数)  request_uri=url   scheme协议名
 					 request_method 请求方法  request_length 所有请求内容的大小   remote_user 用户名   request含方法于协议  request_body(请求中的包体，当且仅当反向代理同时设定用内存存放) request_body(临时存放请求包体的文件) 
 2.tcp连接相关的变量   3.nginx处理请求过程中产生的变量   4.nginx系统变量
+5.$http_host 则是读取请求头header里面的key，所有请求头里面的key再nginx里面都可以通过小写和下划线来让nginx读取。例如header里面的Host就能转成$http_host, user_agent可以转成$http_user_agent。
 referer模块：简单有效的防盗链手段
 map模块：1.变量与字符串组合  2.default规则(没有则返回空字符串)  3.case规则(hostnames 前后* / ~和~*)   4.include语法 / volatile禁止变量缓存
          map $var..$new_var {匹配内容 返回值;...;}   context：http 
