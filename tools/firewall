@@ -40,8 +40,8 @@ firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="0.0
 firewall-cmd --permanent --new-ipset=hgcp_whitelist --type=hash:ip
 firewall-cmd --permanent --delete-ipset=XXXX_whitelist
 添加/删除ipset中的ip：
-sudo firewall-cmd --permanent --ipset=db_whitelist --add-entry=${i}       
-sudo firewall-cmd --permanent --ipset=db_whitelist --remove-entry=${i}
+firewall-cmd --permanent --ipset=db_whitelist --add-entry=${i}       
+firewall-cmd --permanent --ipset=db_whitelist --remove-entry=${i}
 
 添加/删除全局模式的服务|端口：存放在/etc/firewalld/zones/public.xml
 firewall-cmd --permanent --add-service=http

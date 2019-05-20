@@ -5,9 +5,9 @@ man systemd.service
 man systemd
 man systemd.exec
 
+systemd-analyze blame
 systemctl list-dependencies httpd [--reverse]  查看依赖
 systemctl list-unit --all | grep sshd  /  systemctl --type=service
-systemd-analyze blame
 systemctl cat multi-user.target(httpd.service..)
 systemctl status httpd           /         systemctl get-default
 
@@ -15,9 +15,11 @@ systemctl路径：/etc/systemd/system/*(一般是链接文件) 优先于 /usr/li
                /run/systemd/generator.late 使用 systemd-sysv-generator工具处理 SysV init脚本（即：/etc/init.d/*自动生成.service文件
 init路径：/etc/init.d/(脚本)    /etc/rc*  --> /etc/rc.d/rc*
 
-系统初始化级别脚本运行之后自动执行的：/etc/rc.local
-init.d目录下的脚本：以K开头的脚本运行在以S开头的脚本之前(开机自启:update-rc.d redis defaults)
+系统初始化级别脚本运行之后自动执行的(开机自启)：1./etc/rc.local(没实验出效果)    2.(1)/etc/init.d/脚本 (2)/etc/rc3.d/链接       
+/etc/rc#.d/目录下的脚本：以K开头的脚本运行在以S开头的脚本之前(开机自启:update-rc.d redis defaults)
                     service xxx启动/etc/init.d/目录下的xxx脚本(或者Redirecting to /bin/systemctl start docker.service)
+/etc/init.d/ 与 /etc/rc.d/init.d/ 是同步更新的(可以认为是一个目录)
+/etc/rc.d/目录下都有链接在同级目录下
 
 systemctl get-default  && systemctl cat multi-user.target  (AllowIsolate：允许使用systemctl isolate命令切换到multi-user.target。)
 

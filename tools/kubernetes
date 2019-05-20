@@ -12,6 +12,23 @@ spec:
   limits:
     ...
 
+核心组件组成：
+etcd保存了整个集群的状态，所有master的持续状态都存在etcd的一个实例中。这可以很好地存储配置数据。因为有watch(观察者)的支持，各部件协调中的改变可以很快被察觉。
+apiserver提供了资源操作的唯一入口，并提供认证、授权、访问控制、API注册和发现等机制，主要处理REST操作
+controller manager负责维护集群的状态，比如故障检测、自动扩展、滚动更新等；
+scheduler负责资源的调度，按照预定的调度策略将Pod调度到相应的机器上；
+kubelet负责维护容器的生命周期，同时也负责Volume（CVI）和网络（CNI）的管理；
+Container runtime负责镜像管理以及Pod和容器的真正运行（CRI）；
+kube-proxy负责为Service提供cluster内部的服务发现和负载均衡；
+推荐的Add-ons：
+kube-dns负责为整个集群提供DNS服务
+Ingress Controller为服务提供外网入口
+Heapster提供资源监控
+Dashboard提供GUI
+Federation提供跨可用区的集群
+Fluentd-elasticsearch提供集群日志采集、存储与查询
+
+
 
 集群：Kubernetes管理的一组服务器集合；
 边界路由器：为局域网和Internet路由数据包的路由器，执行防火墙保护局域网络；
@@ -33,7 +50,7 @@ Service:是一个定义了一组Pod的策略的抽象,也叫做宏观服务。�
     kube-proxy的作用主要是负责service的实现，具体来说，就是实现了内部从pod到service和外部的从node port向service的访问。   
 Service account是为了方便Pod里面的进程调用Kubernetes API或其他外部服务而设计的，提供认证。。。
 PodPreset用来给指定标签的Pod注入额外的信息，如环境变量、存储卷等
-Horizontal Pod Autoscaling可以根据CPU使用率或应用自定义metrics自动扩展Pod数量
+Horizontal Pod Autoscaling(水平pod扩展)可以根据CPU使用率或应用自定义metrics自动扩展Pod数量
 StatefulSet是为了解决有状态服务的问题(稳定的持久化存储,稳定的网络标志,有序部署,有序扩展,有序收缩,有序删除)
 ConfigMap用于保存配置数据的键值对，可以用来保存单个属性，也可以用来保存配置文件。ConfigMap跟secret很类似，但它可以更方便地处理不包含敏感信息的字符串。ConfigMap必须在Pod引用它之前创建
 Secret解决了密码、token、密钥等敏感数据的配置问题，而不需要把这些敏感数据暴露到镜像或者Pod Spec中。Secret可以以Volume或者环境变量的方式使用。 secret 数据卷可以让我们像内存目录一样来把秘密加载到容器里
