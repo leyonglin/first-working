@@ -85,8 +85,10 @@ Type：说明这个daemon启动的方式,会影响到ExecStart
 User=redis  指定启动用户
 EnvironmentFile:指定启动脚本的环境配置文件！
 或者Environment= 后面接多个不同的 Shell 变量来给予设置！
-ExecStart：实际执行此daemon的指令或脚本程序(仅接受“指令 参数 参数...”的格式)要使用这些特殊的字符( <, >, >>, |, & )时，最好直接写入到指令脚本里面去(只能有一行)
-(ExecStart=/bin/echo execstart1  ExecStart=   ExecStart=/bin/echo execstart2  有三行,但第二行ExecStart设为空值,等于取消了第一行的设置,运行结果为:execstart2)
+ExecStart：实际执行此daemon的指令或脚本程序,仅接受一行(仅接受“指令 参数 参数...”的格式)要使用这些特殊的字符( <, >, >>, |, & )时，最好直接写入到指令脚本里面去(只能有一行)
+(例:ExecStart=/bin/echo execstart1  
+    ExecStart=   
+	ExecStart=/bin/echo execstart2  有三行,但第二行ExecStart设为空值,等于取消了第一行的设置,运行结果为:execstart2)
 也可以使用 ExecStartPre(之前) ExecStartPost(之后) ExecStopPost两个设置项目来在实际启动服务前，进行额外的指令行为
 ExecStop/ExecReload
 Restart:当设置 Restart=1 时，则当此 daemon 服务终止后，会再次的启动此服务，on-failure意外关闭，则会重启，正常停止，不会重启

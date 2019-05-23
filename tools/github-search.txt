@@ -1,0 +1,35 @@
+
+https://github.com/search[/advanced]
+
+GitHub Trend：https://github.com/trending 
+GitHub Topic：https://github.com/topics
+找项目：Awesome 关键字
+
+https://help.github.com/[en/articles/searching-on-github]
+多条件查询，空格隔开
+1）按照文件搜索
+android in:file
+
+(2)按照路径检索
+andrioid in:path
+
+(3) 按照语言检索
+android language:java
+
+(4)按照文件/星大小
+android size/stars:>100  
+
+(5)按照后缀名检索
+android extention:css
+
+(6)按照是否被fork过
+android fork:true
+
+（7）按照地域检索
+android location:beijing
+
+
+free-programming-books：整理了所有和编程相关的免费书籍，同时也有 中文版项目。https://github.com/EbookFoundation/free-programming-books
+github-cheat-sheet：集合了使用 GitHub 的各种技巧。https://github.com/tiimgreen/github-cheat-sheet/
+android-open-project：涵盖 Android 开发的优秀开源项目。https://github.com/Trinea/android-open-project
+chinese-independent-developer：聚合所有中国独立开发者的项目。https://github.com/1c7/chinese-independent-developer

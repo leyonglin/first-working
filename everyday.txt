@@ -1,4 +1,4 @@
-:%s/foo/bar/gc
+﻿:%s/foo/bar/gc
 
 yft        　//复制当前行上光标到第一个t之间的所有内容
 
@@ -166,6 +166,28 @@ fetch：取回
 demonstrates显示
 inventory 主机清单
 suppress 隐藏
+choose any additional install options   选择任何其他安装选项
+check for updates on startup            启动时检查更新
+install folder context menus            安装文件夹上下文菜单
+install quick launch shortcut           安装快速启动快捷方式
+associate efu files with everything     将efu文件与所有内容相关联
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

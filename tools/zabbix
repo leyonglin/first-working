@@ -9,7 +9,7 @@ Zabbix server:服务器执行数据轮询和捕获，计算及触发器，向用
 Zabbix agent:部署在监控目标上，以主动监控本地资源和应用程序并传递给服务器进行处理
 			 主动检查:重服务器获取检查项,获取到检查数据后向服务端报告   被动检查:响应服务器的数据请求
 Zabbix proxy:分布式监控，Zabbix代理是可以从一个或多个被监控设备收集监控数据并将信息发送到Zabbix服务器的过程，本质上代表服务器工作。所有收集的数据都在本地缓冲，然后传输到代理所属的Zabbix服务器。
-Zabbix Java gateway：监控JMX
+Zabbix Java gateway：监控JMX(Java管理扩展)是一个为应用程序、设备、系统等植入管理功能的框架
 Zabbix sender：通常用于长时间运行的用户脚本检测，客户端自己通过zabbix_sender提交数据给zabbix，这个通道便是trapper
 Zabbix get：测试自定义监控的时候特别有用，用于检测 agent 端的配置是否正确，可以很方便地知道 key 是否能正常获取到数据
 

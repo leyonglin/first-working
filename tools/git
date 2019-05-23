@@ -155,7 +155,6 @@ git工作流：1.集中式工作流：即不分支，类似svn
 配置文件:/etc/gitlab/gitlab.rb
 查看日志:gitlab-ctl tail
 检查gitlab:gitlab-rake gitlab:check SANITIZE=true --trace
-查看日志：gitlab-ctl tail
 备份：gitlab-rake gitlab:backup:create
      (将在/var/opt/gitlab/backups目录下创建一个名称类似为xxxxxxxx_gitlab_backup.tar的压缩包, 这个压缩包就是Gitlab整个的完整部分, 其中开头的xxxxxx是备份创建的时间戳。)
      Gitlab 修改备份文件默认目录(修改/etc/gitlab/gitlab.rb来修改默认存放备份文件的目录:gitlab_rails['backup_path'] = '/mnt/backups')  
