@@ -153,16 +153,8 @@ git工作流：1.集中式工作流：即不分支，类似svn
       [firewall-cmd --permanent --add-service=http  && systemctl reload firewalld]
 	  
 配置文件:/etc/gitlab/gitlab.rb
-查看日志:gitlab-ctl tail
 检查gitlab:gitlab-rake gitlab:check SANITIZE=true --trace
-备份：gitlab-rake gitlab:backup:create
-     (将在/var/opt/gitlab/backups目录下创建一个名称类似为xxxxxxxx_gitlab_backup.tar的压缩包, 这个压缩包就是Gitlab整个的完整部分, 其中开头的xxxxxx是备份创建的时间戳。)
-     Gitlab 修改备份文件默认目录(修改/etc/gitlab/gitlab.rb来修改默认存放备份文件的目录:gitlab_rails['backup_path'] = '/mnt/backups')  
-	 修改后使用gitlab-ctl reconfigure命令重载配置文件。
-恢复：进入备份 gitlab 的目录，这个目录是配置文件中的 gitlab_rails['backup_path'] ，默认为 /var/opt/gitlab/backups 
-    停止 unicorn(gitlab-ctl stop unicorn ) 和 sidekiq (gitlab-ctl stop sidekiq) 
-	恢复数据:gitlab-rake gitlab:backup:restore BACKUP=xxxxxx (xxxxx为备份文件的时间戳) 
-启动Gitlab:gitlab-ctl start
+
 	
 配置https:
  	yum -y install openssl
@@ -192,6 +184,40 @@ gitlab-ctl reconfigure
    2.3 测试连通性
    ssh -T gitlab.renn.top
 
+排错：
+检查服务状态：gitlab-ctl status
+查看日志:gitlab-ctl tail  [服务名称]
+
+
+Gitlab 修改root用户密码
+使用rails工具打开终端：gitlab-rails console production
+查询用户的email，用户名，密码等信息，id:1 表示root账号：user = User.where(id: 1).first
+重新设置密码：
+  user.password = '新密码'
+  user.password_confirmation = '新密码'　
+  user.save!
+	
+定时备份：	/opt/gitlab/bin/gitlab-rake gitlab:backup:create CRON=1 (环境变量CRON=1的作用是如果没有任何错误发生时， 抑制备份脚本的所有进度输出。)
+	
+	
+Gitlab迁移：确保新Gitlab服务器和老Gitlab服务器版本相同(如不一致，迁移前，先升级就gitlab版本)	
+备份数据：gitlab-rake gitlab:backup:create
+         (将在/var/opt/gitlab/backups目录下创建一个名称类似为xxxxxxxx_gitlab_backup.tar的压缩包, 这个压缩包就是Gitlab整个的完整部分, 其中开头的xxxxxx是备份创建的时间戳。)
+         Gitlab 修改备份文件默认目录(修改/etc/gitlab/gitlab.rb来修改默认存放备份文件的目录:gitlab_rails['backup_path'] = '/mnt/backups') 备份过期时间 gitlab_rails['backup_keep_time'] = 604800 
+	     修改后使用gitlab-ctl reconfigure命令重载配置文件。
+恢复数据：进入备份 gitlab 的目录，这个目录是配置文件中的 gitlab_rails['backup_path'] ，默认为 /var/opt/gitlab/backups(如果是迁移，记得改权限) 
+        停止 unicorn(gitlab-ctl stop unicorn ) 和 sidekiq (gitlab-ctl stop sidekiq) 
+	    恢复数据:gitlab-rake gitlab:backup:restore BACKUP=xxxxxx (xxxxx为备份文件的时间戳) (交互输入yes(默认))
+备份配置文件：
+        /etc/gitlab/gitlab.rb 配置文件须备份
+        /var/opt/gitlab/nginx/conf nginx配置文件
+        /etc/postfix/main.cfpostfix 邮件配置备份
+重载：gitlab-ctl reconfigure
+启动: gitlab-ctl start	(迁移后，登录旧的git服务器会提示迁移)
+	
+	
+建议将/etc/gitlab备份到安全的地方。如果要还原gitlab应用程序，还需要还原gitlab-secrets.json。
+服务器的ssh主机密钥存储在/etc/ssh/目录中
 	
 	
 	
