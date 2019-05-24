@@ -57,7 +57,7 @@ docker start jms_coco
 docker start jms_guacamole
 
 exit 0
-chmod +x /etc/rc.d/rc.local
+chmod +x /etc/rc.d/rc.local    （权限）
 if [ "$(cat /etc/rc.local | grep start_jms.sh)" == "" ]; then echo "sh /opt/start_jms.sh" >> /etc/rc.local; fi
 
 

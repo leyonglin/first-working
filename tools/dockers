@@ -38,23 +38,133 @@ docker container 容器
 	通过镜像启动，启动和执行阶段。启动镜像会加载一个可写层(写时复制)
 docker registry  仓库
 	公有和私有
-
+	
 docker客户端通过访问docker守护进程，操作docker容器。容器通过镜像启动，镜像保存仓库
 
-docker virsion  
-docker search 
-docker pull   
-docker run learn/least CMD
-docker ps -l
-docker commit  ID  learn/ping
-docker inspect ID
-docker image 
-docker push NAME
 
 使用技术：[编程中：命名空间是一种封装概念，实现代码隔离]
 namespaces：PID  NET  IPC MNT(文件系统相关)  UTS(隔离内核和版本标识)
 control groups控制组：资源限制   优先级设定  资源计量  资源控制(挂起或恢复)
-docker容器的能力:文件系统隔离(root文件系统)  进程隔离：  网络隔离   资源隔离和分组
+docker容器的能力:文件系统隔离(root文件系统)  进程隔离：  网络隔离   资源隔离和分组	
+
+man docker-run    man docker-logs
+
+docker virsion  
+
+docker run -itd --name=自定义名称  IMAGE CMD    --restart always开机自启
+	-p指定映射端口  宿主机端口:容器端口       --mount  ""
+docker attach
+docker exec
+
+docker ps  -s/-a
+docker top
+docker port
+docker logs [-f] [-t] [--tail] 容器名  （默认返回所有）
+docker info
+docker inspect
+docker images 
+
+
+docker start/stop/kill
+docker rm
+
+docker search
+docker pull
+docker push 
+
+docker commit
+docker build -t tag
+
+dockerfile文件的命令：顺序执行
+#escape                                   escape指令设置用于在Dockerfile中转义字符的字符。如果未指定，则缺省转义字符为\
+#添加注释信息
+FROM  REPOSITORY:TAGS                     第一条非注释指令
+ARG[=<value>]							  也可以命令行传参build-args <arg>=<value>  或者 ${user:-some_user} 设置默认值  但遇到ENV后会被覆盖
+										  预定义变量HTTP_PROXY  http_proxy  HTTPS_PROXY  https_proxy  FTP_PROXY  ftp_proxy  NO_PROXY  no_proxy
+MAINTAINER  Author or message             维护人
+RUN  CMD                                    构建时执行的命令
+	两种模式：1.shell模式：/bin/sh -c CMD     2.exec模式：(可以指定其它的shell模式)["executable" , "param" , "param..."] .md 或者 !README.md
+EXPOSE  port                               开放的端口(容器运行时，仍需要在run命令中指定)
+[HEALTHCHECK]CMD ["","",""...]             [健康检查--interval= --timeout= --start-period= --retries=]
+										   与RUN相似，但是是在容器启动是执行的，如果容器启动是指定命令，则会被覆盖。一般搭配ENTERYPOINT，为其提供默认参数
+SHELL ["executable", "parameters"]
+ENTERYPOINT                                与CMD区别是不会被覆盖，除非添加参数docker run --entrypoint,因此可以是ENTERYPOINT指定命令，CMD指定参数
+ADD <src> <dest>  ["<src>"..."<dest>"]     src是本地相对路径，dest是本地绝对路径，对于远程url，建议使用wget或者curl获取文件,包含类似tar的解压功能
+COPY <src> <dest> ["<src>"..."<dest>"]     src是本地相对路径，dest是本地绝对路径，对于远程url，建议使用wget或者curl获取文件，适合单纯复制文件
+VOLUME ["/data"]                           卷，存在一个或多个容器，绕过联合文件系统，提供数据共享或数据持久化功能
+WORKDIR                                    工作目录，指定命令都在改目录下运行，使用绝对路径
+ENV <key><value>   <key>=<value>           设置环境变量，构建和运行中都有效                            
+USER                                       以什么用户执行  user/user:group/user:gid/uid...
+ONBUILD                                    触发器，当镜像被其它镜像当作基础镜像执行时，或出发[dockerfile--image--image(触发)]
+LABEL <key>=<value> <key>=<value> <key>=<value> ...
+
+docker的c/s模式
+1.user --- docker client(命令行接口--docker二进制程序--输入docker命令) --传递--> docker daemon(负责实现功能) 处理  --返回客户端
+2.通过remoteAPI可以自己编写程序调用接口进行集成(也可交互，即输入输出)   docker文档：https://docs.docker.com
+
+客户端和守护进程通过socker进行连接
+1.unix:///var/run/docker.sock(默认)     nc -U /var/run/docker.sock --> GET /info HTTP/1.1(查看remoteAPI的接口信息) 
+2.tcp://host:port
+3.fd://socketfd
+
+docker数据：/var/lib/docker/volumes 
+docker volume                
+数据卷：/var/lib/docker/volumes/   由数据卷纳管，非docker程序不能修改
+绑定挂载：可以是任何目录，非docker程序也可以修改
+tmpfs挂载：仅保存在主机的系统内存，并不会写进文件系统,与容器的生存周期一致
+
+docker数据卷的备份和还原
+		docker run --volumes-from back_cname -v 宿主机目录:容器目录 --name new_bcname  ubuntu  tar cvf 容器目录/backup.tar  容器备份目录
+		执行备份命令的容器，即挂载了数据存放目录，且挂载了备份数据存放目录
+
+
+如果是默认非自定义的，只能通过IP通信。
+网络模式：bridge(默认)  host(仅linux)  macvlan  overlay(分布式)
+docker network create -d overlay [--attachable单独容器通讯] [--opt encrypted加密通讯,但影响性能] my-attachable-overlay
+禁用一个容器的网络：删除容器会删除网络选项：--rm 
+以前的：网桥，ovs(open vswitch)，weave
+
+container:单个docker
+docker services:不同服务的docker(通过 .yml定义：docker services)
+docker swarms：集群[docker swarm init --advertise-addr=<IP-ADDRESS-OF-MANAGER>]
+docker stacks：部署命令,docker stacks只是swarm mode的一部分(在services+swarms)
+			  stack 是构成特定环境中的 service 集合, 它是自动部署多个相互关联的服务的简便方法，而无需单独定义每个服务。stack file 是一种 yaml 格式的文件，类似于 docker-compose.yml 文件
+docker machine: 管理工具(集群:#docker-machine ssh myvm1 "docker node ls"可以在一台机器上管理管理其它docker服务器，感觉不是很重要)
+
+Docker stack会忽略了“构建”指令，无法使用stack命令构建新镜像，它是需要镜像是预先已经构建好的。 所以docker-compose更适合于开发场景；
+docker-compose -f docker-compose up                         #需要安装Docker -compose
+docker stack deploy -c docker-compose.yml somestackname     #Docker Stack功能包含在Docker引擎中
+
+原始镜像:体积大，可以调试
+Alpine：体积最小，基于muslc的——C语言的一个替代标准库(多数Linux发行版如Ubuntu、Debian和CentOS都是基于glibc的)可能会时不时地遇到一些兼容性问题
+distroless：只在容器中安装一个二进制文件可以降低总体风险。
+
+Docker Cloud是一个公共仓库,是docker默认的仓库,拉取，推送镜像到设定仓库。
+Docker store允许用户购买和出售自己的镜像，也可以免费发布自己的镜像。
+Docker objects(组件):在使用docker的时候，将会涉及到创建、使用镜像、容器、网络、卷、插件或者其他的对象。
+Docker镜像是一个只读模板，容器是镜像的运行实例
+
+docker镜像的导出：docker save -o  名称.tar  存在的镜像名     --- 类似压缩
+docker镜像的导入：docker load -i  名称.tar
+
+监控：
+Scout：被托管的服务
+Data Dog：被托管的服务，可报警
+ensu Monitoring Framework：使用插件系统才能监控docker
+cadvisor(收集)+influxdb(存储)+grafana（web展示）
+
+Docker-compose:是 Docker 容器进行编排的工具，定义和运行多容器的应用。分别是工程（project）、服务（service）、容器（container）
+启动应用：docker-compose up [-d]          构建且启动
+
+docker and iptable:别手动添加规则到docker链中，如果需要添加，添加到DOCKER-USER链中，该链优先于docker链被加载
+
+
+以上是总结
+
+
+
+
+
 
 ubuntu安装docker：
 检查：
@@ -166,7 +276,7 @@ ARG[=<value>]							  也可以命令行传参build-args <arg>=<value>  或者 $
 										  预定义变量HTTP_PROXY  http_proxy  HTTPS_PROXY  https_proxy  FTP_PROXY  ftp_proxy  NO_PROXY  no_proxy
 MAINTAINER  Author or message             维护人
 RUN  CMD                                    构建时执行的命令
-	两种模式：1.shell模式：/bin/sh -c CMD     2.exec模式：(可以指定其它的shell模式)["executable" , "param" , "param..."]*.md 或者 !README.md
+	两种模式：1.shell模式：/bin/sh -c CMD     2.exec模式：(可以指定其它的shell模式)["executable" , "param" , "param..."] .md 或者 !README.md
 EXPOSE  port                               开放的端口(容器运行时，仍需要在run命令中指定)
 [HEALTHCHECK]CMD ["","",""...]             [健康检查--interval= --timeout= --start-period= --retries=]
 										   与RUN相似，但是是在容器启动是执行的，如果容器启动是指定命令，则会被覆盖。一般搭配ENTERYPOINT，为其提供默认参数
@@ -212,10 +322,10 @@ docker info   可以查看到修改
 
 docker远程访问：
 docker服务器：客户端可以curl http://ip:port/info
-在服务器端配置文件配置   -H  1.tcp://host:port(2375)     2.unix:///path/to/socket(默认)    3.fd://* or fd://socketfd 
+在服务器端配置文件配置   -H  1.tcp://host:port(2375)     2.unix:///path/to/socket(默认)    3.fd://  or fd://socketfd 
           配置文件实例：DOCKER_OPTS="--label name=container01 -H tcp://host:port -H unix:///var/run/docker.sock"
 				
-在客户端命令行：-H  1.tcp://host:port(2375)     2.unix:///path/to/socket(默认)    3.fd://* or fd://socketfd 
+在客户端命令行：-H  1.tcp://host:port(2375)     2.unix:///path/to/socket(默认)    3.fd://  or fd://socketfd 
     命令行实例 docker -H tcp://ip:port info  				
  设置环境变量DOCKER_HOST    export DOCKER_HOST="tcp://ip:port"   (设置变量可以不用-H指定路径)
 
@@ -232,7 +342,7 @@ docker容器的网络基础(pipework:容器间网络设置)
 docker的守护进程时通过docker0为容器提供网络连接的，docker0是linux的虚拟网桥
 网桥：根据osi七层模型，网桥是数据链路层的一个设备，通过网络设备的物理地址进行划分网络，在不同网络之间传递数据
 linux的虚拟网桥：可以设置ip，是通用网路设备的一种，只要是网络设备，就能设置IP地址，则能通过路由表，在网络层定位地址，相当于拥有隐藏的虚拟网卡，网卡名字=虚拟网桥=docker0
-docker守护进程(host)有虚拟网桥docker0并且打开veth*的接口 与 容器eth0的通信
+docker守护进程(host)有虚拟网桥docker0并且打开veth 的接口 与 容器eth0的通信
 网桥管理工具：bridge-utils 
               brctl show  查看网桥
               brctl addbr  br0 添加虚拟网桥(并在docker配置文件中添加-b=br0)
@@ -258,11 +368,11 @@ iptables -I DOCKER -s ip -d ip -p tcp --dport 80 -j DROP
 
 
 
-***
+   
 docker数据：
 数据卷：/var/lib/docker/volumes/   由数据卷纳管，非docker程序不能修改
 绑定挂载：可以是任何目录，非docker程序也可以修改
-tmpfs挂载：仅保存在主机的系统内存，并不会写进文件系统,与容器的生存周期一直
+tmpfs挂载：仅保存在主机的系统内存，并不会写进文件系统,与容器的生存周期一致
 
 
 数据卷(volume)：分为命名卷和匿名卷,可以被挂载载多个容器中，不会被自动删除(-v/--mount 直接挂载)
@@ -405,7 +515,7 @@ docker数据卷的备份和还原
 
 
 
-***
+   
 如果是默认非自定义的，只能通过IP通信。
 网络模式：bridge  host  macvlan  overlay
 
@@ -616,13 +726,13 @@ docker镜像的导入：docker load -i  名称.tar
 扩容帮助文档：https://github.com/moby/moby/tree/master/daemon/graphdriver/devmapper
 1.在存储配置文件/etc/sysconfig/docker-storage中添加：DOCKER_STORAGE_OPTIONS="--storage-opt dm.basesize=20G"
 2.容器查看磁盘空间大小：df -h
-  查看mapper设备信息:/dev/mapper/* 与 进入容器df -h是一致的(以下的*表示的是同样的字符串)
-  查看卷信息表		：dmsetup  table  *(是/dev/mapper/*d的这个*)
-  第二个数字是设备的大小，表示有多少个512bytes的扇区。(nG*1024*1024*1024/512)
-  修改卷信息表：echo  $(dmsetup  table  *) | dmsetup load *           设备大小可根据自己需要修改
-  激活：dmsetup resume *
-  查看: dmsetup table  *
-  修改文件系统：xfs_growfs  /dev/mapper/*
+  查看mapper设备信息:/dev/mapper/  与 进入容器df -h是一致的(以下的 表示的是同样的字符串)
+  查看卷信息表		：dmsetup  table   (是/dev/mapper/ d的这个 )
+  第二个数字是设备的大小，表示有多少个512bytes的扇区。(nG 1024 1024 1024/512)
+  修改卷信息表：echo  $(dmsetup  table   ) | dmsetup load             设备大小可根据自己需要修改
+  激活：dmsetup resume  
+  查看: dmsetup table   
+  修改文件系统：xfs_growfs  /dev/mapper/ 
 
 
 docker监控：
@@ -710,7 +820,7 @@ Grafana(容器)：
 
 
 
-**
+  
 Docker-compose:是 Docker 容器进行编排的工具，定义和运行多容器的应用，可以一条命令启动多个容器。
 Docker Compose 将所管理的容器分为三层，分别是工程（project）、服务（service）、容器（container）
 Docker Compose 运行目录下的所有文件（docker-compose.yml）组成一个工程,一个工程包含多个服务，每个服务中定义了容器运行的镜像、参数、依赖，一个服务可包括多个容器实例
@@ -1032,9 +1142,9 @@ logs：日志输出信息
 
 
 
-***
+   
 container:单个docker
-docker services:不同服务的docker(通过*.yml定义：docker services)
+docker services:不同服务的docker(通过 .yml定义：docker services)
 docker swarms：集群
 docker stacks：部署命令,docker stacks只是swarm mode的一部分(在services+swarms)
 			  stack 是构成特定环境中的 service 集合, 它是自动部署多个相互关联的服务的简便方法，而无需单独定义每个服务。stack file 是一种 yaml 格式的文件，类似于 docker-compose.yml 文件
@@ -1097,7 +1207,7 @@ systemctl reload docker
 
 
 
-***
+   
 docker and iptable:别手动添加规则到docker链中，如果需要添加，添加到DOCKER-USER链中，该链优先于docker链被加载
 1.iptables -I DOCKER-USER -i ext_if ! -s 192.168.1.1 -j DROP         仅允许192.168.1.1地址访问
 2.iptables -I DOCKER-USER -i ext_if ! -s 192.168.1.0/24 -j DROP      仅允许192.168.1.0/24地址访问
@@ -1120,7 +1230,7 @@ Configure Docker to use a proxy server
      {
        "httpProxy": "http://127.0.0.1:3001",
        "httpsProxy": "http://127.0.0.1:3001",
-       "noProxy": "*.test.example.com,.example2.com"
+       "noProxy": " .test.example.com,.example2.com"
      }
    }
   }
@@ -1130,7 +1240,7 @@ Configure Docker to use a proxy server
   HTTP_PROXY	ENV HTTP_PROXY "http://127.0.0.1:3001"	             --env HTTP_PROXY="http://127.0.0.1:3001"
   HTTPS_PROXY	ENV HTTPS_PROXY "https://127.0.0.1:3001"	         --env HTTPS_PROXY="https://127.0.0.1:3001"
   FTP_PROXY	    ENV FTP_PROXY "ftp://127.0.0.1:3001"	             --env FTP_PROXY="ftp://127.0.0.1:3001"
-  NO_PROXY	    ENV NO_PROXY "*.test.example.com,.example2.com"	     --env NO_PROXY="*.test.example.com,.example2.com"
+  NO_PROXY	    ENV NO_PROXY " .test.example.com,.example2.com"	     --env NO_PROXY=" .test.example.com,.example2.com"
 
 
 

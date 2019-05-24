@@ -2,6 +2,7 @@
 
 
 github文档：https://github.com/ansible
+官网文档：https://docs.ansible.com/
 Ansible：批量操作 1.自动化部署app   2.自动化管理配置项   3.自动化持续交付   4.自动化(AWS)云服务管理/
 操作对象：1.hosts主机        2.networking网络设备
 ansible依赖python，需要python版本2.6以上，执行ansible的主机一般称为主控端，中控，master/堡垒机，window不能作为主控端
@@ -17,6 +18,18 @@ ansible依赖python，需要python版本2.6以上，执行ansible的主机一般
 2.hosts(host-pattern)        默认主机清单(Inventory)
 3.roles                      默认存放角色的目录
 
+总结：
+playbook语法进阶：vars(变量)，error，handlers(notify)，when,register，with_items(迭代)，with_nested(迭代嵌套，还有其他with_*)，tags，Template模板，include and roles
+                  block(块任务) 1.when(条件成立执行) 2.rescue(block执行错误触发) 2.always(无论结果如何都出发)    注意：block没有with_items属相
+				  https://www.cnblogs.com/v394435982/p/5593274.html
+role：一级目录: ansible-playbook.yml文件(roles任务指定执行顺序) + roles目录				  
+      二级目录：roles子目录(自定义名称,在一级yml文件中指定)
+	  三级目录：目录：defaults , handlers , meta , tasks , templates , tests , vars ,  文件：README
+	  四级目录：main.yml文件(统一)和附加的(在当前main.yml定义include *.yml)
+	  
+	  
+	  
+	  
 一.全局配置ansible.cfg
 inventory(财产清单)=/etc/ansible/hosts
  
@@ -239,7 +252,9 @@ ansible-playbook user.yml  -f 5
 1.hosts行，如果是多个主机的patterns，以逗号为分隔符  2.并发进程数量为5(默认为5)   3.remote_user帐户名  
 4.每一个play包含了一个task列表，多个task列表顺序执行                                      
 
-playbook语法进阶：变量，error，handlers(notify)，when,register，with_items，with_nested，tags，include and roles 
+playbook语法进阶：vars(变量)，error，handlers(notify)，when,register，with_items(迭代)，with_nested(迭代嵌套，还有其他with_*)，tags，Template模板，include and roles
+                  block(块任务) 1.when(条件成立执行) 2.rescue(block执行错误触发) 2.always(无论结果如何都出发)    注意：block没有with_items属相
+				  https://www.cnblogs.com/v394435982/p/5593274.html
 
 ---
 - hosts: all/组名/ip
