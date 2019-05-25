@@ -133,7 +133,8 @@ git工作流：1.集中式工作流：即不分支，类似svn
 	
 
 安装部署gitlab服务器：gitlab-ce参考文档：https://about.gitlab.com/install/
-软件包位置：https://packages.gitlab.com/gitlab/gitlab-ce/packages/el/7/gitlab-ce-10.8.2-ce.0.el7.x86_64.rpm [/download]                          
+软件包位置：https://packages.gitlab.com/gitlab/gitlab-ce/packages/el/7/gitlab-ce-10.8.2-ce.0.el7.x86_64.rpm [/download]        
+清华大学包源：https://mirrors.tuna.tsinghua.edu.cn/gitlab-ce/yum/el7/                  
 步骤：
       rpm -ivh gitlab-ce-10.8.2-ce.0.el7.x86_64.rpm
       yum install -y curl policycoreutils-python openssh-server cronie
@@ -156,7 +157,7 @@ git工作流：1.集中式工作流：即不分支，类似svn
 检查gitlab:gitlab-rake gitlab:check SANITIZE=true --trace
 
 	
-配置https:
+配置https:https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/settings/nginx.md
  	yum -y install openssl
     mkdir -p /etc/gitlab/ssl
     cd /etc/gitlab/ssl
@@ -201,24 +202,49 @@ Gitlab 修改root用户密码
 	
 	
 Gitlab迁移：确保新Gitlab服务器和老Gitlab服务器版本相同(如不一致，迁移前，先升级就gitlab版本)	
-备份数据：gitlab-rake gitlab:backup:create
+备份数据：gitlab-rake gitlab:backup:create [备份策略] (注意：不同安装方式备份及配置不一样)
+          备份策略：1.STRATEGY = copy    2.SKIP=db,uploads... (可选项：db(数据库)  uploads(附件)  repositories(Git repositories 数据)  builds(CI job output logs)   artifacts(CI job artifacts)   lfs(LFS objects)   registry(Container Registry images)   pages(Pages content))
          (将在/var/opt/gitlab/backups目录下创建一个名称类似为xxxxxxxx_gitlab_backup.tar的压缩包, 这个压缩包就是Gitlab整个的完整部分, 其中开头的xxxxxx是备份创建的时间戳。)
          Gitlab 修改备份文件默认目录(修改/etc/gitlab/gitlab.rb来修改默认存放备份文件的目录:gitlab_rails['backup_path'] = '/mnt/backups') 备份过期时间 gitlab_rails['backup_keep_time'] = 604800 
 	     修改后使用gitlab-ctl reconfigure命令重载配置文件。
 恢复数据：进入备份 gitlab 的目录，这个目录是配置文件中的 gitlab_rails['backup_path'] ，默认为 /var/opt/gitlab/backups(如果是迁移，记得改权限) 
         停止 unicorn(gitlab-ctl stop unicorn ) 和 sidekiq (gitlab-ctl stop sidekiq) 
 	    恢复数据:gitlab-rake gitlab:backup:restore BACKUP=xxxxxx (xxxxx为备份文件的时间戳) (交互输入yes(默认))
-备份配置文件：
+备份配置文件：/etc/gitlab(应该都在这里)
         /etc/gitlab/gitlab.rb 配置文件须备份
+		/etc/gitlab/gitlab-secrets.json 密钥
         /var/opt/gitlab/nginx/conf nginx配置文件
         /etc/postfix/main.cfpostfix 邮件配置备份
 重载：gitlab-ctl reconfigure
-启动: gitlab-ctl start	(迁移后，登录旧的git服务器会提示迁移)
+启动: gitlab-ctl start	
 	
 	
 建议将/etc/gitlab备份到安全的地方。如果要还原gitlab应用程序，还需要还原gitlab-secrets.json。
 服务器的ssh主机密钥存储在/etc/ssh/目录中
 	
+	
+升级：关闭 unicorn sidekiq  nginx 服务（注意：由于升级不能跨越大版本号，因此只能升级到当前大版本号到最高版本，方可升级到下一个大版本号）
+      安装新版本
+      重新配置并启动	
+
+中文版：参考链接：https://blog.csdn.net/fuzhongfaya/article/details/81022425
+        git clone https://gitlab.com/xhang/gitlab [-b v10.0.2-zh 老版本]	 
+        查看：cat gitlab/VERSION
+        停服务并切换到gitlab汉化包所在的目录cd /root/gitlab
+        比较汉化标签和原标签，，导出patch用的diff文件到/root下 git diff v10.0.4 v10.0.4-zh > ../10.0.4-zh.diff
+        cd /root  
+        将10.0.4-zh.diff作为补丁更新到gitlab中 
+        yum install patch -y
+        patch -d /opt/gitlab/embedded/service/gitlab-rails -p1 < 10.0.4-zh.diff
+        重新配置并启动 
+
+邮件配置：https://blog.csdn.net/qq_29000537/article/details/82795281
+         配置文件：/etc/gitlab/gitlab.rb
+	
+	
+服务器回退：在操作一定要先将相应项目的目录整个打包备份
+	cd /data2/apps/gitlab/git-data/repositories/groupname/web-trade.git
+    git reset --soft 8cbc3d0
 	
 	
 git图形化操作：	
