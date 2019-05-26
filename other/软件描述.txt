@@ -192,7 +192,7 @@ Jenkins 能解决以下几类问题：1.自动化构建软件  2.自动化检查  3.构建可持续的自动化
         执行完一个task，会跟着执行下一个task
 
 
-Python3:安装完成会安装好pip3(setuptools)  依赖包(libffi-devel,gcc,make,zlib*)
+Python3:安装完成会安装好pip3(setuptools)  依赖包(libffi-devel,gcc,make,zlib*,openssl-devel)
 
 Eclipse:是一个开放源代码的、基于Java的可扩展开发平台。就其本身而言，它只是一个框架和一组服务，用于通过插件组件构建开发环境。幸运的是，Eclipse附带了一个标准的插件集，包括Java开发工具（Java Development Kit，JDK）。
 
