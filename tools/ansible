@@ -20,7 +20,7 @@ ansible依赖python，需要python版本2.6以上，执行ansible的主机一般
 
 总结：
 playbook语法进阶：vars(变量)，error，handlers(notify)，when,register，with_items(迭代)，with_nested(迭代嵌套，还有其他with_*)，tags，Template模板，include and roles
-                  block(块任务) 1.when(条件成立执行) 2.rescue(block执行错误触发) 2.always(无论结果如何都出发)    注意：block没有with_items属相
+                  block(块任务) 1.when(条件成立执行) 2.rescue(block执行错误触发) 2.always(无论结果如何都触发)    注意：block没有with_items属相
 				  https://www.cnblogs.com/v394435982/p/5593274.html
 role：一级目录: ansible-playbook.yml文件(roles任务指定执行顺序) + roles目录				  
       二级目录：roles子目录(自定义名称,在一级yml文件中指定)

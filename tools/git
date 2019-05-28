@@ -171,7 +171,7 @@ nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/gitlab.key"
  
 gitlab-ctl reconfigure
 
-忽略文件：gitignore文件(参考文档：https://github.com/github/gitignore)
+忽略文件：git ignore文件(参考文档：https://github.com/github/gitignore)
        (路径：/var/opt/gitlab/git-data/repositories/username/git.git/info/exclude )
 
 不使用默认的SSH端口(双端口)：在服务器sshd增加12345并放通外网对其的访问，内网不受影响扔可以使用默认的22号端口做版本控制。
