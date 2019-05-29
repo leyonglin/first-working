@@ -501,8 +501,8 @@ cat main.yml
 优化：关闭ssh的DNS查询
       打开ansible配置文件的 1.host_key_checking = False 2.log日志
       使用通用的ssh协议，优点是简单省事，缺点是不是针对ansible开发优化过的，效率慢。需要提高效率，可以装专用的服务端与客户端，走特有协议，可以自动化安装。
-	  
-
+	  关闭获取gather_facts，在 playbook的(remote_user: liheng下一行)文件中加上“gather_facts: no”即可
+	  如果不使用 sudo，建议在配置文件中开启pipelining。 修改 ssh 客户端就行，ControlPersist即持久化 socket，需高版本openssh
 图形化：ansible tower 
 
 

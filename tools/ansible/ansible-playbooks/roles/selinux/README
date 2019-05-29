@@ -1,0 +1,1 @@
+如果使用同级目录下yml文件，任务目录(tasks,handlers,vars,meta,default)下最少要有main.yml文件，其它文件由main.yml导入 (- include: other.yml)

@@ -1,0 +1,19 @@
+#ansible-playbook,名称自定义
+---
+- hosts: all 
+  remote_user: root
+  gather_facts: no 
+  vars_files:
+     - var 
+  pre_tasks:                             #先于roles执行的task
+    - name: acquire free
+      shell: free -g | grep Mem | awk '{print $2}'
+      register: result 
+    - debug: 
+#        msg: "{{result}}"
+#        msg: "{{result.stdout}}"
+        msg: "{{test}}"     
+  roles:                                  #当前目录下的roles目录,目录名固定：roles
+#    - selinux
+    - { role: selinux, when: '{{ result.stdout }} >= 2 ' }  #selinux为众多项目之一，名称自定义
+    - { role: nginx, tags: nginx }           #标签不知道咋用啊

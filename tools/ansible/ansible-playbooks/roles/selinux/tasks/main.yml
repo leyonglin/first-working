@@ -1,0 +1,19 @@
+---
+#- include: other.yml
+- debug:
+    msg: "{{ test1, test }}"
+- name: Disable SELinux
+  selinux:
+    state: disabled
+- name: Add user groups
+  group:
+    name: "{{ item }}"
+  with_items: ['ybop', 'ybweb', 'ybdb', 'ybdeploy', 'swadmin', 'mtadmin', 'blog', 'dataviews']
+- name: Push web servers customized service scprits to init.d filder
+  template: 
+    src: "{{ item }}"
+    dest: /etc/init.d/{{ item | basename }}
+    mode: '0755'
+  with_fileglob:
+    - templates/init.d/*
+  when: "(ansible_default_ipv4.address in web_master_ip or ansible_default_ipv4.address in web_slave_ip) and ( item | basename != 'mysqld' and item | basename != 'redis')"
