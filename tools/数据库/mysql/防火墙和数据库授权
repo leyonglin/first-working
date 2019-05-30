@@ -1,0 +1,161 @@
+
+webslaveip=154.223.3.111
+webname=lubo
+rand_pass=`echo "${webname}" |md5sum |cut -c 9-24`
+
+for i in $webslaveip ;do 
+        firewall-cmd --permanent --ipset=web_whitelist --add-entry="$i"
+        firewall-cmd --permanent --ipset=rsync_whitelist --add-entry="$i"
+        firewall-cmd --permanent --ipset=ssh_whitelist --add-entry="$i"
+        firewall-cmd --permanent --ipset=db_whitelist --add-entry="$i"
+        firewall-cmd --permanent --ipset=8002_whitelist --add-entry="$i"
+    done
+	
+	
+#for i in $webslaveip;do 
+#        firewall-cmd --permanent --ipset=db_whitelist --add-entry="$i"
+#        firewall-cmd --permanent --ipset=ssh_whitelist --add-entry="$i"
+#    done
+
+	
+	
+for i in $webslaveip;do
+expect << EOF
+        spawn /opt/apps/mysql/bin/mysql -uroot -p -S /opt/data/data_16303/mysql.sock -e "    
+        grant all privileges on gameplat_analysis.* TO 'gameplat_analysis_dev'@'$i' identified by 'xjVXkB>Q6JpB61r${rand_pass}';
+        grant all privileges on gameplat_sc_data.* TO 'gameplat_sc_data_dev'@'$i' identified by 'OeJr)4uRGAuf(BH${rand_pass}';
+        grant all privileges on gameplat_cms.* TO 'gameplat_cms_dev'@'$i' identified by '9ckhq<64RZ2YUSR${rand_pass}';
+        grant replication slave on *.* to myrync@'154.223.3.111' identified by 'MyryncCloud';
+        flush privileges;
+		"
+        expect "Enter password:" {send "9tN6GFGK60Jk8BNkBJM611GwA66uDFeG\r"}
+        expect eof
+EOF
+done
+
+
+	
+
+线上主从：
+数据库授权：在旧主库上授权	
+grant replication slave on *.* to myrync@'103.248.20.34' identified by 'MyryncCloud';
+并刷新权限flush privileges;	   
+做 主（旧主库）从（新主库） 从（新从库）
+主从从思路：
+1.主从的时候，mysqldump---备份一下mysql库(有授权信息)
+mysqldump -uroot -p -S /opt/data/data_16303/mysql.sock -P16303 -B mysql > /home/swadmin/mysql.sql
+2.每天有全备的，拷贝即可
+  /backup/data_back/full
+  innobackupex  --defaults-file=/opt/conf/my_16303.cnf  --use-memory=10G --compress --compress-threads=24  -uroot -p9tN6GFGK60Jk8BNkBJM611GwA66uDFeG  -S  /opt/data/data_16303/mysql.sock  /opt/src/upload/full
+3.同时拷贝旧站到新的主库和从库，
+4.恢复数据，(less /opt/src/upload/full/2018-05-20_12-33-46/xtrabackup_binlog_info)
+  停止新主备站mysql服务并清空新主备站的数据目录
+  解压：innobackupex --decompress --parallel=16 /opt/src/upload/full/2018-05-20_12-33-46/
+  应用：innobackupex --apply-log --use-memory=4G  /opt/src/upload/full/2018-05-20_12-33-46/ 
+  恢复：innobackupex --defaults-file=/opt/conf/my_slave_16303.cnf --use-memory=4G  --move(copy)-back  /opt/src/upload/full/2018-05-20_12-33-46/
+  注意：改权限swadmin
+  启动： mysqld --defaults-file=/opt/conf/my_16303.cnf  --user=swadmin &
+5.source  备份的mysql库 ，再flush privileges;
+6.新主从库先做主从 (在主库上show master status； 记住与上面步骤4的区别)
+  CHANGE MASTER TO
+  MASTER_HOST='154.223.1.77',
+  MASTER_USER='myrync',
+  MASTER_PASSWORD='MyryncCloud',
+  MASTER_PORT=16303,
+  MASTER_LOG_FILE='mysql-bin.000333',
+  MASTER_LOG_POS=379096239;
+7.再在线上主库和新主库上做主从(偏移量参考步骤4)
+
+
+
+
+
+SELECT * FROM INFORMATION_SCHEMA.INNODB_TRX;    (INNODB_TRX表主要是包含了正在InnoDB引擎中执行的所有事务的信息，包括waiting for a lock和running的事务)
+
+SELECT * FROM INFORMATION_SCHEMA.INNODB_LOCK_WAITS;  (INNODB_LOCKS表主要包含了InnoDB事务锁的具体情况，包括事务正在申请加的锁和事务加上的锁。)
+
+SELECT * FROM INFORMATION_SCHEMA.INNODB_LOCK_WAITS;  (INNODB_LOCK_WAITS表包含了blocked的事务的锁等待的状态)
+
+
+show processlist；/ select * from information_schema.processlist  显示用户正在运行的线程,除了 root 用户能看到所有正在运行的线程外，其他用户都只能看到自己正在运行的线程，看不到其它用户正在运行的线程。除非单独个这个用户赋予了PROCESS 权限。
+按客户端 IP 分组，看哪个客户端的链接数最多
+select client_ip,count(client_ip) as client_num from (select substring_index(host,':' ,1) as client_ip from processlist ) as connect_info group by client_ip order by client_num desc;
+查看正在执行的线程，并按 Time 倒排序，看看有没有执行时间特别长的线程
+select * from information_schema.processlist where Command != 'Sleep' order by Time desc;
+找出所有执行时间超过 5 分钟的线程，拼凑出 kill 语句，方便后面查杀select concat('kill ', id, ';') from information_schema.processlist where Command != 'Sleep' and Time > 300 order by Time desc;
+
+
+查看从库状态：
+show slave status\G;
+
+登陆：mysql  -uroot -p -S /opt/data/data_16303/mysql.sock -P16303
+导出全部数据库:mysqldump -uroot -p --all-databases > sqlfile.sql
+导出库：mysqldump -uroot -p -S /opt/data/data_16303/mysql.sock -P16303 -B gameplat_cms > /opt/src/upload/cms.sql
+      [--single-transaction --master-data=2 -opt]
+导入库：mysql -uroot -p -S /opt/data/data_16303/mysql.sock gameplat_cms < cms.sql
+导出表：
+mysqldump -u 用户名 -p -S /opt/data/data_16303/mysql.sock 数据库名 表名 > 导出的文件名	
+mysql -uroot -D数据库名 -S /opt/data/data_16303/mysql.sock 表名
+
+
+查看授权：
+select user,host from mysql.user;
+show grants for user@host;
+
+
+
+删除授权
+Delete FROM mysql.user Where User='gameplat_analysis_dev' and Host='$i';
+Delete FROM mysql.user Where User='gameplat_analysis_dev' and Host='103.86.87.194';
+Delete FROM mysql.user Where User='gameplat_sc_data_dev' and Host='$i';
+Delete FROM mysql.user Where User='gameplat_sc_data_dev' and Host='103.86.87.194';
+Delete FROM mysql.user Where User='gameplat_cms_dev' and Host='$i';
+Delete FROM mysql.user Where User='gameplat_cms_dev' and Host='103.86.87.194';
+
+删除账户及权限：>drop user 用户名@'%';
+
+主从授权：grant replication slave on *.* to myrync@'$i' identified by 'MyryncCloud';
+          flush privileges；
+
+查看信息：show master status;
+
+从库指定主库信息：
+CHANGE MASTER TO
+MASTER_HOST='103.68.110.243',
+MASTER_USER='myrync',
+MASTER_PASSWORD='MyryncCloud',
+MASTER_PORT=16303,
+MASTER_LOG_FILE='mysql-bin.000001',
+MASTER_LOG_POS=366173927;
+
+MySQL中source命令   mysql> source *.db.sql;     //导入数据 
+
+删除一行记录
+delete from db where localhost=103.86.87.193;
+删除表
+drop table 表名；
+
+Innobackupex
+全备文件：2018-05-20_12-33-46
+差异文件：/backup/data_back/incre/2018-05-20_12-33-46/*
+全备：innobackupex  --defaults-file=/opt/conf/my_16303.cnf  --use-memory=10G --compress --compress-threads=24  -uroot -p9tN6GFGK60Jk8BNkBJM611GwA66uDFeG  -S  /opt/data/data_16303/mysql.sock  /opt/src/upload/full
+差异备：innobackupex  --defaults-file=/opt/conf/my_16303.cnf  --use-memory=10G --compress --compress-threads=24  -uroot -p  -S  /opt/data/data_16303/mysql.sock  --incremental /backup/data_back/xtrabackup/incre/2018-05-20_12-33-46 --incremental-basedir /backup/data_back/xtrabackup/full/2018-05-20_12-33-46
+停止mysqld服务，清空data_16303/目录
+解压全备：innobackupex --decompress --parallel=16 /backup/data_back/full/2018-05-20_12-33-46/
+应用日志等待回滚：innobackupex --apply-log --use-memory=4G --redo-only /backup/data_back/full/2018-05-20_12-33-46/
+解压差异备份：innobackupex --decompress --parallel=16 /backup/data_back/incre/2018-05-20_12-33-46/2018-05-20_13-00-09/
+合并日志回滚：innobackupex --apply-log --use-memory=4G /backup/data_back/full/2018-05-20_12-33-46/  --incremental-dir=/backup/data_back/incre/2018-05-20_12-33-46/2018-05-20_13-00-09/
+可查看这个文件：less /backup/data_back/full/2018-05-20_12-33-46/xtrabackup_checkpoints---lsn是否最新(有变化)
+恢复数据：innobackupex --defaults-file=/opt/conf/my_16303.cnf --use-memory=4G  --copy(move)-back  /backup/data_back/full/2018-05-20_12-33-46/
+启动服务：mysqld --defaults-file=/opt/conf/my_16303.cnf  --user=swadmin &  （数据目录权限值得看一下）
+
+
+显示数据表结构: describe 表名;
+
+远程登陆mysql：mysql -hlocalhost -uroot -p
+使用gzip命令对备份文件进行压缩：：mysqldump phpbb_db_backup | gzip > /usr/backups
+
+
+
+
+	
