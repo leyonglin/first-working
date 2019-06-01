@@ -10,3 +10,28 @@ set -x        输出执行代码(变量会被替换)与执行结果
               函数中，局部变量加local
               trap信号(trap sighandler INT)
 			  https://explainshell.com/执行过程
+			  
+			  
+			  
+			  
+			  
+			  
+			  
+add_db_master_ip () {
+# add master db ip address, run in slave database server
+    while true;do
+        read -p "请输入主库所有IP地址:" db_master_ip
+        read -p "主库IP地址为:$db_master_ip 确定吗(y/n)" db_master_ip_yn
+        case $db_master_ip_yn in
+        y|Y)
+        dbmasterip=$db_master_ip
+        break;;
+        n|N)
+        continue;;
+        esac
+    done
+}	
+
+
+
+		  

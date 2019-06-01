@@ -1,0 +1,134 @@
+case $changeadmin in
+onlydeploy)
+for i in {1..20}
+do
+   #if [ $i = 20 ];then
+   #    rm -f /opt/data/git-master-pools/pool{1..8}/hello
+   #        rm -f /home/swadmin/.m2/repository/com/cz/gameplat-*/0.0.1-SNAPSHOT/maven-metadata-local.xml 
+   #    exit 5
+   #fi
+   pool=pool$[RANDOM%15+1]
+   sleep $[$RANDOM%10]
+   if [ -f /opt/data/git-master-pools/$pool/hello ];then
+     count=`lsof +D /opt/data/git-master-pools/$pool/ /opt/data/git-config/$pool/config/| awk 'END{print NR}'`
+     if [ $count = 0 ];then
+       rm -f /opt/data/git-master-pools/$pool/hello
+       continue
+     else
+       continue
+     fi
+   else
+     touch /opt/data/git-master-pools/$pool/hello 
+     count=`lsof +D /opt/data/git-master-pools/$pool/ /opt/data/git-config/$pool/config/| awk 'END{print NR}'`
+     if [ $count = 0 ];then
+        now_branch=`cd /opt/data/git-master-pools/$pool/yibo && git branch|egrep '*' | awk '{print $2}'`
+        cd /opt/data/git-master-pools/$pool/yibo && git fetch --all && git reset --hard origin/`echo $now_branch`&& git clean -fd && git pull && git checkout master && git reset --hard origin/master && git pull
+        if [ $? != 0 ];then
+          rm -f /opt/data/git-master-pools/$pool/hello
+          continue
+        fi
+        countconfig=`lsof +D /opt/data/git-config/$pool/config/ | awk 'END{print NR}'`
+        if [ $countconfig = 0 ];then
+          cd /opt/data/git-config/$pool/config/ && git reset --hard origin/master && git clean -fd && git pull && cd filterpomMake
+        else
+          rm -f /opt/data/git-master-pools/$pool/hello
+          continue 
+        fi
+        python3 maker.py config/$token-product.ini -yibo /opt/data/git-master-pools/$pool/yibo/
+        mavenlog=`uuidgen`.log
+        cd /opt/data/git-master-pools/$pool/yibo/project2/gameplat && mvn -s /opt/apps/maven/conf/settings"$pool".xml clean
+        [ -z $mvnp ] && exit 4
+        cd /opt/data/git-master-pools/$pool/yibo/project2/gameplat && mvn -s /opt/apps/maven/conf/settings"$pool".xml install -P $mvnp |tee /tmp/$mavenlog
+        egrep -i "error.*maven-metadata-local.xml"   /tmp/$mavenlog && rm /home/swadmin/.m2/repository/com/cz/*/maven-metadata-local.xml
+        egrep 'ERROR|could not be activated because it does not exist' /tmp/$mavenlog && rm -f /tmp/$mavenlog && rm -f /opt/data/git-master-pools/$pool/hello && exit 2
+        cd /opt/data/git-master-pools/$pool/yibo/project2/gameplat/gameplat-admin/target/gameplat-admin
+        if [ $? -ne 0 ];then
+          echo "打包失败，请检查"
+          exit 2
+        fi
+        if [ ! -d /opt/data/git-master-pools/$pool/yibo/project2/gameplat/gameplat-admin/target/gameplat-admin/META-INF ] || [ ! -d /opt/data/git-master-pools/$pool/yibo/project2/gameplat/gameplat-admin/target/gameplat-admin/WEB-INF ];then
+          echo "打包失败，请检查"
+          exit 3 
+        fi
+        zip -rq /home/swadmin/.jenkins/workspace/"$token"-admin/"$token"_7001.zip ./*
+        echo "打包成功，准备传输文件" && rm -f /tmp/$mavenlog
+        ps -ef | grep "/opt/data/git-master-pools/$pool/yibo/" |grep -v grep | awk '{pring $2}'|xargs kill -9 &> /dev/null
+        cd /opt/data/git-master-pools/$pool/yibo/project2/gameplat && mvn -s /opt/apps/maven/conf/settings"$pool".xml clean
+        rm -f /opt/data/git-master-pools/$pool/hello
+        break
+     else
+        continue           
+     fi
+   fi
+done
+;;
+deployandexchange)
+for i in {1..20}
+do
+   #if [ $i = 20 ];then
+   #    rm -f /opt/data/git-master-pools/pool{1..8}/hello
+   #        rm -f /home/swadmin/.m2/repository/com/cz/gameplat-*/0.0.1-SNAPSHOT/maven-metadata-local.xml 
+   #    exit 5
+   #fi
+   pool=pool$[RANDOM%15+1]
+   sleep $[$RANDOM%10]
+   if [ -f /opt/data/git-master-pools/$pool/hello ];then
+     count=`lsof +D /opt/data/git-master-pools/$pool/ /opt/data/git-config/$pool/config/| awk 'END{print NR}'`
+     if [ $count = 0 ];then
+       rm -f /opt/data/git-master-pools/$pool/hello
+       continue
+     else
+       continue
+     fi
+   else
+     touch /opt/data/git-master-pools/$pool/hello 
+     count=`lsof +D /opt/data/git-master-pools/$pool/ /opt/data/git-config/$pool/config/ | awk 'END{print NR}'`
+     if [ $count = 0 ];then
+       now_branch=`cd /opt/data/git-master-pools/$pool/yibo && git branch|egrep '*' | awk '{print $2}'`
+       cd /opt/data/git-master-pools/$pool/yibo && git fetch --all && git reset --hard origin/`echo $now_branch`&& git clean -fd && git pull && git checkout master && git reset --hard origin/master && git pull
+       #cd /opt/data/git-master-pools/$pool/yibo && git fetch --all && git reset --hard && git clean -fd && git checkout master && git pull
+       if [ $? != 0 ];then
+         rm -f /opt/data/git-master-pools/$pool/hello
+         continue
+       fi
+       countconfig=`lsof +D /opt/data/git-config/$pool/config/ | awk 'END{print NR}'`
+       if [ $countconfig = 0 ];then
+         cd /opt/data/git-config/$pool/config/ && git reset --hard origin/master && git clean -fd && git pull && cd filterpomMake
+       else
+         rm -f /opt/data/git-master-pools/$pool/hello
+         continue 
+       fi
+       python3 maker.py config/$token-product.ini -yibo /opt/data/git-master-pools/$pool/yibo/
+       mavenlog=`uuidgen`.log
+       cd /opt/data/git-master-pools/$pool/yibo/project2/gameplat && mvn -s /opt/apps/maven/conf/settings"$pool".xml clean
+       [ -z $mvnp ] && exit 4
+       cd /opt/data/git-master-pools/$pool/yibo/project2/gameplat && mvn -s /opt/apps/maven/conf/settings"$pool".xml install -P $mvnp |tee /tmp/$mavenlog
+       egrep -i "error.*maven-metadata-local.xml"   /tmp/$mavenlog && rm /home/swadmin/.m2/repository/com/cz/*/maven-metadata-local.xml
+       egrep 'ERROR|could not be activated because it does not exist' /tmp/$mavenlog && rm -f /tmp/$mavenlog && rm -f /opt/data/git-master-pools/$pool/hello && exit 2
+       cd /opt/data/git-master-pools/$pool/yibo/project2/gameplat/gameplat-admin/target/gameplat-admin
+       if [ $? -ne 0 ];then
+         echo "打包失败，请检查"
+         exit 2
+       fi
+       if [ ! -d /opt/data/git-master-pools/$pool/yibo/project2/gameplat/gameplat-admin/target/gameplat-admin/META-INF ] || [ ! -d /opt/data/git-master-pools/$pool/yibo/project2/gameplat/gameplat-admin/target/gameplat-admin/WEB-INF ];then
+         echo "打包失败，请检查"
+         exit 3 
+       fi
+       cp -rf /opt/data/git-admin-app/gameplat-admin-app/dist/* /opt/data/git-master-pools/$pool/yibo/project2/gameplat/gameplat-admin/target/gameplat-admin
+       zip -rq /home/swadmin/.jenkins/workspace/"$token"-admin/"$token"_7001.zip ./*
+       echo "打包成功，准备传输文件" && rm -f /tmp/$mavenlog
+       ps -ef | grep "/opt/data/git-master-pools/$pool/yibo/" |grep -v grep | awk '{pring $2}'|xargs kill -9 &> /dev/null
+       cd /opt/data/git-master-pools/$pool/yibo/project2/gameplat && mvn -s /opt/apps/maven/conf/settings"$pool".xml clean
+       rm -f /opt/data/git-master-pools/$pool/hello
+       break
+     else
+       continue    
+     fi
+   fi
+done
+;;
+justexchange)
+  cd /opt/data/git-admin-app/gameplat-admin-app/dist/ && zip -rq /home/swadmin/.jenkins/workspace/"$token"-admin/"$token"_7001.zip ./*
+  echo "新后台打包成功，准备传输数据"
+esac
+

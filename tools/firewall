@@ -10,11 +10,23 @@ firewall-cmd --list-all  --查看默认区域
 查看ipset的ip：firewall-cmd --info-ipset=db_whitelist
 查看ipset文件：firewall-cmd --get-ipsets
 
-设置端口转发
-firewall-cmd --add-forward-port=port=80:proto=tcp:toport=8000 --permanent 
-firewall-cmd --add-forward-port=proto=80:proto=tcp:toaddr=192.168.1.1[:toport=8080] # 将80端口的流量转发至192.168.0.1 
+添加：firewall-cmd --add-*
+删除：firewall-cmd --remove-*
+查询：firewall-cmd --query-*
 
-Firewall所谓的黑白名单ipset其实就是一个含有ip的名单，drop了就是黑名单，accept就是白名单。
+添加/删除全局模式的服务|端口：存放在/etc/firewalld/zones/public.xml 
+firewall-cmd --permanent --add-service=http
+firewall-cmd --permanent --add-port=port/protocol
+firewall-cmd --permanent --remove-service=XXXX
+firewall-cmd --permanent --remove-port=XXXX/protocol
+设置端口转发
+firewall-cmd --add-forward-port=port=8000:proto=tcp:toport=80 --permanent 
+firewall-cmd --add-forward-port=proto=80:proto=tcp:toaddr=192.168.1.1[:toport=8080] # 将80端口的流量转发至192.168.0.1 
+禁ping：
+firewall-cmd --add-icmp-block=echo-request --permanent
+
+
+Firewall所谓的黑白名单ipset其实就是一个含有ip的名单，drop了就是黑名单，accept就是白名单(在zones/public.xml中定义)。
 
 导入ipset：提前写好白名单IP文档，便于直接导入firewall
 创建文件：cat firewall.txt        
@@ -24,9 +36,16 @@ Firewall所谓的黑白名单ipset其实就是一个含有ip的名单，drop了�
 重新加载：firewall-cmd --reload                                                             
 导入白名单文件内容：firewall-cmd --ipset=hgcp_whitelist  --add-entries-from-file=/opt/dfcp_whitelist   
 
+添加/删除ipset：仅 修改存放路径/etc/firewalld/ipsets
+firewall-cmd --permanent --new-ipset=hgcp_whitelist --type=hash:ip
+firewall-cmd --permanent --delete-ipset=XXXX_whitelist
+添加/删除ipset中的ip：
+firewall-cmd --permanent --ipset=db_whitelist --add-entry=${i}       
+firewall-cmd --permanent --ipset=db_whitelist --remove-entry=${i}
+
 添加/删除rich rules：存放在/etc/firewalld/zones/public.xml
-firewall-cmd --permanent --add-rich-rule='rule family="ipv4"  source ipset/address="hgcp_whitelist" port port="80" protocol="tcp" accept'
-firewall-cmd --permanent --remove-rich-rule="rule family="ipv4" source ipset="XXXX_whitelist" port port="1873" protocol="tcp" accept"
+firewall-cmd --permanent --add-rich-rule='rule family="ipv4"  source address/ipset="hgcp_whitelist" port port="80" protocol="tcp" accept'
+firewall-cmd --permanent --remove-rich-rule="rule family="ipv4" source ipset="XXXX_whitelist" port port="1873" protocol="tcp" drop"
 
 web端口（80）对白名单单位时间不限制连接数，其他IP每秒限制2次                   
 firewall-cmd --permanent --add-rich-rule='rule family="ipv4"  source address="0.0.0.0/0" port port="80" protocol="tcp" accept limit value="2/s"'    ip每秒限制2次
@@ -36,20 +55,44 @@ firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="0.0
             log prefix="attack" level="notice" limit value="2/s" audit limit value="2/s" accept limit value="2/s"'
 
 
-添加/删除ipset：存放路径/etc/firewalld/ipsets
-firewall-cmd --permanent --new-ipset=hgcp_whitelist --type=hash:ip
-firewall-cmd --permanent --delete-ipset=XXXX_whitelist
-添加/删除ipset中的ip：
-firewall-cmd --permanent --ipset=db_whitelist --add-entry=${i}       
-firewall-cmd --permanent --ipset=db_whitelist --remove-entry=${i}
+指定服务白名单
+<!--
+<rule family="ipv4">
+  <source address="192.168.2.131"/>
+  <service name="ssh"/>
+<accept/>
+</rule> -->
+添加服务与端口：firewall-cmd --permanent --add-service=http
+<service name="dhcpv6-client"/>
+<port protocol="tcp" port="873"/>
+指定端口黑名单： firewall-cmd --permanent --add-rich-rule='rule family="ipv4"  source ipset="blacklist" port port="80" protocol="tcp" drop' 
+<rule family="ipv4">
+  <source ipset="blacklist"/>
+  <port protocol="tcp" port="443"/>
+  <drop/>
+</rule>
+[指定端口]白名单：
+<rule family="ipv4">
+  <source ipset="8002_whitelist"/>
+  <!--<port protocol="tcp" port="8002"/>-->
+  <accept/>
+</rule>
+ipset名单：firewall-cmd --permanent --ipset=db_whitelist --add-entry=${i} 
+<?xml version="1.0" encoding="utf-8"?>
+<ipset type="hash:ip">
+  <entry>103.68.110.243</entry>
+</ipset>
 
-添加/删除全局模式的服务|端口：存放在/etc/firewalld/zones/public.xml
-firewall-cmd --permanent --add-service=http
-firewall-cmd --permanent --add-port=port/protocol
-firewall-cmd --permanent --remove-service=XXXX
-firewall-cmd --permanent --remove-port=XXXX/protocol
+
+启动/关闭紧急模式(断/连网)：firewall-cmd --panic-on/off
 
 
+
+
+
+选项 –-direct 需要是直接选项的第一个参数。将命令传递给防火墙。参数 <args> 可以是 iptables, ip6tables 以及 ebtables 命令行参数。
+firewall-cmd --direct --passthrough { ipv4 | ipv6 | eb } <args>          路径是：/etc/firewalld/direct.xml
+firewall-cmd --permanent --direct --add-rule ipv4 filter INPUT 0 -s 0.0.0.0  -p tcp --dport 22  -j ACCEPT
 
 
 IPTABLES：

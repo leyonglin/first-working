@@ -14,7 +14,11 @@ systemctl list-unit-files --state=enabled
 
 systemctl路径：/etc/systemd/system/*(一般是链接文件) 优先于 /usr/lib/systemd/system/*
                /run/systemd/generator.late 使用 systemd-sysv-generator工具处理 SysV init脚本（即：/etc/init.d/*自动生成.service文件
+			   /lib/systemd/system：系统默认的单元文件
+               /etc/systemd/system：用户安装的软件的单元文件
+               /usr/lib/systemd/system：用户自己定义的单元文件
 init路径：/etc/init.d/(脚本)    /etc/rc*  --> /etc/rc.d/rc*
+
 
 系统初始化级别脚本运行之后自动执行的(开机自启)：
 1./etc/rc.local  (systemctl cat rc-local.service(添加[Install] )    systemctl enable rc-local.service  chmod +x /etc/rc.d/rc.local)
@@ -66,7 +70,7 @@ Systemd:
 	*.mount:定义了一个挂载点，[Mount]节点里配置了What,Where,Type三个数据项
 	*.service:文件定义了一个服务，[Unit]，[Service]，[Install]三个小节
 	*.target:定义了一些基础的组件，供.service文件调用
-	*.wants:定义了要执行的文件集合，每次执行，.wants文件夹里面的文件都会执行
+	*.wants:定义了要执行的文件集合，每次执行，.wants文件夹里面的文件都会执行(/etc/systemd/system/multi-user.target.wants/*)
 
 [Unit] 
 Description：描述及systemctl status 输出的此服务的说明

@@ -227,7 +227,7 @@ Gitlab迁移：确保新Gitlab服务器和老Gitlab服务器版本相同(如不�
       安装新版本
       重新配置并启动	
 
-中文版：参考链接：https://blog.csdn.net/fuzhongfaya/article/details/81022425
+中文版：参考链接：https://www.cnblogs.com/straycats/p/7637373.html
         git clone https://gitlab.com/xhang/gitlab [-b v10.0.2-zh 老版本]	 
         查看：cat gitlab/VERSION
         停服务并切换到gitlab汉化包所在的目录cd /root/gitlab

@@ -1,0 +1,48 @@
+#!/bin/bash
+source /etc/profile
+token=2fhc
+
+##判断压缩包是否传到相应服务器
+ls ~/${token}_7001/${token}_7001.zip || exit 2
+
+##判断相应服务器主备状态
+tom_num=`ps -ef | grep Djava.endorsed.dirs|grep -v grep|wc -l`
+[ $tom_num -le 2 ] && echo "该服务为备站，admin不能重复启动，发布中断" &&exit 3
+[ $tom_num -gt 2 ] && echo "该服务为主站，开始发布"
+
+## 判断是否服务上的token与所给的令牌码一致
+local_token=`find /opt/apps/nginx/conf/vhosts/ -mindepth 1 -maxdepth 1 -type d -printf "%P\n" |sort -n |egrep -v '*.bak|*.back|tgapp*'|head -1`
+if [ $token != $local_token ];then
+  echo  "远程的服务器token与Jenkins所给token不匹配，退出发布"
+  rm -rf ~/"$token"_7001/"$token"_7001.zip
+  exit 1
+fi
+
+if [ $changeadmin == "onlydeploy" ] || [ $changeadmin == "deployandexchange" ];then
+mv ~/"$token"_7001/"$token"_7001.zip /opt/webapps/admin_7001
+cd /opt/webapps/admin_7001 && ls --file-type|grep -v data|grep -v views|grep -v *.zip|xargs rm -rf
+cd /opt/webapps/admin_7001 && unzip -o "$token"_7001.zip
+datenow=$(date "+%Y%m%d%H%M%S")
+mv *.zip /opt/backup/webapps_version_record/7001-${datenow}.zip
+number=`ls /opt/backup/webapps_version_record/7001* | wc -l`
+count=$[number-7]
+if [ $number -ge 7 ];then
+  for i in `seq $count`
+  do
+      cd /opt/backup/webapps_version_record  && rm -f `ls -l 7001* | awk 'NR==1{print $9}' `
+  done
+fi
+
+## 给temp目录 ybdeploy：dataviews，2fhc目录及下面子目录都setgid
+chown -R ybdeploy.dataviews /opt/webapps/admin_7001/temp && chmod g+s  /opt/webapps/admin_7001/temp
+for i in `find /opt/webapps/admin_7001/temp  -type d`;do chmod g+s $i;done
+
+## sudo重启tomcat
+sudo /etc/init.d/tomcat_7001 stop && sudo /etc/init.d/tomcat_7001 start
+
+elif [ $changeadmin == "justexchange" ];then
+unzip -o  ~/"$token"_7001/"$token"_7001.zip -d /opt/webapps/admin_7001/
+rm -f ~/"$token"_7001/"$token"_7001.zip
+else
+exit 4
+fi
