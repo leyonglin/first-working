@@ -1,0 +1,31 @@
+# .bashrc
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+	. /etc/bashrc
+fi
+
+# Uncomment the following line if you don't like systemctl's auto-paging feature:
+# export SYSTEMD_PAGER=
+
+# User specific aliases and functions
+
+# alias of service start 
+alias nginx='sudo /etc/init.d/nginx'
+alias all_tomcat='sudo /etc/init.d/all_tomcat'
+alias tomcat_7001='sudo /etc/init.d/tomcat_7001'
+alias tomcat_7002='sudo /etc/init.d/tomcat_7002'
+alias tomcat_7003='sudo /etc/init.d/tomcat_7003'
+alias tomcat_8001='sudo /etc/init.d/tomcat_8001'
+alias tomcat_8002='sudo /etc/init.d/tomcat_8002'
+alias tomcat_8003='sudo /etc/init.d/tomcat_8003'
+alias tomcat_9001='sudo /etc/init.d/tomcat_9001'
+alias tomcat_9002='sudo /etc/init.d/tomcat_9002'
+alias rsyncd='sudo /etc/init.d/rsyncd'
+alias sersync_data='sudo /etc/init.d/sersync_data'
+alias sersync_nginx='sudo /etc/init.d/sersync_nginx'
+alias sersync_views='sudo /etc/init.d/sersync_views'
+alias mysqld='sudo /etc/init.d/mysqld'
+alias redis='sudo /etc/init.d/redis'
+alias code_rollback='sudo -u ybdeploy /etc/init.d/code_rollback'
+alias servername_add='sudo -u swadmin /usr/bin/python /opt/scripts/add_domains.py'

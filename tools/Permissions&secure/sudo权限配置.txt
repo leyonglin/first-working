@@ -1,0 +1,34 @@
+修改命令：visudo
+配置文件：
+注意事项：
+1.!添加目录后面必须：/bin/，必须/结尾，% 调用组
+2.别名必须大写
+
+语法：
+用户  地址=(切换到哪个用户执行命令)	NOPASSWD：目录， 命令
+(ALL)：切换到那个用户执行命令，默认是root
+
+例：
+root    ALL = (ALL)     ALL
+test    ALL = (ALL)     NOPASSWD:ALL
+test    ALL = (ALL)     NOPASSWD: /bin/vim, /usr/bin/mkdir, /opt/*
+
+#直接授权
+http	localhost = /usr/bin/systemctl * httpd, /usr/bin/vim, /etc/httpd/config/httpd.conf
+mysql	localhost = /usr/bin/systemctl * mariadb, /usr/bin/vim /etc/my.cnf
+ifconfig	localhost=/sbin/*, !/sbin/ifconfig eth0
+
+#正则授权：
+test    ALL=    NOPASSWD: /usr/bin/passwd [A-Za-z]*, !/usr/bin/passwd *root*	#可以为除了root之外的用户修改密码
+test 	ALL=    NOPASSWD: /usr/bin/*, !/usr/bin/su			#可以运行/usr/bin/中除了某个命令 
+test    ALL=    NOPASSWD: /usr/bin/su [!-]*, !/usr/bin/su *root*		#普通用户之间可以su，但不能su到root
+
+查看日志：
+cat  /var/log/secure | grep sudo | awk  -F ";" '{print $NF}'| awk -F "=" '{print $2}' | grep -v "^$"
+
+别名：
+定义用户别名	User_Alias 名称(大写) = 用户列表
+定义主机别名	Host_Alias 名称(大写) = 主机名列表
+定义命令别名	Cmnd_Alias 名称(大写) = 命令列表
+Cmnd_Alias ADD_DOMAINS = /usr/bin/python /opt/scripts/add_domains.py
+

@@ -1,6 +1,6 @@
 
-webslaveip=154.223.3.111
-webname=lubo
+webslaveip=103.101.191.171
+webname=ahy
 rand_pass=`echo "${webname}" |md5sum |cut -c 9-24`
 
 for i in $webslaveip ;do 
@@ -25,7 +25,7 @@ expect << EOF
         grant all privileges on gameplat_analysis.* TO 'gameplat_analysis_dev'@'$i' identified by 'xjVXkB>Q6JpB61r${rand_pass}';
         grant all privileges on gameplat_sc_data.* TO 'gameplat_sc_data_dev'@'$i' identified by 'OeJr)4uRGAuf(BH${rand_pass}';
         grant all privileges on gameplat_cms.* TO 'gameplat_cms_dev'@'$i' identified by '9ckhq<64RZ2YUSR${rand_pass}';
-        grant replication slave on *.* to myrync@'154.223.3.111' identified by 'MyryncCloud';
+        grant replication slave on *.* to myrync@'$i' identified by 'MyryncCloud';
         flush privileges;
 		"
         expect "Enter password:" {send "9tN6GFGK60Jk8BNkBJM611GwA66uDFeG\r"}

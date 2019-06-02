@@ -1,5 +1,0 @@
-
-
-被服务器:rsync
-主服务器:inotify-tools+rsync
-url：https://github.com/wsgzao/sersync

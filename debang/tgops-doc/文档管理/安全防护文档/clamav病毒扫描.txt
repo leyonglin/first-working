@@ -1,5 +1,0 @@
-
-
-
-ClamAV(Clam AntiVirus) 类unix系统上使用的反病毒软件包，ClamAV属于免费开源产品，支持多种平台
-zlib(CFLAGS="-O3 -fPIC")+clamav

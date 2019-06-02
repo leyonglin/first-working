@@ -84,7 +84,7 @@ git分支管理的本质是创建和移动指针，新创建分支的时候，�
 06.git commit -m "message"														将文件从暂存区提交到本地库
 07.git remote add video https://github.com/leyonglin/video-public.git			设置远程库别名
 08.git remote -v																查看远程库
-09.git push video master														提交到远程库别名的master分支
+09.git push video --all(master)													提交到远程库别名的master分支
 
 拉取(pull)及同步操作:
 01.git clone https://github.com/leyonglin/first-2019-4-21.git  			1.将远程库下载到本地  2.初始化本地库  3.常见origin远程地址别名   
@@ -245,6 +245,16 @@ Gitlab迁移：确保新Gitlab服务器和老Gitlab服务器版本相同(如不�
 服务器回退：在操作一定要先将相应项目的目录整个打包备份(或者恢复之前数据)
 	cd /var/opt/gitlab/git-data/repositories/groupname/web-trade.git
     git reset --soft 8cbc3d0
+	
+	
+补充：
+添加标签：git tags v1.1
+查看标签：git tag
+上传标签：git push origin --tags
+标签回退：git checkout v1.1 (master 回退到最新版本)
+
+	
+	
 	
 	
 git图形化操作：	

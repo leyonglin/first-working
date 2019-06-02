@@ -1,6 +1,0 @@
-
-
-
-下载钉钉的go插件golang-zabbix-robot-64，并部署到内置脚本目录下zabbix/alertscripts/(在配置文件有定义)
-执行命令：./golang-zabbix-robot-64  -url  钉钉机器人API接口地址
-添加报警媒介类型--> 添加动作--> (添加用户)报警媒介 --> 测试

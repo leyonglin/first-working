@@ -1,3 +1,0 @@
-
-
-查看ip在GeoIP中是属于哪个IP的：geoiplookup -f /opt/apps/nginx/conf/GeoIP.dat 203.195.246.28

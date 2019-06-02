@@ -1,0 +1,12 @@
+######## ybdb给ybop用户提权备份数据库
+Cmnd_Alias DATA_BACK = /usr/bin/bash /opt/scripts/mysqlback.sh
+
+####### 其他权限
+## 服务启动脚本权限
+Cmnd_Alias START_SERVICES = /etc/init.d/all_tomcat, /etc/init.d/rsyncd, /etc/init.d/sersync_data, /etc/init.d/sersync_nginx, /etc/init.d/sersync_views, /etc/init.d/tomcat_7001, /etc/init.d/tomcat_7002, /etc/init.d/tomcat_7003, /etc/init.d/tomcat_8001, /etc/init.d/tomcat_8002, /etc/init.d/tomcat_8003, /etc/init.d/tomcat_9001, /etc/init.d/tomcat_9002, /etc/init.d/nginx, /etc/init.d/mysqld, /etc/init.d/redis
+## firewall权限
+Cmnd_Alias FIREWALL_SERVICE = /usr/bin/firewall-cmd, /usr/bin/vim /etc/firewalld/ipsets/*
+
+#### 根据不同用户提权
+ybop ALL=(ALL)NOPASSWD:START_SERVICES, FIREWALL_SERVICE
+ybop ALL=(ybdb:ybdb)NOPASSWD:DATA_BACK
