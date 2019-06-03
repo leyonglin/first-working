@@ -153,11 +153,11 @@ git工作流：1.集中式工作流：即不分支，类似svn
 	  systemctl restart postfix         支持邮件通知]
       [firewall-cmd --permanent --add-service=http  && systemctl reload firewalld]
 	  
-配置文件:/etc/gitlab/gitlab.rb
+配置文件: /etc/gitlab/gitlab.rb
 检查gitlab:gitlab-rake gitlab:check SANITIZE=true --trace
 
 	
-配置https:https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/settings/nginx.md
+配置https: https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/settings/nginx.md
  	yum -y install openssl
     mkdir -p /etc/gitlab/ssl
     cd /etc/gitlab/ssl
@@ -223,7 +223,7 @@ Gitlab迁移：确保新Gitlab服务器和老Gitlab服务器版本相同(如不�
  #服务器的ssh主机密钥存储在/etc/ssh/目录中
 	
 	
-升级：关闭 unicorn sidekiq  nginx 服务（注意：由于升级不能跨越大版本号，因此只能升级到当前大版本号到最高版本，方可升级到下一个大版本号）
+升级：关闭 unicorn sidekiq  nginx 服务（注意??：由于升级不能跨越大版本号，因此只能升级到当前大版本号到最高版本，方可升级到下一个大版本号）
       安装新版本
       重新配置并启动	
 

@@ -12,10 +12,12 @@ systemctl cat multi-user.target(httpd.service..)
 systemctl status httpd           /         systemctl get-default
 systemctl list-unit-files --state=enabled
 
-systemctl路径：/etc/systemd/system/*(一般是链接文件) 优先于 /usr/lib/systemd/system/*
+systemctl路径：/etc/systemd/system/*(一般是链接文件) 优先于 /usr/lib/systemd/system/*  
+(或/etc/systemd/system-preset/*.preset  该预设文件可定义自启服务，格式：enable postfix.service  
+																     	disable *) 
                /run/systemd/generator.late 使用 systemd-sysv-generator工具处理 SysV init脚本（即：/etc/init.d/*自动生成.service文件
 			   /lib/systemd/system：系统默认的单元文件
-               /etc/systemd/system：用户安装的软件的单元文件
+               /etc/systemd/system：用户安装的软件的单元文件,开机自启目录
                /usr/lib/systemd/system：用户自己定义的单元文件
 init路径：/etc/init.d/(脚本)    /etc/rc*  --> /etc/rc.d/rc*
 

@@ -9,7 +9,7 @@ Kubernetes:
 5、Scheduler再次检查数据库变化(为Pod绑定Node:过滤主机---主机打分--选择主机--进行binding操作，结果存储到Etcd中)，发现尚未被分配到具体执行节点(node)的Pod，然后根据一组相关规则将pod分配到可以运行它们的节点上，并更新数据库，记录pod分配情况。
 6、Kubelete监控数据库变化，管理后续pod的生命周期，发现被分配到它所在的节点上运行的那些pod。如果找到新pod，则会在该节点上运行这个新pod。根据调度结果执行Pod创建操作： 绑定成功后，会启动container, docker run, scheduler会调用API Server的API在etcd中创建一个bound pod对象，描述在一个工作节点上绑定运行的所有pod信息。运行在每个工作节点上的kubelet也会定期与etcd同步bound pod信息，一旦发现应该在该工作节点上运行的bound pod对象没有更新，则调用Docker API创建并启动pod内的容器。
 7、kuberproxy运行在集群各个主机上，管理网络通信，如服务发现、负载均衡。例如当有数据发送到主机时，将其路由到正确的pod或容器。对于从主机上发出的数据，它可以基于请求地址发现远程服务器，并将数据正确路由，在某些情况下会使用轮训调度算法(Round-robin)将请求发送到集群中的多个实例。
-
+kubelet负责维护容器的生命周期，同时也负责Volume（CVI）和网络（CNI）的管理；负责管理pods和它们上面的容器，images镜像、volumes、etc。
 
 kubectl create -f *.yml
 cat  *.yml

@@ -35,16 +35,6 @@ Linux¶Ô´ó²¿·ÖÉêÇëÄÚ´æµÄÇëÇó¶¼»Ø¸´"yes"£¬ÒÔ±ãÄÜÅÜ¸ü¶à¸ü´óµÄ³ÌÐò¡£ÒòÎªÉêÇëÄÚ´æºó£¬
  £¨2£©sysctl vm.overcommit_memory=1
  £¨3£©echo 1 > /proc/sys/vm/overcommit_memory
 
-¸ñÁ¦¿Õµ÷
-swing£º°Ú¶¯
-mode£ºÄ£Ê½
-ifeel£ºÖÇÄÜËæÉí¸Ð
-timer£º¶¨Ê±
-dry£º¸ÉÔï
-light£º¿Õµ÷Ö¸Ê¾µÆ
-temp£ºÎÂ¶È
-fan £ºËÍ·ç
-turbo£ºÎÞÏßÐÅºÅÔöÇ¿°´¼ü(ÔöÑ¹ÎÐÂÖ)
 
 Jmeter:
 Apache jmeter ¿ÉÒÔÓÃÓÚ¶Ô¾²Ì¬µÄºÍ¶¯Ì¬µÄ×ÊÔ´£¨ÎÄ¼þ£¬Servlet£¬Perl½Å±¾£¬java ¶ÔÏó£¬Êý¾Ý¿âºÍ²éÑ¯£¬FTP·þÎñÆ÷µÈµÈ£©µÄÐÔÄÜ½øÐÐ²âÊÔ¡£Ëü¿ÉÒÔÓÃÓÚ¶Ô·þÎñÆ÷¡¢ÍøÂç»ò¶ÔÏóÄ£Äâ·±ÖØµÄ¸ºÔØÀ´²âÊÔËüÃÇµÄÇ¿¶È»ò·ÖÎö²»Í¬Ñ¹Á¦ÀàÐÍÏÂµÄÕûÌåÐÔÄÜ¡£Äã¿ÉÒÔÊ¹ÓÃËü×öÐÔÄÜµÄÍ¼ÐÎ·ÖÎö»òÔÚ´ó²¢·¢¸ºÔØ²âÊÔÄãµÄ·þÎñÆ÷/½Å±¾/¶ÔÏó¡£
@@ -55,7 +45,7 @@ notepad++  Ò²½Ðnpp
 µ¼³ö³É²»Í¬¸ñÊ½(NppExport²å¼þ)£¬Ö±½ÓÀ­Èë£¬Ctrl+Tab¶àÎÄ¼þÇÐ»»  
 
 
-ºêÓïÑÔµÄÊÍÒå£º
+ºê(±äÁ¿)ÓïÑÔµÄÊÍÒå£º
 1¡¢ºêÓïÑÔÊÇÒ»ÖÖÇ¿ÓÐÁ¦µÄ¹¤¾ßÓïÑÔ£¬¿ÉÒÔÓÃÀ´ÃèÊöÈí¼þºÍ½â¾öÈí¼þÒÆÖ²µÈÎÊÌâ£¬ÓÃÓÚÊéÐ´ºêÖ¸ÃüºÍºê¶¨ÒåµÄ±íÊ¾·¨ºÍ¹æÔò¡£
 2¡¢ºêÓïÑÔÊÇÒ»Àà±à³ÌÓïÑÔ£¬ÆäÈ«²¿»ò¶àÊý¼ÆËãÊÇÓÉÀ©Õ¹ºêÍê³ÉµÄ¡£ºêÓïÑÔ²¢Î´ÔÚÍ¨ÓÃ±à³ÌÖÐ¹ã·ºÊ¹ÓÃ£¬µ«ÔÚÎÄ±¾´¦Àí³ÌÐòÖÐÓ¦ÓÃÆÕ±é¡£
 
@@ -177,19 +167,8 @@ CNAME   A   AAAA   MX¼ÇÂ¼:ÓòµÄÓÊ¼þ½»»»£¬µç×ÓÓÊ¼þÕýÈ·µ½´ïÄúµÄÓÊ¼þ·þÎñÆ÷      PTR¼
 ÎÄ¼þÖ¸Õë£ºCÓïÑÔÖÐÊ¹ÓÃÎÄ¼þÖ¸Õë×öÎªI/OµÄ¾ä±ú¡£ÎÄ¼þÖ¸ÕëÖ¸Ïò½ø³ÌÓÃ»§ÇøÖÐµÄÒ»¸ö±»³ÆÎªFILE½á¹¹µÄÊý¾Ý½á¹¹¡£FILE½á¹¹°üÀ¨Ò»¸ö»º³åÇøºÍÒ»¸öÎÄ¼þÃèÊö·û¡£¶øÎÄ¼þÃèÊö·ûÊÇÎÄ¼þÃèÊö·û±íµÄÒ»¸öË÷Òý£¬Òò´Ë´ÓÄ³ÖÖÒâÒåÉÏËµÎÄ¼þÖ¸Õë¾ÍÊÇ¾ä±úµÄ¾ä±ú£¨ÔÚWindowsÏµÍ³ÉÏ£¬ÎÄ¼þÃèÊö·û±»³Æ×÷ÎÄ¼þ¾ä±ú£©
 
 
-Git:
-´î½¨¿ÉÒÔÓÃgitlab-ce,ÏÂÔØÍøÖ·£ºhttps://mirrors.tuna.tsinghua.edu.cn/gitlab-ce/[yum/e17/]
-¿ÉÒÔÖ¸¶¨³ÉÔ±µÄÈ¨ÏÞ,ÉÏ´«ÃÜÔ¿¿ÉÒÔÃâÃÜ²Ù×÷
-git push -u origin master    ¿ÉÒÔ´´½¨²»Í¬branch
-Ô¶³Ì·ÖÖ§»Ø¹öµÄÈýÖÖ·½·¨£º git log
-×Ô¼ºµÄ·ÖÖ§»Ø¹öÖ±½ÓÓÃreset----- git reset --hard commit-id
-¹«¹²·ÖÖ§»Ø¹öÓÃrevert     ----- git revert commit-id
-´íµÄÌ«Ô¶ÁËÖ±½Ó½«´úÂëÈ«²¿É¾µô£¬ÓÃÕýÈ·´úÂëÌæ´ú
 
 NpmÊÇ½ÚµãJavaScriptÆ½Ì¨(Ç°¶Ë)µÄ°ü¹ÜÀíÆ÷¡£Ëü½«Ä£¿é·ÅÖÃµ½Î»£¬ÒÔ±ã½ÚµãÄÜ¹»ÕÒµ½ËüÃÇ£¬²¢ÖÇÄÜµØ¹ÜÀíÒÀÀµ³åÍ»¡£Ëü·Ç³£ÈÝÒ×ÅäÖÃÒÔÖ§³Ö¸÷ÖÖ¸÷ÑùµÄÓÃÀý¡£×î³£¼ûµÄÊÇ£¬ËüÓÃÓÚ·¢²¼¡¢·¢ÏÖ¡¢°²×°ºÍ¿ª·¢½Úµã³ÌÐò¡£
-
-Jenkins ÄÜ½â¾öÒÔÏÂ¼¸ÀàÎÊÌâ£º1.×Ô¶¯»¯¹¹½¨Èí¼þ  2.×Ô¶¯»¯¼ì²é  3.¹¹½¨¿É³ÖÐøµÄ×Ô¶¯»¯²âÊÔ  4.×Ô¶¯»¯´ò°üºÍ·Ö·¢²¿Êð
-        Ö´ÐÐÍêÒ»¸ötask£¬»á¸ú×ÅÖ´ÐÐÏÂÒ»¸ötask
 
 
 Python3:°²×°Íê³É»á°²×°ºÃpip3(setuptools)  ÒÀÀµ°ü(libffi-devel,gcc,make,zlib*,openssl-devel)
@@ -197,8 +176,6 @@ Python3:°²×°Íê³É»á°²×°ºÃpip3(setuptools)  ÒÀÀµ°ü(libffi-devel,gcc,make,zlib*,ope
 Eclipse:ÊÇÒ»¸ö¿ª·ÅÔ´´úÂëµÄ¡¢»ùÓÚJavaµÄ¿ÉÀ©Õ¹¿ª·¢Æ½Ì¨¡£¾ÍÆä±¾Éí¶øÑÔ£¬ËüÖ»ÊÇÒ»¸ö¿ò¼ÜºÍÒ»×é·þÎñ£¬ÓÃÓÚÍ¨¹ý²å¼þ×é¼þ¹¹½¨¿ª·¢»·¾³¡£ÐÒÔËµÄÊÇ£¬Eclipse¸½´øÁËÒ»¸ö±ê×¼µÄ²å¼þ¼¯£¬°üÀ¨Java¿ª·¢¹¤¾ß£¨Java Development Kit£¬JDK£©¡£
 
 DNSPod£ºÊÇÖÐ¹úµÚÒ»´óDNS½âÎö·þÎñÌá¹©ÉÌ£¬ÊÇÒ»¿îÃâ·ÑÖÇÄÜDNS²úÆ·¡£ DNSPod ¿ÉÒÔÎªÍ¬Ê±ÓÐµçÐÅ¡¢ÁªÍ¨¡¢½ÌÓýÍø·þÎñÆ÷µÄÍøÕ¾Ìá¹©ÖÇÄÜµÄ½âÎö
-
-python3.5.7£º´Ó¹ÙÍøÉÏÑ¡ÔñÏµÍ³ºÍ°æ±¾ÏÂÔØ£¬ÒÀÀµ°ügcc£¬make£¬openssl-devel(ÆäËü±¨´í×Ô¼º¿´) £¬³É¹¦°²×°»á¸½´øpip3
 
 SecureFX Ö§³ÖÈýÖÖÎÄ¼þ´«ÊäÐ­Òé£ºFTP¡¢SFTP ºÍ FTP over SSH2¡£Ëü¿ÉÒÔÌá¹©°²È«ÎÄ¼þ´«Êä¡£ÎÞÂÛÄúÁ¬½ÓµÄÊÇÈÎºÎÒ»ÖÖ²Ù×÷ÏµÍ³µÄ·þÎñÆ÷£¬Ëü¶¼ÄÜÌá¹©°²È«µÄ´«Êä·þÎñ
 £¬¿ÉÒÔµ«²»½öÓÃÓÚwindowÓëvmware´«ÊäÎÄ¼þ
@@ -377,10 +354,9 @@ ou £ºÒ»Ìõ¼ÇÂ¼ËùÊô×éÖ¯    £¨ÄÄÒ»¸ö·ÖÖ§£©
 cn/uid£ºÒ»Ìõ¼ÇÂ¼µÄÃû×Ö/ID   (ÄÄÒ»¸öÆ»¹ûÃû×Ö)
 LDAPÄ¿Â¼Ê÷µÄ×î¶¥²¿¾ÍÊÇ¸ù£¬Ò²¾ÍÊÇËùÎ½µÄ¡°»ù×¼DN"¡£
 
-
 IBM£ºNetcoolÊÇÖ¸Ò»Ì×½â¾ö·½°¸²úÆ·¡£OMNIBusÊÇÆäºËÐÄ×é³É²¿·Ö£¬Ò»¸öÄÚ´æÊý¾Ý¿â¡£ImpactËãÊÇÒ»¸öÀ©Õ¹Æ½Ì¨¡£
 
-VPS£¨Virtual Private Server ÐéÄâ×¨ÓÃ·þÎñÆ÷£©¼¼Êõ£¬½«Ò»Ì¨·þÎñÆ÷·Ö¸î³É¶à¸öÐéÄâ×¨Ïí·þÎñÆ÷µÄÓÅÖÊ·þÎñ¡£ÊµÏÖVPSµÄ¼¼Êõ·ÖÎªÈÝÆ÷ [1]  ¼¼Êõ£¬ºÍÐéÄâ»¯¼¼Êõ [2]  ¡£ÔÚÈÝÆ÷»òÐéÄâ»úÖÐ£¬Ã¿¸öVPS¶¼¿É·ÖÅä¶ÀÁ¢¹«ÍøIPµØÖ·¡¢¶ÀÁ¢²Ù×÷ÏµÍ³¡¢ÊµÏÖ²»Í¬VPS¼ä´ÅÅÌ¿Õ¼ä¡¢ÄÚ´æ¡¢CPU×ÊÔ´¡¢½ø³ÌºÍÏµÍ³ÅäÖÃµÄ¸ôÀë£¬ÎªÓÃ»§ºÍÓ¦ÓÃ³ÌÐòÄ£Äâ³ö¡°¶ÀÕ¼¡±Ê¹ÓÃ¼ÆËã×ÊÔ´µÄÌåÑé¡£VPS¿ÉÒÔÏñ¶ÀÁ¢·þÎñÆ÷Ò»Ñù£¬ÖØ×°²Ù×÷ÏµÍ³£¬°²×°³ÌÐò£¬µ¥¶ÀÖØÆô·þÎñÆ÷¡£VPSÎªÊ¹ÓÃÕßÌá¹©ÁË¹ÜÀíÅäÖÃµÄ×ÔÓÉ£¬¿ÉÓÃÓÚÆóÒµÐéÄâ»¯£¬Ò²¿ÉÒÔÓÃÓÚIDC×ÊÔ´×âÓÃ¡£
+VPS£¨Virtual Private Server ÐéÄâ×¨ÓÃ·þÎñÆ÷£©¼¼Êõ£¬½«Ò»Ì¨·þÎñÆ÷·Ö¸î³É¶à¸öÐéÄâ×¨Ïí·þÎñÆ÷µÄÓÅÖÊ·þÎñ¡£ÊµÏÖVPSµÄ¼¼Êõ·ÖÎªÈÝÆ÷¼¼ÊõºÍÐéÄâ»¯¼¼Êõ  ¡£ÔÚÈÝÆ÷»òÐéÄâ»úÖÐ£¬Ã¿¸öVPS¶¼¿É·ÖÅä¶ÀÁ¢¹«ÍøIPµØÖ·¡¢¶ÀÁ¢²Ù×÷ÏµÍ³¡¢ÊµÏÖ²»Í¬VPS¼ä´ÅÅÌ¿Õ¼ä¡¢ÄÚ´æ¡¢CPU×ÊÔ´¡¢½ø³ÌºÍÏµÍ³ÅäÖÃµÄ¸ôÀë£¬ÎªÓÃ»§ºÍÓ¦ÓÃ³ÌÐòÄ£Äâ³ö¡°¶ÀÕ¼¡±Ê¹ÓÃ¼ÆËã×ÊÔ´µÄÌåÑé¡£VPS¿ÉÒÔÏñ¶ÀÁ¢·þÎñÆ÷Ò»Ñù£¬ÖØ×°²Ù×÷ÏµÍ³£¬°²×°³ÌÐò£¬µ¥¶ÀÖØÆô·þÎñÆ÷¡£VPSÎªÊ¹ÓÃÕßÌá¹©ÁË¹ÜÀíÅäÖÃµÄ×ÔÓÉ£¬¿ÉÓÃÓÚÆóÒµÐéÄâ»¯£¬Ò²¿ÉÒÔÓÃÓÚIDC×ÊÔ´×âÓÃ¡£
 Ïà¶ÔÀ´Ëµ£¬ÈÝÆ÷¼¼Êõ±ÈÐéÄâ»ú¼¼ÊõÓ²¼þÊ¹ÓÃÐ§ÂÊ¸ü¸ß£¬¸üÒ×ÓÚ³¬Âô£¬ËùÒÔÒ»°ãÀ´ËµÈÝÆ÷VPSµÄ¼Û¸ñ¶¼¸ßÓÚÐéÄâ»úVPSµÄ¼Û¸ñ¡£
 
 CMDB --Configuration Management Database ÅäÖÃ¹ÜÀíÊý¾Ý¿â£¬³£±»ÈÏÎªÊÇ¹¹½¨ÆäËüITIL(Information Technology Infrastructure Library£¬IT»ù´¡¼Ü¹¹¿â)Á÷³ÌµÄ»ù´¡¶øÓÅÏÈ¿¼ÂÇ
@@ -388,7 +364,7 @@ CMDB´æ´¢Óë¹ÜÀíÆóÒµIT¼Ü¹¹ÖÐÉè±¸µÄ¸÷ÖÖÅäÖÃÐÅÏ¢£¬ËüÓëËùÓÐ·þÎñÖ§³ÖºÍ·þÎñ½»¸¶Á÷³Ì¶¼½ô
 
 IAAS(Infrastructure as a Service)£ºÓ²¼þ£¬»ù´¡ÉèÊ©¼´·þÎñ£¬ÈçAWS£¬OpenStack£¬CloudStackÌá¹©µÄÐéÄâ»ú¼ÆËã·þÎñ¡£Í¨¹ý»¥ÁªÍø¾Í¿ÉÒÔ»ñµÃÓÐ¼ÆËãÄÜÁ¦µÄ·þÎñÆ÷£¬²»ÐèÒªÊµ¼ÊµÄ·þÎñÆ÷×ÊÔ´¡£
 PAAS(Platform-as-a-Service)£º²Ù×÷ÏµÍ³£¬Æ½Ì¨¼´·þÎñ¡£ °Ñ·þÎñÆ÷Æ½Ì¨×÷ÎªÒ»ÖÖ·þÎñÌá¹©µÄÉÌÒµÄ£Ê½¡£ÀýÈçSae£¬Í¨¹ý»¥ÁªÍø¾ÍÖ±½ÓÄÜÊ¹ÓÃ¿ª·¢Æ½Ì¨£¬²»ÐèÒª±¾µØ°²×°¸÷ÀàµÄ¿ª·¢»·¾³
-SAAS(Platform-as-a-Service)£ºÈí¼þ£¬Èí¼þÔËÓª·þÎñÄ£Ê½£¬¼ò³ÆÎªÈíÓªÄ£Ê½.Ìá¹©µÄÊÇÈí¼þ·þÎñ£¬ÀýÈçOffice365µÈ£¬Í¨¹ý»¥ÁªÍø¾ÍÖ±½ÓÄÜÊ¹ÓÃÕâ¸öÈí¼þÓ¦ÓÃ£¬²»ÐèÒª±¾µØ°²×°
+SAAS(Software-as-a-Service)£ºÈí¼þ£¬Èí¼þÔËÓª·þÎñÄ£Ê½£¬¼ò³ÆÎªÈíÓªÄ£Ê½.Ìá¹©µÄÊÇÈí¼þ·þÎñ£¬ÀýÈçOffice365µÈ£¬Í¨¹ý»¥ÁªÍø¾ÍÖ±½ÓÄÜÊ¹ÓÃÕâ¸öÈí¼þÓ¦ÓÃ£¬²»ÐèÒª±¾µØ°²×°
 
 Ô¤·¢²¼ÑéÖ¤£º·¢²¼µ½ÓëÉú²ú»·¾³ÅäÖÃÍêÈ«ÏàÍ¬µÄ²âÊÔ»·¾³(Î´½ÓÈëµ÷¶ÈÆ÷µÄ·þÎñÆ÷)
 »Ò¶È·¢²¼£º½ö²¿ÊðÒ»²¿·ÖÏßÉÏ·þÎñÆ÷

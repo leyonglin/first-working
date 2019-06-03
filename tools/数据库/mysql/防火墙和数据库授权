@@ -88,7 +88,8 @@ select * from information_schema.processlist where Command != 'Sleep' order by T
 查看从库状态：
 show slave status\G;
 
-登陆：mysql  -uroot -p -S /opt/data/data_16303/mysql.sock -P16303
+测试授权用户连接：mysql  -u用户名  -h授权ip    -P端口 -p
+本地登陆：mysql  -uroot -p -S /opt/data/data_16303/mysql.sock -P16303
 导出全部数据库:mysqldump -uroot -p --all-databases > sqlfile.sql
 导出库：mysqldump -uroot -p -S /opt/data/data_16303/mysql.sock -P16303 -B gameplat_cms > /opt/src/upload/cms.sql
       [--single-transaction --master-data=2 -opt]
@@ -101,8 +102,10 @@ mysql -uroot -D数据库名 -S /opt/data/data_16303/mysql.sock 表名
 查看授权：
 select user,host from mysql.user;
 show grants for user@host;
+show grants;
 
-
+授权：grant  all on *.* to   dba@localhost;  
+撤销：revoke all on *.* from dba@localhost; 
 
 删除授权
 Delete FROM mysql.user Where User='gameplat_analysis_dev' and Host='$i';
@@ -114,21 +117,13 @@ Delete FROM mysql.user Where User='gameplat_cms_dev' and Host='103.86.87.194';
 
 删除账户及权限：>drop user 用户名@'%';
 
+
 主从授权：grant replication slave on *.* to myrync@'$i' identified by 'MyryncCloud';
           flush privileges；
 
 查看信息：show master status;
 
-从库指定主库信息：
-CHANGE MASTER TO
-MASTER_HOST='103.68.110.243',
-MASTER_USER='myrync',
-MASTER_PASSWORD='MyryncCloud',
-MASTER_PORT=16303,
-MASTER_LOG_FILE='mysql-bin.000001',
-MASTER_LOG_POS=366173927;
-
-MySQL中source命令   mysql> source *.db.sql;     //导入数据 
+MySQL中source命令   mysql> source *.sql;     //导入数据 
 
 删除一行记录
 delete from db where localhost=103.86.87.193;
@@ -156,6 +151,11 @@ Innobackupex
 使用gzip命令对备份文件进行压缩：：mysqldump phpbb_db_backup | gzip > /usr/backups
 
 
-
+mysql授权表共有5个表：user、db、host、tables_priv和columns_priv。
+user表列出可以连接服务器的用户及其口令，并且它指定他们有哪种全局（超级用户）权限。在user表启用的任何权限均是全局权限，并适用于所有数据库。例如，如果你启用了DELETE权限，在这里列出的用户可以从任何表中删除记录，所以在你这样做之前要认真考虑。
+db表列出数据库，而用户有权限访问它们。在这里指定的权限适用于一个数据库中的所有表。
+host表与db表结合使用在一个较好层次上控制特定主机对数据库的访问权限，这可能比单独使用db好些。这个表不受GRANT和REVOKE语句的影响，所以，你可能发觉你根本不是用它。
+tables_priv表指定表级权限，在这里指定的一个权限适用于一个表的所有列。
+columns_priv表指定列级权限。这里指定的权限适用于一个表的特定列。
 
 	
