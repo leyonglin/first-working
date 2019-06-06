@@ -12,7 +12,9 @@ complicated复杂的           explicitly明确的           significant意义  
 
 allocation分配             raw：状态跟踪             backlog：积压           pm：fpm进程                 buckets：桶，缓存              orphans：孤儿，单独无关联              scaling：定标; 缩放比例           
 
-fatal：致命的           fetch：取回           demonstrates显示           inventory 主机清单           suppress 隐藏
+fatal：致命的           fetch：取回           demonstrates显示           inventory 主机清单           suppress 隐藏        Compatibility 兼容性     prompts：提示  colon：冒号   percent：百分号
+
+proceed with继续进行    checkboxes复选框   frontend前端   backend后端
 
 choose any additional install options   选择任何其他安装选项
 check for updates on startup            启动时检查更新
@@ -20,3 +22,4 @@ install folder context menus            安装文件夹上下文菜单
 install quick launch shortcut           安装快速启动快捷方式
 associate efu files with everything     将efu文件与所有内容相关联
 Choose a tab below to see how this plays out in various contexts.    选择下面的一个标签，看看这在不同的环境中是如何进行的。
+Click on Create item in the upper right corner of the screen  点击屏幕右上角的创建项目

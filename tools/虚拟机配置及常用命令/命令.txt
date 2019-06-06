@@ -1,6 +1,29 @@
 
-
-
+rmdir  删除空目录
+basename显示文件名或目录名。basename [pathname] [suffix]如果指定后缀名，将会被去掉
+dirname显示文件或目录路径。
+tac 按行反向输出  rev 按字符方向输出    
+cut -d";"(分隔符)  -f2,3(第几列)  --complement(显示除去-f) -c1-3(字符串的第1到3字符，-b字节，-c字符，-f字段)
+split -6 README       #将README文件每六行分割成一个文件 
+cmd | paste -d" " - - #-几列，可将文件行合并(-s合并成一行)  paste file_num 将多个文件合并输出
+sort -u(去重) -n(10>2) -r(反向) -o(存回本文件)  -k(第几行排序) 2  -t'-'(分隔符)
+uniq -c(去重且显示重复数)  -d(显示重复行)   #一般与sort连用，因为不相邻不会去重
+join [-a1](左连接) [-a2](右连接) [-o 1.1/1.2..](文件.栏位) [-t ":"分隔符] file1 file2   找出两个文件中，指定栏位内容相同的行，并加以合并，再输出到标准输出设备
+tr [a-z] [A-Z]      cat file | tr -d "\n\t" > new_file    cat file | tr -s(相邻重复) [a-zA-Z] > new_file      是字符替换，不是字符串替换
+stat file/Directory      du -sh     df -h
+stat命令显示的是文件的I节点信息(文件系统管理的一个数据结构，是一个64字节长的表，包含了描述文件所必要的全部信息)。Linux文件系统以块为单位存储信息，为了找到某一个文件所在存储空间的位置，用I节点对每个文件进行索引。
+dig 与host相似
+sync将内存缓冲区内的数据写入磁盘
+dd if=/dev/hdb | gzip > /root/image.gz  备份/dev/hdb全盘数据，并利用gzip工具进行压缩，保存到指定路径(if=源文件 of=目标文件)
+测速：写dd if=/dev/zero bs=1024 count=1000000 of=/root/1Gb.file   读dd if=/root/1Gb.file bs=64k | dd of=/dev/null
+确定硬盘的最佳块大小：dd if=/dev/zero bs=1024 count=1000000 of=/root/1Gb.file (改变bs和count的值)
+传文件：目标：nc -lvp 1234 >test.txt   源服务器：nc -w 1 10.57.22.128 1234 < mysql.pass 
+              nc -l 1567 | tee test              nc 172.31.100.7 1567     
+              nc -l 1567 < file.txt              nc -n 172.31.100.7 1567 > file.txt
+	tar -cvf – dir_name| bzip2 -z | nc -l 1567   nc -n 172.31.100.7 1567 | bzip2 -d |tar -xvf -
+	nc localhost 1567 | mcrypt –flush –bare -F -q -d -m ecb > file.txt    mcrypt –flush –bare -F -q -m ecb < file.txt | nc -l 1567
+	
+			  
 
 find / -name sh.sh | xargs file                                                                 将命令输出结果传递给另一个命令
  
@@ -48,7 +71,7 @@ mkdir -vp scf/{lib/,bin/,doc/{info,product},logs/{info,product},service/deploy/{
 
 wc：-c 统计字节数   -l 统计行数    -m 统计字符数，这个标志不能与 -c 标志一起使用。
     -w 统计单词数，一个字被定义为由空白、跳格或换行字符分隔的字符串   -L 打印最长行的字符数。
-
+默认：wc file == wc -l -w -c file
 
 
 lsof -n |awk '{print $2}'|sort|uniq -c |sort -nr|more     查看文件句柄数量

@@ -1,41 +1,4 @@
 
-webslaveip=103.101.191.171
-webname=ahy
-rand_pass=`echo "${webname}" |md5sum |cut -c 9-24`
-
-for i in $webslaveip ;do 
-        firewall-cmd --permanent --ipset=web_whitelist --add-entry="$i"
-        firewall-cmd --permanent --ipset=rsync_whitelist --add-entry="$i"
-        firewall-cmd --permanent --ipset=ssh_whitelist --add-entry="$i"
-        firewall-cmd --permanent --ipset=db_whitelist --add-entry="$i"
-        firewall-cmd --permanent --ipset=8002_whitelist --add-entry="$i"
-    done
-	
-	
-#for i in $webslaveip;do 
-#        firewall-cmd --permanent --ipset=db_whitelist --add-entry="$i"
-#        firewall-cmd --permanent --ipset=ssh_whitelist --add-entry="$i"
-#    done
-
-	
-	
-for i in $webslaveip;do
-expect << EOF
-        spawn /opt/apps/mysql/bin/mysql -uroot -p -S /opt/data/data_16303/mysql.sock -e "    
-        grant all privileges on gameplat_analysis.* TO 'gameplat_analysis_dev'@'$i' identified by 'xjVXkB>Q6JpB61r${rand_pass}';
-        grant all privileges on gameplat_sc_data.* TO 'gameplat_sc_data_dev'@'$i' identified by 'OeJr)4uRGAuf(BH${rand_pass}';
-        grant all privileges on gameplat_cms.* TO 'gameplat_cms_dev'@'$i' identified by '9ckhq<64RZ2YUSR${rand_pass}';
-        grant replication slave on *.* to myrync@'$i' identified by 'MyryncCloud';
-        flush privileges;
-		"
-        expect "Enter password:" {send "9tN6GFGK60Jk8BNkBJM611GwA66uDFeG\r"}
-        expect eof
-EOF
-done
-
-
-	
-
 线上主从：
 数据库授权：在旧主库上授权	
 grant replication slave on *.* to myrync@'103.248.20.34' identified by 'MyryncCloud';

@@ -256,6 +256,16 @@ playbook语法进阶：vars(变量)，error，handlers(notify)，when,register�
                   block(块任务) 1.when(条件成立执行) 2.rescue(block执行错误触发) 2.always(无论结果如何都出发)    注意：block没有with_items属相
 				  https://www.cnblogs.com/v394435982/p/5593274.html
 
+魔法变量：
+groups 所有组包括组中的hosts
+hostvars  调用其他host的变量和facts
+group_names 当前host所在的group的组名列表.   包括其父组
+inventory_hostname 配置在inventory文件中当前机器的hostname
+play_hosts 执行当前playbook的所有机器的列表
+inventory_dir inventory文件的路径
+inventory_file inventory文件的路径和文件名
+role_path 当前role的路径
+
 ---
 - hosts: all/组名/ip
   remote_user: root
