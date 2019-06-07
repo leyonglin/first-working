@@ -34,8 +34,7 @@ chmod 600 /etc/rsync.password
 
 
 (1)rsync -avzP /etc/yum.repos.d/ admin@192.168.2.128::yum --password-file=/etc/rsync.password --port=1873
-(2)
-   rsync_parameter='-avzP --password-file=/etc/rsyncd.passwd --port=1873 --delete --exclude=blacklist.conf'
+(2)rsync_parameter='-avzP --password-file=/etc/rsyncd.passwd --port=1873 --delete --exclude=blacklist.conf'
    rsync ${rsync_parameter} /etc/yum.repos.d/ admin@192.168.2.128::yum
    
    

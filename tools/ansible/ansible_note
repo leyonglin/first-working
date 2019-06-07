@@ -26,7 +26,16 @@ role：一级目录: ansible-playbook.yml文件(roles任务指定执行顺序) +
       二级目录：roles子目录(自定义名称,在一级yml文件中指定)
 	  三级目录：目录：defaults , handlers , meta , tasks , templates , tests , vars ,  文件：README
 	  四级目录：main.yml文件(统一)和附加的(在当前main.yml定义include *.yml)
-	  
+
+
+hostvars 可以让你调用其他host的变量和facts,  即使你没有在这个机器上执行过playbook, 你仍然可以访问变量, 但是不能访问facts. 例如: {{ hostvars['test.example.com']['ansible_distribution'] }}
+group_names 当前host所在的group的组名列表.   包括其父组
+groups 所有组包括组中的hosts
+inventory_hostname 配置在inventory文件中当前机器的hostname
+play_hosts 执行当前playbook的所有机器的列表
+inventory_dir inventory文件的路径
+inventory_file inventory文件的路径和文件名
+role_path 当前role的路径	  
 	  
 	  
 	  
