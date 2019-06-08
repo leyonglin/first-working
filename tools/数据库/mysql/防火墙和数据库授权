@@ -121,4 +121,34 @@ host表与db表结合使用在一个较好层次上控制特定主机对数据�
 tables_priv表指定表级权限，在这里指定的一个权限适用于一个表的所有列。
 columns_priv表指定列级权限。这里指定的权限适用于一个表的特定列。
 
+
+mysql> help          帮助命令
+mysql> help contents;  --->  help Account Management  --->  help CREATE USER  [查看库时命令 show create database ilanni;]  [关于主从：help transactions;]
+mysql> system  cmd   执行命令行命令
+初始化：mysql_install_db  –help(–basedir=bin路径  –datadir=数据目录 –user=mysql )
+启动命令：mysqld_safe/mysql –defaults-file=  -u用户 -p -S 本地sock文件 -e 命令行执行命令
+密码：mysqladmin -uroot [旧密码-p123456} password 456789  / [help set password; 修改密码]
+查看授权：mysql> use information_schema; --->  desc user_privileges; --->  select privilege_type from user_privileges; / show privileges;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	
