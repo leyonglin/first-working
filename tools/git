@@ -16,6 +16,11 @@ gitlab参考文档：https://about.gitlab.com
 命令：项目级别/仓库级别：仅在当前本地库范围内有效  git config user.name/user.email name/email        --- .git/config
 	  系统用户级别：登录当前操作系统的用户范围 git config --global user.name/user.email name/email   --- ~/.gitconfig
 
+添加标签：git tags v1.1
+查看标签：git tag
+上传标签：git push origin --tags
+标签回退：git checkout v1.1 (master 回退到最新版本)
+
 第一次：	  
 查看状态：git status    1.位于哪个branch     2.工作区有没有提交的    3.缓存区有没有提交的 
 工作区没提交Changes not staged for commit(update)-->缓存区未提交Changes to be committed --stage-- 本地库   
@@ -246,12 +251,13 @@ Gitlab迁移：确保新Gitlab服务器和老Gitlab服务器版本相同(如不�
 	cd /var/opt/gitlab/git-data/repositories/groupname/web-trade.git
     git reset --soft 8cbc3d0
 	
+自定义服务：	
+redis[‘enable’] = false表示弃用gitlab本身的redis服务
+
+
 	
-补充：
-添加标签：git tags v1.1
-查看标签：git tag
-上传标签：git push origin --tags
-标签回退：git checkout v1.1 (master 回退到最新版本)
+
+
 
 	
 	

@@ -1,4 +1,6 @@
 
+https://blog.csdn.net/yinwenjie   /  架构设计：系统间通信（1）
+
 https://www.ilanni.com/?p=14501         https://github.com/gjmzj/kubeasz
 
 oschina.net   /  google插件:oscnews  /github.com --- linux-command

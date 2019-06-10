@@ -1,4 +1,6 @@
 
+https://wiki.archlinux.org/index.php/Systemd
+
 rpm -ql systemd
 man n systemd.unit
 man systemd.service

@@ -1,4 +1,7 @@
 
+awstats：httpd-tools加密，分析nginx日志，是一个免费非常简洁而且强大有个性的基于Perl语言的WEB日志分析工具，因为awstats的访问是通过web方式进行的，与nginx集成(虚拟机的形式)生成awstats数据库--生成静态文件
+	GeoIP主要用于定位访问者所属的国家以及城市的数据库，详细显示国内访客的具体来源信息，我们可以使用纯真IP数据库插件。
+	
 LSB(全称：Linux Standards Base)保证了LINUX发行版同LINUX应用程序之间的良好结合，制定了应用程序与运行环境之间的二进制接口。
 
 域名劫持：域名服务器被修改    解决方法：换dns
@@ -299,6 +302,7 @@ DTD：文档类型定义，可定义合法的XML文档构建模块,DTD有四个组成如下：元素（Elements
 boost：可移植C ++源代码库，拓展库
 
 owncloud:个人云服务器，在您的个人服务器上运行，可以从任何地方访问您的数据并与其他人共享
+nextcloud开源云盘系统:https://www.ilanni.com/?p=13238
 
 Netlink 用于在内核模块与在用户地址空间中的进程之间传递消息的，异步通信机制，标准的 socket API，容易使用
 

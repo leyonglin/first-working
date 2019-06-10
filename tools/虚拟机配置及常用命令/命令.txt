@@ -1,4 +1,10 @@
 
+df -Th[a]  [file/directory/disk/part]  ¿ÉÒÔ²é¿´Ä³ÎÄ¼þ/Ä¿Â¼/´ÅÅÌÊÇ¹ÒÔØµ½ÄÄÀï
+/dev/hda1»ò/dev/sda1±íÊ¾£¬²¢¿ÚÓ²ÅÌÎªhd(IDEÓ²ÅÌ)£¬´®¿ÚÓ²ÅÌ(SATAÓ²ÅÌ)»òSCSIÓ²ÅÌÎªsd£¬µÚÈýÎ»Îª¸ÃÀàÐÍÉè±¸µÄË³ÐòºÅÎªabc(µÚ¼¸¿éÉè±¸),µÚËÄÎ»Îª¸ÃÓ²ÅÌµÄ·ÖÇøºÅ1~4
+´®¿ÚÓ²ÅÌºÍ²¢¿ÚÓ²ÅÌÖ÷ÒªµÄÇø±ðÔÚÓÚÓ²ÅÌÓÚÖ÷°åÍ¨ÐÅµÄ·½Ê½²»Ò»Ñù£¬ÎïÀí½Ó¿Ú²»Ò»Ñù¡£
+du [-sh/ah]  ²é¿´´óÐ¡
+lsblk [-S/-m] [device]
+
 rmdir  É¾³ý¿ÕÄ¿Â¼
 basenameÏÔÊ¾ÎÄ¼þÃû»òÄ¿Â¼Ãû¡£basename [pathname] [suffix]Èç¹ûÖ¸¶¨ºó×ºÃû£¬½«»á±»È¥µô
 dirnameÏÔÊ¾ÎÄ¼þ»òÄ¿Â¼Â·¾¶¡£
@@ -22,6 +28,15 @@ dd if=/dev/hdb | gzip > /root/image.gz  ±¸·Ý/dev/hdbÈ«ÅÌÊý¾Ý£¬²¢ÀûÓÃgzip¹¤¾ß½øÐÐ
               nc -l 1567 < file.txt              nc -n 172.31.100.7 1567 > file.txt
 	tar -cvf ¨C dir_name| bzip2 -z | nc -l 1567   nc -n 172.31.100.7 1567 | bzip2 -d |tar -xvf -
 	nc localhost 1567 | mcrypt ¨Cflush ¨Cbare -F -q -d -m ecb > file.txt    mcrypt ¨Cflush ¨Cbare -F -q -m ecb < file.txt | nc -l 1567
+
+°²È«£º
+GPG[-c-d](gnupg2Èí¼þ°ü)¾ÍÊÇÓÃÀ´¼ÓÃÜÊý¾ÝÓëÖÆ×÷Ö¤ÊéµÄÒ»Ì×¹¤¾ß£¬Æä×÷ÓÃÓëPGP(»ùÓÚRSA¹«³×¼ÓÃÜÌåÏµµÄÓÊ¼þ¼ÓÃÜÈí¼þ)ÀàËÆ¡£µ«ÊÇPGPÊ¹ÓÃÁËÐí¶à×¨ÀûËã·¨¡£GPGÊÇGPL(Í¨ÓÃÐÔ¹«¿ªÐí¿ÉÖ¤General Public License)Èí¼þ£¬²¢ÇÒÃ»ÓÐÊ¹ÓÃÈÎºÎ×¨Àû¼ÓÃÜËã·¨¼¯
+aideÈëÇÖ¼ì²â[aide --init / aide --check ]  ÐÞ¸ÄÅäÖÃÈ·¶¨ÐèÒªÐ£ÑéµÄÊý¾Ý
+nmap -n(²»Ö´ÐÐdns½âÎö)  <-sP ICMPÉ¨Ãè -sU UDPÉ¨Ãè -sT TCPÁ¬½ÓÈ«¿ªÉ¨Ãè -sS TCP°ë¿ªÉ¨Ãè -A Ä¿±êÏµÍ³È«ÃæÉ¨Ãè  -p>   ×îºÃ·½·¨ÊÇman nmap
+tcpdump -A host 127.0.0.1 and tcp port 21[-A×ªÂë  -i½Ó¿Ú  -wÐ´ÈëÖ¸¶¨ÎÄ¼þ  -rÖ¸¶¨ÎÄ¼þ¶Á³ö] [ÀàÐÍ£ºhost£¬net£¬port£¬portrange  ·½Ïò£ºsrc£¬dst  Ð­Òé£ºtcp£¬udp£¬IP£¬vlan£¬arp... ¶àÌõ¼þ×éºÏ£ºand£¬or£¬not]
+auditÉó¼Æ[auditctl¹æÔòÉèÖÃÃüÁî ausearch²é¿´ÃüÁî]
+diff -Nuar f1/d1 f2/d2 > *.patch         patch  -p0(Ê¹ÓÃ¾ø¶ÔÂ·¾¶) < *.patch 
+chageÕËºÅÊôÐÔ   passwdËø¶¨     chattr lsattr
 	
 			  
 
@@ -171,9 +186,8 @@ midecodeÃüÁî¿ÉÒÔÈÃÄãÔÚLinuxÏµÍ³ÏÂ»ñÈ¡ÓÐ¹ØÓ²¼þ·½ÃæµÄÐÅÏ¢¡£dmidecodeµÄ×÷ÓÃÊÇ½«DMIÊ
 
 tar£ºcafÑ¹Ëõ  tvfÔ¤ÀÀ  xf½âÑ¹
 
-tree£º-L(ÏÔÊ¾²ãÊý)
--C(color) -f(ÍêÕûµÄÏà¶ÔÂ·¾¶) -d(½öÄ¿Â¼) -D(ÐÞ¸ÄÊ±¼ä) -t(ÐÞ¸ÄÊ±¼äÅÅÐò) -g(×é)-u(ËùÓÐÕß) -p(È¨ÏÞ) -s(´óÐ¡) 
--F ÔÚÖ´ÐÐÎÄ¼þ£¬Ä¿Â¼£¬Socket£¬·ûºÅÁ¬½Ó£¬¹ÜµÀÃû³ÆÃû³Æ£¬¸÷×Ô¼ÓÉÏ"*","/","=","@","|"ºÅ
+tree£º-L(ÏÔÊ¾²ãÊý)  -C(color) -f(ÍêÕûµÄÏà¶ÔÂ·¾¶) -d(½öÄ¿Â¼) -s(´óÐ¡) -t(ÐÞ¸ÄÊ±¼äÅÅÐò) -D(ÐÞ¸ÄÊ±¼ä)
+  -g(×é)-u(ËùÓÐÕß) -p(È¨ÏÞ)  -F ÔÚÖ´ÐÐÎÄ¼þ£¬Ä¿Â¼£¬Socket£¬·ûºÅÁ¬½Ó£¬¹ÜµÀÃû³ÆÃû³Æ£¬¸÷×Ô¼ÓÉÏ"*","/","=","@","|"ºÅ
 
 
 
@@ -344,10 +358,10 @@ NAME£º´ò¿ªÎÄ¼þµÄÈ·ÇÐÃû³Æ
 -g  ÁÐ³öGIDºÅ½ø³ÌÏêÇé
 -d<ÎÄ¼þºÅ> ÁÐ³öÕ¼ÓÃ¸ÃÎÄ¼þºÅµÄ½ø³Ì
 +d<Ä¿Â¼>  ÁÐ³öÄ¿Â¼ÏÂ±»´ò¿ªµÄÎÄ¼þ
-+D<Ä¿Â¼>  µÝ¹éÁÐ³öÄ¿Â¼ÏÂ±»´ò¿ªµÄÎÄ¼þ
++D<Ä¿Â¼>  µÝ¹éÁÐ³öÄ¿Â¼ÏÂ±»´ò¿ªµÄÎÄ¼þ !
 -n<Ä¿Â¼>  ÁÐ³öÊ¹ÓÃNFSµÄÎÄ¼þ
 -i<Ìõ¼þ>  ÁÐ³ö·ûºÏÌõ¼þµÄ½ø³Ì¡££¨4¡¢6¡¢Ð­Òé¡¢:¶Ë¿Ú¡¢ @ip £©
--p<½ø³ÌºÅ> ÁÐ³öÖ¸¶¨½ø³ÌºÅËù´ò¿ªµÄÎÄ¼þ
+-p<½ø³ÌºÅ> ÁÐ³öÖ¸¶¨½ø³ÌºÅËù´ò¿ªµÄÎÄ¼þ !
 -u  ÁÐ³öUIDºÅ½ø³ÌÏêÇé
 -h ÏÔÊ¾°ïÖúÐÅÏ¢
 -v ÏÔÊ¾°æ±¾ÐÅÏ¢
