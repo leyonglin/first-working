@@ -56,17 +56,17 @@ centos7之前是启动服务：service [service] 选项 自启：chkconfig [serv
 systemd配置文件被称为unit单元，根据类型不同，以不同的扩展名结尾。
  systemctl --type=service [systemctl list-units]
   .service系统服务；
-  .target一组系统服务,引用其他 unit；
+  .target(runlevel)一组系统服务,引用其他 unit；
   .slice一组分层次管理的系统进程；
   .automount自动挂载点；
-  .mount挂载点；
+  .mount(/etc/fstab)挂载点；
   .device能被内核识别的设备；
   .path文件系统的文件或者目录；
   .scope外部创建的进程；
   .snapshot系统服务状态管理；
   .socket进程间通讯套接字；
   .swap定义swap文件或者设备；
-  .timer定义定时器。		
+  .timer(cron)定义定时器。		
 
 		
 Systemd:
