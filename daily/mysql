@@ -50,6 +50,68 @@ Innobackupex
 
 
 
+expect << EOF
+    spawn /opt/apps/mysql/bin/mysql -uroot -p -S /opt/data/data_16303/mysql.sock -e "
+####create database gameplat_analysis;
+####create database gameplat_sc_data;
+####create database gameplat_cms;
+####create user zabbixmonitor@localhost;
+    grant process,replication client,select on *.* to zabbixmonitor@localhost;
+	grant trigger on gameplat_sc_data.* to 'zabbixmonitor'@'localhost';
+    grant all privileges on gameplat_analysis.* TO 'tgadmin'@'113.61.35.%' identified by 'aNaMuxFJY64OK_4q${webname}';
+    grant all privileges on gameplat_sc_data.* TO 'tgadmin'@'113.61.35.%';
+    grant all privileges on gameplat_cms.* TO 'tgadmin'@'113.61.35.%';
+    grant select on gameplat_cms.* TO 'tgblog'@'113.61.35.%'  identified by '3JPBKSt_6kOiF2mD${webname}';
+    grant select on gameplat_analysis.* TO 'tgblog'@'113.61.35.%';
+    grant select on gameplat_sc_data.* TO 'tgblog'@'113.61.35.%';
+	flush privileges;
+    "
+    expect "Enter password:" {send "\r"}
+    expect eof
+EOF
+
+webmasterip='103.15.107.141 103.15.107.149 192.168.104.5'
+webslaveip='103.246.114.153 103.15.106.32 103.15.107.21 103.246.114.170 192.168.104.7'
+webname='gcai'
+rand_pass=`echo "${webname}" |md5sum |cut -c 9-24`
+    for i in $dbslaveip;do
+expect << EOF
+        spawn /opt/apps/mysql/bin/mysql -uroot -p -S /opt/data/data_16303/mysql.sock -e "
+        grant replication slave on *.* to myrync@'$i' identified by 'MyryncCloud';
+        flush privileges;
+	    reset master;
+        "
+        expect "Enter password:" {send "\r"}
+        expect eof
+EOF
+    done
+	
+    for i in $webmasterip;do
+expect << EOF
+        spawn /opt/apps/mysql/bin/mysql -uroot -p -S /opt/data/data_16303/mysql.sock -e "
+        grant all privileges on gameplat_analysis.* TO 'gameplat_analysis_dev'@'$i' identified by 'xjVXkB>Q6JpB61r${rand_pass}';
+        grant all privileges on gameplat_sc_data.* TO 'gameplat_sc_data_dev'@'$i' identified by 'OeJr)4uRGAuf(BH${rand_pass}';
+        grant all privileges on gameplat_cms.* TO 'gameplat_cms_dev'@'$i' identified by '9ckhq<64RZ2YUSR${rand_pass}';
+		flush privileges;
+        "
+        expect "Enter password:" {send "9tN6GFGK60Jk8BNkBJM611GwA66uDFeG\r"}
+        expect eof
+EOF
+    done
+
+    for i in $webslaveip;do
+expect << EOF
+        spawn /opt/apps/mysql/bin/mysql -uroot -p -S /opt/data/data_16303/mysql.sock -e "
+        grant all privileges on gameplat_analysis.* TO 'gameplat_analysis_dev'@'$i' identified by 'xjVXkB>Q6JpB61r${rand_pass}';
+        grant all privileges on gameplat_sc_data.* TO 'gameplat_sc_data_dev'@'$i' identified by 'OeJr)4uRGAuf(BH${rand_pass}';
+        grant all privileges on gameplat_cms.* TO 'gameplat_cms_dev'@'$i' identified by '9ckhq<64RZ2YUSR${rand_pass}';
+		flush privileges;
+        "
+        expect "Enter password:" {send "9tN6GFGK60Jk8BNkBJM611GwA66uDFeG\r"}
+        expect eof
+EOF
+    done
+
 
 
 

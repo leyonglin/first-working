@@ -1,0 +1,143 @@
+
+FIREWALL分9大区域，Public：只开放自己规则下的服务  ---默认区域
+firewall-cmd --list-all  --查看默认区域
+
+配置方法：（1）命令： firewall-cmd  （2）图形界面：需要安装firewall-config
+防火墙有永久和临时，临时的重载/重启会失效，永久的添加(--permanent)需要重载(--reload)或者重启(restart)
+
+查看帮助：man firewall-cmd
+查看防火墙：firewall-cmd --list-all
+查看ipset的ip：firewall-cmd --info-ipset=db_whitelist
+查看ipset文件：firewall-cmd --get-ipsets
+
+添加：firewall-cmd --add-*
+删除：firewall-cmd --remove-*
+查询：firewall-cmd --query-*
+
+添加/删除全局模式的服务|端口：存放在/etc/firewalld/zones/public.xml 
+firewall-cmd --permanent --add-service=http
+firewall-cmd --permanent --add-port=port/protocol
+firewall-cmd --permanent --remove-service=XXXX
+firewall-cmd --permanent --remove-port=XXXX/protocol
+设置端口转发
+firewall-cmd --add-forward-port=port=8000:proto=tcp:toport=80 --permanent 
+firewall-cmd --add-forward-port=proto=80:proto=tcp:toaddr=192.168.1.1[:toport=8080] # 将80端口的流量转发至192.168.0.1 
+禁ping：
+firewall-cmd --add-icmp-block=echo-request --permanent
+
+
+Firewall所谓的黑白名单ipset其实就是一个含有ip的名单，drop了就是黑名单，accept就是白名单(在zones/public.xml中定义)。
+
+导入ipset：提前写好白名单IP文档，便于直接导入firewall
+创建文件：cat firewall.txt        
+103.232.87.0/24
+103.35.118.19
+创建ipset：firewall-cmd --permanent --new-ipset=hgcp_whitelist --type=hash:ip                 
+重新加载：firewall-cmd --reload                                                             
+导入白名单文件内容：firewall-cmd --ipset=hgcp_whitelist  --add-entries-from-file=/opt/dfcp_whitelist   
+
+添加/删除ipset：仅 修改存放路径/etc/firewalld/ipsets
+firewall-cmd --permanent --new-ipset=hgcp_whitelist --type=hash:ip
+firewall-cmd --permanent --delete-ipset=XXXX_whitelist
+添加/删除ipset中的ip：
+firewall-cmd --permanent --ipset=db_whitelist --add-entry=${i}       
+firewall-cmd --permanent --ipset=db_whitelist --remove-entry=${i}
+
+添加/删除rich rules：存放在/etc/firewalld/zones/public.xml
+firewall-cmd --permanent --add-rich-rule='rule family="ipv4"  source address/ipset="hgcp_whitelist" port port="80" protocol="tcp" accept'
+firewall-cmd --permanent --remove-rich-rule="rule family="ipv4" source ipset="XXXX_whitelist" port port="1873" protocol="tcp" drop"
+
+web端口（80）对白名单单位时间不限制连接数，其他IP每秒限制2次                   
+firewall-cmd --permanent --add-rich-rule='rule family="ipv4"  source address="0.0.0.0/0" port port="80" protocol="tcp" accept limit value="2/s"'    ip每秒限制2次
+
+用途为限制每个Ip每秒钟最大连接数为2次，多余的拒绝链接，不会占用端口；超过次数将记录至日志，便于日志分析与检查。
+firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="0.0.0.0/0" port port="1080" protocol="tcp" 
+            log prefix="attack" level="notice" limit value="2/s" audit limit value="2/s" accept limit value="2/s"'
+
+
+指定服务白名单
+<!--
+<rule family="ipv4">
+  <source address="192.168.2.131"/>
+  <service name="ssh"/>
+<accept/>
+</rule> -->
+添加服务与端口：firewall-cmd --permanent --add-service=http
+<service name="dhcpv6-client"/>
+<port protocol="tcp" port="873"/>
+指定端口黑名单： firewall-cmd --permanent --add-rich-rule='rule family="ipv4"  source ipset="blacklist" port port="80" protocol="tcp" drop' 
+<rule family="ipv4">
+  <source ipset="blacklist"/>
+  <port protocol="tcp" port="443"/>
+  <drop/>
+</rule>
+[指定端口]白名单：
+<rule family="ipv4">
+  <source ipset="8002_whitelist"/>
+  <!--<port protocol="tcp" port="8002"/>-->
+  <accept/>
+</rule>
+ipset名单：firewall-cmd --permanent --ipset=db_whitelist --add-entry=${i} 
+<?xml version="1.0" encoding="utf-8"?>
+<ipset type="hash:ip">
+  <entry>103.68.110.243</entry>
+</ipset>
+
+
+启动/关闭紧急模式(断/连网)：firewall-cmd --panic-on/off
+
+
+
+
+
+选项 –-direct 需要是直接选项的第一个参数。将命令传递给防火墙。参数 <args> 可以是 iptables, ip6tables 以及 ebtables 命令行参数。
+firewall-cmd --direct --passthrough { ipv4 | ipv6 | eb } <args>          路径是：/etc/firewalld/direct.xml
+firewall-cmd --permanent --direct --add-rule ipv4 filter INPUT 0 -s 0.0.0.0  -p tcp --dport 22  -j ACCEPT
+
+
+IPTABLES：
+四表：filter(过滤表) nat(地址转换表) mangle(包标记表) raw(状态跟踪表)
+五链：PREROUTING(路由前) POSTROUTING(路由后)  INPUT(入站)  OUTPUT(出站)  FORWARD(转发)
+匹配顺序:1.顺序匹配，匹配即停止    2.若无任何匹配，则按该链的默认策略处理
+
+iptables [-t 表名] 选项 [链名] [条件] [-j 目标操作]
+规律: 1.不指定表，默认为filter表  2.不指定链，默认为对应表的所有链   3.没有匹配规则，则使用防火墙默认规则  4.选项/链名/目标操作用大写字母，其余都小写
+目标操作：ACCEPT：允许通过/放行  DROP：直接丢弃，不给出任何回应  REJECT：拒绝通过，必要时给出提示   LOG：记录日志，然后传给下一条规则
+选项：
+添加规则：-I 在链的开头(或指定序号)插入一条规则   -A 在链的末尾追加一条规则  
+查看规则：-n 以数字形式显示地址，端口等信息    -L 列出所有的规则条目   --line-numbers  查看规则时，显示规则的序号
+删除规则：-D 删除链内指定序号(或内容)的一条规则       -F 清空指定表中所有的规则
+默认策略：-P 为指定的链设置默认规则
+
+通用匹配：[协议匹配：-p+protocol]  [地址匹配：-s 源地址 , -d 目标地址] [接口匹配：-i 接受数据的网卡 , -o 发数据的网卡]          可直接使用
+隐含匹配: [-p+protocol --sport 源端口 ,-p+protocol --dport 目标端口]  [ICMP类型匹配：--icmp-type+ICMP类型 ]                     要求以特定的协议匹配作为条件
+取反操作： ! 有空格
+拓展条件：-m 拓展模块 --拓展条件 条件值   ---前提是有对应的防火墙模块支持
+拓展匹配：[MAC地址匹配：-m mac --mac-source MAC地址] [多端口匹配：-m multiport --sports 源端口列表(p0,p1:p2) , -m multiport --dports 目标端口列表]
+          [ip范围匹配：-m iprange --src-range ip1-ip2 , -m iprange --dst-range ip1-ip2]
+		  
+SNAT源地址转换：1.修改数据包的源地址 2.仅用于nat表的POSTROUTING链
+局域网共享公网ip上网：iptables -t nat -I POSTROUTING -s 局域网IP段 -p tcp --dport 80 -j SNAT --to-source 公网ip
+地址伪装策略：1.针对外网接口ip地址不固定情况  2.将SNAT改成 MASQUERADE 即可  3.对于ADSL宽带拨号上网，网络接口可写为 ppp+
+ 
+禁ping：1.iptables -A INPUT -p icmp --icmp-type echo-request -j DROP
+        2.iptables -A OUTPUT -p icmp --icmp-type echo-request -j ACCEPT
+
+iptables [-t nat] -nL  [INPUT]        默认查看filter表中的所有链，nL不能反着写。。。
+iptables -t filter -P INPUT DOROP     所有表及链的初始默认规则为ACCEPT，通过-P选项可重置默认规则
+
+开启路由：net.ipv4.ip_forward=1
+永久保留规则：service iptables save
+
+
+ipset del hgcp_whitelist 103.35.118.19   删除单个IP
+ipset destroy blacklist  删除ipset   
+ipset restore -f blacklist.txt  导入ipset规则  
+
+
+
+
+
+
+
+

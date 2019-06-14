@@ -72,6 +72,7 @@ docker search
 docker pull
 docker push 
 
+docker history [image]                    查看构建过程
 docker commit
 docker build -t tag
 
@@ -1144,11 +1145,13 @@ logs：日志输出信息
 
    
 container:单个docker
-docker services:不同服务的docker(通过 .yml定义：docker services)
-docker swarms：集群
-docker stacks：部署命令,docker stacks只是swarm mode的一部分(在services+swarms)
-			  stack 是构成特定环境中的 service 集合, 它是自动部署多个相互关联的服务的简便方法，而无需单独定义每个服务。stack file 是一种 yaml 格式的文件，类似于 docker-compose.yml 文件
-docker machine: 管理工具(集群:#docker-machine ssh myvm1 "docker node ls"可以在一台机器上管理管理其它docker服务器，感觉不是很重要)
+docker services:部署服务级docker(通过 .yml定义：docker services)
+docker swarms：是Docker官方提供的一款集群管理工具，其主要作用是把若干台Docker主机抽象为一个整体，并且通过一个入口统一管理这些Docker主机上的各种Docker资源，最重要的管理指令是docker service
+docker stacks： 是构成特定环境中的 service 集合, 它是自动部署多个相互关联的服务的简便方法，而无需单独定义每个服务。stack file 是一种 yaml 格式的文件，类似于 docker-compose.yml 文件
+docker machine: 管理工具，(快速创建一个docker容器环境的虚拟机)(集群:#docker-machine ssh myvm1 "docker node ls"可以在一台机器上管理管理其它docker服务器，感觉不是很重要)
+Docker Compose 可以轻松、高效的管理容器，它是一个用于定义和运行多容器 Docker 的应用程序工具，将所管理的容器分为三层，分别是工程（project）、服务（service）、容器（container）
+Docker Compose 运行目录下的所有文件（docker-compose.yml）组成一个工程,一个工程包含多个服务，每个服务中定义了容器运行的镜像、参数、依赖，一个服务可包括多个容器实例
+docker三剑客：swarm、compose、machine
 
 Docker stack会忽略了“构建”指令，无法使用stack命令构建新镜像，它是需要镜像是预先已经构建好的。 所以docker-compose更适合于开发场景；
 docker-compose -f docker-compose up                         #需要安装Docker -compose
