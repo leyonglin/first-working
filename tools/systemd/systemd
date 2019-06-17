@@ -9,7 +9,7 @@ man systemd.exec
 
 systemd-analyze blame [critical-chain unit]
 systemctl list-dependencies httpd [--reverse]  查看依赖
-systemctl list-unit --all | grep sshd  /  systemctl --type=service
+systemctl list-units --all | grep sshd  /  systemctl --type=service
 systemctl cat multi-user.target(httpd.service..)
 systemctl status httpd           /         systemctl get-default
 systemctl list-unit-files --state=enabled

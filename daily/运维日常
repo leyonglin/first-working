@@ -8,6 +8,8 @@ bugfix打不开：http://bugfixadmin.zhushuqt.com
 
 刷新win10缓存：ipconfig/flushdns
 
+tomcat_8001 没启动，走直解是502，走cdn是504
+
 tgops-doc/脚本管理/其它/specified_time_log.py 这个脚本可以参考查找攻击时候的IP和被打域名
 
 有些东西有标志性总结，例如：数据库1032=数据库主从数据不一致

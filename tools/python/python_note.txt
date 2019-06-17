@@ -1,0 +1,14 @@
+安装：
+wget https://www.python.org/ftp/python/3.5.7/Python-3.5.7.tgz
+tar -xf Python-3.5.7.tgz 
+yum -y install libffi-devel gcc make,zlib* openssl-devel openssl
+cd Python-3.5.7/
+./configure --prefix=/opt/Python                    (默认路径是/usr/local/)
+make && make install
+ln -s /opt/Python/bin/python3.5 /usr/bin/python3
+ln -s /opt/Python/bin/pip3.5 /usr/bin/pip3
+python3 --version && pip3 --version && ansible --version
+
+虚拟环境：
+python3 -m venv
+source /opt/pyvenv/bin/activate

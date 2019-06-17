@@ -1,9 +1,10 @@
 
-df -Th[a]  [file/directory/disk/part]  可以查看某文件/目录/磁盘是挂载到哪里
+df -Th[a]  [file/directory/disk/part]  可以查看某文件/目录/磁盘是挂载到哪里(已经挂载的)
 /dev/hda1或/dev/sda1表示，并口硬盘为hd(IDE硬盘)，串口硬盘(SATA硬盘)或SCSI硬盘为sd，第三位为该类型设备的顺序号为abc(第几块设备),第四位为该硬盘的分区号1~4
 串口硬盘和并口硬盘主要的区别在于硬盘于主板通信的方式不一样，物理接口不一样。
 du [-sh/ah]  查看大小
-lsblk [-S/-m] [device]
+lsblk [-f/-p/-h/-S/-m] [device]  
+fdisk -l
 
 rmdir  删除空目录
 basename显示文件名或目录名。basename [pathname] [suffix]如果指定后缀名，将会被去掉
@@ -38,8 +39,10 @@ audit审计[auditctl规则设置命令 ausearch查看命令]
 diff -Nuar f1/d1 f2/d2 > *.patch         patch  -p0(使用绝对路径) < *.patch 
 chage账号属性   passwd锁定     chattr lsattr
 	
-			  
-
+grep  正则最强大
+      -c统计行数 -q(s)静默模式 -m匹配前m行 -o仅输出关键词  -f(指定规则文件,可输出两个文件相同的行) -i(-y)忽略大小写  -v反向匹配 -w精确匹配行 	-x正则行匹配	  
+      -n输出行数 -R/r递归  -L输出不匹配文件名 -l输出匹配文件名 -h(不输出文件名) -a(不忽略二进制文件) --exclude.. -A下B上C -E(egrep)要把匹配引起来  -e分开
+       
 find / -name sh.sh | xargs file                                                                 将命令输出结果传递给另一个命令
  
 后台执行& 或者Ctrl+z + bg

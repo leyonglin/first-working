@@ -10,15 +10,15 @@ bypass绕过           Procedure程序           detached分离的,后台       
 
 complicated复杂的           explicitly明确的           significant意义           comma-separated逗号分隔           metrics度量           revision修订本           dashboards仪表盘           scenario方案           lag延迟  
 
-allocation分配             raw：状态跟踪             backlog：积压           pm：fpm进程                 buckets：桶，缓存              orphans：孤儿，单独无关联              scaling：定标; 缩放比例           
+allocation分配             raw：状态跟踪             backlog：积压           pm：fpm进程                 buckets：桶，缓存              orphans：孤儿，单独无关联              scaling：定标; 缩放比例       distributing分发      
 
-fatal：致命的           fetch：取回           demonstrates显示           inventory 主机清单           suppress 隐藏        Compatibility 兼容性     prompts：提示  colon：冒号   percent：百分号
+fatal：致命的           fetch：取回           demonstrates显示           inventory 主机清单           suppress 隐藏        Compatibility 兼容性     prompts：提示  colon：冒号   percent：百分号    major主要的
 
-proceed with继续进行    checkboxes复选框   frontend前端   backend后端    attempt to尝试       credential凭证       constraints限制      simultaneously同时   tolerate忍受    ratio比例 
+proceed with继续进行    checkboxes复选框   frontend前端   backend后端    attempt to尝试       credential凭证       constraints限制      simultaneously同时   tolerate忍受    ratio比例    architecture体系结构
 
-especially 特别的       external外部的  period时期   consult咨询    Compose构成      conjunction with 与...结合    reference 提及,引用    the name field 名称字段   network-scoped   网络范围的 
+especially 特别的       external外部的  period时期   consult咨询    Compose构成      conjunction with 与...结合    reference 提及,引用    the name field 名称字段   network-scoped 网络范围的 
 
-guaranteed 担保    grace 优雅    discard 抛弃    relying on依赖     periodically  定期   array 数组    standalone单独的      substitutes替补    Extension fields扩展字段
+guaranteed 担保    grace 优雅    discard 抛弃    relying on依赖     periodically  定期   array 数组    standalone单独的      substitutes替补    Extension fields扩展字段  archives档案   major主要的
 
 choose any additional install options   选择任何其他安装选项
 check for updates on startup            启动时检查更新
@@ -31,7 +31,7 @@ forwards signals and reaps processes    转发信号并获取进程
 Specify a list of options as key-value pairs to pass to the driver for this volume. Those options are driver-dependent 指定一个选项列表作为键值对传递给该卷的驱动程序。这些选项依赖于驱动程序
 Set a custom name   设置自定义名称
 This is an object with several properties, each of which is optional  这是一个具有多个属性的对象，每个属性都是可选的
-
+     
 
 
 
