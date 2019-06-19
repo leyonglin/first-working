@@ -1,0 +1,65 @@
+镜像
+window镜像：https://msdn.itellyou.cn/   
+谷歌切换手机版：搜索window10
+
+rpm包查找：
+http://www.rpmfind.net/linux/rpm2html/search.php?query=mailx
+https://pkgs.org/download/mailx
+	
+汉化文档网站：
+https://yiyibooks.cn/ （python）
+http://www.178linux.com/87104 （linux基本命令及服务搭建）
+https://www.centos.bz/
+https://www.irhce.com/
+https://www.cnblogs.com/
+
+资讯：
+https://linuxtoy.org/index.html （Linux相关资讯的专题站点）
+http://network.51cto.com/ （网络资讯）
+
+网站：
+https://github.com/ （代码）
+https://www.bilibili.com/ （视频）
+https://www.jianshu.com/（简书）
+
+软件：
+https://www.52pojie.cn/
+http://www.openldap.org/doc/admin24/
+http://asciiflow.com/ (纯文本流程图)
+https://visualgo.net/en(可视化算法)
+https://cloudconvert.com/(文件转化工具)
+https://webdemo.myscript.com/
+
+个人：
+https://github.com/wsgzao  /  https://wsgzao.github.io
+
+工具：
+https://regex101.com/
+https://explainshell.com/
+
+k8s：
+https://kubernetes.io/docs/home/
+https://www.kubernetes.org.cn/k8s
+
+git：
+https://git-scm.com/book/zh/v2
+
+zabbix：
+https://www.zabbix.com/ [documentation/4.0/zh/manual/definitions] （官网）
+http://www.zabbix.org.cn/ （中文社区）
+
+https://nginx.org/
+https://docs.docker.com/
+http://jumpserver.org/
+https://github.com/welliamcao/OpsManage（opsmanager）
+https://wsgzao.github.io/post/iptables/（Iptable）
+
+
+
+https://yumingsuoxie.51240.com/(国家缩写)
+https://www.ilanni.com/?p=14501   https://github.com/gjmzj/kubeasz  
+https://www.mathcha.io/
+https://www.desmos.com/
+http://latex2png.com/
+
+

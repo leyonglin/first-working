@@ -1,0 +1,20 @@
+unshare -m/-i/-n/-u/-U/--fork --pid /bin/bash
+ipcs
+ipcmk --queue 
+
+
+LXC：
+yum install epel-release
+yum install debootstrap perl libvirt
+yum install lxc lxc-templates lxc-extra
+systemctl start lxc.service
+systemctl start libvirtd 
+systemctl status lxc.service
+systemctl status lxc.service
+ls -alh /usr/share/lxc/templates/
+lxc-ls [--active]
+lxc-info --name mydcb
+lxc-create -n mydcb -t debian /  lxc-destroy -n mydcb  /  lxc-clone mydeb mydeb-clone
+lxc-start -n mydcb -d  / lxc-stop -n mydcb
+lxc-console -n mydcb
+(/usr/bin/debootstrap  这是模板，ubuntu需要模板才能创建。。。)
