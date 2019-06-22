@@ -6,7 +6,23 @@ docker中文文档：http://www.docker.org.cn/faq/global/c95.html
 github文档：https://github.com/docker
 启动文档容器：docker run -ti -p 4000:4000 docs/docker.github.io:latest
  
- 
+6种命名空间：PID、NET、IPC、MNT、UTS、USER 
+控制组（CGroups）：资源限制（Resource limiting）  优先级（Prioritization）  资源审计（Accounting）  隔离（isolation）  控制（Control）(挂起，恢复，重启)
+		 任务(task)就是系统的一个进程    控制族群（control group）就是一组按照某种标准划分的进程(资源控制单位)  层级（hierarchy）:一颗控制族群树(子继承父控制族群的特定的属性)
+		 子系统（subsystem）。一个子系统就是一个资源控制器，比如 cpu 子系统就是控制 cpu 时间分配的一个控制器。子系统必须附加（attach）到一个层级上才能起作用，一个子系统附加到某个层级以后，这个层级上的所有控制族群都受到这个子系统的控制。
+cat  /etc/cgconfig.conf                         /sys/fs/cgroup/cpu/
+mount {          cpuset  = /cgroup/cpuset;          
+                     cpu     = /cgroup/cpu;          
+                     cpuacct = /cgroup/cpuacct;          
+                     memory  = /cgroup/memory;          
+                     devices = /cgroup/devices;          
+                     freezer = /cgroup/freezer;          
+                     net_cls = /cgroup/net_cls;          
+                      blkio   = /cgroup/blkio;              
+                        }  
+联合文件系统（UnionFS）：
+
+
 容器本质上是受到资源限制，彼此间相互隔离的若干个linux进程的集合
 OCI(Open Container Initiative):由多家公司共同成立的项目，并由linux基金会进行管理，致力于container runtime的标准的制定和runc的开发等工作
        另一概念:OCI(Oracle Call Interface)：提供了一组可对ORACLE数据库进行存取的接口子例程（函数），通过在第三代程序设计语言（如C语言）中进行调用可达到存取ORACLE数据库的目的
@@ -51,8 +67,12 @@ man docker-run    man docker-logs
 
 docker virsion  
 
-docker run -itd --name=自定义名称  IMAGE CMD    --restart always开机自启
-	-p指定映射端口  宿主机端口:容器端口       --mount  ""
+docker run -itd --name=自定义名称  IMAGE CMD    --restart always开机自启  -p指定映射端口  宿主机端口:容器端口       --mount  ""
+	    -m 200M --memory-swap=300M 指定内存200M和swap100M(默认是内存的2倍)  --vm 1 --vm-bytes 280M 启动一个内存工作线程，并分配280M
+		-c/--cpu-shares 相对权重 --cpus 最多使用cpu数量(%) --cpuset-cpus 绑定cpu
+		--blkio-weight  io权重（bps 是 byte per second，每秒读写的数据量，iops 是 io per second，每秒 IO 的次数）   
+		
+		
 docker attach
 docker exec
 
@@ -103,7 +123,7 @@ docker的c/s模式
 1.user --- docker client(命令行接口--docker二进制程序--输入docker命令) --传递--> docker daemon(负责实现功能) 处理  --返回客户端
 2.通过remoteAPI可以自己编写程序调用接口进行集成(也可交互，即输入输出)   docker文档：https://docs.docker.com
 
-客户端和守护进程通过socker进行连接
+客户端和守护进程通过socker进行连接(-H)
 1.unix:///var/run/docker.sock(默认)     nc -U /var/run/docker.sock --> GET /info HTTP/1.1(查看remoteAPI的接口信息) 
 2.tcp://host:port
 3.fd://socketfd

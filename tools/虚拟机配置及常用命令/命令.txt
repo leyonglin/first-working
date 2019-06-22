@@ -1,4 +1,12 @@
 
+内部命令
+man builtins
+enable
+
+rep  正则最强大
+      -c统计行数 -q(s)静默模式 -m匹配前m行 -o仅输出关键词  -f(指定规则文件,可输出两个文件相同的行) -i(-y)忽略大小写  -v反向匹配 -w精确匹配行 	-x正则行匹配	  
+      -n输出行数 -R/r递归  -L输出不匹配文件名 -l输出匹配文件名 -h(不输出文件名) -a(不忽略二进制文件) --exclude.. -A下B上C -E(egrep)要把匹配引起来  -e分开
+
 unshare -m/-i/-n/-u/-U/--fork --pid /bin/bash
 ipcs
 ipcmk --queue   
@@ -9,6 +17,7 @@ df -Th[a]  [file/directory/disk/part]  可以查看某文件/目录/磁盘是挂载到哪里(已经
 du [-sh/ah]  查看大小
 lsblk [-f/-p/-h/-S/-m] [device]  
 fdisk -l
+blkid
 
 rmdir  删除空目录
 basename显示文件名或目录名。basename [pathname] [suffix]如果指定后缀名，将会被去掉
@@ -43,9 +52,7 @@ audit审计[auditctl规则设置命令 ausearch查看命令]
 diff -Nuar f1/d1 f2/d2 > *.patch         patch  -p0(使用绝对路径) < *.patch 
 chage账号属性   passwd锁定     chattr lsattr
 	
-grep  正则最强大
-      -c统计行数 -q(s)静默模式 -m匹配前m行 -o仅输出关键词  -f(指定规则文件,可输出两个文件相同的行) -i(-y)忽略大小写  -v反向匹配 -w精确匹配行 	-x正则行匹配	  
-      -n输出行数 -R/r递归  -L输出不匹配文件名 -l输出匹配文件名 -h(不输出文件名) -a(不忽略二进制文件) --exclude.. -A下B上C -E(egrep)要把匹配引起来  -e分开
+g
        
 find / -name sh.sh | xargs file                                                                 将命令输出结果传递给另一个命令
  
