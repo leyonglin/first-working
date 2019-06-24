@@ -1,0 +1,84 @@
+aliyun yum源
+私有仓库:yum info docker-registry docker-compose docker-ce
+rpm -ql docker-distribution
+
+cat /etc/docker/daemon.json 
+{
+"insecure-registries": ["registry:5000"]
+}
+docker push registry:5000/nginx:v0
+
+
+harbor：github/vmware/harbor
+harbor的配置文件harbor.cfg-hostname:不要设置成单个单词(像个网站的名称)，同时需要能解析
+创建用户-仓库-项目
+将镜像修改成符合项目格式的registry_name/project/IMAGE[:TAG]
+docker push registry_name/project/IMAGE[:TAG]
+
+
+搭建：
+https://github.com/kubernetes/kubeadm/blob/master/docs/design/design_v1.10.md
+master,node ： 安装kubelet,kubeadm,docker
+master:kubeadm init
+node:kubeadmin join
+
+master:
+rpm --import gpg   下载yum源并导入，或者gpgkey="" 配置
+systemctl stop firewalld && systemctl disable firewalld （或者iptables）
+systemctl restart chronyd.service（时间同步）
+vim /etc/ssh/sshd_config 
+vim /etc/ssh/ssh_config 
+systemctl restart sshd  （关闭dns和首次登陆询问）
+hostname master
+hostnamectl --static set-hostname master
+curl ifconfig.me
+free -g && lsblk
+curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
+yum remove docker docker-client docker-client-latest docker-common docker-latest docker-latest-logrotate docker-logrotate docker-engine
+yum install -y yum-utils   device-mapper-persistent-data   lvm2
+yum-config-manager     --add-repo     https://download.docker.com/linux/centos/docker-ce.repo
+yum clean al && yum repolist
+vim kubernets.repo （https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64  阿里云/清华镜像）
+yum -y install docker-ce kubeadm kubectl kubelet   （所需要的软件包，所有节点）
+systemctl cat docker.service      
+vim /usr/lib/systemd/system/docker.service       （国内需要用代理下载镜像Environment="HTTPS_PROXY=http://www.ik8s.io:10080"）    
+systemctl daemon-reload
+systemctl restart docker
+docker info
+rpm -ql kubelet
+cat /etc/sysconfig/kubelet
+systemctl start kubelet
+systemctl status kubelet
+journalctl -b _PID=38542
+systemctl enable docker kubelet
+sysctl -p /etc/sysctl.conf           （修改内核参数，不改执行会提醒）
+vim /etc/sysconfig/kubelet            （忽略swap错误KUBELET_EXTRA_ARGS="--fail-swap-on=false" ）
+kubeadm init [--kubernetes-version=v1.13.1] --pod-network-cidr=10.244.0.0/16 --service-cidr=10.96.0.0/12 --ignore-preflight-errors=Swap
+docker images
+vim secret
+mkdir -p $HOME/.kube
+cp -i /etc/kubernetes/admin.conf $HOME/.kube/config    （kubectl与api server交互认证证书）
+chown $(id -u):$(id -g) $HOME/.kube/config
+scp -r .kube/ node1:/root/.kube     （节点是否需要，视情况而定kubectl）
+ss -tnlp   （默认6443端口）
+ss -tnl
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml  （https://github.com/coreos/flannel   network插件）
+kubectl get pods        
+docker images
+kubectl get pods -n kube-system
+kubectl get ns
+kubectl get cs
+scp /etc/sysconfig/kubelet node1:/etc/sysconfig/
+kubectl get pods -n kube-system -o wide
+
+
+
+
+node：
+systemctl disable firewalld && systemctl stop firewalld    （停止firewalld及iptables）
+yum -y install docker-ce kubeadm kubectl kubelet            （下载所需软件包）
+systemctl enable docker kubelet               （自启，必须的）
+vim /etc/sysconfig/kubelet            （忽略swap错误KUBELET_EXTRA_ARGS="--fail-swap-on=false" ）
+kubeadm join 192.169.69.156:6443 --token objct9.rf10gl6ysh7909do     --discovery-token-ca-cert-hash sha256:d6c4156dc1fdeb5c056df2dc8c5f4cfabfc68d7e19b21a97cae22b12ec3d0602  --ignore-preflight-errors=Swap（加入集群）
+
+

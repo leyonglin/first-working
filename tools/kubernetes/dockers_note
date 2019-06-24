@@ -91,6 +91,7 @@ docker rm
 docker search
 docker pull
 docker push 
+docker tag 旧 新
 
 docker history [image]                    查看构建过程
 docker commit
