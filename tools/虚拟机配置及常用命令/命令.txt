@@ -19,6 +19,8 @@ lsblk [-f/-p/-h/-S/-m] [device]
 fdisk -l
 blkid
 
+free -th/lh
+
 rmdir  删除空目录
 basename显示文件名或目录名。basename [pathname] [suffix]如果指定后缀名，将会被去掉
 dirname显示文件或目录路径。

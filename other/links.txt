@@ -2,6 +2,11 @@
 window镜像：https://msdn.itellyou.cn/   
 谷歌切换手机版：搜索window10
 
+it文档：
+http://www.shouce.ren/
+http://openresty.org
+https://www.hi-linux.com/
+
 rpm包查找：
 http://www.rpmfind.net/linux/rpm2html/search.php?query=mailx
 https://pkgs.org/download/mailx
