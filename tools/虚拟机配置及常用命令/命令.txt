@@ -1,4 +1,16 @@
 
+tcpdump -i interface -nn icmp
+openssl
+tc
+ip
+route
+brige
+
+
+
+hping3 -8 known[1-1024] -S IP                扫描ip(service文件的)
+hping2 IP -p 80 -S -i u1000 --rand-source    syn攻击
+
 内部命令
 man builtins
 enable
