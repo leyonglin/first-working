@@ -6,7 +6,24 @@ ip
 route
 brige
 
-
+:h   vim帮助
+h左j下k上l右    g move可以在同一行里向下一行
+motion跨过   fx tx Fx     w前  b后   0 ^ $  (往前/上  )往右或下
+H M L
+*/#     ma/`a     `.      
+c{motion}     d{motion}    y{motion}   num{motion}
+v  V  C+v
+D：剪切从光标位置到行尾到剪贴板。Y：拷贝当前行。
+x/s
+剪切板 :reg     "kyy-"kp     
+.重复上一个动作
+qa--动作--q     @register
+% 按对匹配 {} [] ()
+>>：缩进所有选择的代码
+<<：和上面类似，但是反缩进
+gd：到达光标所在处函数或者变量的定义处（好像是往前，并非定义处）。
+K：在 Man 里面查找光标当前所在处的词。
+:2,3d
 
 hping3 -8 known[1-1024] -S IP                扫描ip(service文件的)
 hping2 IP -p 80 -S -i u1000 --rand-source    syn攻击

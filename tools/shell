@@ -1,4 +1,7 @@
-
+vim .vimrc
+set cursorline
+set autoindent
+set number  （:set nonu ）   
 
 man bash 如果写shell脚本一定要提前阅读该说明
 
@@ -34,4 +37,10 @@ add_db_master_ip () {
 
 
 
+#!/bin/bash
+file="/tmp/pack1.txt"
+while read -r pack
+do apt -y remove $pack
+done<"$file"
 		  
+for i in "1 2"; do echo ${i}; echo ok; done		  
