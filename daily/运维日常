@@ -11,7 +11,6 @@ bugfix打不开：http://bugfixadmin.zhushuqt.com
 
 刷新win10缓存：ipconfig/flushdns
 
-tomcat_8001 没启动，走直解是502，走cdn是504
 
 tgops-doc/脚本管理/其它/specified_time_log.py 这个脚本可以参考查找攻击时候的IP和被打域名
 
@@ -93,7 +92,7 @@ tail -10000 /opt/logs/tomcat/tomcat_8001/catalina.out|grep "v/user/login"|awk -F
  转圈圈：打不开页面，要判断是不是以前的firewalld里面封的，需要在blacklist.xml 中删除ip，如果blacklist.xml没有该ip 那么应该是网络问题或者被打机房封了ip。
  400可能是走了cdn，且cdn没绑定，请求无效(ip无解析) (Bad request);出现这个请求无效报错说明请求没有进入到后台服务里；
  走cdn可能有500
- tomcat没起会有502，或者连接数太多，响应时间长。nginx和tomcat域名错乱
+ tomcat没起会有502，或者连接数太多，响应时间长。nginx和tomcat域名错乱  ///  启动中...  ///  tomcat_8001 没启动，走直解是502，走cdn是504 ，502解析前后台颠倒
    产生错误的原因：连接超时 我们向服务器发送请求 由于服务器当前链接太多，导致服务器方面无法给于正常的响应，产生此类报错
  504 Gateway Timeout Error  服务(器)挂了，连接超时
 
@@ -105,7 +104,6 @@ WinMTR：可以在windows上进行路由追踪的软件
 
 原点ip：axpjback.javalebogame7.com
 
-502   启动中...
 
 nginx后台打开空白，查一下nginx启动顺序
 

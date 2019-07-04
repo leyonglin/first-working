@@ -1,4 +1,18 @@
 
+nohup:前台另起独立于当前会话的进程运行，可被Ctrl+c(SIGINT 信号)中断
+& ：在当前会话启动子进程运行,退出当前会话会被中断(SIGHUP 信号) 			  
+nohup CMD &	: 不受SIGINT信号和SIGHUP信号的影响（nohup sh test &>>test.log  &）
+jobs -l 查看当前会话下的后台进程 ctrl + z:放后台挂起		 bg 1 启动后台程序	  fg 1：将后台程序放到前台运行
+
+C+x+e
+fc
+(cd /root;ls)
+
+curl -C - -O https://www.linuxidc.com/linuxidc.com.tar.gz 断点续传
+curl -o linuxidc.com.htm  https://www.linuxidc.com/index.htm
+xargs -n 1 curl -O < wenjianlisturls.txt 从文件下载
+-u username:password
+
 tcpdump -i interface -nn icmp
 openssl
 tc
@@ -78,7 +92,7 @@ dd if=/dev/hdb | gzip > /root/image.gz  备份/dev/hdb全盘数据，并利用gzip工具进行
 GPG[-c-d](gnupg2软件包)就是用来加密数据与制作证书的一套工具，其作用与PGP(基于RSA公匙加密体系的邮件加密软件)类似。但是PGP使用了许多专利算法。GPG是GPL(通用性公开许可证General Public License)软件，并且没有使用任何专利加密算法集
 aide入侵检测[aide --init / aide --check ]  修改配置确定需要校验的数据
 nmap -n(不执行dns解析)  <-sP ICMP扫描 -sU UDP扫描 -sT TCP连接全开扫描 -sS TCP半开扫描 -A 目标系统全面扫描  -p>   最好方法是man nmap
-tcpdump -A host 127.0.0.1 and tcp port 21[-A转码  -i接口  -w写入指定文件  -r指定文件读出] [类型：host，net，port，portrange  方向：src，dst  协议：tcp，udp，IP，vlan，arp... 多条件组合：and，or，not]
+tcpdump -A host 127.0.0.1 and tcp port 21[-A转码  -i接口  -w写入指定文件(pcap文件)  -r指定文件读出] [类型：host，net，port，portrange  方向：src，dst  协议：tcp，udp，IP，vlan，arp... 多条件组合：and，or，not]
 audit审计[auditctl规则设置命令 ausearch查看命令]
 diff -Nuar f1/d1 f2/d2 > *.patch         patch  -p0(使用绝对路径) < *.patch 
 chage账号属性   passwd锁定     chattr lsattr
