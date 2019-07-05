@@ -19,6 +19,7 @@ tc
 ip
 route
 brige
+arp
 
 :h   vim帮助
 h左j下k上l右    g move可以在同一行里向下一行
@@ -46,7 +47,7 @@ hping2 IP -p 80 -S -i u1000 --rand-source    syn攻击
 man builtins
 enable
 
-rep  正则最强大
+grep  正则最强大
       -c统计行数 -q(s)静默模式 -m匹配前m行 -o仅输出关键词  -f(指定规则文件,可输出两个文件相同的行) -i(-y)忽略大小写  -v反向匹配 -w精确匹配行 	-x正则行匹配	  
       -n输出行数 -R/r递归  -L输出不匹配文件名 -l输出匹配文件名 -h(不输出文件名) -a(不忽略二进制文件) --exclude.. -A下B上C -E(egrep)要把匹配引起来  -e分开
 

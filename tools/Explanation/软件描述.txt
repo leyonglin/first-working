@@ -1,4 +1,17 @@
 
+BSD:unix的衍生系统
+MTU是网络接口层的限制(该网络设备能够传输的最大帧（frame）的大小)，而MSS是传输层的概念。其实这就是 TCP分段 和 IP分片 。MSS值是TCP协议实现的时候根据MTU换算而得(减掉Header)。当一个连接建立时， 连接的双方都要通告各自的MSS值。
+网络接口层=物理层+数据链路层   应用层=会话层+表示层+应用层
+每一层添加的 Header(TCP/UDP Header, IP Header, Data Link Header) 都是为了实现该层协议服务而必须存在的协议相关数据。
+NAPI(内核API)是为了解决网络对CPU的影响而引入的。NAPI 可以有效的减少网络对CPU中断而导致的上下文切换次数，减轻导致的CPU性能损耗。
+
+
+CST：中国标准时间（China Standard Time），这个解释可能是针对RedHat Linux。
+UTC：协调世界时，又称世界标准时间，简称UTC，从英文国际时间/法文协调时间”Universal Time/Temps Cordonné”而来。中国大陆、香港、澳门、台湾、蒙古国、新加坡、马来西亚、菲律宾、澳洲西部的时间与UTC的时差均为+8，也就是UTC+8。
+GMT：格林尼治标准时间（旧译格林威治平均时间或格林威治标准时间；英语：Greenwich Mean Time，GMT）是指位于英国伦敦郊区的皇家格林尼治天文台的标准时间，因为本初子午线被定义在通过那里的经线
+
+JDBC（Java DataBase Connectivity,java数据库连接）是一种用于执行SQL语句的Java API，可以为多种关系数据库提供统一访问，它由一组用Java语言编写的类和接口组成。JDBC提供了一种基准，据此可以构建更高级的工具和接口，使数据库开发人员能够编写数据库应用程序，同时，JDBC也是个商标名。
+
 awstats：httpd-tools加密，分析nginx日志，是一个免费非常简洁而且强大有个性的基于Perl语言的WEB日志分析工具，因为awstats的访问是通过web方式进行的，与nginx集成(虚拟机的形式)生成awstats数据库--生成静态文件
 	GeoIP主要用于定位访问者所属的国家以及城市的数据库，详细显示国内访客的具体来源信息，我们可以使用纯真IP数据库插件。
 	
