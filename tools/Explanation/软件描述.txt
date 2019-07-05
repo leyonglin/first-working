@@ -1,9 +1,6 @@
 
 BSD:unix的衍生系统
-MTU是网络接口层的限制(该网络设备能够传输的最大帧（frame）的大小)，而MSS是传输层的概念。其实这就是 TCP分段 和 IP分片 。MSS值是TCP协议实现的时候根据MTU换算而得(减掉Header)。当一个连接建立时， 连接的双方都要通告各自的MSS值。
-网络接口层=物理层+数据链路层   应用层=会话层+表示层+应用层
-每一层添加的 Header(TCP/UDP Header, IP Header, Data Link Header) 都是为了实现该层协议服务而必须存在的协议相关数据。
-NAPI(内核API)是为了解决网络对CPU的影响而引入的。NAPI 可以有效的减少网络对CPU中断而导致的上下文切换次数，减轻导致的CPU性能损耗。
+
 
 
 CST：中国标准时间（China Standard Time），这个解释可能是针对RedHat Linux。
