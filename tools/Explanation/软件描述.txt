@@ -1,7 +1,7 @@
 
 BSD:unix的衍生系统
 
-
+jQuery是一个快速、简洁的JavaScript框架，是继Prototype之后又一个优秀的JavaScript代码库（或JavaScript框架）
 
 CST：中国标准时间（China Standard Time），这个解释可能是针对RedHat Linux。
 UTC：协调世界时，又称世界标准时间，简称UTC，从英文国际时间/法文协调时间”Universal Time/Temps Cordonné”而来。中国大陆、香港、澳门、台湾、蒙古国、新加坡、马来西亚、菲律宾、澳洲西部的时间与UTC的时差均为+8，也就是UTC+8。
@@ -33,6 +33,9 @@ Socket是应用层与TCP/IP协议族通信的中间软件抽象层，它是一组接口。在设计模式中，So
 信号：kill
 
 内存映射文件，是由一个文件到一块内存的映射(mmap函数是其中一种方法)。
+mmap将一个文件或者其它对象映射进内存。文件被映射到多个页上，如果文件的大小不是所有页的大小之和，最后一个页不被使用的空间将会清零。mmap在用户空间映射调用系统中作用很大
+malloc动态分配内存(不连续)
+
 信号量(Semaphore)，有时被称为信号灯，是在多线程环境下使用的一种设施，是可以用来保证两个或多个关键代码段不被并发调用。在进入一个关键代码段之前，线程必须获取一个信号量；一旦该关键代码段完成了，那么该线程必须释放信号量。其它想进入该关键代码段的线程必须等待直到第一个线程释放信号量
 posix:可移植操作系统接口（Portable Operating System Interface of UNIX，缩写为 POSIX ），POSIX标准定义了操作系统应该为应用程序提供的接口标准
 是IEEE为要在各种UNIX操作系统上运行的软件而定义的一系列API标准的总称，其正式称呼为IEEE 1003，而国际标准名称为ISO/IEC 9945
@@ -121,14 +124,6 @@ lvs+keepalived中的tcp调优
 【依赖包：libnl包含一个便捷库，可简化使用Linux内核的netlink套接字接口进行网络操作】
 tcp/ip三次握手：SYN(客1)   SYN，ACK(服2)               ACK(客户端3)
       四次断开：FIN(客4)   ACK(服5)   FIN，ACK(服6)    ACK(客7)
-11种状态：
-客户端TCP状态迁移：
-CLOSED--->SYN_SENT--->ESTABLISHED--->FIN_WAIT_1--->FIN_WAIT_2--->TIME_WAIT--->CLOSED
-初始状态  发送SYN后   连接状态        发送FIN      收到ACK        发送ACK-->2MSL等待状态(2-4分钟)
-
-服务器TCP状态迁移：
-CLOSED--->LISTEN--->SYN收到 --->ESTABLISHED--->CLOSE_WAIT          --->LAST_ACK--->CLOSED
-未起服务  初始状态  收到SYN      连接状态     发送FIN，ACK，等待ACK     等待收到ACK
 
 jumpserver：可以在xshell登陆，也可以在网页登陆，web终端可以和xshell一样使用命令，上传下载有目录限制
 
@@ -342,7 +337,7 @@ CloudXNS是北京快网自主研发全新架构的智能DNS解析系统，提供多元化智能DNS解析服务。
 
 bugfix：漏洞修复，Bugfix尽量避免引起更多的side effect(副作用)
 
-npm是JavaScript世界的包管理工具，并且是Node.js平台的默认包管理工具。通过npm可以安装、共享、分发代码，管理项目依赖关系。能解决的NodeJS代码部署上的很多问题，允许用户从NPM服务器下载别人编写的第三方包到本地使用。允许用户从NPM服务器下载并安装别人编写的命令行程序到本地使用。允许用户将自己编写的包或命令行程序上传到NPM服务器供别人使用。
+npm(vue -- build)是JavaScript世界的包管理工具，并且是Node.js平台的默认包管理工具。通过npm可以安装、共享、分发代码，管理项目依赖关系。能解决的NodeJS代码部署上的很多问题，允许用户从NPM服务器下载别人编写的第三方包到本地使用。允许用户从NPM服务器下载并安装别人编写的命令行程序到本地使用。允许用户将自己编写的包或命令行程序上传到NPM服务器供别人使用。
 npm 的 scripts 配置可以实现这些构建工具的所有功能，而且更简洁、更优雅和较少的模块依赖和维护开销
 
 Node.js(Node):一个基于ChromeV8引擎的JavaScript运行环境。Node.js使用了一个事件驱动、非阻塞式I/O的模型，使其轻量又高效。Node.js的包管理器npm，是全球最大的开源库生态系统。Node.js是一个运行在服务端的框架，它的底层就使用了V8引擎。我们知道 Apache + PHP 以及Java的Servlet都可以用来开发动态网页，Node.js的作用与他们类似，只不过是使用JavaScript 来开发。传统意义上的 JavaScript 运行在浏览器上，这是因为浏览器内核实际上分为两个部分:渲染引擎和 JavaScript 引擎。前者负责渲染 HTML + CSS，后者则负责运行 JavaScript。Chrome 使用的 JavaScript 引擎是 V8，它的速度非常快。

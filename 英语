@@ -1,3 +1,27 @@
+一月January —— Jan.
+二月February —— Feb.
+三月March —— Mar.
+四月April —— Apr.
+五月May —— May.
+六月June —— Jun.
+七月July  —— Jul.
+八月August—— Aug.
+九月September —— Sept.
+十月October —— Oct.
+十一月November —— Nov.
+十二月December—— Dec.
+
+星期日 Sunday=Sun.
+星期一 Monday=Mon.
+星期二 Tuesday=Tues.
+星期三 Wednesday=Wed.
+星期四 Thursday=Thur./Thurs.
+星期五 Friday=Fri.
+星期六 Saturday=Sat.
+注意：缩写的“.”不能省略。
+
+rcp：远程文件拷贝
+
 alternative可选的       realm领域                Credentials证书           specify指定(spec)           kit装备/软件包           integration集成           external 外部的           Internal 内部的           contained包含           
 
 evaluated估计           subsequent后续           deploy部署           development发展           instance情况/实例           generic一般的           rectify the issue纠正这个问题           previous以前的
@@ -22,7 +46,7 @@ guaranteed 担保    grace 优雅    discard 抛弃    relying on依赖     peri
 
 manipulate操作		utility效用 	multicast多点传送   allocated分配的   peak山峰   struct socket结构套接字    Segmentation Offloading分段卸载
 
-hops跳数          probe调查/探针      validate生效  
+hops跳数          probe调查/探针      validate生效     established确定的
 
 
 choose any additional install options   选择任何其他安装选项

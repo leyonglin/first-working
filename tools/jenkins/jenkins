@@ -3,6 +3,18 @@ jenkins:
 持续集成(CI)：1.降低风险   2.减少重复过程   3.增强项目可见性  4.随时可以生成可部署软件
 持续部署/交付(CD)
 
+
+创建project(job)
+创建视图--可以添加现有/创建多个-->创建project(job)
+manage jenkins(全局配置) --》configure system--》Publish over SSH(连接主机) 
+
+
+
+
+
+
+
+
 在官网下载软件包：https://jenkins.io/
 yum源
 wget http://pkg.jenkins.io/redhat/jenkins.repo

@@ -1,4 +1,52 @@
 
+top -c显示命令 -d间隔 -pPID -q无延迟运行(优先) -i活跃线程 
+f - 调整显示内容
+N/R – 以 PID 的大小的顺序排列表示进程列表
+P – 以 CPU 占用率大小的顺序排列进程列表
+M – 以内存占用率大小的顺序排列进程列表
+T:根据时间/累计时间进行排序。
+1.系统运行时间和平均负载  2.任务  3.cpu状态[us, user： 运行(未调整优先级的) 用户进程的CPU时间   //  sy，system: 运行内核进程的CPU时间  //  ni，niced：运行已调整优先级的用户进程的CPU时间   //   wa，IO wait: 用于等待IO完成的CPU时间  //  hi：处理硬件中断的CPU时间  //  si: 处理软件中断的CPU时间 / st：这个虚拟机被hypervisor偷去的CPU时间（译注：如果当前处于一个hypervisor下的vm，实际上hypervisor也是要消耗一部分CPU处理时间的）
+各进程（任务）的状态监控:S：这个是进程的状态。它有以下不同的值:D - 不可中断的睡眠态   R – 运行态   S – 睡眠态    T – 被跟踪或已停止    Z – 僵尸态
+
+
+
+清除cache写进硬盘：
+sync; echo 1 > /proc/sys/vm/drop_caches     #仅清除页面缓存
+sync; echo 2 > /proc/sys/vm/drop_caches     #清除目录项和inode
+sync; echo 3 > /proc/sys/vm/drop_caches     #清除页面缓存，目录项和inode
+关闭swap：
+swapoff -a
+
+
+time dd if=/dev/zero of=test.db bs=8k count=5000 oflag=direct
+1.time有计时作用，dd用于复制，从if读出，写到of；
+2.if=/dev/zero不产生IO，因此可以用来测试纯写速度；time dd if=/dev/zero of=test bs=4k count=10000 oflag=direct
+3.of=/dev/null不产生IO，可以用来测试纯读速度；time dd if=test of=/dev/null bs=4k count=10000 iflag=direct
+4.将/tmp/test拷贝到/var则同时测试了读写速度；
+5.bs是每次读或写的大小，即一个块的大小，count是读写块的数量。oflag=direct将跳过内存缓存，direct 读写数据采用直接IO方式；
+配合iostat的一起使用观察磁盘性能。dd测试是顺序写入磁盘，结果是参考值,测试时一定加direct值，无缓存测试。需要和线上正常磁盘比对，否则没有参考价值。
+
+
+查看系统硬件信息：
+cat /proc/cpuinfo |grep "physical id" | sort |uniq |wc -l      物理cpu颗数
+cat /proc/cpuinfo | grep "cores" | uniq                        物理核心
+cat /proc/cpuinfo |grep "processor"| wc -l                     逻辑cpu个数(常说的cpu个数就是指这个)如果大于cpu颗数*核心，说明使用了intel的超线程技术(HT)
+cat /proc/cpuinfo | grep -e "cpu cores"  -e "siblings" | sort | uniq              
+cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c          逻辑cpu个数  设备名称 
+getconf LONG_BIT                                               当前运行在32或64模式下
+cat /etc/redhat-release                                        发行版本
+dmidecode | grep "Product Name"                                cpu产商
+cat /proc/cpuinfo |grep "MHz"                                  cpu频率    
+uname -r                                                       内核版本                      
+dmidecode |grep -A16 "System Information$"                     查看内存服务器型号、序列号
+dmidecode|grep -A16 "Memory Device"|grep 'Speed'               查看频率
+dmidecode|grep -P 'Maximum\s+Capacity'                         最大支持几G内存
+虚拟内存VIRT，物理内存RES，共享内存SHR
+虚拟内存：凡是程序运行过程中可能需要用到的指令或者数据都必须在虚拟内存空间中。
+驻留内存：是指那些被映射到进程虚拟内存空间的物理内存
+
+
+
 nohup:前台另起独立于当前会话的进程运行，可被Ctrl+c(SIGINT 信号)中断
 & ：在当前会话启动子进程运行,退出当前会话会被中断(SIGHUP 信号) 			  
 nohup CMD &	: 不受SIGINT信号和SIGHUP信号的影响（nohup sh test &>>test.log  &）
@@ -47,6 +95,8 @@ hping2 IP -p 80 -S -i u1000 --rand-source    syn攻击
 man builtins
 enable
 
+使用 iptraf 命令实时查看网络: -i 表示 ip traffic, -g 表示 genral info, -d 表示 detail info 
+
 grep  正则最强大
       -c统计行数 -q(s)静默模式 -m匹配前m行 -o仅输出关键词  -f(指定规则文件,可输出两个文件相同的行) -i(-y)忽略大小写  -v反向匹配 -w精确匹配行 	-x正则行匹配	  
       -n输出行数 -R/r递归  -L输出不匹配文件名 -l输出匹配文件名 -h(不输出文件名) -a(不忽略二进制文件) --exclude.. -A下B上C -E(egrep)要把匹配引起来  -e分开
@@ -63,7 +113,6 @@ lsblk [-f/-p/-h/-S/-m] [device]
 fdisk -l
 blkid
 
-free -th/lh
 
 rmdir  删除空目录
 basename显示文件名或目录名。basename [pathname] [suffix]如果指定后缀名，将会被去掉
@@ -98,7 +147,6 @@ audit审计[auditctl规则设置命令 ausearch查看命令]
 diff -Nuar f1/d1 f2/d2 > *.patch         patch  -p0(使用绝对路径) < *.patch 
 chage账号属性   passwd锁定     chattr lsattr
 	
-g
        
 find / -name sh.sh | xargs file                                                                 将命令输出结果传递给另一个命令
  
@@ -107,6 +155,7 @@ find / -name sh.sh | xargs file                                                 
 ping www.baidu.com | awk '{print $0"\t" strftime("%Y-%m-%d %H:%M:%S",systime())}' >>/tmp/ping &     添加时间
 
 ssh -p 22 -C -f -N -g -L 9200:192.168.1.19:9200 ihavecat@192.168.1.19
+ssh -v调试模式
 
 du -sh /* |  grep "G" | sort -rn     查看文件大小
 
@@ -123,6 +172,9 @@ ps -eo ...
 ss -nat | awk '{print $1}'|grep -v State | sort | uniq -c | sort -rn                                       查看网络连接状态
 
 ss -anpl |grep -w 8080 | grep tcp |awk '{print $5}' | awk -F: '{print $1}' | uniq -c | sort -nr     统计8080端口的相同ip连接数
+
+  awk  '{ip[$1]++} END{for(i in ip) {print ip[i],i}}' ip.txt | sort -nr 
+  netstat -n | awk '/^tcp/ {++S[$NF]} END {for(a in S) print a, S[a]}'
 
 ss -pan | grep -w port                  通过端口查服务/服务
 [ps -C service]                        通过服务查pid]
@@ -358,7 +410,6 @@ vim普通模式下按Q进入ex      ex命令模式下按：vi进入命令模式
  
 宏复制：   命令行模式qw---x-j-q--100@w(w与前面w对应)    qw---i-123-Esc-hhj-q---100@w（或者上下键）     
  
-寄存器：拷贝当前行到寄存器 a 或者其他字母。你应该按 “ayy。现在当前行已存在寄存器 a 里面直到你又拷贝了一些东西进入寄存器 a。你可以使用命令 “ap 来粘贴寄存器 a 里面的内容到你想要的位置
 
 
 

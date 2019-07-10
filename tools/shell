@@ -33,6 +33,16 @@ add_db_master_ip () {
 }	
 
 
+for i in $ip;do
+expect << EOF
+        spawn /opt/apps/mysql/bin/mysql -uroot -p -S /opt/data/data_16303/mysql.sock -e "    
+        grant all privileges on gameplat_analysis.* TO 'gameplat_analysis_dev'@'$i' identified by 'xjVXkB>Q6JpB61r${rand_pass}';
+        flush privileges;"
+        expect "Enter password:" {send "9tN6GFGK60Jk8BNkBJM611GwA66uDFeG\r"}
+        expect eof
+EOF
+done
+
 
 #!/bin/bash
 file="/tmp/pack1.txt"
@@ -41,3 +51,14 @@ do apt -y remove $pack
 done<"$file"
 		  
 for i in "1 2"; do echo ${i}; echo ok; done		  
+
+1 2 == {1,2}
+
+
+
+
+
+
+
+
+

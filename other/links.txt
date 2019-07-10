@@ -7,6 +7,11 @@ www.linuxidc.com[/rssFeed.aspx]
 http://www.shouce.ren/
 http://openresty.org
 https://www.hi-linux.com/
+https://raye.wang/
+https://www.cnblogs.com/zengkefu/p/5616676.html
+
+python：
+https://github.com/satwikkansal/wtfpython   /   https://github.com/leisurelicht/wtfpython-cn
 
 rpm包查找：
 http://www.rpmfind.net/linux/rpm2html/search.php?query=mailx

@@ -1,5 +1,35 @@
 
+ssh_exchange_identification: read: Connection reset by peer   错误是因为/etc/hosts.allow
+
+采集collect    走势trend    真人反代proxy  总控production    
+
 b是admin后台 c是CMS后台 g是agent后台
+
+多综合分析下：
+启动守护进程：1.启动时报错    2.运行时报错   查日志，看报错
+查看端口：
+1、zabbix监控看看CPU负载、IO wait，查看下7001/catalina.out日志，有没有超过5秒的记录。
+2、查看下CPU占用最高的Java进程，导出堆栈信息给Java排查下
+	jstack -l  pid  > /tmp/jvm.dump                         导出进程堆栈信息
+	top -H -p pid  或 ps -mp pid -o pid,THREAD,tid,time    查出进程内占用cpu高的线程pid  
+3、查看下MySQL的慢日志，找dba相应排查下。
+4、调整下Xmx参数（默认是512m, 视情况调大），与开发确认下重启下tomcat
+5、磁盘性能检测下，如果有问题发给机房排查下。time dd if=/dev/zero of=test.db bs=8k count=5000 oflag=direct
+6、要客服本地测试下是否卡顿，如果不卡，再问问业主是哪里的IP，如果是柬埔寨的，那走CDN后台会有效果（后台有柬埔寨节点）
+curl/httping 测试实际状况  
+内存：free
+服务运行状况：
+磁盘读写：dd
+traceroute   linux  路由追踪  windows(tracert)
+mtr  -r/-rn/–report  域名   确定网络状况
+tcpdump 抓包
+traceroute -n -m 5 -q 4 -w 3 www.baidu.com
+说明： -n 显示IP地址，不查主机名，  -m 设置跳数  -q 4每个网关发送4个数据包    -w 把对外发探测包的等待响应时间设置为3秒
+
+
+
+
+app 400/502错误 可以将cdn回源ip添加*:8085s
 
 可开端口：
 https 8081-8088
@@ -190,11 +220,12 @@ kangle也是一款专为做虚拟主机研发的web服务器。实现虚拟主�
 
 互联网数据中心（Internet Data Center） 	
 
-
+极速六合彩是本地采集，如果没走势看8002日志，重庆时时彩/香港六合彩是官方彩，trend加白
 
 新站添加jenkins:  
 jenkins---addSites--- 1 -- 主1 -- 备1 -- y(核对) -- 2(台架构) -- HK(服务器地址) 
         -- 6fpj -- 6FPJ-新葡京娱乐城 -- y 
+jenkins---addSites--- 3(delete) --- token
 
 添加zabbix：                                                                                                                                                                                  
 两台架构主机.xml：替换令牌码  主备(主)ip
