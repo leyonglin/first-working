@@ -17,6 +17,7 @@ b是admin后台 c是CMS后台 g是agent后台
 5、磁盘性能检测下，如果有问题发给机房排查下。time dd if=/dev/zero of=test.db bs=8k count=5000 oflag=direct
 6、要客服本地测试下是否卡顿，如果不卡，再问问业主是哪里的IP，如果是柬埔寨的，那走CDN后台会有效果（后台有柬埔寨节点）
 curl/httping 测试实际状况  
+做路由
 内存：free
 服务运行状况：
 磁盘读写：dd

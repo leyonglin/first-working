@@ -8,7 +8,10 @@ T:根据时间/累计时间进行排序。
 1.系统运行时间和平均负载  2.任务  3.cpu状态[us, user： 运行(未调整优先级的) 用户进程的CPU时间   //  sy，system: 运行内核进程的CPU时间  //  ni，niced：运行已调整优先级的用户进程的CPU时间   //   wa，IO wait: 用于等待IO完成的CPU时间  //  hi：处理硬件中断的CPU时间  //  si: 处理软件中断的CPU时间 / st：这个虚拟机被hypervisor偷去的CPU时间（译注：如果当前处于一个hypervisor下的vm，实际上hypervisor也是要消耗一部分CPU处理时间的）
 各进程（任务）的状态监控:S：这个是进程的状态。它有以下不同的值:D - 不可中断的睡眠态   R – 运行态   S – 睡眠态    T – 被跟踪或已停止    Z – 僵尸态
 
-
+netstat -antp | grep pid  查看连接状态
+  awk  '{ip[$1]++} END{for(i in ip) {print ip[i],i}}' ip.txt | sort -nr 
+  netstat -n | awk '/^tcp/ {++S[$NF]} END {for(a in S) print a, S[a]}'
+  awk [ 选项] ' BEGIN{ 指令} { 指令} END{ 指令} ' 文件
 
 清除cache写进硬盘：
 sync; echo 1 > /proc/sys/vm/drop_caches     #仅清除页面缓存
@@ -48,7 +51,7 @@ dmidecode|grep -P 'Maximum\s+Capacity'                         最大支持几G内存
 
 
 nohup:前台另起独立于当前会话的进程运行，可被Ctrl+c(SIGINT 信号)中断
-& ：在当前会话启动子进程运行,退出当前会话会被中断(SIGHUP 信号) 			  
+& ：在当前会话启动子进程运行,退出当前会话会被中断(SIGHUP 信号) 	或者Ctrl+z + bg		   
 nohup CMD &	: 不受SIGINT信号和SIGHUP信号的影响（nohup sh test &>>test.log  &）
 jobs -l 查看当前会话下的后台进程 ctrl + z:放后台挂起		 bg 1 启动后台程序	  fg 1：将后台程序放到前台运行
 
@@ -149,8 +152,6 @@ chage账号属性   passwd锁定     chattr lsattr
 	
        
 find / -name sh.sh | xargs file                                                                 将命令输出结果传递给另一个命令
- 
-后台执行& 或者Ctrl+z + bg
 
 ping www.baidu.com | awk '{print $0"\t" strftime("%Y-%m-%d %H:%M:%S",systime())}' >>/tmp/ping &     添加时间
 
@@ -172,9 +173,6 @@ ps -eo ...
 ss -nat | awk '{print $1}'|grep -v State | sort | uniq -c | sort -rn                                       查看网络连接状态
 
 ss -anpl |grep -w 8080 | grep tcp |awk '{print $5}' | awk -F: '{print $1}' | uniq -c | sort -nr     统计8080端口的相同ip连接数
-
-  awk  '{ip[$1]++} END{for(i in ip) {print ip[i],i}}' ip.txt | sort -nr 
-  netstat -n | awk '/^tcp/ {++S[$NF]} END {for(a in S) print a, S[a]}'
 
 ss -pan | grep -w port                  通过端口查服务/服务
 [ps -C service]                        通过服务查pid]
