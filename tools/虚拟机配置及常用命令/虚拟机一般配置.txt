@@ -10,7 +10,7 @@ curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-
 yum  --help && yum clean all && yum repolist  
 yum -y install   chrony psmisc net-tools findutils coreutils  bash-completion wget vim-enhanced yum-utils \
                 tree epel-release telnet tcpdump bind-utils dos2unix lrzsz iproute iotop strace procps-ng lsof \
-				httping bridge-utils traceroute nmap sysstat htop
+				httping bridge-utils traceroute nmap sysstat htop sysstat
 systemctl restart chronyd	
 yum makecache
 			

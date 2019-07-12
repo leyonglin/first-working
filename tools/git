@@ -44,12 +44,15 @@ hard移动三个区 指针          --git status是干净的
 mixed移动本地库和暂存区指针  --git status是红色的  
 soft仅移动本地库指针         --git status是绿色的
 
-删除至本地库文件：
+删除至本地库文件：删除untrack内容git clean -nxfd(n：预运行x：.gitignore文件f：文件d：目录) 
 rm -f <file>--git status(红色)--git rm <file>--git status(绿色)--git commit -m "delete <file>" <file>--git status(干净)
 恢复：git reset --hard 索引值
 
 删除至缓存区：rm -f <file>--git status(红色)--git rm <file>--git status(绿色)
 git reset --hard 索引值
+
+push之后撤销：git revert <SHA>
+
 
 比较文件：工作区和暂存区比较git diff                  filename
           暂存区和本地库比较git diff HEAD[^*]/索引值  [filename]  ---->  不添加文件名，比较所有文件差异

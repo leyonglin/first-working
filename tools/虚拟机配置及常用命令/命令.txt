@@ -8,10 +8,21 @@ T:根据时间/累计时间进行排序。
 1.系统运行时间和平均负载  2.任务  3.cpu状态[us, user： 运行(未调整优先级的) 用户进程的CPU时间   //  sy，system: 运行内核进程的CPU时间  //  ni，niced：运行已调整优先级的用户进程的CPU时间   //   wa，IO wait: 用于等待IO完成的CPU时间  //  hi：处理硬件中断的CPU时间  //  si: 处理软件中断的CPU时间 / st：这个虚拟机被hypervisor偷去的CPU时间（译注：如果当前处于一个hypervisor下的vm，实际上hypervisor也是要消耗一部分CPU处理时间的）
 各进程（任务）的状态监控:S：这个是进程的状态。它有以下不同的值:D - 不可中断的睡眠态   R – 运行态   S – 睡眠态    T – 被跟踪或已停止    Z – 僵尸态
 
-netstat -antp | grep pid  查看连接状态
-  awk  '{ip[$1]++} END{for(i in ip) {print ip[i],i}}' ip.txt | sort -nr 
-  netstat -n | awk '/^tcp/ {++S[$NF]} END {for(a in S) print a, S[a]}'
-  awk [ 选项] ' BEGIN{ 指令} { 指令} END{ 指令} ' 文件
+iostat: iostat 2(秒) 3(次) -k/m(单位)  // -p(指定磁盘)  sda // -N磁盘整列
+Linux 3.10.0-514.el7.x86_64 (localhost.localdomain) 	07/12/2019 	_x86_64_	(40 CPU)-->内核/版本/主机名 /时间/位数/逻辑cpu数
+avg-cpu:  %user   %nice  %system  %iowait  %steal   %idle
+如果%iowait的值过高，表示硬盘存在I/O瓶颈，%idle值高，表示CPU较空闲，如果%idle值高但系统响应慢时，有可能是CPU等待分配内存，此时应加大内存容量。%idle值如果持续低于10，那么系统的CPU处理能力相对较低，表明系统中最需要解决的资源是CPU
+Device:   tps该设备每秒的传输次数,“一次传输”意思是“一次I/O请求”。多个逻辑请求可能会被合并为“一次I/O请求”。“一次传输”请求的大小是未知的。  
+kB_read/s    kB_wrtn/s    kB_read    kB_wrtn
+   -x：   Device:  rrqm/s   wrqm/s     r/s     w/s    rkB/s    wkB/s avgrq-sz avgqu-sz   await r_await w_await  svctm  %util  
+   rrqm/s和wrqm/s(requests merged)：合并，排队i/o每秒合并数量(如果两个IO发生在相邻的数据块时，他们可以合并成1个IO)
+   r/s 和 w/s  : 合并后，每秒磁盘需要读写完成的数量
+   rsec/s 和 wsec/s ：每秒从设备读取的扇区数量
+   avgqu-sz 向设备发出的请求的平均队列长度   avgrq-sz向设备发出的请求的平均大小(以扇区为单位)
+   r_await，w_await，await 排队+i/o时间 
+   util：使用时间
+
+虚拟文件系统层（VFS Layer）
 
 清除cache写进硬盘：
 sync; echo 1 > /proc/sys/vm/drop_caches     #仅清除页面缓存
@@ -20,6 +31,7 @@ sync; echo 3 > /proc/sys/vm/drop_caches     #清除页面缓存，目录项和inode
 关闭swap：
 swapoff -a
 
+查看版本：1.redis-server -v      2. mysql -V  3. rsync -h | head -1   4.node -v   5.python -V  6.git --version   7../java -version(jdk版本)  8.nginx -v
 
 time dd if=/dev/zero of=test.db bs=8k count=5000 oflag=direct
 1.time有计时作用，dd用于复制，从if读出，写到of；
@@ -29,26 +41,13 @@ time dd if=/dev/zero of=test.db bs=8k count=5000 oflag=direct
 5.bs是每次读或写的大小，即一个块的大小，count是读写块的数量。oflag=direct将跳过内存缓存，direct 读写数据采用直接IO方式；
 配合iostat的一起使用观察磁盘性能。dd测试是顺序写入磁盘，结果是参考值,测试时一定加direct值，无缓存测试。需要和线上正常磁盘比对，否则没有参考价值。
 
+查看selinux状态命令：sestatus
 
-查看系统硬件信息：
-cat /proc/cpuinfo |grep "physical id" | sort |uniq |wc -l      物理cpu颗数
-cat /proc/cpuinfo | grep "cores" | uniq                        物理核心
-cat /proc/cpuinfo |grep "processor"| wc -l                     逻辑cpu个数(常说的cpu个数就是指这个)如果大于cpu颗数*核心，说明使用了intel的超线程技术(HT)
-cat /proc/cpuinfo | grep -e "cpu cores"  -e "siblings" | sort | uniq              
-cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c          逻辑cpu个数  设备名称 
-getconf LONG_BIT                                               当前运行在32或64模式下
-cat /etc/redhat-release                                        发行版本
-dmidecode | grep "Product Name"                                cpu产商
-cat /proc/cpuinfo |grep "MHz"                                  cpu频率    
-uname -r                                                       内核版本                      
-dmidecode |grep -A16 "System Information$"                     查看内存服务器型号、序列号
-dmidecode|grep -A16 "Memory Device"|grep 'Speed'               查看频率
-dmidecode|grep -P 'Maximum\s+Capacity'                         最大支持几G内存
-虚拟内存VIRT，物理内存RES，共享内存SHR
-虚拟内存：凡是程序运行过程中可能需要用到的指令或者数据都必须在虚拟内存空间中。
-驻留内存：是指那些被映射到进程虚拟内存空间的物理内存
-
-
+分区：
+fdisk /dev/sda
+m -- p -- n -- 选格式p(可以空格) -- 选分区1(可以空格) -- 起始(可以空格) -- 结束+size{K,M,G} -- p [--d]
+lsblk -f(切记先查看以前使用什么文件系统的)-- 格式化：mkfs.ext4 /dev/sda1 // mkfs -t xfs /dev/sda1 --  lsblk -f /df -T    
+/etc/fstab：/dev/hda1   /   ext4        defaults   0 0  -- mount -a  --  lsblk
 
 nohup:前台另起独立于当前会话的进程运行，可被Ctrl+c(SIGINT 信号)中断
 & ：在当前会话启动子进程运行,退出当前会话会被中断(SIGHUP 信号) 	或者Ctrl+z + bg		   
@@ -482,13 +481,33 @@ virt-what                          实际上是一个 Shell 脚本
 
 
 
-
-
-
-
-
-
-
+查看系统硬件信息：
+cat /proc/cpuinfo |grep "physical id" | sort |uniq |wc -l      物理cpu颗数
+cat /proc/cpuinfo | grep "cores" | uniq                        物理核心
+cat /proc/cpuinfo |grep "processor"| wc -l                     逻辑cpu个数(常说的cpu个数就是指这个)如果大于cpu颗数*核心，说明使用了intel的超线程技术(HT)
+cat /proc/cpuinfo | grep -e "cpu cores"  -e "siblings" | sort | uniq              
+cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c          逻辑cpu个数  设备名称 
+getconf LONG_BIT                                               当前运行在32或64模式下
+cat /etc/redhat-release                                        发行版本
+dmidecode | grep "Product Name"                                cpu产商
+cat /proc/cpuinfo |grep "MHz"                                  cpu频率    
+uname -r                                                       内核版本                      
+dmidecode |grep -A16 "System Information$"                     查看内存服务器型号、序列号
+dmidecode|grep -A16 "Memory Device"|grep 'Speed'               查看频率
+dmidecode|grep -P 'Maximum\s+Capacity'                         最大支持几G内存
+grep "model name" /proc/cpuinfo  
+grep MemTotal /proc/meminfo |awk '{print $2/1024/1024"G"}'  //  free
+getconf LONG_BIT
+more /etc/redhat-release   //  more /proc/version
+uname -r/a
+date -R    //   cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+hostname
+sestatus
+ip a | grep -A 3 "state UP"    //  ifconfig    | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1}'
+route -n  // ip route  //  cat /etc/sysconfig/network
+cat /etc/resolv.conf
+rpm -qa | wc -l   //   yum list installed | wc -l
+df -Th // lsblk // du -sh
 
 
 

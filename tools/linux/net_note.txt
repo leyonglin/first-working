@@ -1,0 +1,181 @@
+
+程序的可运行机器码的一个在存储器的映像。 分配到的存储器（通常包括虚拟内存的一个区域）。存储器的内容包括可运行代码、特定于进程的数据（输入、输出）、调用堆栈、堆栈（用于保存运行时运数中途产生的数据）。 分配给该进程的资源的操作系统描述符，诸如文件描述符（Unix术语）或文件句柄（Windows）、数据源和数据终端。 安全特性，诸如进程拥有者和进程的权限集（可以容许的操作）。 处理器状态（内文），诸如寄存器内容、物理存储器寻址等。当进程正在运行时，状态通常储存在寄存器，其他情况在存储器。
+每一个进程都有它自己的地址空间，一般情况下，包括文本区域（text region）、数据区域（data region）和堆栈（stack region）。文本区域存储处理器执行的代码；数据区域存储变量和进程执行期间使用的动态分配的内存；堆栈区域存储着活动过程调用的指令和本地变量。
+
+IOPS（Input/Output Per Second）即每秒的输入输出量（或读写次数）
+  
+  netstat -antp | grep pid  查看连接状态
+  awk  '{ip[$1]++} END{for(i in ip) {print ip[i],i}}' ip.txt | sort -nr 
+  netstat -n | awk '/^tcp/ {++S[$NF]} END {for(a in S) print a, S[a]}'
+  awk [ 选项] ' BEGIN{ 指令} { 指令} END{ 指令} ' 文件
+
+协议栈（英语：Protocol stack），又称协议堆叠，可以理解为代码、函数库、供上层应用调用。商业化的协议栈就是给你写好了底层的代码，符合协议标准，提供给你一个功能模块给你调用。你需要关心的就是你的应用逻辑，数据从哪里到哪里，怎么存储，处理还有系统里的设备之间的通信顺序什么的。所以当你做具体应用时，不需要关心协议栈是怎么写的，里面的每条代码是什么意思。
+
+网络接口层=物理层+数据链路层   应用层=会话层+表示层+应用层
+
+RFC：是一系列以编号排定的文件。文件收集了有关互联网相关信息，以及UNIX和互联网社区的软件文件
+
+CCProxy：主要用于局域网内共享宽带上网，ADSL共享上网、专线代理共享、ISDN代理共享、卫星代理共享、蓝牙代理共享和二级代理等共享代理上网。
+
+tcp五元组：源端口 目标端口 源ip 目标IP 协议
+
+IPS：互联网协议族（英语：Internet Protocol Suite），是一个网络通信模型，以及一整个网络传输协议家族，为互联网的基础通信架构。它常被通称为 TCP/IP 协议族
+
+应用层的各种网络应用程序基本上都是通过 Linux Socket( 属于文件系统的一部分)编程接口来和内核空间的网络协议栈通信的。Linux Socket 是从 BSD Socket 发展而来的，它是 Linux 操作系统的重要组成部分之一，它是网络应用程序的基础。从层次上来说，它位于应用层，是操作系统为应用程序员提供的 API，通过它，应用程序可以访问传输层协议。
+传输层的最终目的是向它的用户提供高效的、可靠的和成本有效的数据传输服务，主要功能包括 （1）构造 TCP segment （2）计算 checksum （3）发送回复（ACK）包 （4）滑动窗口（sliding windown）等保证可靠性的操作。TCP 协议栈的大致处理过程如下图所示： 
+网络层的任务就是选择合适的网间路由和交换结点， 确保数据及时传送。网络层将数据链路层提供的帧组成数据包，包中封装有网络层包头，其中含有逻辑地址信息- -源站点和目的站点地址的网络地址。其主要任务包括 （1）路由处理，即选择下一跳 （2）添加 IP header（3）计算 IP header checksum，用于检测 IP 报文头部在传播过程中是否出错 （4）可能的话，进行 IP 分片（5）处理完毕，获取下一跳的 MAC 地址，设置链路层报文头，然后转入链路层处理。
+数据链路层在不可靠的物理介质上提供可靠的传输,建立相邻结点之间的数据链路，通过差错控制提供数据帧（Frame）在信道上无差错的传输
+OSI将层与层之间交换的数据的单位称为服务数据单元SDU。
+数据单位：bit--frame--packet--segments/datagrams---数据(data)/报文
+MTU是网络接口层的限制(该网络设备能够传输的最大帧（frame）的大小)，而MSS是传输层的概念。其实这就是 TCP分段 和 IP分片 。MSS值是TCP协议实现的时候根据MTU换算而得(减掉Header)。当一个连接建立时， 连接的双方都要通告各自的MSS值。
+
+每一层添加的 Header(TCP/UDP Header, IP Header, Data Link Header) 都是为了实现该层协议服务而必须存在的协议相关数据。
+Netfilter:Linux内核中的防火墙实现模块。也就是我们使用iptables调用的功能。提供了包过滤和地址转换功能。
+
+用户层创建数据，调用write系统调用发送数据。
+一旦执行系统调用，系统则进入内核层。对于类Linux系统，通过文件描述符关联socket和应用，内核中socket包含收发两块buffer。
+在系统调用执行数据将被拷贝至内核memory当中，然后添加至发送buffer尾部，即按序发送。
+在TCP层，TCB(TCP Control Block) 关联socket，如果TCP允许数据发送，内核创建TCP segment。否则，由于规则或者流量控制会将该报文丢弃。至于TCP segment报文格式，无外乎一个header加payload，还有个checksum。TCP校验和往往由网卡进行计算。
+继续在TCP segment上封装IP层，再算下IP校验和，就可以扔给网络层了，比如以太网层。
+以太网层开始查找下一跳IP的MAC地址，一旦完成将继续封装Etherent头，最终送往driver层，这里往往也是各大抓包工具进行数据拷贝的地方，比如tcpdump/wirshark，或者是自己写的抓包工具；流量整形也往往在这一层完成。
+driver层在收到发送请求之后，通过DMA将该主存中的数据拷贝至内部RAM之中。在数据拷贝中，同时加入符合以太网协议的相关header，IFG、前导符和CRC。对于以太网网络，物理层发送采用CSMA/CD,即在发送过程中侦听链路冲突；而对于Wi-Fi网络，则采用CSMA/CA，其基本思想是要想占用channel并发言，首先做好聆听（也是做人哲学之一），对于需要ACK的报文，一旦在规定时间内搜不到ACK，则重传该报文。
+一旦网卡完成报文发送，将产生中断通知CPU。
+
+CPU工作方法分为中断模式和查询模式.
+查询模式就是说CPU轮翻的对外设顺序访问,效率低.但稳定可靠.适合处理数据量大
+中断模式时就是说CPU不主动访问这些设备,,只管处理自己的任务,没任务就闲着.也就是说在那等着.如果有设备要与CPU联系,或要CPU处理一些事情,他会给CPU发一个中断请求信号.一种情况是这时CPU就会放下正在进行的工作而去处理这个外设的要求.这叫做响应中断.处理完中断后,CPU返回去继续执行中断以前的工作.
+          如果CPU这时正在做更重要的事情他就会让这个设备先在那等着.有空时响应他.如果同时有好几个设备都要CPU来处理,CPU就会从按重要程度来逐个处理.这就是中断和中断的优先级。适合数据量小
+NAPI(new API)是综合中断方式与轮询方式的技术。为了解决网络对CPU的影响而引入的。NAPI 可以有效的减少网络对CPU中断而导致的上下文切换次数，减轻导致的CPU性能损耗。网卡驱动必须提供轮询方法poll()。内核接口为napi_schedule()
+
+
+tcp--checksum    数据链路层--差错控制
+skb：socket_buffer 套接字缓存
+struct sock 有三个队列（queue），分别是 rx , tx 和 err
+
+三次握手建立连接：
+1）第一次握手：建立连接时，客户端A发送SYN包（SYN=j）到服务器B，并进入SYN_SENT状态，等待服务器B确认。
+2）第二次握手：服务器B收到SYN包，必须发生一个ACK包，来确认客户A的SYN（ACK=j+1），同时自己也发送一个SYN包（SYN=k），即SYN+ACK包，此时服务器B进入SYN_RECV状态。
+3）第三次握手：客户端A收到服务器B的SYN＋ACK包，向服务器B发送确认包ACK（ACK=k+1），此包发送完毕，客户端A和服务器B进入ESTABLISHED状态，完成三次握手(注意，主动打开方的最后一个ACK包中可能会携带了它要发送给服务端的数据)。
+总结：三次握手，其实就是主动打开方，发送SYN，表示要建立连接，然后被动打开方对此进行确认，表示可以，然后主动方收到确认之后，对确认进行确认；
+四次挥手断开连接：
+由于TCP连接是全双工的，因此每个方向都必须单独进行关闭，TCP的双方都要向对方发送一次 FIN 包，并且要对方对次进行确认。根据两次FIN包的发送和确认可以将四次挥手分为两个阶段：
+第一阶段：主要是主动闭方方发生FIN，被动方对它进行确认；  
+1）第一次挥手：主动关闭方，客户端发送完数据之后，向服务器发送一个FIN(M)数据包，进入 FIN_WAIT1 状态；
+                     被动关闭方服务器收到FIN(M)后，进入 CLOSE_WAIT 状态；
+2）第二次挥手：服务端发送FIN(M)的确认包ACK(M+1)，关闭服务器读通道，进入 LAST_ACK 状态；客户端收到ACK(M+1)后，关闭客户端写通道，
+                     进入 FIN_WATI2 状态；此时客户端仍能通过读通道读取服务器的数据，服务器仍能通过写通道写数据。
+第二阶段：主要是被动关闭方发生FIN，主动方对它进行确认；
+3）第三次挥手：服务器发送完数据，向客户机发送一个FIN(N)数据包，状态没有变还是 LAST_ACK；客户端收到FIN(N)后，进入 TIME_WAIT 状态
+4）第四次挥手：客户端返回对FIN(N)的确认段ACK(N+1)，关闭客户机读通道(还是TIME_WAIT状态);
+                     服务器收到ACK(N+1)后，关闭服务器写通道，进入CLOSED状态。
+
+总结：
+四次挥手，其本质就是：
+主动关闭方数据发生完成之后 发生FIN，表示我方数据发生完，要断开连接，被动方对此进行确认；
+然后被动关闭方在数据发生完成之后 发生FIN，表示我方数据发生完成，要断开连接，主动方对此进行确认；
+在TCP层，有个FLAGS(标志位)字段
+        SYN表示建立连接，
+        FIN表示关闭连接，
+        ACK表示响应，
+        PSH表示有 DATA数据传输，
+        RST表示连接重置。
+
+recv-Q 表示网络接收队列(receive queue):表示收到的数据已经在本地接收缓冲，但是还有多少没有被用户进程取走，如果接收队列Recv-Q一直处于阻塞状态，可能是遭受了拒绝服务 denial-of-service 攻击。
+send-Q 表示网路发送队列(send queue)发送了，但是没有收到对方的Ack的, 还保留本地缓冲区.如果发送队列Send-Q不能很快的清零，可能是有应用向外发送数据包过快，或者是对方接收数据包不够快。
+
+vm1：
+ip link add vxlan1 type vxlan id 1 remote 172.31.0.107 dstport 4789 dev eth0
+ip link set vxlan1 up
+ip addr add 10.0.0.106/24 dev vxlan1
+上面的第一条命令创建了一个Linux上类型为vxlan的网络接口，名为vxlan1。
+id: VNI标识是1。
+remote: 作为一个VTEP设备来封装和解封VXLAN报文，需要知道将封装好的VXLAN报文发送到哪个对端VTEP。Linux上可以利用group指定组播组地址，或者利用remote指定对端单播地址。在实验的云环境中默认不支持组播，这里利用remote指定点对点的对端IP地址为172.31.0.107。
+dstport: 指定目的端口为4789。因为当Linux内核3.7版本首次实现VXLAN时，UDP端口还并没有规定下来。很多厂商利用了8472这个端口，Linux也采用了相同的端口。后来IANA分配了4789作为VXLAN的目的UDP端口。如果你需要使用IANA端口，需要用dstport指定。
+dev: 指定VTEP通过哪个物理device来通信，这里是使用eth0。
+vm2: similar
+
+
+nmcli
+
+#常用命令
+ip route get IP                          #查看获取IP通过那张网卡
+ip link show                             #显示链路
+ip addr show                             #显示地址(或ifconfig)
+ip route show                            #显示路由(route -n)
+ip neigh show                            #显示arp表(ping 192.168.95.50，如果主机在同一局域网内，直接加到arp表)
+ip neigh delete 192.168.95.50 dev eth0   #删除arp条目，条目仍然存在状态为stale，下次通信需要确认
+ip rule show                             #显示缺省规则
+ip route del default dev eth0            #删除接口路由
+ip route show table local                #查看本地静态路由
+ip route show table main                 #查看直连路由
+ip route add 10.1.1.0/30 encap mpls 200/300 via 10.1.1.1 dev eth0
+
+route 命令的输出项说明
+输出项 说明
+Destination	目标网段或者主机，第一条路由信息中Destination是default， Genmask是0.0.0.0. 可以认为是全网路由，也就是可以达到任务的网络地址。
+Gateway	网关地址，”*” 表示目标是本主机所属的网络，不需要路由
+Genmask	网络掩码
+Flags	标记。一些可能的标记如下：
+ 	U — 路由是活动的
+ 	H — 目标是一个主机
+ 	G — 路由指向网关，需要通过外部的主机来传递数据包
+ 	R — 恢复动态路由产生的表项，动态路由
+ 	D — 由路由的后台程序动态地安装，动态路由
+ 	M — 由路由的后台程序修改
+ 	! — 拒绝路由
+Metric	路由距离，到达指定网络所需的中转数（linux 内核中没有使用）
+Ref	路由项引用次数（linux 内核中没有使用）
+Use	此路由项被路由软件查找的次数
+Iface	该路由表项对应的输出接口
+
+
+
+ip netns help
+ip netns add r1      添加名称空间
+ip netns add r2
+ip netns list        查看创建的名称空间
+ip netns exec r1 ifconfig -a           在名称空间中执行命令
+ip link help
+ip link add name veth1.1 type veth peer name veth1.2    
+ip link show  （ 两组：veth1.2@veth1.1 ）
+ip link set dev veth1.2 netns r1      将网卡设备veth1.2放到r1网络名称空间中
+ip link show  
+ip netns exec r1 ifconfig -a
+ip netns exec r1 ip link set dev veth1.2 name eth0  网卡改名
+ip netns exec r1 ifconfig -a
+ifconfig veth1.1 10.1.0.1/24 up                  激活网卡
+ip a | grep veth1.1
+ip netns exec r1 ifconfig eth0 10.1.0.2/24 up
+ip netns exec r1 ifconfig
+ping 10.1.0.2
+ip link set dev veth1.1 netns r2
+ip netns exec r2 iconfig
+ip netns exec r2 ifconfig -a
+ip netns exec r2 ifconfig veth1.1 10.1.0.3/24 up
+ip netns exec r2 ping 10.1.0.2
+
+
+ip link add br-sunld08-test type bridge
+ip link set dev br-sunld08-test up
+ip link show br-sunld08-test
+brctl show br-sunld08-test
+ip link add test-veth08 type veth peer name test-veth09
+ip a
+ifconfig test-veth08 192.168.209.135/24 up（配置并启动设备）
+ifconfig test-veth09 192.168.209.136/24 up
+（ip link set dev  test-veth08 up  && ip link set dev  test-veth09 up  单独激活）
+ip link set dev test-veth08 master br-sunld08-test  #把test-veth08连接到br-sunld08-test
+bridge link | grep test-veth08 （查看与网卡绑定的网桥）（brctl show）
+
+ping -c 4 192.168.209.136 -I test-veth08    
+tcpdump -n -i test-veth09
+从上面的抓包可以看出，去和回来的流程都没有问题，问题就出在test-veth08收到应答包后没有给协议栈，而是给了br-sunld08-test，于是协议栈得不到test-veth09的mac地址，从而通信失败。
+
+ip addr del 192.168.209.135/24 dev test-veth08
+ip addr add 192.168.209.135/24 dev br-sunld08-test
+ping -c 4 192.168.209.136 -I br-sunld08-test
+ping -c 4 192.168.209.2 -I br-sunld08-test    ping网关
+ip link set dev eth0 master br-sunld08-test  &&  bridge link  #将物理网卡绑定到bridge
+brctl stp br0 off #关闭生成树协议，减少数据包污染-P07\859620454\
+P;LKJHF
+

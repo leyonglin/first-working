@@ -1,0 +1,10 @@
+kubectl cluster-info [dump]
+kubectl -s https://192.169.69.156:6443 get componentstatuses
+kubectl get nodes
+kubectl get rc,namespace
+kubectl -n kube-system describe pods tiller-deploy-7bf78cdbf7-cb4vn
+
+kubectl api-resources 资源
+
+api信息：kubectl api-versions
+~/.kube/cache

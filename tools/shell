@@ -52,7 +52,7 @@ done<"$file"
 		  
 for i in "1 2"; do echo ${i}; echo ok; done		  
 
-1 2 == {1,2}
+1 2 == {1,2} == {1..2}
 
 
 
