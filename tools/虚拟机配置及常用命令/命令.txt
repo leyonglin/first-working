@@ -1,12 +1,13 @@
 
-top -c显示命令 -d间隔 -pPID -q无延迟运行(优先) -i活跃线程 
-f - 调整显示内容
+top  -d间隔 -pPID  -q无延迟运行(优先) -uUSER  -nNUM
+h帮助  f调整显示内容 c显示命令 i活跃线程  0显示多核cpu状态  b显示运行任务？  上下键   x显示当前排序列  s改变时间间隔   W将当前设置写入~/.toprc文件中
 N/R – 以 PID 的大小的顺序排列表示进程列表
 P – 以 CPU 占用率大小的顺序排列进程列表
 M – 以内存占用率大小的顺序排列进程列表
 T:根据时间/累计时间进行排序。
 1.系统运行时间和平均负载  2.任务  3.cpu状态[us, user： 运行(未调整优先级的) 用户进程的CPU时间   //  sy，system: 运行内核进程的CPU时间  //  ni，niced：运行已调整优先级的用户进程的CPU时间   //   wa，IO wait: 用于等待IO完成的CPU时间  //  hi：处理硬件中断的CPU时间  //  si: 处理软件中断的CPU时间 / st：这个虚拟机被hypervisor偷去的CPU时间（译注：如果当前处于一个hypervisor下的vm，实际上hypervisor也是要消耗一部分CPU处理时间的）
 各进程（任务）的状态监控:S：这个是进程的状态。它有以下不同的值:D - 不可中断的睡眠态   R – 运行态   S – 睡眠态    T – 被跟踪或已停止    Z – 僵尸态
+
 
 iostat: iostat 2(秒) 3(次) -k/m(单位)  // -p(指定磁盘)  sda // -N磁盘整列
 Linux 3.10.0-514.el7.x86_64 (localhost.localdomain) 	07/12/2019 	_x86_64_	(40 CPU)-->内核/版本/主机名 /时间/位数/逻辑cpu数

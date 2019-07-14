@@ -135,8 +135,8 @@ jumpserver£º¿ÉÒÔÔÚxshellµÇÂ½£¬Ò²¿ÉÒÔÔÚÍøÒ³µÇÂ½£¬webÖÕ¶Ë¿ÉÒÔºÍxshellÒ»ÑùÊ¹ÓÃÃüÁî£
     D ²»¿ÉÖĞ¶Ï uninterruptible sleep (usually IO)
 4. ½©ËÀ(½ø³ÌÒÑÖÕÖ¹, µ«½ø³ÌÃèÊö·û´æÔÚ, Ö±µ½¸¸½ø³Ìµ÷ÓÃwait4()ÏµÍ³µ÷ÓÃºóÊÍ·Å) 
     Z  ½©ËÀ a defunct (¡±zombie¡±) process 
-5. Í£Ö¹(½ø³ÌÊÕµ½SIGSTOP, SIGSTP, SIGTIN, SIGTOUĞÅºÅºóÍ£Ö¹ÔËĞĞÔËĞĞ
-    T Í£Ö¹ traced or stopped  
+5. Í£Ö¹(½ø³ÌÊÕµ½SIGSTOP, SIGSTP, SIGTIN, SIGTOUĞÅºÅºóÍ£Ö¹ÔËĞĞÔËĞĞ   ¸ú×Ù/Í£Ö¹ 
+    T Í£Ö¹ traced or stopped 
 
 runlevel¿É²é¿´
 0-Í£»ú(Ç§Íò²»Òª°ÑinitdefaultÉèÖÃÎª0)
