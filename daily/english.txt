@@ -1,0 +1,64 @@
+一月January —— Jan.
+二月February —— Feb.
+三月March —— Mar.
+四月April —— Apr.
+五月May —— May.
+六月June —— Jun.
+七月July  —— Jul.
+八月August—— Aug.
+九月September —— Sept.
+十月October —— Oct.
+十一月November —— Nov.
+十二月December—— Dec.
+
+星期日 Sunday=Sun.
+星期一 Monday=Mon.
+星期二 Tuesday=Tues.
+星期三 Wednesday=Wed.
+星期四 Thursday=Thur./Thurs.
+星期五 Friday=Fri.
+星期六 Saturday=Sat.
+注意：缩写的“.”不能省略。
+
+rcp：远程文件拷贝
+
+alternative可选的       realm领域                Credentials证书           specify指定(spec)           kit装备/软件包           integration集成           external 外部的           Internal 内部的           contained包含           
+
+evaluated估计           subsequent后续           deploy部署           development发展           instance情况/实例           generic一般的           rectify the issue纠正这个问题           previous以前的
+
+preserved correctly保存正确           instruction 指令           tutorial辅导的，教程           Release notes发行说明           concept概念           expect期望            instructions说明           clicking点(单)击
+
+orientation：方向           Troubleshooting寻找故障           prerequisites先决条件           strategies策略           constraint：限制           Scope：范围           infrastructure基础设施           customize定制           
+
+bypass绕过           Procedure程序           detached分离的,后台           recommended被推荐的           inspect检查           prompted提示           along(延伸)with  以及           goal目标           manipulate手动           
+
+complicated复杂的           explicitly明确的           significant意义           comma-separated逗号分隔           metrics度量           revision修订本           dashboards仪表盘           scenario方案           lag延迟  
+
+allocation分配             raw：状态跟踪             backlog：积压           pm：fpm进程                 buckets：桶，缓存              orphans：孤儿，单独无关联              scaling：定标; 缩放比例       distributing分发      
+
+fatal：致命的           fetch：取回           demonstrates显示           inventory 主机清单           suppress 隐藏        Compatibility 兼容性     prompts：提示  colon：冒号   percent：百分号    major主要的
+
+proceed with继续进行    checkboxes复选框   frontend前端   backend后端    attempt to尝试       credential凭证       constraints限制      simultaneously同时   tolerate忍受    ratio比例    architecture体系结构
+
+especially 特别的       external外部的  period时期   consult咨询    Compose构成      conjunction with 与...结合    reference 提及,引用    the name field 名称字段   network-scoped 网络范围的 
+
+guaranteed 担保    grace 优雅    discard 抛弃    relying on依赖     periodically  定期   array 数组    standalone单独的      substitutes替补    Extension fields扩展字段  archives档案   major主要的
+
+manipulate操作		utility效用 	multicast多点传送   allocated分配的   peak山峰   struct socket结构套接字    Segmentation Offloading分段卸载
+
+hops跳数          probe调查/探针      validate生效     established确定的
+
+
+choose any additional install options   选择任何其他安装选项
+check for updates on startup            启动时检查更新
+install folder context menus            安装文件夹上下文菜单
+install quick launch shortcut           安装快速启动快捷方式
+associate efu files with everything     将efu文件与所有内容相关联
+Choose a tab below to see how this plays out in various contexts.    选择下面的一个标签，看看这在不同的环境中是如何进行的。
+Click on Create item in the upper right corner of the screen  点击屏幕右上角的创建项目
+forwards signals and reaps processes    转发信号并获取进程
+Specify a list of options as key-value pairs to pass to the driver for this volume. Those options are driver-dependent 指定一个选项列表作为键值对传递给该卷的驱动程序。这些选项依赖于驱动程序
+Set a custom name   设置自定义名称
+This is an object with several properties, each of which is optional  这是一个具有多个属性的对象，每个属性都是可选的
+     
+

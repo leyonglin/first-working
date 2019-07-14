@@ -1,0 +1,128 @@
+		   
+	
+
+安装部署gitlab服务器：gitlab-ce参考文档：https://about.gitlab.com/install/
+软件包位置：https://packages.gitlab.com/gitlab/gitlab-ce/packages/el/7/gitlab-ce-10.8.2-ce.0.el7.x86_64.rpm [/download]        
+清华大学包源：https://mirrors.tuna.tsinghua.edu.cn/gitlab-ce/yum/el7/                  
+步骤：
+      yum -y install gitlab-ce-10.8.2-ce.0.el7.x86_64.rpm
+      yum install -y curl policycoreutils-python openssh-server cronie
+	  lokkit -s http -s ssh     (yum install lokkit，lokkit 可以帮助我们设定iptables 打开http和ssh)
+	  systemctl restart sshd
+      systemctl enable sshd
+	  curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh |  bash
+    # EXTERNAL_URL="https://gitlab.example.com" yum install -y gitlab-ce
+	  reboot 
+	  gitlab-ctl reconfigure       ----  初始化配置gitlab
+	  gitlab-ctl start|stop        ----  启动|停止
+	  firefox  ip                  ----  注意事项(安全策略，详见注意)
+	  
+	  [yum install postfix
+	  systemctl start postfix
+	  systemctl restart postfix         支持邮件通知]
+      [firewall-cmd --permanent --add-service=http  && systemctl reload firewalld]
+	  
+配置文件: /etc/gitlab/gitlab.rb
+检查gitlab:gitlab-rake gitlab:check SANITIZE=true --trace
+
+	
+配置https: https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/settings/nginx.md
+ 	yum -y install openssl
+    mkdir -p /etc/gitlab/ssl
+    cd /etc/gitlab/ssl
+    openssl req -newkey rsa:2048 -x509 -nodes -days 3560 -out gitlab.crt -keyout gitlab.key
+vim /etc/gitlab/gitlab.rb
+external_url 'https://192.168.18.13:8888' (720-740之间,这是干啥用的？)
+nginx['enable'] = true
+nginx['redirect_http_to_https'] = true
+nginx['ssl_certificate'] = "/etc/gitlab/ssl/gitlab.crt"
+nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/gitlab.key"
+ 
+gitlab-ctl reconfigure
+
+忽略文件：git ignore文件(参考文档：https://github.com/github/gitignore)
+       (路径：/var/opt/gitlab/git-data/repositories/username/git.git/info/exclude )
+
+不使用默认的SSH端口(双端口)：在服务器sshd增加12345并放通外网对其的访问，内网不受影响扔可以使用默认的22号端口做版本控制。
+   客户端机创建key,然后将公钥丢到Gitlab上
+   在.ssh目录创建config文件
+   cat  ~/.ssh/config
+   Host gitlab.renn.top
+   User git
+   Port 12345
+   IdentityFile  ~/.ssh/id_rsa
+   2.3 测试连通性
+   ssh -T gitlab.renn.top
+
+排错：
+检查服务状态：gitlab-ctl status
+查看日志:gitlab-ctl tail  [服务名称]
+
+
+Gitlab 修改root用户密码
+使用rails工具打开终端：gitlab-rails console production
+查询用户的email，用户名，密码等信息，id:1 表示root账号：user = User.where(id: 1).first
+重新设置密码：
+  user.password = '新密码'
+  user.password_confirmation = '新密码'　
+  user.save!
+	
+定时备份：	/opt/gitlab/bin/gitlab-rake gitlab:backup:create CRON=1 (环境变量CRON=1的作用是如果没有任何错误发生时， 抑制备份脚本的所有进度输出。)
+	
+	
+Gitlab迁移：确保新Gitlab服务器和老Gitlab服务器版本相同(如不一致，迁移前，先升级就gitlab版本)	
+备份数据：gitlab-rake gitlab:backup:create [备份策略] (注意：不同安装方式备份及配置不一样)
+          备份策略：1.STRATEGY = copy    2.SKIP=db,uploads... (可选项：db(数据库)  uploads(附件)  repositories(Git repositories 数据)  builds(CI job output logs)   artifacts(CI job artifacts)   lfs(LFS objects)   registry(Container Registry images)   pages(Pages content))
+         (将在/var/opt/gitlab/backups目录下创建一个名称类似为xxxxxxxx_gitlab_backup.tar的压缩包，(xxxxx为备份文件的时间戳), 这个压缩包就是Gitlab整个的完整部分, 其中开头的xxxxxx是备份创建的时间戳。)
+         Gitlab 修改备份文件默认目录(修改/etc/gitlab/gitlab.rb来修改默认存放备份文件的目录:gitlab_rails['backup_path'] = '/mnt/backups') 备份过期时间 gitlab_rails['backup_keep_time'] = 604800 
+	     修改后使用gitlab-ctl reconfigure命令重载配置文件。
+恢复数据：进入备份 gitlab 的目录，这个目录是配置文件中的 gitlab_rails['backup_path'] ，默认为 /var/opt/gitlab/backups(如果是迁移，记得改权限) 
+        #停止 unicorn(gitlab-ctl stop unicorn ) 和 sidekiq (gitlab-ctl stop sidekiq) 
+	    恢复数据:gitlab-rake gitlab:backup:restore BACKUP=xxxxxx (xxxxx为备份文件的时间戳) (交互输入yes(默认))
+备份配置文件：/etc/gitlab(应该都在这里)
+        /etc/gitlab/gitlab.rb 配置文件须备份
+		/etc/gitlab/gitlab-secrets.json 密钥
+        /var/opt/gitlab/nginx/conf nginx配置文件
+        /etc/postfix/main.cfpostfix 邮件配置备份
+重载：gitlab-ctl reconfigure
+启动: gitlab-ctl start	
+	
+	
+建议将/etc/gitlab备份到安全的地方。如果要还原gitlab应用程序，还需要还原gitlab-secrets.json。
+ #服务器的ssh主机密钥存储在/etc/ssh/目录中
+	
+	
+升级：关闭 unicorn sidekiq  nginx 服务（注意??：由于升级不能跨越大版本号，因此只能升级到当前大版本号到最高版本，方可升级到下一个大版本号）
+      安装新版本
+      重新配置并启动	
+
+中文版：参考链接：https://www.cnblogs.com/straycats/p/7637373.html
+        git clone https://gitlab.com/xhang/gitlab [-b v10.0.2-zh 老版本]	 
+        查看：cat gitlab/VERSION
+        停服务并切换到gitlab汉化包所在的目录cd /root/gitlab
+        比较汉化标签和原标签，，导出patch用的diff文件到/root下 git diff v10.0.4 v10.0.4-zh > ../10.0.4-zh.diff
+        cd /root  
+        将10.0.4-zh.diff作为补丁更新到gitlab中 
+        yum install patch -y
+        patch -d /opt/gitlab/embedded/service/gitlab-rails -p1 < 10.0.4-zh.diff
+        重新配置并启动 
+
+邮件配置：https://blog.csdn.net/qq_29000537/article/details/82795281
+         配置文件：/etc/gitlab/gitlab.rb
+	
+	
+服务器回退：在操作一定要先将相应项目的目录整个打包备份(或者恢复之前数据)
+	cd /var/opt/gitlab/git-data/repositories/groupname/web-trade.git
+    git reset --soft 8cbc3d0
+	
+自定义服务：	
+redis[‘enable’] = false表示弃用gitlab本身的redis服务
+
+
+		
+git图形化操作：	
+1.Eclipse中有git插件,可以实现图形化操作
+  Eclipse 是一个开放源代码的、基于Java的可扩展开发平台。就其本身而言，它只是一个框架和一组服务，用于通过插件组件构建开发环境。幸运的是，Eclipse 附带了一个标准的插件集，包括Java开发工具（Java Development Kit，JDK）
+
+2.TortoiseGit是一个Git版本控制客户端依赖git bash 也可以实现图形化操作      官网：https://www.git-scm.com/download/
+

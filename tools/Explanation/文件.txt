@@ -1,0 +1,33 @@
+
+
+
+安全
+firewalld
+/etc/hosts.deny
+/etc/sudoers  
+/etc/ssh/sshd_config
+/etc/issue、/etc/issue.net 来控制本地及远程登录前的信息显示
+/etc/motd    登陆后的信息显示
+
+linux下设置密码复杂度限制:
+/etc/login.defs        /etc/pam.d/system-auth
+
+
+/etc/rc.local(链接)是Linux启动程序在login程序前执行的最后一个脚本，确保它不会启动两次的情况出现。 存在则不会再执行
+/etc/hosts(本地dns解析，优先级最高)、/etc/host.conf(解析顺序)、/etc/resolv.conf(指定DNS服务器，优先级最高)（Linux下有三个网络配置文件）
+
+
+SSH由客户端和服务端(SSH Server/daemon)组成：
+/etc/ssh/ssh_config    客户端的配置文件(man 5 ssh_config)
+/etc/ssh/sshd_config   服务端的配置文件(man 5 sshd_config)
+
+
+系统初始化级别脚本运行之后自动执行的：/etc/rc.local
+init.d目录下的脚本：以K开头的脚本运行在以S开头的脚本之前(开机自启:update-rc.d redis defaults)
+                    service xxx启动/etc/init.d/目录下的xxx脚本(或者Redirecting to /bin/systemctl start docker.service)					
+	主要有四种类型文件
+	*.mount:定义了一个挂载点，[Mount]节点里配置了What,Where,Type三个数据项
+	*.service:文件定义了一个服务，[Unit]，[Service]，[Install]三个小节
+	*.target:定义了一些基础的组件，供.service文件调用
+	*.wants:定义了要执行的文件集合，每次执行，.wants文件夹里面的文件都会执行
+
