@@ -9,6 +9,7 @@ http://openresty.org
 https://www.hi-linux.com/
 https://raye.wang/
 https://www.cnblogs.com/zengkefu/p/5616676.html
+百度文档
 
 python：
 https://github.com/satwikkansal/wtfpython   /   https://github.com/leisurelicht/wtfpython-cn

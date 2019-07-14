@@ -1,8 +1,0 @@
-
-Logstash（收集+分析）：是开源的服务器端数据处理管道，能够同时从多个来源采集数据，转换数据，然后将数据发送到您最喜欢的 “存储库” 中
-Elasticsearch（搜索+存储）：是一个分布式、RESTful 风格的搜索和数据分析引擎
-Kibana（可视化展示）：数据进行可视化并在 Elastic Stack 进行操作
-
-Fluentd是统一日志层的开源数据收集器。Fluentd is an open source data collector for unified logging layer.
-filebeat 轻量型日志采集器，是Elastic Stack 一部分
-beataudit:轻量型审计日志采集器,收集您Linux 审计框架的数据，监控文件完整性。Auditbeat 实时采集这些事件，然后发送到 Elastic Stack 其他部分做进一步分析。

@@ -1,7 +1,7 @@
 
 BSD:unixµÄÑÜÉúÏµÍ³
 
-jQueryÊÇÒ»¸ö¿ìËÙ¡¢¼ò½àµÄJavaScript¿ò¼Ü£¬ÊÇ¼ÌPrototypeÖ®ºóÓÖÒ»¸öÓÅÐãµÄJavaScript´úÂë¿â£¨»òJavaScript¿ò¼Ü£©
+jQuery(JavaScript´úÂë¿â/¿ò¼Ü)ÊÇÒ»¸ö¿ìËÙ¡¢¼ò½àµÄJavaScript¿ò¼Ü£¬ÊÇ¼ÌPrototypeÖ®ºóÓÖÒ»¸öÓÅÐãµÄJavaScript´úÂë¿â£¨»òJavaScript¿ò¼Ü£©
 
 CST£ºÖÐ¹ú±ê×¼Ê±¼ä£¨China Standard Time£©£¬Õâ¸ö½âÊÍ¿ÉÄÜÊÇÕë¶ÔRedHat Linux¡£
 UTC£ºÐ­µ÷ÊÀ½çÊ±£¬ÓÖ³ÆÊÀ½ç±ê×¼Ê±¼ä£¬¼ò³ÆUTC£¬´ÓÓ¢ÎÄ¹ú¼ÊÊ±¼ä/·¨ÎÄÐ­µ÷Ê±¼ä¡±Universal Time/Temps Cordonn¨¦¡±¶øÀ´¡£ÖÐ¹ú´óÂ½¡¢Ïã¸Û¡¢°ÄÃÅ¡¢Ì¨Íå¡¢ÃÉ¹Å¹ú¡¢ÐÂ¼ÓÆÂ¡¢ÂíÀ´Î÷ÑÇ¡¢·ÆÂÉ±ö¡¢°ÄÖÞÎ÷²¿µÄÊ±¼äÓëUTCµÄÊ±²î¾ùÎª+8£¬Ò²¾ÍÊÇUTC+8¡£
@@ -45,7 +45,6 @@ MT-Safe£¨MT Ö¸µÄÊÇ¶àÏß³Ì)
 Ì×½Ó×Ö£º1.Á÷Ê½Ì×½Ó×Ö£ºÌá¹©ÃæÏòÁ¬½Ó£¬¿É¿¿µÄ(tcp)µÄÍ¨Ñ¶Á÷
 2.Êý¾Ý±¨Ì×½Ó×Ö(udp) 3.Ô­Ê¼Ì×½Ó×Ö£ºÖ÷ÒªÓÃÓÚÒ»Ð©Ð­Òé¿ª·¢£¬¹¦ÄÜÇ¿´ó£¬¿ÉÒÔ½øÐÐµ×²ã²Ù×÷£¬ÓÃµÄÉÙ
 
-
 ´«Êä²ãµÄ¡°Ð­Òé+¶Ë¿Ú¡±¿ÉÒÔÎ¨Ò»±êÊ¶Ö÷»úÖÐµÄÓ¦ÓÃ³ÌÐò£¨½ø³Ì£©¡£ÕâÑùÀûÓÃÈýÔª×é£¨ipµØÖ·£¬Ð­Òé£¬¶Ë¿Ú£©¾Í¿ÉÒÔ±êÊ¶ÍøÂçµÄ½ø³ÌÁË
 
 socketº¯Êý¶ÔÓ¦ÓÚÆÕÍ¨ÎÄ¼þµÄ´ò¿ª²Ù×÷¡£ÆÕÍ¨ÎÄ¼þµÄ´ò¿ª²Ù×÷·µ»ØÒ»¸öÎÄ¼þÃèÊö×Ö£¬¶øsocket()ÓÃÓÚ´´½¨Ò»¸ösocketÃèÊö·û£¨socket descriptor£©£¬ËüÎ¨Ò»±êÊ¶Ò»¸ösocket¡£Õâ¸ösocketÃèÊö×Ö¸úÎÄ¼þÃèÊö×ÖÒ»Ñù£¬ºóÐøµÄ²Ù×÷¶¼ÓÐÓÃµ½Ëü£¬°ÑËü×÷Îª²ÎÊý£¬Í¨¹ýËüÀ´½øÐÐÒ»Ð©¶ÁÐ´²Ù×÷¡£
@@ -71,7 +70,7 @@ Linux¶Ô´ó²¿·ÖÉêÇëÄÚ´æµÄÇëÇó¶¼»Ø¸´"yes"£¬ÒÔ±ãÄÜÅÜ¸ü¶à¸ü´óµÄ³ÌÐò¡£ÒòÎªÉêÇëÄÚ´æºó£¬
 
 
 Jmeter:
-Apache jmeter ¿ÉÒÔÓÃÓÚ¶Ô¾²Ì¬µÄºÍ¶¯Ì¬µÄ×ÊÔ´£¨ÎÄ¼þ£¬Servlet£¬Perl½Å±¾£¬java ¶ÔÏó£¬Êý¾Ý¿âºÍ²éÑ¯£¬FTP·þÎñÆ÷µÈµÈ£©µÄÐÔÄÜ½øÐÐ²âÊÔ¡£Ëü¿ÉÒÔÓÃÓÚ¶Ô·þÎñÆ÷¡¢ÍøÂç»ò¶ÔÏóÄ£Äâ·±ÖØµÄ¸ºÔØÀ´²âÊÔËüÃÇµÄÇ¿¶È»ò·ÖÎö²»Í¬Ñ¹Á¦ÀàÐÍÏÂµÄÕûÌåÐÔÄÜ¡£Äã¿ÉÒÔÊ¹ÓÃËü×öÐÔÄÜµÄÍ¼ÐÎ·ÖÎö»òÔÚ´ó²¢·¢¸ºÔØ²âÊÔÄãµÄ·þÎñÆ÷/½Å±¾/¶ÔÏó¡£
+Apache jmeter¿ÉÒÔÓÃÓÚ¶Ô¾²Ì¬µÄºÍ¶¯Ì¬µÄ×ÊÔ´£¨ÎÄ¼þ,Servlet,Perl½Å±¾,java¶ÔÏó,Êý¾Ý¿âºÍ²éÑ¯,FTP·þÎñÆ÷µÈµÈ£©µÄÐÔÄÜ½øÐÐ²âÊÔ¡£Ëü¿ÉÒÔÓÃÓÚ¶Ô·þÎñÆ÷¡¢ÍøÂç»ò¶ÔÏóÄ£Äâ·±ÖØµÄ¸ºÔØÀ´²âÊÔËüÃÇµÄÇ¿¶È»ò·ÖÎö²»Í¬Ñ¹Á¦ÀàÐÍÏÂµÄÕûÌåÐÔÄÜ¡£Äã¿ÉÒÔÊ¹ÓÃËü×öÐÔÄÜµÄÍ¼ÐÎ·ÖÎö»òÔÚ´ó²¢·¢¸ºÔØ²âÊÔÄãµÄ·þÎñÆ÷/½Å±¾/¶ÔÏó¡£
 
 notepad++  Ò²½Ðnpp
 ÎÄ¼þ¶Ô±È(²å¼þ) £¬AltÁÐÄ£Ê½±à¼­£¬Ö§³Ö±¸·Ý  
@@ -276,7 +275,7 @@ macOS[X]£ºÊÇÆ»¹û¹«Ë¾ÍÆ³öµÄ»ùÓÚÍ¼ÐÎÓÃ»§½çÃæ²Ù×÷ÏµÍ³£¬ÎªÂó½ðËþ£¨Macintosh£©µÄÖ÷²Ù×
 
 Gitbash£ºÔÚwindowsÉÏ¿ÉÒÔ¶ÔÃüÁîÐÐ½øÐÐ¼òµ¥µÄÑ§Ï°
 
-TortoiseGit£ºwindowsÏÂµÄ°æ±¾°É¿ØÖÆ¹¤¾ß£¬ÊÇÒ»¸ö¿ª·ÅµÄgit°æ±¾¿ØÖÆÏµÍ³µÄÔ´¿Í»§¶Ë£¬Ö§³ÖWinxp/vista/win7/Win10¡£¿ÉÒÔ»Ö¸´ÄúµÄÎÄ¼þµÄ¾É°æ±¾
+TortoiseGit£ºwindowsÏÂµÄ°æ±¾¿ØÖÆ¹¤¾ß£¬ÊÇÒ»¸ö¿ª·ÅµÄgit°æ±¾¿ØÖÆÏµÍ³µÄÔ´¿Í»§¶Ë£¬Ö§³ÖWinxp/vista/win7/Win10¡£¿ÉÒÔ»Ö¸´ÄúµÄÎÄ¼þµÄ¾É°æ±¾
 
 Òì²½·Ç×èÈû I/O£¨AIO£©
 
@@ -334,12 +333,14 @@ kangle-web½øÈë¹ÜÀíºóÌ¨°ó¶¨²»Í¬Ä¿Â¼ºÍÓòÃû/ip¾Í¿ÉÒÔ¼Ü¶à¸öÍøÕ¾¡£
 
 CloudXNSÊÇ±±¾©¿ìÍø×ÔÖ÷ÑÐ·¢È«ÐÂ¼Ü¹¹µÄÖÇÄÜDNS½âÎöÏµÍ³£¬Ìá¹©¶àÔª»¯ÖÇÄÜDNS½âÎö·þÎñ¡£ÔÚÏìÓ¦¡¢·Ö·¢¡¢´æ´¢¼°¸ºÔØ¾ùºâµÈÉè¼ÆÖÐÊ¹ÓÃ±±¾©¿ìÍøË½ÓÐDNSÐ­Òé£¬ËùÓÐµÄ½âÎöÉúÐ§¶¼ÊÇÊµÊ±ÉúÐ§,×ÔÖú½âÎö·Ç³£¼òµ¥·½±ã£¬Ò»Ä¿ÁËÈ»¡£
 
+dns--hosts--±¾»ú»º´æ--»º´ædns--dns·þÎñÆ÷--¸ù·þÎñÆ÷
 
 bugfix£ºÂ©¶´ÐÞ¸´£¬Bugfix¾¡Á¿±ÜÃâÒýÆð¸ü¶àµÄside effect(¸±×÷ÓÃ)
 
 npm(vue -- build)ÊÇJavaScriptÊÀ½çµÄ°ü¹ÜÀí¹¤¾ß£¬²¢ÇÒÊÇNode.jsÆ½Ì¨µÄÄ¬ÈÏ°ü¹ÜÀí¹¤¾ß¡£Í¨¹ýnpm¿ÉÒÔ°²×°¡¢¹²Ïí¡¢·Ö·¢´úÂë£¬¹ÜÀíÏîÄ¿ÒÀÀµ¹ØÏµ¡£ÄÜ½â¾öµÄNodeJS´úÂë²¿ÊðÉÏµÄºÜ¶àÎÊÌâ£¬ÔÊÐíÓÃ»§´ÓNPM·þÎñÆ÷ÏÂÔØ±ðÈË±àÐ´µÄµÚÈý·½°üµ½±¾µØÊ¹ÓÃ¡£ÔÊÐíÓÃ»§´ÓNPM·þÎñÆ÷ÏÂÔØ²¢°²×°±ðÈË±àÐ´µÄÃüÁîÐÐ³ÌÐòµ½±¾µØÊ¹ÓÃ¡£ÔÊÐíÓÃ»§½«×Ô¼º±àÐ´µÄ°ü»òÃüÁîÐÐ³ÌÐòÉÏ´«µ½NPM·þÎñÆ÷¹©±ðÈËÊ¹ÓÃ¡£
 npm µÄ scripts ÅäÖÃ¿ÉÒÔÊµÏÖÕâÐ©¹¹½¨¹¤¾ßµÄËùÓÐ¹¦ÄÜ£¬¶øÇÒ¸ü¼ò½à¡¢¸üÓÅÑÅºÍ½ÏÉÙµÄÄ£¿éÒÀÀµºÍÎ¬»¤¿ªÏú
 
+JavaScriptÒ»ÖÖÖ±ÒëÊ½½Å±¾ÓïÑÔ£¬ÊÇÒ»ÖÖ¶¯Ì¬ÀàÐÍ¡¢ÈõÀàÐÍ¡¢»ùÓÚÔ­ÐÍµÄÓïÑÔ£¬ÄÚÖÃÖ§³ÖÀàÐÍ¡£ËüµÄ½âÊÍÆ÷±»³ÆÎªJavaScriptÒýÇæ£¬Îªä¯ÀÀÆ÷µÄÒ»²¿·Ö£¬¹ã·ºÓÃÓÚ¿Í»§¶ËµÄ½Å±¾ÓïÑÔ£¬×îÔçÊÇÔÚHTML£¨±ê×¼Í¨ÓÃ±ê¼ÇÓïÑÔÏÂµÄÒ»¸öÓ¦ÓÃ£©ÍøÒ³ÉÏÊ¹ÓÃ£¬ÓÃÀ´¸øHTMLÍøÒ³Ôö¼Ó¶¯Ì¬¹¦ÄÜ¡£
 Node.js(Node):Ò»¸ö»ùÓÚChromeV8ÒýÇæµÄJavaScriptÔËÐÐ»·¾³¡£Node.jsÊ¹ÓÃÁËÒ»¸öÊÂ¼þÇý¶¯¡¢·Ç×èÈûÊ½I/OµÄÄ£ÐÍ£¬Ê¹ÆäÇáÁ¿ÓÖ¸ßÐ§¡£Node.jsµÄ°ü¹ÜÀíÆ÷npm(»¹ÓÐÆäËûµÄ)£¬ÊÇÈ«Çò×î´óµÄ¿ªÔ´¿âÉúÌ¬ÏµÍ³¡£Node.jsÊÇÒ»¸öÔËÐÐÔÚ·þÎñ¶ËµÄ¿ò¼Ü£¬ËüµÄµ×²ã¾ÍÊ¹ÓÃÁËV8ÒýÇæ¡£ÎÒÃÇÖªµÀ Apache + PHP ÒÔ¼°JavaµÄServlet¶¼¿ÉÒÔÓÃÀ´¿ª·¢¶¯Ì¬ÍøÒ³£¬Node.jsµÄ×÷ÓÃÓëËûÃÇÀàËÆ£¬Ö»²»¹ýÊÇÊ¹ÓÃJavaScript À´¿ª·¢¡£´«Í³ÒâÒåÉÏµÄ JavaScript ÔËÐÐÔÚä¯ÀÀÆ÷ÉÏ£¬ÕâÊÇÒòÎªä¯ÀÀÆ÷ÄÚºËÊµ¼ÊÉÏ·ÖÎªÁ½¸ö²¿·Ö:äÖÈ¾ÒýÇæºÍ JavaScript ÒýÇæ¡£Ç°Õß¸ºÔðäÖÈ¾ HTML + CSS£¬ºóÕßÔò¸ºÔðÔËÐÐ JavaScript¡£Chrome Ê¹ÓÃµÄ JavaScript ÒýÇæÊÇ V8£¬ËüµÄËÙ¶È·Ç³£¿ì¡£
 
 npm½Å±¾µÄÔ­Àí·Ç³£¼òµ¥¡£Ã¿µ±Ö´ÐÐnpm-run£¬¾Í»á×Ô¶¯ÐÂ½¨Ò»¸öShell£¬ÔÚÕâ¸öShellÀïÃæÖ´ÐÐÖ¸¶¨µÄ½Å±¾ÃüÁî£¬npm-scriptÊÇ¼ÇÂ¼ÔÚpackage.json ÖÐµÄscripts ×Ö¶ÎÖÐµÄÒ»Ð©×Ô¶¨Òå½Å±¾

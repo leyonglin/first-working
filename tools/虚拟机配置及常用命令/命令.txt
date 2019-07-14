@@ -24,6 +24,24 @@ kB_read/s    kB_wrtn/s    kB_read    kB_wrtn
 
 ĞéÄâÎÄ¼şÏµÍ³²ã£¨VFS Layer£©
 
+strace [-c] cmd [-o file]
+strace -tt -f  cmd
+strace -tt -T -v -f -e trace=file -o /data/log/strace.log -s 1024 -p 23489
+-tt ÔÚÃ¿ĞĞÊä³öµÄÇ°Ãæ£¬ÏÔÊ¾ºÁÃë¼¶±ğµÄÊ±¼ä
+-T ÏÔÊ¾Ã¿´ÎÏµÍ³µ÷ÓÃËù»¨·ÑµÄÊ±¼ä
+-v ¶ÔÓÚÄ³Ğ©Ïà¹Øµ÷ÓÃ£¬°ÑÍêÕûµÄ»·¾³±äÁ¿£¬ÎÄ¼şstat½á¹¹µÈ´ò³öÀ´¡£
+-f ¸ú×ÙÄ¿±ê½ø³Ì£¬ÒÔ¼°Ä¿±ê½ø³Ì´´½¨µÄËùÓĞ×Ó½ø³Ì
+-e ¿ØÖÆÒª¸ú×ÙµÄÊÂ¼şºÍ¸ú×ÙĞĞÎª,±ÈÈçÖ¸¶¨Òª¸ú×ÙµÄÏµÍ³µ÷ÓÃÃû³Æ
+-o °ÑstraceµÄÊä³öµ¥¶ÀĞ´µ½Ö¸¶¨µÄÎÄ¼ş
+-s µ±ÏµÍ³µ÷ÓÃµÄÄ³¸ö²ÎÊıÊÇ×Ö·û´®Ê±£¬×î¶àÊä³öÖ¸¶¨³¤¶ÈµÄÄÚÈİ£¬Ä¬ÈÏÊÇ32¸ö×Ö½Ú
+-p Ö¸¶¨Òª¸ú×ÙµÄ½ø³Ìpid, ÒªÍ¬Ê±¸ú×Ù¶à¸öpid, ÖØ¸´¶à´Î-pÑ¡Ïî¼´¿É¡£
+   -e trace=file     ¸ú×ÙºÍÎÄ¼ş·ÃÎÊÏà¹ØµÄµ÷ÓÃ(²ÎÊıÖĞÓĞÎÄ¼şÃû)
+   -e trace=process  ºÍ½ø³Ì¹ÜÀíÏà¹ØµÄµ÷ÓÃ£¬±ÈÈçfork/exec/exit_group
+   -e trace=network  ºÍÍøÂçÍ¨ĞÅÏà¹ØµÄµ÷ÓÃ£¬±ÈÈçsocket/sendto/connect
+   -e trace=signal    ĞÅºÅ·¢ËÍºÍ´¦ÀíÏà¹Ø£¬±ÈÈçkill/sigaction
+   -e trace=desc  ºÍÎÄ¼şÃèÊö·ûÏà¹Ø£¬±ÈÈçwrite/read/select/epollµÈ
+   -e trace=ipc ½ø³Ì¼ûÍ¬Ñ§Ïà¹Ø£¬±ÈÈçshmgetµÈ
+
 Çå³ıcacheĞ´½øÓ²ÅÌ£º
 sync; echo 1 > /proc/sys/vm/drop_caches     #½öÇå³ıÒ³Ãæ»º´æ
 sync; echo 2 > /proc/sys/vm/drop_caches     #Çå³ıÄ¿Â¼ÏîºÍinode
@@ -48,6 +66,7 @@ fdisk /dev/sda
 m -- p -- n -- Ñ¡¸ñÊ½p(¿ÉÒÔ¿Õ¸ñ) -- Ñ¡·ÖÇø1(¿ÉÒÔ¿Õ¸ñ) -- ÆğÊ¼(¿ÉÒÔ¿Õ¸ñ) -- ½áÊø+size{K,M,G} -- p [--d]
 lsblk -f(ÇĞ¼ÇÏÈ²é¿´ÒÔÇ°Ê¹ÓÃÊ²Ã´ÎÄ¼şÏµÍ³µÄ)-- ¸ñÊ½»¯£ºmkfs.ext4 /dev/sda1 // mkfs -t xfs /dev/sda1 --  lsblk -f /df -T    
 /etc/fstab£º/dev/hda1   /   ext4        defaults   0 0  -- mount -a  --  lsblk
+£¡£¡£¡¸ñÊ½»¯ÎÄ¼şÏµÍ³¿ÉÒÔ¼ÓÑ¡Ïî-fÇ¿ÖÆ¸²¸Ç£¬µ«...Çë½÷É÷Ê¹ÓÃ
 
 nohup:Ç°Ì¨ÁíÆğ¶ÀÁ¢ÓÚµ±Ç°»á»°µÄ½ø³ÌÔËĞĞ£¬¿É±»Ctrl+c(SIGINT ĞÅºÅ)ÖĞ¶Ï
 & £ºÔÚµ±Ç°»á»°Æô¶¯×Ó½ø³ÌÔËĞĞ,ÍË³öµ±Ç°»á»°»á±»ÖĞ¶Ï(SIGHUP ĞÅºÅ) 	»òÕßCtrl+z + bg		   
@@ -130,7 +149,6 @@ tr [a-z] [A-Z]      cat file | tr -d "\n\t" > new_file    cat file | tr -s(ÏàÁÚÖ
 stat file/Directory      du -sh     df -h
 statÃüÁîÏÔÊ¾µÄÊÇÎÄ¼şµÄI½ÚµãĞÅÏ¢(ÎÄ¼şÏµÍ³¹ÜÀíµÄÒ»¸öÊı¾İ½á¹¹£¬ÊÇÒ»¸ö64×Ö½Ú³¤µÄ±í£¬°üº¬ÁËÃèÊöÎÄ¼şËù±ØÒªµÄÈ«²¿ĞÅÏ¢)¡£LinuxÎÄ¼şÏµÍ³ÒÔ¿éÎªµ¥Î»´æ´¢ĞÅÏ¢£¬ÎªÁËÕÒµ½Ä³Ò»¸öÎÄ¼şËùÔÚ´æ´¢¿Õ¼äµÄÎ»ÖÃ£¬ÓÃI½Úµã¶ÔÃ¿¸öÎÄ¼ş½øĞĞË÷Òı¡£
 dig ÓëhostÏàËÆ
-sync½«ÄÚ´æ»º³åÇøÄÚµÄÊı¾İĞ´Èë´ÅÅÌ
 dd if=/dev/hdb | gzip > /root/image.gz  ±¸·İ/dev/hdbÈ«ÅÌÊı¾İ£¬²¢ÀûÓÃgzip¹¤¾ß½øĞĞÑ¹Ëõ£¬±£´æµ½Ö¸¶¨Â·¾¶(if=Ô´ÎÄ¼ş of=Ä¿±êÎÄ¼ş)
 ²âËÙ£ºĞ´dd if=/dev/zero bs=1024 count=1000000 of=/root/1Gb.file   ¶Ádd if=/root/1Gb.file bs=64k | dd of=/dev/null
 È·¶¨Ó²ÅÌµÄ×î¼Ñ¿é´óĞ¡£ºdd if=/dev/zero bs=1024 count=1000000 of=/root/1Gb.file (¸Ä±äbsºÍcountµÄÖµ)
@@ -508,8 +526,8 @@ route -n  // ip route  //  cat /etc/sysconfig/network
 cat /etc/resolv.conf
 rpm -qa | wc -l   //   yum list installed | wc -l
 df -Th // lsblk // du -sh
-
-
+ethtool ens33 | grep -i speed
+ping -c3 -i2 -s512 www.cnblogs.com // ping Íø¹Ø // traceroute [-d] www.cnblogs.com // telnet www.blogs.com 80 // ss -antl //  curl [-I] www.baidu.com
 
 
 
