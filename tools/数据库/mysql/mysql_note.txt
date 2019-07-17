@@ -31,7 +31,9 @@ mysqldump -uroot -p -S /opt/data/data_16303/mysql.sock -P16303 -B mysql > /home/
 
 
 
-
+show variables like "%logs_days%";               查看变量
+set global expire_logs_days=7;                   设置变量
+flush logs;   &&  purge binary logs to 'bin.5';  &&   purge binary logs before '2017-05-01 13:09:51';    刷新binlogs日志&&删除bin.5之前日志&&删除指定时间之前日志 
 
 select * from information_schema.innodb_trx;    (INNODB_TRX表主要是包含了正在InnoDB引擎中执行的所有事务的信息，包括waiting for a lock和running的事务)
 
@@ -52,7 +54,7 @@ select * from information_schema.processlist where Command != 'Sleep' order by T
 show slave status\G;
 
 测试授权用户连接：mysql  -u用户名  -h授权ip    -P端口 -p
-本地登陆：mysql  -uroot -p -S /opt/data/data_16303/mysql.sock -P16303
+本地登陆：mysql  -uroot -p -S /opt/data/data_16303/mysql.sock [-P16303 -h127.0.0.1]
 导出全部数据库:mysqldump -uroot -p --all-databases > sqlfile.sql
 导出库：mysqldump -uroot -p -S /opt/data/data_16303/mysql.sock -P16303 -B gameplat_cms > /opt/src/upload/cms.sql
       [--single-transaction --master-data=2 -opt]
@@ -106,7 +108,7 @@ Innobackupex
 启动服务：mysqld --defaults-file=/opt/conf/my_16303.cnf  --user=swadmin &  （数据目录权限值得看一下）
 
 
-显示数据表结构: describe 表名;
+显示数据表结构:  desc 表名;   //   describe 表名;
 
 远程登陆mysql：mysql -hlocalhost -uroot -p
 使用gzip命令对备份文件进行压缩：：mysqldump phpbb_db_backup | gzip > /usr/backups
@@ -134,6 +136,16 @@ create [unique] index index_name on table_name (column_list) ;
 删除索引:
 drop index index_name on table_name ;
 alter table table_name drop index index_name/primary key ;
+
+
+建库：create database 库名;
+删库：drop database 库名;
+
+进入指定库：use 库名;
+建表：create table 表名(字段列表);
+删表：drop table 表名;
+
+清空表中记录：delete from 表名;
 
 
 for i in $ip;do

@@ -2,7 +2,7 @@ tomcat调试：
 jstack,jmap,jinfo,jstat,jps
 
 gc(garbage collection)：垃圾回收（内存）
-Minor GC：从年轻代空间（包括 Eden 和 Survivor 区域）回收内存，一般占据堆的1/3空间，会频繁触发MinorGC进行垃圾回收。当Eden区内存不够的时候就会触发MinorGC
+Minor GC：从年轻代空间（包括 Eden 和 Survivor(From To)区域）回收内存，一般占据堆的1/3空间，会频繁触发MinorGC进行垃圾回收。当Eden区内存不够的时候就会触发MinorGC
 Major GC：是清理老年代(标记—清除算法)。当无法找到足够大的连续空间分配给新创建的较大对象时也会提前触发一次MajorGC进行垃圾回收腾出空间,耗时比较长，因为要扫描再回收。MajorGC会产生内存碎片。当老年代也满了装不下的时候，就会抛出OOM（Out of Memory）异常。
 Full  GC：是清理整个堆空间—包括年轻代和老年代。
 Permsize：永久代，内存的永久保存区域，主要存放Class和Meta（元数据）的信息。默认情况下，元空间的大小仅受本地内存限制。类的元数据放入 native memory, 字符串池和类的静态变量放入java堆中. 这样可以加载多少类的元数据就不再由MaxPermSize控制, 而由系统的实际可用空间来控制
@@ -36,4 +36,103 @@ HotSpot JVM把年轻代分为了三部分：1个Eden区和2个Survivor区（分�
 
 
 jstack -l  pid  > /tmp/jvm.dump                         导出进程堆栈信息
-top -H -p pid  或 ps -mp pid -o pid,THREAD,tid,time    查出进程内占用cpu高的线程pid                                                                                   #查出进程内占用cpu高的线程pid
+top -H -p pid  或 ps -mp pid -o pid,THREAD,tid,time     查出进程内占用cpu高的线程pid     
+
+
+
+https://www.jianshu.com/p/d8492e748c57   //   https://www.bilibili.com/video/av44880257?p=2
+
+jvm内存结构规范：
+java源代码文件*.java -- （编译器） -- java字节码文件*.class --- 类加载器 --- 内存区域/运行时数据区(方法区，堆，虚拟机栈 本地方法栈 程序计数器) --- 1.执行器-->2.本地方法接口---本地方法库
+
+
+1.类文件结构(java字节码文件*.class)：
+     u1，u2，u4，u8  分别代表了1、2、4、8个字节的无符号数
+     ClassFile { 
+         u4 magic;  // 魔法数字，表明当前文件是.class文件，固定0xCAFEBABE(Java类文件)
+         u2 minor_version; // 分别为Class文件的副版本和主版本
+         u2 major_version; 
+         u2 constant_pool_count; // 常量池计数
+         cp_info constant_pool[constant_pool_count-1];  // 常量池内容
+         u2 access_flags; // 类访问标识
+         u2 this_class; // 当前类
+         u2 super_class; // 父类
+         u2 interfaces_count; // 实现的接口数
+         u2 interfaces[interfaces_count]; // 实现接口信息
+         u2 fields_count; // 字段数量
+         field_info fields[fields_count]; // 包含的字段信息 
+         u2 methods_count; // 方法数量
+         method_info methods[methods_count]; // 包含的方法信息
+         u2 attributes_count;  // 属性数量
+         attribute_info attributes[attributes_count]; // 各种属性
+     }
+     
+     类名不超过256
+     class文件包括：虚拟机指令  符号表  其他辅助信息  
+          数据结构：无符号数(正整数)    表*_info(表结构嵌套) 
+     访问控制标志(access flags)：
+     
+     class文件结构---常量池(主次版本号之后就是常量池入口，代表class文件中的仓库资源)：主要存放两大类常量：
+     字面量：int a=3;(=号右边的东西)
+     符号引用：类和接口的全限定名(绝对路径)   字段的名称和描述符   方法的名称和描述符
+     
+     init：实例化初始方法
+     clinit：类和接口的初始化
+
+2.java虚拟机类加载机制：加载loading---连接linking(验证verification--准备preparation---解析resolution)---初始化initialization---使用using---卸载unloading
+     双亲委任JVM类加载机制：安全，保证代码不会被篡改
+
+
+3.java虚拟机运行时数据区：方法区，堆，虚拟机栈 本地方法栈 程序计数器
+     方法区存放的数据(javap -verbose TestClass.class)：类的描述，常量池(常量，静态变量)，jit即时编译编译器,编译成机器指令 (线程共享)方法区无法满足内存分配需求时OOM
+     堆heap存放的数据((new)实例化)：类的实例：对象 (线程共享)
+     栈区：执行/业务逻辑(线程私有)，一个栈帧 = 调用一次函数    一个main()函数调用(可以嵌套函数) = 一个栈     随着栈帧的弹出(返回)而消失
+	    虚拟机栈： 分配基本类型和自定义对象(堆)的引用(局部变量表，操作数栈，动态连接/方法返回地址)
+		本地方法栈 ：为了native方法的调用/执行/退出    c/c++本地方法库
+		程序计数器(PC counter)：存放下一条指令的地址(cpu--->指令寄存器<-----程序计数器
+局部变量：8种类型+引用，是一个函数里面的变量           
+FILO：先进后出---栈      栈帧：先进(栈底)后进(栈顶)
+FIFO：先进先出---队列
+
+4.java垃圾回收 
+  针对方法区和堆区，栈是线程私有数据，不进行回收
+  1.引用计数：给对象添加一个引用计数器，每当堆这个对象进行一次引用，计数器就加1，每当引用失效的时候，引用计数器就减，当这个引用计数器等于0的时候，表示这个对象不会再被引用
+  2.可达性分析：判断对象是否被引用
+强引用：有用且必须，代码中有明显的new object()这类引用，只要引用还在，垃圾回收器就不会回收它，内存不够，则会报OOM异常
+软引用：有用非必须，内存够用存在，内存不够用则会被回收
+弱引用：非必须对象，只能生存到下次垃圾收集时
+虚引用：无用对象，垃圾收集时会收到系统通知
+  标记-清除算法：效率不高且碎片化(大对象找不到连续的空间报OOM)(老年代)
+  复制算法：只能使用一半内存，内存利用率低
+  标记整理算法：标记回收后，再整理碎片(老年代)
+  分代收集算法：新生代(Eden+From+To)
+保守GC:
+非保守式的GC
+精确式GC   hotspot---> oopmap记录在安全点safepoint的时候可以回收那些数据
+stw(stop the world)：停止所有线程
+抢先式中断：主动中断，没有执行到指定安全点的用户线程，继续执行直到safepoint
+主动式中断：当gc需要中断线程的时候，不直接对线程操作，仅仅简单的设置一个标志，然后让用户线程自己去检查，然后中断
+  垃圾回收器参数：-XX:+Use<垃圾回收器名称>GC	
+  serial(串行)收集器：单线程，新生代和老年代都会STW    适合场景：用户的桌面应用场景
+  serial old:
+  parnew(parallelnew)收集器：只对新生代串行收集，老年代单线程
+  parnew old(并行):新生代和老年代都是用多线程
+  parallel scavenge收集器:用户可以控制垃圾回收时间    适合场景：后台计算不需要太多交互
+    吞吐量：用户代码执行时间/(用户代码执行时间+gc时间)
+	吞吐量99%：用户代码执行时间99%，1%GC时间
+  concurrent mark sweep(CMS)收集器：
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                       

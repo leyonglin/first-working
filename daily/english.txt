@@ -20,7 +20,7 @@
 星期六 Saturday=Sat.
 注意：缩写的“.”不能省略。
 
-rcp：远程文件拷贝    Toggle：触发器
+rcp：远程文件拷贝    Toggle：触发器    
 
 alternative可选的       realm领域                Credentials证书           specify指定(spec)           kit装备/软件包           integration集成           external 外部的           Internal 内部的           contained包含           
 

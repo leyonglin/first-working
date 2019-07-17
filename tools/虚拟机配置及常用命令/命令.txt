@@ -1,6 +1,7 @@
 
+
 top  -d间隔 -pPID  -q无延迟运行(优先) -uUSER  -nNUM
-h帮助  f调整显示内容 c显示命令 i活跃线程  0显示多核cpu状态  b显示运行任务？  上下键   x显示当前排序列  s改变时间间隔   W将当前设置写入~/.toprc文件中
+h帮助  f调整显示内容 c显示命令 i活跃线程  1显示多核cpu状态  b显示运行任务？  上下键   x显示当前排序列  s改变时间间隔  z改变颜色  W将当前设置写入~/.toprc文件中
 N/R – 以 PID 的大小的顺序排列表示进程列表
 P – 以 CPU 占用率大小的顺序排列进程列表
 M – 以内存占用率大小的顺序排列进程列表
@@ -15,7 +16,8 @@ avg-cpu:  %user   %nice  %system  %iowait  %steal   %idle
 如果%iowait的值过高，表示硬盘存在I/O瓶颈，%idle值高，表示CPU较空闲，如果%idle值高但系统响应慢时，有可能是CPU等待分配内存，此时应加大内存容量。%idle值如果持续低于10，那么系统的CPU处理能力相对较低，表明系统中最需要解决的资源是CPU
 Device:   tps该设备每秒的传输次数,“一次传输”意思是“一次I/O请求”。多个逻辑请求可能会被合并为“一次I/O请求”。“一次传输”请求的大小是未知的。  
 kB_read/s    kB_wrtn/s    kB_read    kB_wrtn
-   -x：   Device:  rrqm/s   wrqm/s     r/s     w/s    rkB/s    wkB/s avgrq-sz avgqu-sz   await r_await w_await  svctm  %util  
+ 
+  -x：   Device:  rrqm/s   wrqm/s     r/s     w/s    rkB/s    wkB/s avgrq-sz avgqu-sz   await r_await w_await  svctm  %util  
    rrqm/s和wrqm/s(requests merged)：合并，排队i/o每秒合并数量(如果两个IO发生在相邻的数据块时，他们可以合并成1个IO)
    r/s 和 w/s  : 合并后，每秒磁盘需要读写完成的数量
    rsec/s 和 wsec/s ：每秒从设备读取的扇区数量

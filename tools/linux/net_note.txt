@@ -106,10 +106,15 @@ ip address add 192.168.2.3/24 broadcast +/192.168.2.255 dev eth0 label eth0:1
 ip route [add/del] [ip/网域] [via gateway] [dev 设备]
 show/add/del    ip/网域/段     via从那个gateway出去   dev   mtu
 
-
-
-
-
+桥接是连接两个不同的物理网段（冲突域）的技术,交换是连接多个物理网段技术，典型的交换机通常都有多个端口，每个端口实际上就是一个网桥,
+TAP等同于一个以太网设备，它操作第二层数据包如以太网数据帧。TUN模拟了网络层设备，操作第三层数据包比如IP数据封包。
+STP(Spanning Tree Protocol)即生成树协议，标准为IEEE802.1D-1998.STP是一种二层冗余技术，利用STA算法构建一个逻辑上没有环路的树形网络拓扑结构，并且可以通过一定的方法实现路径冗余
+brctl addbr br0                            #创建一个名称为"br0"的网卡
+ifconfig eth0 0 up                         #将需要桥接的网卡IP清空
+brctl addif br0 eth0                       #在"br0"上添加"eth0"；
+ifconfig  br0 192.168.16.107/24 up         #给"br0"配置IP；
+route add default gw 192.168.16.1          #设置默认的网关地址；
+brctl stp br0 on                           #开启stp生成树协议
 
 
 

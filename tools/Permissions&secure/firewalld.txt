@@ -37,7 +37,7 @@ Firewall所谓的黑白名单ipset其实就是一个含有ip的名单，drop了�
 导入白名单文件内容：firewall-cmd --ipset=hgcp_whitelist  --add-entries-from-file=/opt/dfcp_whitelist   
 
 添加/删除ipset：仅 修改存放路径/etc/firewalld/ipsets
-firewall-cmd --permanent --new-ipset=hgcp_whitelist --type=hash:ip
+firewall-cmd --permanent --new-ipset=hgcp_whitelist --type=hash:ip  (ipset -h)
 firewall-cmd --permanent --delete-ipset=XXXX_whitelist
 添加/删除ipset中的ip：
 firewall-cmd --permanent --ipset=db_whitelist --add-entry=${i}       

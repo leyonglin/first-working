@@ -1,7 +1,9 @@
 
 Zabbix：
 
-帮助文档：https://www.zabbix.com/documentation/4.2/manual/web_interface
+帮助文档：https://www.zabbix.com/documentation/4.2/manual/installation/install_from_packages/rhel_centos(搭建文档)
+		  https://www.zabbix.com/documentation/4.2/manual/appendix(配置文档)
+          https://www.zabbix.com/documentation/4.2/manual/web_interface
           https://www.zabbix.com/documentation/3.4/zh/manual/web_interface
 
 Zabbix server:服务器执行数据轮询和捕获，计算及触发器，向用户发送通知。它是Zabbix代理和代理向其报告系统可用性和完整性数据的核心组件
@@ -60,7 +62,7 @@ PMI是智能型平台管理接口(Intelligent Platform Management Interface)独�
 主机--链接模板-->模板包含应用集-->应用集包含监控项-->添加触发器(依赖监控项)
 
 
-自定义监控：
+自定义监控：*/zabbix_agentd.d/*.conf
 UserParameter=key,command 
 UserParameter=key[*],<command>    key里的所有参数，都会传递给后面命令的位置变量 
 
