@@ -40,7 +40,10 @@ top -H -p pid  或 ps -mp pid -o pid,THREAD,tid,time     查出进程内占用cp
 
 
 
+
 https://www.jianshu.com/p/d8492e748c57   //   https://www.bilibili.com/video/av44880257?p=2
+
+javap -v/-c
 
 jvm内存结构规范：
 java源代码文件*.java -- （编译器） -- java字节码文件*.class --- 类加载器 --- 内存区域/运行时数据区(方法区，堆，虚拟机栈 本地方法栈 程序计数器) --- 1.执行器-->2.本地方法接口---本地方法库
@@ -79,8 +82,9 @@ java源代码文件*.java -- （编译器） -- java字节码文件*.class --- �
      init：实例化初始方法
      clinit：类和接口的初始化
 
-2.java虚拟机类加载机制：加载loading---连接linking(验证verification--准备preparation---解析resolution)---初始化initialization---使用using---卸载unloading
+2.java虚拟机类加载机制：加载loading---连接linking(验证verification--准备preparation---解析resolution---初始化initialization(转换成内存地址)---使用using---卸载unloading
      双亲委任JVM类加载机制：安全，保证代码不会被篡改
+	 静态加载到内存变成动态(常量池...)
 
 
 3.java虚拟机运行时数据区：方法区，堆，虚拟机栈 本地方法栈 程序计数器
@@ -94,7 +98,9 @@ java源代码文件*.java -- （编译器） -- java字节码文件*.class --- �
 FILO：先进后出---栈      栈帧：先进(栈底)后进(栈顶)
 FIFO：先进先出---队列
 
-4.java垃圾回收 
+4.java垃圾回收（jdk1.7/1.8 parallel scavenge新生代+parallel old      jdk1.9  G1 ） 
+  Minor GC：针对年轻代
+  Major GC  fullgc针对老年代：Major GC的时候会同时执行fullgc(parallel scavenge收集器例外)
   针对方法区和堆区，栈是线程私有数据，不进行回收
   1.引用计数：给对象添加一个引用计数器，每当堆这个对象进行一次引用，计数器就加1，每当引用失效的时候，引用计数器就减，当这个引用计数器等于0的时候，表示这个对象不会再被引用
   2.可达性分析：判断对象是否被引用
@@ -109,7 +115,7 @@ FIFO：先进先出---队列
 保守GC:
 非保守式的GC
 精确式GC   hotspot---> oopmap记录在安全点safepoint的时候可以回收那些数据
-stw(stop the world)：停止所有线程
+stw(stop the world)：停止所有线程（老年代：内存大，且stw） 所有GC都会停止应用所有线程。
 抢先式中断：主动中断，没有执行到指定安全点的用户线程，继续执行直到safepoint
 主动式中断：当gc需要中断线程的时候，不直接对线程操作，仅仅简单的设置一个标志，然后让用户线程自己去检查，然后中断
   垃圾回收器参数：-XX:+Use<垃圾回收器名称>GC	
@@ -120,19 +126,82 @@ stw(stop the world)：停止所有线程
   parallel scavenge收集器:用户可以控制垃圾回收时间    适合场景：后台计算不需要太多交互
     吞吐量：用户代码执行时间/(用户代码执行时间+gc时间)
 	吞吐量99%：用户代码执行时间99%，1%GC时间
-  concurrent mark sweep(CMS)收集器：
+  concurrent mark sweep(CMS)收集器：初始标记(STW)扫描标记gc roots---并发标记---重新标记(STW)可达性分析---并发清理(单线程回收+用户线程)       #递归标记。特点：低停顿。使用场景：互联网站或者web服务器
+     -XX:+UseCMSCompactAtFullCollection 整理碎片   -XX:CMSFullGCsBeforeCompaction 执行多少fullgc进行整理   -XX:CMSInitiatingOccupancyFraction  老年代阈值到多少执行一次fullgc     
+     CMS回收线程默认数量：回收线程=(cpu数量+3)/4
+  G1回收器：分代收集器(年轻代)：Eden(伊甸) survivor幸存区  Old(Tenured)  Humongous   算法：复制(年轻代)+标记-整理(老年代)    特点：空间整合     
+      younggc：1.扫描gc roots 2.更新remenberset记录回收对象的数据结构 3.检测rememberset(往幸存代/老年代)  4.复制对象(往幸存代/老年代)  5.清理 
+	  oldgc ：与cms不同是并发回收的时候是多线程回收   
+jvm内存分配与回收策略： -XX:SurvivorRatio      Eden+s0+s1 = SurvivorRatio:1:1
+  1.大对象直接进入老年代   -XX:PretenureSizeThreshold设置值的对象直接在老年代分配(仅parnew和serial串行gc有效)
+  2.长期存活的对象将进入老年代   -XX:MaxTenuringThreshold (针对Minor GC)
+  3.动态对象年龄判断：相同年龄所有对象大小的总和大于Survivor空间的一半，年龄大于或等于该年龄的对象就可以直接进入老年代，无须等到MaxTenuringThreshold中要求的年龄。
+  4.空间分配担保 ： 1、满足，minor gc是安全的，可以进行minor gc。
+                    2、不满足，虚拟机查看HandlePromotionFailure参数：
+					 （1）为true，允许担保失败，会继续检测老年代最大可用的连续空间>历次晋升到老年代对象的平均大小(例1+2+3/3)。若大于，将尝试进行一次minor gc，若失败，则重新进行一次full gc。
+					 （2）为false，则不允许冒险，要进行full gc（对老年代进行gc）
 
 
+  寄存器是中央处理器内的组成部分，运行速度快。寄存器是有限存贮容量的高速存贮部件，它们可用来暂存指令、数据和地址。在中央处理器的控制部件中，包含的寄存器有指令寄存器(IR)和程序计数器(PC)。在中央处理器的算术及逻辑部件中，寄存器有累加器(ACC)。
+  java指令(255条)：基于栈的执行引擎，不依赖硬件，但运行速度慢
+  原子操作:不可分割，单次操作
+5.字节码执行引擎：1.输入的是字节码文件   2.处理过程是字节码解析的过程  3.输出的是执行结果
+  java=jit编译器(热点代码运行时编译成本地代码，与os绑定)+解释器(栈运行，内存映像)
+  每一个栈代表一个执行方法，栈帧代表当前方法(jvm只关注栈顶，调用栈顶方法)，栈帧之间有重叠区域，共享
+  压栈：将局部变量表+操作数栈的返回值压入调用者的栈帧
+  多态：静态(在类加载阶段(解析)或者第一次使用/编译的时候就转化为直接引用，将符号引用变成直接引用)+动态   
+  栈帧：1.局部变量表(a=1,b=2,只能存放32位slot)
+        2.操作数栈(指令add:a+b) (Java虚拟机的解释执行引擎称为“基于栈的执行引擎”，其中所指的“栈”就是操作数栈)       
+        3.动态连接：在每一次运行期间转化为直接引用
+        4.方法返回地址：1.方法退出后恢复上层的局部变量表和操作数栈  2.压栈  3.调整pc计数器的值以指向方法调用指令后面的一条指令(方法退出：有给上层调用者产生返回值/程序异常且没处理方案，实际上就是退出当前栈帧)
+        5.额外的附加信息
+
+方法调用(确定方法版本)---解析---分派(静态分派/动态分派)
+动态连接：每个栈帧都保存了一个可以指向当前方法所在类的运行时常量池， 目的是当方法中需要调用其它方法的时候能够从运行时常量池中找到对应的符号引用, 然后将符号引用转换为直接引用然后就能直接调用对应的方法这就是动态链接，不是所有的方法调用都需要进行动态链接的
+静态解析：有一部分的符号引用会在类加载的解析阶段将符号引用转换为直接引用
+实际类型：只有在运行期间new Man()这个动作发生了后才知道它的具体类型
+分派：确定调用方法的过程，在运行期间，或者静态解析的时候，确定调用方法的时候方法就可能存在重载，重写等情况这里的分派将揭开"重载"和"重写"的实现原理以及他们的选用规则
+解析和分派不是分开进行的而是相互协作的。
+非虚方法：解析/编译阶段就唯一确定版本，静态方法/私有方法/实例构造器/父类方法/final方法
+虚方法：
+虚方法表（vtable）：代替元地址(内存地址)查找，类加载阶段初始化(记录方法实际入口)，在invokeinterface执行时也会用到接口方法表itable，提高性能，虚函数表是一块连续的内存，每个内存单元中记录一个JMP指令的地址  
+内存地址:头地址,偏移量
+函数/方法调用=版本+执行
+
+指令	         说明
+invokeinterface	用以调用接口方法，在运行时搜索一个实现了这个接口方法的对象，找出适合的方法进行调用。（Invoke interface method）
+invokevirtual	指令用于调用对象的实例方法，根据对象的实际类型进行分派（Invoke instance method; dispatch based on class）
+invokestatic	（调用静态方法）用以调用类方法（Invoke a class (static) method ）
+invokespecial	（调用实列构造器<init>私有方法(无法继承)，父类方法）指令用于调用一些需要特殊处理的实例方法，包括实例初始化方法、私有方法和父类方法。（Invoke instance method; special handling for superclass, private, and instance initialization method invocations ）
+invokedynamic	JDK1.7新加入的一个虚拟机指令，相比于之前的四条指令，他们的分派逻辑都是固化在JVM内部，而invokedynamic则用于处理新的方法分派：它允许应用级别的代码来确定执行哪一个方法调用，只有在调用要执行的时候，才会进行这种判断,从而达到动态语言的支持。(Invoke dynamic method)
+
+javap是jdk自带的反解析工具。它的作用就是根据class字节码文件，反解析出当前类对应的code区（汇编指令）、本地变量表、异常表和代码行偏移量映射表、常量池等等信息。
+6.调优命令
+jps  -q/-l/-m/-v/-V       #JVM Process Status Tool,显示指定系统内所有的HotSpot虚拟机进程。
+jstat                     #JVM statistics Monitoring是用于监视虚拟机运行时状态信息的命令，它可以显示出虚拟机进程中的类装载、内存、垃圾收集、JIT编译等运行数据。
+      MC(1.8)/PC(1.7)   方法区空间大小 #metaspace 元数据空间//系统内存
+	  MU(1.8)/PU(1.7)   方法区使用空间大小
+  选项-gc时间及次数  -gccause垃圾回收原因	  
+jinfo                     #JVM Configuration info 这个命令作用是实时查看和调整虚拟机运行参数
+jhat                      #JVM Heap Analysis Tool命令是与jmap搭配使用，用来分析jmap生成的dump，jhat内置了一个微型的HTTP/HTML服务器，生成dump的分析结果后，可以在浏览器中查看。
+jmap                      #JVM Memory Map命令用于生成heap dump文件。
+jstack                    #用于生成java虚拟机当前时刻的线程快照。
+jmc
+jconsole                  #Java Monitoring and Management Console是从java5开始，在JDK中自带的java监控和管理控制台，用于对JVM中内存，线程和类等的监控。
+jvisualvm                 #jdk自带全能工具，可以分析内存快照、线程快照；监控内存变化、GC变化等。
 
 
+通常64位JVM消耗的内存会比32位的大1.5倍，起到节约内存占用的新参数
+64bitJVM从1.6开始支持压缩指针:-XX:+UseCompressdOops    oop=ordinary object pointer 普通对象指针
 
+xmx最大堆空间=xms最小堆空间=xmn年轻代空间(+old)   xss最大线空间/函数调用深度
+永生代：保存虚拟机自己的静态数据，如类和方法
 
+非堆内存：jvm无法处理
+堆外内存  文件句柄 socket句柄  数据库连接
 
-
-
-
-
-
-
-
+JVM调优原则：降低Full Gc频次
+             确保大对数对象“朝生夕死”
+			 提高大对象进入老年代的门槛(-XX:MaxTenuringThreshold)
                                                                        
+Allocation Failure：表明本次引起GC的原因是因为在年轻代中没有足够的空间能够存储新的数据了。
