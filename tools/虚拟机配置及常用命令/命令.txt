@@ -1,13 +1,20 @@
 
 
 top  -d间隔 -pPID  -q无延迟运行(优先) -uUSER  -nNUM
-h帮助  f调整显示内容 c显示命令 i活跃线程  1显示多核cpu状态  b显示运行任务？  上下键   x显示当前排序列  s改变时间间隔  z改变颜色  W将当前设置写入~/.toprc文件中
+Tasks — 任务（进程）
+h/？帮助  f调整显示内容 c显示命令 i活跃线程  1显示多核cpu状态  b显示运行任务？  上下键   x显示当前排序列  s改变时间间隔  z改变颜色  W将当前设置写入~/.toprc文件中
 N/R – 以 PID 的大小的顺序排列表示进程列表
 P – 以 CPU 占用率大小的顺序排列进程列表
 M – 以内存占用率大小的顺序排列进程列表
 T:根据时间/累计时间进行排序。
 1.系统运行时间和平均负载  2.任务  3.cpu状态[us, user： 运行(未调整优先级的) 用户进程的CPU时间   //  sy，system: 运行内核进程的CPU时间  //  ni，niced：运行已调整优先级的用户进程的CPU时间   //   wa，IO wait: 用于等待IO完成的CPU时间  //  hi：处理硬件中断的CPU时间  //  si: 处理软件中断的CPU时间 / st：这个虚拟机被hypervisor偷去的CPU时间（译注：如果当前处于一个hypervisor下的vm，实际上hypervisor也是要消耗一部分CPU处理时间的）
 各进程（任务）的状态监控:S：这个是进程的状态。它有以下不同的值:D - 不可中断的睡眠态   R – 运行态   S – 睡眠态    T – 被跟踪或已停止    Z – 僵尸态
+
+htop：-d 刷新时间
+h或?或F1帮助  S或F2设置界面  /或F3搜索进程  \或F4过滤进程  F5或t进程树 F6排序方式  F7或F8增加或减少nice值  k或F9对进程传递信号 	
+s:strace   l显示进程打开的文件(依赖lsof)  a设置CPU affinity(标记一个进程允许使用哪些CPU)  u指定用户进程  M/P/T按内存/cpu/time+排序  
+K/H显示内核/用户进程  F让选定条跟随指定进程  空格：标记进程   U:取消所有标记
+上下键或PgUP, PgDn 选定想要的进程，左右键或Home, End 移动字段
 
 
 iostat: iostat 2(秒) 3(次) -k/m(单位)  // -p(指定磁盘)  sda // -N磁盘整列
@@ -149,7 +156,7 @@ sort -u(去重) -n(10>2) -r(反向) -o(存回本文件)  -k(第几行排序) 2  -t'-'(分隔符)
 uniq -c(去重且显示重复数)  -d(显示重复行)   #一般与sort连用，因为不相邻不会去重
 join [-a1](左连接) [-a2](右连接) [-o 1.1/1.2..](文件.栏位) [-t ":"分隔符] file1 file2   找出两个文件中，指定栏位内容相同的行，并加以合并，再输出到标准输出设备
 tr [a-z] [A-Z]      cat file | tr -d "\n\t" > new_file    cat file | tr -s(相邻重复) [a-zA-Z] > new_file      是字符替换，不是字符串替换
-stat file/Directory      du -sh     df -h
+stat file/Directory      du -sh     df -h      ldd CMD
 stat命令显示的是文件的I节点信息(文件系统管理的一个数据结构，是一个64字节长的表，包含了描述文件所必要的全部信息)。Linux文件系统以块为单位存储信息，为了找到某一个文件所在存储空间的位置，用I节点对每个文件进行索引。
 dig 与host相似
 dd if=/dev/hdb | gzip > /root/image.gz  备份/dev/hdb全盘数据，并利用gzip工具进行压缩，保存到指定路径(if=源文件 of=目标文件)

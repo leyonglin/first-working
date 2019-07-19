@@ -97,6 +97,7 @@ tmpfs有以下优势：
 临时重挂载：mount -o size=1500M -o nr_inodes=1000000 -o noatime,nodiratime -o remount /dev/shm
 永久：tmpfs /dev/shm tmpfs defaults,size=1.5G 0 0
       mount -o remount /dev/shm
+mkdir /dev/shm/tmp  && chmod 1777 /dev/shm/tmp  && mount –bind /dev/shm/tmp /tmp
 
 tmpfs是Linux/Unix系统上的一种基于内存的文件系统。tmpfs可以使用您的内存或swap分区来存储文件。由此可见，temfs主要存储暂存的文件。
 linux内核中的VM子系统负责在后台管理虚拟内存资源Virtual Memory，即RAM和swap资源，透明地将RAM页移动到交换分区或从交换分区到RAM页，tmpfs文件系统需要VM子系统的页面来存储文件。tmpfs自己并不知道这些页面是在交换分区还是在RAM中；做这种决定是VM子系统的工作。tmpfs文件系统所知道的就是它正在使用某种形式的虚拟内存。

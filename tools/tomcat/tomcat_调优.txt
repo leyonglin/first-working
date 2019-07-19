@@ -43,9 +43,8 @@ top -H -p pid  或 ps -mp pid -o pid,THREAD,tid,time     查出进程内占用cp
 
 https://www.jianshu.com/p/d8492e748c57   //   https://www.bilibili.com/video/av44880257?p=2
 
-javap -v/-c
-
-jvm内存结构规范：
+jar包是将多个类文件变成一个压缩包
+java运行机制：
 java源代码文件*.java -- （编译器） -- java字节码文件*.class --- 类加载器 --- 内存区域/运行时数据区(方法区，堆，虚拟机栈 本地方法栈 程序计数器) --- 1.执行器-->2.本地方法接口---本地方法库
 
 
@@ -102,7 +101,7 @@ FIFO：先进先出---队列
   Minor GC：针对年轻代
   Major GC  fullgc针对老年代：Major GC的时候会同时执行fullgc(parallel scavenge收集器例外)
   针对方法区和堆区，栈是线程私有数据，不进行回收
-  1.引用计数：给对象添加一个引用计数器，每当堆这个对象进行一次引用，计数器就加1，每当引用失效的时候，引用计数器就减，当这个引用计数器等于0的时候，表示这个对象不会再被引用
+  1.引用计数(好像不用了)：给对象添加一个引用计数器，每当堆这个对象进行一次引用，计数器就加1，每当引用失效的时候，引用计数器就减，当这个引用计数器等于0的时候，表示这个对象不会再被引用
   2.可达性分析：判断对象是否被引用
 强引用：有用且必须，代码中有明显的new object()这类引用，只要引用还在，垃圾回收器就不会回收它，内存不够，则会报OOM异常
 软引用：有用非必须，内存够用存在，内存不够用则会被回收
@@ -127,8 +126,8 @@ stw(stop the world)：停止所有线程（老年代：内存大，且stw） 所
     吞吐量：用户代码执行时间/(用户代码执行时间+gc时间)
 	吞吐量99%：用户代码执行时间99%，1%GC时间
   concurrent mark sweep(CMS)收集器：初始标记(STW)扫描标记gc roots---并发标记---重新标记(STW)可达性分析---并发清理(单线程回收+用户线程)       #递归标记。特点：低停顿。使用场景：互联网站或者web服务器
-     -XX:+UseCMSCompactAtFullCollection 整理碎片   -XX:CMSFullGCsBeforeCompaction 执行多少fullgc进行整理   -XX:CMSInitiatingOccupancyFraction  老年代阈值到多少执行一次fullgc     
-     CMS回收线程默认数量：回收线程=(cpu数量+3)/4
+     -XX:+UseConcMarkSweepGC使用CMS内存收集   -XX:+UseCMSCompactAtFullCollection 整理碎片   -XX:CMSFullGCsBeforeCompaction 执行多少fullgc进行整理   -XX:CMSInitiatingOccupancyFraction  老年代阈值到多少执行一次fullgc[(old-eden-from)/(old-新生代)*100]     
+     CMS回收线程默认数量：回收线程=(cpu数量+3)/4    
   G1回收器：分代收集器(年轻代)：Eden(伊甸) survivor幸存区  Old(Tenured)  Humongous   算法：复制(年轻代)+标记-整理(老年代)    特点：空间整合     
       younggc：1.扫描gc roots 2.更新remenberset记录回收对象的数据结构 3.检测rememberset(往幸存代/老年代)  4.复制对象(往幸存代/老年代)  5.清理 
 	  oldgc ：与cms不同是并发回收的时候是多线程回收   
@@ -148,7 +147,7 @@ jvm内存分配与回收策略： -XX:SurvivorRatio      Eden+s0+s1 = SurvivorRa
 5.字节码执行引擎：1.输入的是字节码文件   2.处理过程是字节码解析的过程  3.输出的是执行结果
   java=jit编译器(热点代码运行时编译成本地代码，与os绑定)+解释器(栈运行，内存映像)
   每一个栈代表一个执行方法，栈帧代表当前方法(jvm只关注栈顶，调用栈顶方法)，栈帧之间有重叠区域，共享
-  压栈：将局部变量表+操作数栈的返回值压入调用者的栈帧
+  压栈：将局部变量表+操作数栈得到的返回值压入调用者的栈帧
   多态：静态(在类加载阶段(解析)或者第一次使用/编译的时候就转化为直接引用，将符号引用变成直接引用)+动态   
   栈帧：1.局部变量表(a=1,b=2,只能存放32位slot)
         2.操作数栈(指令add:a+b) (Java虚拟机的解释执行引擎称为“基于栈的执行引擎”，其中所指的“栈”就是操作数栈)       
@@ -205,3 +204,5 @@ JVM调优原则：降低Full Gc频次
 			 提高大对象进入老年代的门槛(-XX:MaxTenuringThreshold)
                                                                        
 Allocation Failure：表明本次引起GC的原因是因为在年轻代中没有足够的空间能够存储新的数据了。
+
+-server -Xms1200m -Xmx1200m -Xmn500m -XX:+UseConcMarkSweepGC -XX:SurvivorRatio=8 -XX:CMSInitiatingOccupancyFraction=70 -XX+UseCMSCompactAtFullCollection -XX:CMSFullGCsBeforeCompaction=5 -XX:+HeapDumpOnOutOfMemoryError 
