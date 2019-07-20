@@ -12,7 +12,7 @@ T:根据时间/累计时间进行排序。
 
 htop：-d 刷新时间
 h或?或F1帮助  S或F2设置界面  /或F3搜索进程  \或F4过滤进程  F5或t进程树 F6排序方式  F7或F8增加或减少nice值  k或F9对进程传递信号 	
-s:strace   l显示进程打开的文件(依赖lsof)  a设置CPU affinity(标记一个进程允许使用哪些CPU)  u指定用户进程  M/P/T按内存/cpu/time+排序  
+s:strace   l显示进程打开的文件(依赖lsof)  a设置CPU affinity(标记一个进程允许使用哪些CPU)  u指定用户进程  M/P/T按内存/cpu/time+排序(鼠标知道哪排就可以排序)  
 K/H显示内核/用户进程  F让选定条跟随指定进程  空格：标记进程   U:取消所有标记
 上下键或PgUP, PgDn 选定想要的进程，左右键或Home, End 移动字段
 

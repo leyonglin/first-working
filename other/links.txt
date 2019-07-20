@@ -30,7 +30,7 @@ https://linuxtoy.org/index.html （Linux相关资讯的专题站点）
 http://network.51cto.com/ （网络资讯）
 
 网站：
-https://github.com/ （代码）
+https://github.com/ （代码 13.229.188.59）
 https://www.bilibili.com/ （视频）
 https://www.jianshu.com/（简书）
 

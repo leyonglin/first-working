@@ -1,3 +1,4 @@
+
 tomcat调试：
 jstack,jmap,jinfo,jstat,jps
 
@@ -41,7 +42,7 @@ top -H -p pid  或 ps -mp pid -o pid,THREAD,tid,time     查出进程内占用cp
 
 
 
-https://www.jianshu.com/p/d8492e748c57   //   https://www.bilibili.com/video/av44880257?p=2
+https://www.jianshu.com/p/d8492e748c57   //   https://www.bilibili.com/video/av44880257?p=2   //  https://github.com/doocs/jvm
 
 jar包是将多个类文件变成一个压缩包
 java运行机制：
@@ -176,16 +177,16 @@ invokedynamic	JDK1.7新加入的一个虚拟机指令，相比于之前的四条
 
 javap是jdk自带的反解析工具。它的作用就是根据class字节码文件，反解析出当前类对应的code区（汇编指令）、本地变量表、异常表和代码行偏移量映射表、常量池等等信息。
 6.调优命令
-jps  -q/-l/-m/-v/-V       #JVM Process Status Tool,显示指定系统内所有的HotSpot虚拟机进程。
+jps  -v/-m      #JVM Process Status Tool,显示指定系统内所有的HotSpot虚拟机进程。
 jstat                     #JVM statistics Monitoring是用于监视虚拟机运行时状态信息的命令，它可以显示出虚拟机进程中的类装载、内存、垃圾收集、JIT编译等运行数据。
       MC(1.8)/PC(1.7)   方法区空间大小 #metaspace 元数据空间//系统内存
 	  MU(1.8)/PU(1.7)   方法区使用空间大小
-  选项-gc时间及次数  -gccause垃圾回收原因	  
+  jstat -options  选项：-gc时间及次数  -gccause垃圾回收原因	  
 jinfo                     #JVM Configuration info 这个命令作用是实时查看和调整虚拟机运行参数
 jhat                      #JVM Heap Analysis Tool命令是与jmap搭配使用，用来分析jmap生成的dump，jhat内置了一个微型的HTTP/HTML服务器，生成dump的分析结果后，可以在浏览器中查看。
 jmap                      #JVM Memory Map命令用于生成heap dump文件。
 jstack                    #用于生成java虚拟机当前时刻的线程快照。
-jmc
+jmc                       #监视和管理 Java 应用程序，不会导致相关工具类的大幅度性能开销，
 jconsole                  #Java Monitoring and Management Console是从java5开始，在JDK中自带的java监控和管理控制台，用于对JVM中内存，线程和类等的监控。
 jvisualvm                 #jdk自带全能工具，可以分析内存快照、线程快照；监控内存变化、GC变化等。
 

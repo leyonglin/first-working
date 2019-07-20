@@ -10,7 +10,7 @@ curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-
 yum  --help && yum clean all && yum repolist  
 yum -y install   chrony psmisc net-tools findutils coreutils  bash-completion wget vim-enhanced yum-utils \
                 tree epel-release telnet tcpdump bind-utils dos2unix lrzsz iproute iotop strace procps-ng lsof \
-				httping bridge-utils traceroute nmap sysstat htop sysstat
+				httping bridge-utils traceroute nmap sysstat htop sysstat socat
 systemctl restart chronyd	
 yum makecache
 			
@@ -36,7 +36,7 @@ cd hping  &&  ./configure && make && make install
 netstat -n | awk '/^tcp/ {++S[$NF]} END {for(a in S) print a, S[a]}'
 
 git clone https://github.com/silenceshell/hcache.git
-cd hcache
+cd hcache     #查看buffer与cache
 make build    #需要依赖go环境(golang 如果不是服务需要，这个依赖挺多的)
 cp hcache /usr/local/bin/ 
 

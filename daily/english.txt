@@ -46,7 +46,7 @@ guaranteed 担保    grace 优雅    discard 抛弃    relying on依赖     peri
 
 manipulate操作		utility效用 	multicast多点传送   allocated分配的   peak山峰   struct socket结构套接字    Segmentation Offloading分段卸载
 
-hops跳数          probe调查/探针      validate生效     established确定的  affinity吸引力   priority优先  invert转化/反转  scroll卷起
+hops跳数          probe调查/探针      validate生效     established确定的  affinity吸引/亲和力   priority优先  invert转化/反转  scroll卷起
 
 arrows箭头    digits数字
 
