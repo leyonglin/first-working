@@ -1,4 +1,6 @@
 
+脏页面：已经修改，但是还没有刷回磁盘
+
 BSD:unix的衍生系统
 
 jQuery(JavaScript代码库/框架)是一个快速、简洁的JavaScript框架，是继Prototype之后又一个优秀的JavaScript代码库（或JavaScript框架）

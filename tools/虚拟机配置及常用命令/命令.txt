@@ -1,4 +1,31 @@
 
+查看上下文切换时间（ 当一个进程在执行时,CPU的所有寄存器中的值、进程的状态以及堆栈中的内容被称 为该进程的上下文。当内核需要切换到另一个进程时，它需要保存当前进程的 所有状态，即保存当前进程的上下文，以便在再次执行该进程时，能够必得到切换时的状态执行下去
+                     在LINUX中，当前进程上下文均保存在进程的任务数据结 构中。在发生中断时,内核就在被中断进程的上下文中，在内核态下执行中断服务例程。但同时会保留所有需要用到的资源，以便中继服务结束时能恢复被中断进程的执行
+                     进程被抢占CPU时候, 操作系统保存其上下文信息, 同时将新的活动进程的上下文信息加载进来, 这个过程其实就是上下文切换）
+
+pidstat [option] [interval] [count]					 
+pidstat -r -p PID 2
+minflt/s: 每秒次缺页错误次数(minor page faults)，次缺页错误次数意即虚拟内存地址映射成物理内存地址产生的page fault次数
+majflt/s: 每秒主缺页错误次数(major page faults)，当虚拟内存地址映射成物理内存地址时，相应的page在swap中，这样的page fault为major page fault，一般在内存使用紧张时产生
+VSZ:      该进程使用的虚拟内存(以kB为单位)
+RSS:      该进程使用的物理内存(以kB为单位)
+%MEM:     该进程使用内存的百分比
+Command:  拉起进程对应的命令
+					 
+pidstat -l  [-p PID] [-C cmd] [-wt 5] 
+cswch：自愿上下文切换，进程运行时由于系统资源不足，如IO,内存等原因不得不进行切换。
+nvcswch：非自愿上下文切换，比如时间片用完，系统调度让其他任务运行，或者竞争CPU的时候也会发生
+自愿的切换的多了，表明在等待资源，如IO
+非自愿的切换的多了，表明CPU被任务竞争
+中断数多，要结合/proc/interrupts分析具体中断情况
+
+uid：被监控任务的真实用户标识号
+tid：被监控线程的标识号
+tgid：线程组领导的身份
+
+redis-cli -h 127.0.0.1 -p 17693
+
+中断次数高可以查看/proc/interrupts 文件，其中的RES是重调度分配，多任务竞争CPU可以导致RES升高。
 
 top  -d间隔 -pPID  -q无延迟运行(优先) -uUSER  -nNUM
 Tasks — 任务（进程）
@@ -9,6 +36,12 @@ M – 以内存占用率大小的顺序排列进程列表
 T:根据时间/累计时间进行排序。
 1.系统运行时间和平均负载  2.任务  3.cpu状态[us, user： 运行(未调整优先级的) 用户进程的CPU时间   //  sy，system: 运行内核进程的CPU时间  //  ni，niced：运行已调整优先级的用户进程的CPU时间   //   wa，IO wait: 用于等待IO完成的CPU时间  //  hi：处理硬件中断的CPU时间  //  si: 处理软件中断的CPU时间 / st：这个虚拟机被hypervisor偷去的CPU时间（译注：如果当前处于一个hypervisor下的vm，实际上hypervisor也是要消耗一部分CPU处理时间的）
 各进程（任务）的状态监控:S：这个是进程的状态。它有以下不同的值:D - 不可中断的睡眠态   R – 运行态   S – 睡眠态    T – 被跟踪或已停止    Z – 僵尸态
+top -H -p PID 查看进程下的线程
+
+LWP为light weight process orthread， 轻量级进程，即线程标识符
+NLWP为，number oflwps(threads) in the process, 线程的数量
+
+taskset -pc 0 11282(将 11282 进程绑定到CPU第0核心,如果进程是多线程模式，直接使用 taskset 将仅仅把主线程绑定，其他线程无法被绑定生效。)
 
 htop：-d 刷新时间
 h或?或F1帮助  S或F2设置界面  /或F3搜索进程  \或F4过滤进程  F5或t进程树 F6排序方式  F7或F8增加或减少nice值  k或F9对进程传递信号 	
@@ -21,10 +54,11 @@ iostat: iostat 2(秒) 3(次) -k/m(单位)  // -p(指定磁盘)  sda // -N磁盘整列
 Linux 3.10.0-514.el7.x86_64 (localhost.localdomain) 	07/12/2019 	_x86_64_	(40 CPU)-->内核/版本/主机名 /时间/位数/逻辑cpu数
 avg-cpu:  %user   %nice  %system  %iowait  %steal   %idle
 如果%iowait的值过高，表示硬盘存在I/O瓶颈，%idle值高，表示CPU较空闲，如果%idle值高但系统响应慢时，有可能是CPU等待分配内存，此时应加大内存容量。%idle值如果持续低于10，那么系统的CPU处理能力相对较低，表明系统中最需要解决的资源是CPU
-Device:   tps该设备每秒的传输次数,“一次传输”意思是“一次I/O请求”。多个逻辑请求可能会被合并为“一次I/O请求”。“一次传输”请求的大小是未知的。  
-kB_read/s    kB_wrtn/s    kB_read    kB_wrtn
+   Device:   tps该设备每秒的传输次数,“一次传输”意思是“一次I/O请求”。多个逻辑请求可能会被合并为“一次I/O请求”。“一次传输”请求的大小是未知的。  
+   kB_read/s    kB_wrtn/s    kB_read    kB_wrtn
  
-  -x：   Device:  rrqm/s   wrqm/s     r/s     w/s    rkB/s    wkB/s avgrq-sz avgqu-sz   await r_await w_await  svctm  %util  
+  iostat -x 2 3 -k  
+   Device:  rrqm/s   wrqm/s     r/s     w/s    rkB/s    wkB/s avgrq-sz avgqu-sz   await r_await w_await  svctm  %util  
    rrqm/s和wrqm/s(requests merged)：合并，排队i/o每秒合并数量(如果两个IO发生在相邻的数据块时，他们可以合并成1个IO)
    r/s 和 w/s  : 合并后，每秒磁盘需要读写完成的数量
    rsec/s 和 wsec/s ：每秒从设备读取的扇区数量
@@ -57,7 +91,7 @@ sync; echo 1 > /proc/sys/vm/drop_caches     #仅清除页面缓存
 sync; echo 2 > /proc/sys/vm/drop_caches     #清除目录项和inode
 sync; echo 3 > /proc/sys/vm/drop_caches     #清除页面缓存，目录项和inode
 关闭swap：
-swapoff -a
+nohup swapoff -a &>/dev/null &
 
 查看版本：1.redis-server -v      2. mysql -V  3. rsync -h | head -1   4.node -v   5.python -V  6.git --version   7../java -version(jdk版本)  8.nginx -v
 
@@ -78,6 +112,7 @@ lsblk -f(切记先查看以前使用什么文件系统的)-- 格式化：mkfs.ext4 /dev/sda1 // mkfs
 /etc/fstab：/dev/hda1   /   ext4        defaults   0 0  -- mount -a  --  lsblk
 ！！！格式化文件系统可以加选项-f强制覆盖，但...请谨慎使用
 
+nohup sleep 60 &>aa.txt &
 nohup:前台另起独立于当前会话的进程运行，可被Ctrl+c(SIGINT 信号)中断
 & ：在当前会话启动子进程运行,退出当前会话会被中断(SIGHUP 信号) 	或者Ctrl+z + bg		   
 nohup CMD &	: 不受SIGINT信号和SIGHUP信号的影响（nohup sh test &>>test.log  &）

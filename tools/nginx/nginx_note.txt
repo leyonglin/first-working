@@ -178,9 +178,16 @@ realip模块：
 
 
 
+nginx.conf
+   include  blacklist;
+   include  vhosts/*.conf;
+  
+      ip.conf        ## 119.28.75.54 1;  geoip限制可以自定义
 
-
-
+      location ~ /\.ht {
+              deny  all;                          ## 这种默认返回状态码是403
+      		include vhosts/zongkong.filter;     ## allow 185.189.0.0/16;
+          }
 
 
 

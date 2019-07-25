@@ -55,7 +55,20 @@ RAID 0+1	如名字一样，就是根据数据的备份情况进行分组，一�
 IOPS:Input/Output Operations Per Second，每秒的输入输出量(或读写次数)
 每秒 I/O 吞吐量 = 磁盘写入加上读出的数据的大小＝ IOPS* 平均 I/O SIZE
 
-
+iostat: iostat 2(秒) 3(次) -k/m(单位)  // -p(指定磁盘)  sda // -N磁盘整列
+Linux 3.10.0-514.el7.x86_64 (localhost.localdomain) 	07/12/2019 	_x86_64_	(40 CPU)-->内核/版本/主机名 /时间/位数/逻辑cpu数
+avg-cpu:  %user   %nice  %system  %iowait  %steal   %idle
+如果%iowait的值过高，表示硬盘存在I/O瓶颈，%idle值高，表示CPU较空闲，如果%idle值高但系统响应慢时，有可能是CPU等待分配内存，此时应加大内存容量。%idle值如果持续低于10，那么系统的CPU处理能力相对较低，表明系统中最需要解决的资源是CPU
+Device:   tps该设备每秒的传输次数,“一次传输”意思是“一次I/O请求”。多个逻辑请求可能会被合并为“一次I/O请求”。“一次传输”请求的大小是未知的。  
+kB_read/s    kB_wrtn/s    kB_read    kB_wrtn
+ 
+  -x：   Device:  rrqm/s   wrqm/s     r/s     w/s    rkB/s    wkB/s avgrq-sz avgqu-sz   await r_await w_await  svctm  %util  
+   rrqm/s和wrqm/s(requests merged)：合并，排队i/o每秒合并数量(如果两个IO发生在相邻的数据块时，他们可以合并成1个IO)
+   r/s 和 w/s  : 合并后，每秒磁盘需要读写完成的数量
+   rsec/s 和 wsec/s ：每秒从设备读取的扇区数量
+   avgqu-sz 向设备发出的请求的平均队列长度   avgrq-sz向设备发出的请求的平均大小(以扇区为单位)
+   r_await，w_await，await 排队+i/o时间 
+   util：使用时间
 
 
 

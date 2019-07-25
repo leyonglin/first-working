@@ -8,7 +8,7 @@ sync; echo 3 > /proc/sys/vm/drop_caches     #清除页面缓存，目录项和in
 关闭swap：
 swapoff -a
 
-vmstat：  vmstat -w 1(间隔) -S(指定单位) m [-d]
+vmstat：  vmstat -w 1(间隔) -S(指定单位) m [-d/-a]
 procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----
  r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st
 procs(进程)    r：运行进程数   b等待资源/io数

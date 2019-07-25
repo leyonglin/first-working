@@ -14,7 +14,8 @@ selinux
 curl/httping 测试实际状况  
 
 内存：free
-服务运行状况：
+cpu：
+服务运行状况及端口：
 磁盘读写：dd
 
 traceroute   linux  路由追踪  windows(tracert)
@@ -23,3 +24,9 @@ tcpdump 抓包
 
 traceroute -n -m 5 -q 4 -w 3 www.baidu.com
 说明： -n 显示IP地址，不查主机名，  -m 设置跳数  -q 4每个网关发送4个数据包    -w 把对外发探测包的等待响应时间设置为3秒
+
+
+修改配置后服务重载，有时候会失效，请记住ps查看程序时间
+
+
+cadvisor(收集)+influxdb(存储)+grafana（web展示）

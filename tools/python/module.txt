@@ -1,0 +1,28 @@
+
+
+math：数学函数
+  # import math
+  # radius = float(input('请输入圆的半径: '))
+  # perimeter = 2 * math.pi * radius
+  # area = math.pi * radius * radius
+  # print('周长: %.2f' % perimeter)
+  # print('面积: %.2f' % area)
+  
+getpass：getpass函数终端中没有回显 
+  # import getpass
+  # password = getpass.getpass('请输入口令: ')
+  
+random：
+  # from random import randint
+  # face = randint(1, 6)  
+  
+Python内置的abs()函数取绝对值  
+
+# range(101)可以产生一个0到100的整数序列。
+# range(1, 100)可以产生一个1到99的整数序列。
+# range(1, 100, 2)可以产生一个1到99的奇数序列，其中的2是步长，即数值序列的增量。
+# range(5, 0, -1)逆序输出
+
+sys模块的getsizeof函数来检查存储占用了多少内存空间
+#import sys
+#print(sys.getsizeof(f))  # 查看对象占用内存的字节数

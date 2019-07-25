@@ -819,30 +819,33 @@ usman/sensu-client SENSU_SERVER_IP RABIT_MQ_USER RABIT_MQ_PASSWORD CLIENT_NAME C
 框架名称	特点、作用	                                                                                                                                                                       角色                                                             
 cadvisor	Google开源的用于监控基础设施应用的工具，可以零配置运行在docker主机上来监控Docker主机以及Docker容器。其为但节点监控，只能监控一个主机。多节点监控可参考Google的Kubernetes。	       作为docker服务的监控数据收集器，提供给influxdb
 influxdb	InfluxDB 是用Go语言编写的一个开源分布式时序、事件和指标数据库，无需外部依赖、提供管理界面。提供基于时间序列，基于事件的可度量的实时计算功能。	                                   作为数据存储器以及分析函数支持，与elk中elasticsearch作用类似，但此数据库偏向存储实时数据。
+                    是一个时间序列数据库，用于处理海量写入与负载查询。InfluxDB旨在用作涉及大量时间戳数据的任何用例（包括DevOps监控，应用程序指标，物联网传感器数据和实时分析）的后端存储
 grafana	    Grafana可视化大型测量数据的开源程序，有灵活丰富的图形化选项，可以混合多种风格，多个数据源例如Graphite、zabbix、InfluxDB、Prometheus、mysql和OpenTSDB 详见配置页面。	               作为数据分析的可视化展示，与influxdb配合实现监控目的。与elk中kibana类似，但此可视化偏向实时监控数据展示
 时间序列数据库，最简单的定义就是数据格式里包含Timestamp字段的数据，比如某一时间环境的温度，CPU的使用率等。
 部署：
      docker network create docker-monitor  #为docker主机创建一个网卡名为docker-monitor
      docker network inspect docker-monitor #查看网卡信息
-Influxdb(容器):
+	 
+Influxdb(容器): 帮助文档https://docs.influxdata.com/influxdb/v1.7/
      docker search tutum/influxdb  && docker pull tutum/influxdb
      docker run -d --name influxdb --net docker-monitor -p 8083:8083 -p 8086:8086 tutum/influxdb     # --net：加入到网络docker-monitor上，8083为infuxdb后台控制端口，8086是infuxdb的数据端口
-       访问：ip:8083        
-         CREATE USER "root" WITH PASSWORD 'root' WITH ALL PRIVILEGES ##创建管理员角色 root 密码 root 供使用
-         CREATE DATABASE "cadvisor"                                  ##创建数据库 cadvisor 用于接收cadvisor的监控数据
+       访问：ip:8083  
+	     1.命令行influx
+         2.http接口：curl -i -XPOST http://localhost:8086/query --data-urlencode "q=CMD"  (格式：数据库地址 + 端口 + query?db = 数据库名&q = 查询或删除或插入的SQL语句)	   
+           CMD:CREATE USER "root" WITH PASSWORD 'root' WITH ALL PRIVILEGES ##创建管理员角色 root 密码 root 供使用
+               CREATE DATABASE "cadvisor"                                  ##创建数据库 cadvisor 用于接收cadvisor的监控数据
+			 
 Cadvisor(容器):
      docker run --privileged=true --net docker-monitor --volume=/:/rootfs:ro --volume=/var/run:/var/run:rw --volume=/sys:/sys:ro --volume=/var/lib/docker:/var/lib/docker:ro --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro -p 8087:8080 --detach=true --name=cadvisor google/cadvisor -storage_driver=influxdb -storage_driver_db=cadvisor -storage_driver_host=influxdb:8086
        --privileged=true 设置挂载目录权限为最大,否则挂载出错  -storage_driver=influxdb 绑定存储驱动为influxdb   -storage_driver_db=cadvisor对应数据库名为cadvisor    -storage_driver_host=influxdb:8086 绑定数据库管理地址，容器名:容器端口
          访问：ip:8087
-Grafana(容器)：
-     docker run -d --name grafana --net docker-monitor -p 3000:3000   grafana/grafana
-       访问：ip:3000
+		 
+Grafana(容器)： 帮助文档：https://grafana.com/grafana/download
+     docker run -d --name grafana --net docker-monitor -p 8088:3000   grafana/grafana
+       访问：ip:8088   默认帐号admin admin
 
 
 
-
-
-  
 Docker-compose:是 Docker 容器进行编排的工具，定义和运行多容器的应用，可以一条命令启动多个容器。
 Docker Compose 将所管理的容器分为三层，分别是工程（project）、服务（service）、容器（container）
 Docker Compose 运行目录下的所有文件（docker-compose.yml）组成一个工程,一个工程包含多个服务，每个服务中定义了容器运行的镜像、参数、依赖，一个服务可包括多个容器实例

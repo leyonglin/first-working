@@ -1,0 +1,66 @@
+安装(linux)：
+wget https://www.python.org/ftp/python/3.5.7/Python-3.5.7.tgz
+tar -xf Python-3.5.7.tgz 
+yum -y install libffi-devel gcc make,zlib* openssl-devel openssl
+cd Python-3.5.7/
+./configure --prefix=/opt/Python                    (默认路径是/usr/local/)
+make && make install
+ln -s /opt/Python/bin/python3.5 /usr/bin/python3
+ln -s /opt/Python/bin/pip3.5 /usr/bin/pip3
+python3 --version && pip3 --version && ansible --version
+
+虚拟环境：
+python3 -m venv
+source /opt/pyvenv/bin/activate
+
+WINDOWS：
+sublime 配置 python3
+https://www.cnblogs.com/honkly/p/6599642.html
+preferences--->brower packges ---> user ---> Python3.sublime-build（SUBLIME-BUILD 文件）
+{
+    "cmd": ["C:/Users/63977/AppData/Local/Programs/Python/Python35/python.exe","-u","$file"],    #添加python路径，cmd ---> where python （进入改目录下执行python也能进入python交互界面）  
+    "file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
+    "selector": "source.python", 
+	"encoding":"gbk",                                                                            #中文乱码
+	"env": {"PYTHONPATH": "C:/Users/63977/Desktop/python"},                                      #添加自定义模块路径
+}
+插件：
+   1.安装Package Control组件   
+   快捷键：C+S+p
+      import  urllib.request,os;pf='Package Control.sublime-package';ipp=sublime.installed_packages_path();urllib.request.install_opener(urllib.request.build_opener(urllib.request.ProxyHandler()));open(os.path.join(ipp,pf),'wb').write(urllib.request.urlopen('http://sublime.wbond.net/'+pf.replace(' ','%20')).read())
+
+   2.SublimeREPL: Tools--->SublimeREPL--->Python      #交互：https://www.cnblogs.com/JackyXu2018/p/8821482.html
+   preferences--->key bindings    
+       {
+       "keys": ["f5"],                                                 #这个需要C+b执行一下，不然识别不到最新的，并且每次都会新开启一个页面
+       "caption": "SublimeREPL: Python - RUN current file",
+       "command": "run_existing_window_command",
+       "args": {
+           "id": "repl_python_run",
+           "file": "config/Python/Main.sublime-menu"}
+       },
+       {
+       "keys": ["f8"],
+       "caption": "SublimeREPL: Python - PDB current file",
+       "command": "run_existing_window_command",
+       "args": {
+           "id": "repl_python_pdb",
+           "file": "config/Python/Main.sublime-menu"}
+       },   	
+	   	
+	   
+pip安装：https://pypi.org/project/pip/  ---> Installation	   
+         将下载下来的脚本执行(需在sublime里配置并能运行脚本)
+		 进入pip应用程序目录下下载模块：pip install pygame
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   
