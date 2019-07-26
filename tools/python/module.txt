@@ -26,3 +26,5 @@ Python内置的abs()函数取绝对值
 sys模块的getsizeof函数来检查存储占用了多少内存空间
 #import sys
 #print(sys.getsizeof(f))  # 查看对象占用内存的字节数
+
+re模块来支持正则表达式相关操作

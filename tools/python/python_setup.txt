@@ -24,6 +24,7 @@ preferences--->brower packges ---> user ---> Python3.sublime-build（SUBLIME-BUI
 	"encoding":"gbk",                                                                            #中文乱码
 	"env": {"PYTHONPATH": "C:/Users/63977/Desktop/python"},                                      #添加自定义模块路径
 }
+
 插件：
    1.安装Package Control组件   
    快捷键：C+S+p

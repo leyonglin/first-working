@@ -1,4 +1,13 @@
 
+PCI(Peripheral Component Interconnect)是一种由英特尔（Intel）公司1991年推出的用于定义局部总线的标准/外设组件互连标准。此标准允许在计算机内安装多达10个遵从PCI标准的扩展卡。
+   适合为显卡，声卡，网卡，MODEM等设备提供连接接口，工作频率为33MHz/66MHz,64bit的PCI总线，称为PCI-X    
+
+/proc/cmdline 启动时传递给kernel的参数信息
+/proc/filesystems 内核当前支持的文件系统类型
+/proc/interrupts x86架构中的每个IRQ中断数
+
+/proc/iomem 每个物理设备当前在系统内存中的映射
+
 脏页面：已经修改，但是还没有刷回磁盘
 
 BSD:unix的衍生系统
