@@ -588,6 +588,7 @@ ss -pant | column -t
 mount | column -t 
 fdisk -l
 swapon -s   
+cat /proc/cmdline   #查看内核启动参数
 
 
 
