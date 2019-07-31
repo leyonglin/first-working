@@ -1,0 +1,22 @@
+
+
+MQ分布式消息队列
+Producer生产者即数据的发布者--->topics(消息类别,逻辑上可以被认为是一个queue)物理上不同Topic的消息分开存储--->topic中的数据分割为一个或多个partition。每个topic至少有一个partition(在需要严格保证消息的消费顺序的场景下，需要将partition数目设为1)(offset（metadata信息）是Partition的组成单位)（每个Partition在物理上对应一个文件夹）
+                            --->Kafka集群包含一个或多个服务器，服务器节点称为broker--->每个partition有多个副本(replica)，其中有且仅有一个作为Leader，Leader是当前负责数据的读写的partition(与之对应Follower跟随Leader，所有写请求都通过Leader路由，数据变更会广播给所有Follower，Follower与Leader保持数据同步)
+							--->消费者可以从broker中读取数据--->每个Consumer属于一个特定的Consumer Group--->Controller：Kafka集群中的其中一个Broker会被选举为Controller，主要负责Partition管理和副本状态管理，也会执行类似于重分配Partition之类的管理任务
+							
+broker push/pull方式：pull模式更合适。pull模式可简化broker的设计，Consumer可自主控制消费消息的速率					
+delivery guarantee：
+At most once 　　消息可能会丢，但绝不会重复传输
+At least one 　　消息绝不会丢，但可能会重复传输
+Exactly once 　  每条消息肯定会被传输一次且仅传输一次，很多时候这是用户所想要的。
+							
+							
+Kafka的高可靠性的保障来源于其健壮的副本（replication）策略。Replication：保证某个broker宕机仍高可用							
+Producer和Consumer只与这个Leader交互(同一个Partition可能会有多个Replica，需要在这些Replication之间选出一个Leader),将所有Replica均匀分布到整个集群
+典型的部署方式是一个Topic的Partition数量大于Broker的数量
+Producer在发布消息到某个Partition时，先通过ZooKeeper找到该Partition的Leader
+为了提高性能，每个Follower在接收到数据后就立马向Leader发送ACK，而非等到数据写入Log中
+Broker是否“活着”包含两个条件：一是它必须维护与ZooKeeper的session（这个通过ZooKeeper的Heartbeat机制来实现）。二是Follower必须能够及时将Leader的消息复制过来，不能“落后太多”。
+Leader会跟踪与其保持同步的Replica列表，该列表称为ISR（即in-sync Replica）。如果一个Follower宕机，或者落后太多，Leader将把它从ISR中移除,ACK前需要保证有多少个备份
+Leader选举本质上是一个分布式锁:1.Majority Vote”（“少数服从多数”） 2.Kafka在ZooKeeper中动态维护了一个ISR（in-sync replicas）(在ISR中至少有一个follower时)

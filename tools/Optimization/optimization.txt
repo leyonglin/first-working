@@ -21,3 +21,6 @@ kswapd0进程占用CPU较高（换页机制，内存与swap交换数据，即意
 
 
 ps -ylC nginx --sort:rss
+
+ssh：...: No route to host   1.被防火墙拦截了   2.没路由
+ping： Time to live exceeded   没路由

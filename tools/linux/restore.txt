@@ -1,0 +1,13 @@
+
+
+保证服务正常运行，启动binlog日志
+保证数据有效并足够的备份,不同磁盘/不同主机/容灾机器
+误删除后，立刻停止写入操作
+文件恢复利器　ext3grep与extundelete
+日常巡检
+
+http://www.rpmfind.net/linux/dag/redhat/el6/en/x86_64/dag/RPMS/ext3grep-0.10.2-1.el6.rf.x86_64.rpm
+硬盘不用重新挂载
+ext3grep /dev/sdb --dump -names                   #在当前目录下会生成一个文件名文件sdb.ext3grep.stage1
+ext3grep /dev/sdb --restore-all                   #在当前目录下恢复所有文件在一个RESTORED_FILES目录下，需要确保当前磁盘足够大
+ext3grep /dev/sdb --restore-file  filename        #恢复一个文件(我觉得都恢复就可以了)

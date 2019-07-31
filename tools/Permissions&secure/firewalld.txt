@@ -32,7 +32,7 @@ Firewall所谓的黑白名单ipset其实就是一个含有ip的名单，drop了�
 创建文件：cat firewall.txt        
 103.232.87.0/24
 103.35.118.19
-创建ipset：firewall-cmd --permanent --new-ipset=hgcp_whitelist --type=hash:ip                 
+创建ipset：firewall-cmd --permanent --new-ipset=http_whitelist --type=hash:ip            #还得全局配置//在zone/public.xml 添加rules   
 重新加载：firewall-cmd --reload                                                             
 导入白名单文件内容：firewall-cmd --ipset=hgcp_whitelist  --add-entries-from-file=/opt/dfcp_whitelist   
 

@@ -1,6 +1,12 @@
 
 su student -s /bin/bash -c "CMD"
 
+ls -F(/目录*可执行文件@符号链接=套接字%涂改>门，进程间通讯 |FIFO管道通讯)(简-p) -o所有者-g所属组 --time-tyle=[full/long]-iso
+   -1(数字1，每行一个) -X以扩展名排序 -B不显示结尾~  --hide="正则"
+
+cat log.txt | parallal --pipe CMD  ##分块，多线程执行
+bmon 查看网卡流量
+
 查看上下文切换时间（ 当一个进程在执行时,CPU的所有寄存器中的值、进程的状态以及堆栈中的内容被称 为该进程的上下文。当内核需要切换到另一个进程时，它需要保存当前进程的 所有状态，即保存当前进程的上下文，以便在再次执行该进程时，能够必得到切换时的状态执行下去
                      在LINUX中，当前进程上下文均保存在进程的任务数据结 构中。在发生中断时,内核就在被中断进程的上下文中，在内核态下执行中断服务例程。但同时会保留所有需要用到的资源，以便中继服务结束时能恢复被中断进程的执行
                      进程被抢占CPU时候, 操作系统保存其上下文信息, 同时将新的活动进程的上下文信息加载进来, 这个过程其实就是上下文切换）
@@ -193,7 +199,7 @@ sort -u(去重) -n(10>2) -r(反向) -o(存回本文件)  -k(第几行排序) 2  -t'-'(分隔符)
 uniq -c(去重且显示重复数)  -d(显示重复行)   #一般与sort连用，因为不相邻不会去重
 join [-a1](左连接) [-a2](右连接) [-o 1.1/1.2..](文件.栏位) [-t ":"分隔符] file1 file2   找出两个文件中，指定栏位内容相同的行，并加以合并，再输出到标准输出设备
 tr [a-z] [A-Z]      cat file | tr -d "\n\t" > new_file    cat file | tr -s(相邻重复) [a-zA-Z] > new_file      是字符替换，不是字符串替换
-stat file/Directory      du -sh     df -h      ldd CMD
+stat file/Directory      du -sh     df -h      ldd CMD     命令：file/type
 stat命令显示的是文件的I节点信息(文件系统管理的一个数据结构，是一个64字节长的表，包含了描述文件所必要的全部信息)。Linux文件系统以块为单位存储信息，为了找到某一个文件所在存储空间的位置，用I节点对每个文件进行索引。
 dig 与host相似
 dd if=/dev/hdb | gzip > /root/image.gz  备份/dev/hdb全盘数据，并利用gzip工具进行压缩，保存到指定路径(if=源文件 of=目标文件)
@@ -575,7 +581,7 @@ rpm -qa | wc -l   //   yum list installed | wc -l
 df -Th // lsblk // du -sh
 ethtool ens33 | grep -i speed
 ping -c3 -i2 -s512 www.cnblogs.com // ping 网关 // traceroute [-d] www.cnblogs.com // telnet www.blogs.com 80 // ss -antl //  curl [-I] www.baidu.com
-nmcli
+nmcli device show
 traceroute 
 pidof mysqld
 pidstat -r -p PID 2

@@ -3,6 +3,7 @@ window镜像：https://msdn.itellyou.cn/
 谷歌切换手机版：搜索window10
 
 it文档：
+https://www.fossmint.com/
 www.linuxidc.com[/rssFeed.aspx]
 http://www.shouce.ren/
 http://openresty.org

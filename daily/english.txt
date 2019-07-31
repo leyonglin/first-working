@@ -63,4 +63,42 @@ Specify a list of options as key-value pairs to pass to the driver for this volu
 Set a custom name   设置自定义名称
 This is an object with several properties, each of which is optional  这是一个具有多个属性的对象，每个属性都是可选的
      
+1. one
+2. two
+3. three
+4. four 
+5. five  
+6. six  
+7. seven
+8. eight
+9. nine  
+10.ten  
+11.eleven  
+12.twelve  
+13.thirteen  
+14.fourteen  
+15.fifteen  
+16.sixteen  
+17 seveteen  
+18 eighteen 
+19.nineteen  
+20.twenty
+30.thirty
+40.forty
+50.fifty
+60.sixty
+70.seventy
+80.eighty
+90.ninety
+100.one hundred
+百”和“千”的计数单位 直接用数字+计数单位+数字
+3-4位的数字：
+105 读作 one hundred (and) five
+245 读作 two hundred (and) forty-five
+3,286 读作 three thousand two hundred (and) eighty-six
+5-6位的数字
+处理5位以上的数字时，我们要记得看“逗号”。因为3个数字1个逗号，即三位一节，把三位看成一个整体，后面再加一个单位。
+10000 ten thousand 99999 ninety-nine thousandnine hundred and ninety-nine
+100000 one hundred thousand 999999 ninehundred and ninety-nine thousand nine hundred and ninety-nine
+1000000 one million
 
