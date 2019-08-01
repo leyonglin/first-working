@@ -1,0 +1,128 @@
+
+
+Kubernetes:
+自己组织的：
+Master : APIServer,schedule,controller manager,etcd
+Node   : runtime(容器运行环境),kube-proxy(service的透明代理和负载均衡器),kubelet(负责管理Kubernetes创建的的容器)
+1、准备好一个包含应用程序的Deployment的yml文件，然后通过kubectl客户端工具发送给ApiServer。
+2、ApiServer接收到客户端的请求并将资源内容存储到数据库(etcd)中。
+3、Controller组件(包括scheduler、replication、endpoint)监控资源变化并作出反应。
+4、ReplicaSet检查数据库变化，创建期望数量的pod实例。
+5、Scheduler再次检查数据库变化(为Pod绑定Node:过滤主机---主机打分--选择主机--进行binding操作，结果存储到Etcd中)，发现尚未被分配到具体执行节点(node)的Pod，然后根据一组相关规则将pod分配到可以运行它们的节点上，并更新数据库，记录pod分配情况。
+6、Kubelete监控数据库变化，管理后续pod的生命周期，发现被分配到它所在的节点上运行的那些pod。如果找到新pod，则会在该节点上运行这个新pod。根据调度结果执行Pod创建操作： 绑定成功后，会启动container, docker run, scheduler会调用API Server的API在etcd中创建一个bound pod对象，描述在一个工作节点上绑定运行的所有pod信息。运行在每个工作节点上的kubelet也会定期与etcd同步bound pod信息，一旦发现应该在该工作节点上运行的bound pod对象没有更新，则调用Docker API创建并启动pod内的容器。
+7、kuberproxy运行在集群各个主机上，管理网络通信，如服务发现、负载均衡。例如当有数据发送到主机时，将其路由到正确的pod或容器。对于从主机上发出的数据，它可以基于请求地址发现远程服务器，并将数据正确路由，在某些情况下会使用轮训调度算法(Round-robin)将请求发送到集群中的多个实例。
+kubelet负责维护容器的生命周期，同时也负责Volume（CVI）和网络（CNI）的管理；负责管理pods和它们上面的容器，images镜像、volumes、etc。
+
+kubectl create -f *.yml
+cat  *.yml
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: mylimits
+spec:    
+  limits:
+    ...
+
+核心组件组成：
+etcd保存了整个集群的状态(分布式数据库)，所有master的持续状态都存在etcd的一个实例中。这可以很好地存储配置数据。因为有watch(观察者)的支持，各部件协调中的改变可以很快被察觉。
+apiserver提供了资源操作的唯一入口，并提供认证、授权、访问控制、API注册和发现等机制，主要处理REST操作
+controller manager(CM):负责维护集群的状态，比如故障检测、自动扩展、滚动更新等；
+scheduler负责资源的调度，按照预定的调度策略将Pod调度到相应的机器上；
+kubelet负责维护容器的生命周期，同时也负责Volume（CVI）和网络（CNI）的管理；负责管理pods和它们上面的容器，images镜像、volumes、etc。
+Container runtime负责镜像管理以及Pod和容器的真正运行（CRI）；
+kube-proxy负责为Service提供cluster内部的服务发现和负载均衡；基于一种公共访问策略（例如：负载均衡），服务提供了一种访问一群pod的途径。此方式通过创建一个虚拟的IP来实现，客户端能够访问此IP，并能够将服务透明的代理至Pod。每一个Node都会运行一个kube-proxy，kube proxy通过iptables规则引导访问至服务IP，并将重定向至正确的后端应用
+          通过这种方式kube-proxy提供了一个高可用的负载均衡解决方案。服务发现主要通过DNS实现。
+Kubernetes API ServerAPI服务提供Kubernetes API的服务。这个服务试图通过把所有或者大部分的业务逻辑放到不两只的部件中从而使其具有CRUD特性。它主要处理REST操作，在etcd中验证更新这些对象（并最终存储）
+kubectl是Kubernetes集群的命令行接口。
+endpoint 用于管理网络请求，外界通过endpoint访问service
+推荐的Add-ons：
+kube-dns负责为整个集群提供DNS服务
+Ingress Controller为service微服务提供外网入口
+Heapster提供资源监控
+Dashboard提供GUI
+Federation提供跨可用区的集群
+Fluentd-elasticsearch提供集群日志采集、存储与查询
+apiserver的list-watch代码解读
+list-watch，作为k8s系统中统一的异步消息传递方式，对系统的性能、数据一致性起到关键性的作用
+
+Kubernetes：控制管理服务器，所有其它的集群级别的功能目前都是由控制管理器所负责
+Kubelet是Kubernetes中最主要的控制器，它是Pod和Node API的主要实现者，Kubelet负责驱动容器执行层。在Kubernetes中，应用容器彼此是隔离的，并且与运行其的主机也是隔离的，这是对应用进行独立解耦管理的关键点。
+集群：Kubernetes管理的一组服务器集合；
+边界路由器：为局域网和Internet路由数据包的路由器，执行防火墙保护局域网络；
+集群网络：遵循Kubernetes网络模型实现群集内的通信的具体实现  
+pods:最小的管理,创建,计划的最小单元(通过label被rc和service关联),相当于一个共享context(pid,net,ipc,uts)的配置组,同时被指定资源限制,使Pod内的数据共享及通信变得容易,一个容器环境下的“逻辑主机,Pod通过提供一个高层次抽象而不是底层的接口简化了应用的部署及管理(apiVersion:版本)
+Labels:一对key/value,被关联到对象上,获得更高效的查询和监视
+Namespace是对一组资源和对象的抽象集合,可以用来将系统内部的对象划分为不同的项目组或用户组,常见的pods, services, replication controllers和deployments等都是属于某一个namespace的(默认是default)
+Replication Controller(rc):保证了在所有时间内，都有特定数量的Pod副本正在运行,就像一个进程管理器，监管着不同node上的多个pod,而不是单单监控一个node上的pod,Replication Controller会委派本地容器来启动一些节点上服务，确保任何时间Kubernetes中都有指定数量的Pod在运行。在此基础上，RC还提供了一些更高级的特性，比如滚动升级、升级回滚等
+ReplicaSet(rs)是下一代复本控制器(Replication Controller)。
+Deployment为Pod和ReplicaSet提供了一个声明式定义(declarative)方法(创建/升级/回滚/扩缩容/暂停/启动)，用来替代以前的Replication Controller来方便的管理应用
+Deployment controller: 管理Deployment (revision及数量/状态)   
+Node是Pod真正运行的主机,每个Node节点上至少要运行container runtime(比如docker或者rkt),kubelet和kube-proxy服务。Kubernetes只是管理Node上的资源,
+     Node Controller负责node状态(ip/hostname/condition/capacity/info)Taints和tolerations用于保证Pod不被调度到不合适的Node上，Taint应用于Node上，而toleration则应用于Pod上
+kube-proxy:这个应用监控着Kubermaster增加和删除服务,通过管理 iptables 来实现网络虚拟IP路由和转发(对 api-server 中的 service & endpoint 进行 watch)，为每一个服务，kube-proxy会随机开启一个本机端口(service中的访问端口会被映射到这个随机端口)，任何发向这个端口的请求都会被转发到一个后台的Pod当中
+Service:是一个定义了一组Pod的策略的抽象,也叫做宏观服务。在kubernete集群中实现让这些前台能够持续的追踪到这些后台的,这些被服务标记的Pod都是(一般)通过label Selector(创建与Service同名的EndPoints对象)决定的,如果没有,可以指定kubernetes管理之外的数据库的物理IP进行连接,有三种类型：ClusterIP，NodePort，LoadBalancer
+       每个Service被创建的时候会被分配一个唯一的IP地址（也叫 clusterIP(对内) ,还有nodeport(对外)和LoadBalancer(基于nodeport的LB),Ingress(LB)）。这个地址和Service绑定，只要Service活着就不会改变(动态地绑定后面的 pod)。Pod可以配置成和Service交互，并且知道和Service的通信会被自动地负载均衡到Service成员中的某个Pod。
+	   Kubernetes提供了一个DNS集群插件Service，这个Service使用 skydns 自动给其他Service分配DNS，通过定义两个同名的service和endPoints可以代理其他服务。
+	service是一组pod的服务抽象，相当于一组pod的内部LB(负载均衡)，负责将请求分发给对应的pod。service会为这个LB提供一个IP，一般称为cluster IP。
+    kube-proxy的作用主要是负责service的实现，具体来说，就是实现了内部从pod到service和外部的从node port向service的访问。   
+Service account是为了方便Pod里面的进程调用Kubernetes API或其他外部服务而设计的，提供认证。。。
+Ingress controller，它监听Ingress和service的变化，并根据规则配置负载均衡并提供访问入口，为服务提供外网入口，Ingress可以给service提供集群外部访问的URL、负载均衡、SSL终止、HTTP路由等
+   service和pod的IP仅可在集群内部访问。集群外部的请求需要通过负载均衡转发到service在Node上暴露的NodePort上，然后再由kube-proxy将其转发给相关的Pod。
+PodPreset用来给指定标签的Pod注入额外的信息，如环境变量、存储卷等
+Horizontal Pod Autoscaling(水平pod扩展)可以根据CPU使用率或应用自定义metrics自动扩展Pod数量
+StatefulSet是为了解决有状态服务的问题(稳定的持久化存储,稳定的网络标志,有序部署,有序扩展,有序收缩,有序删除)PetSet是用来控制有状态服务
+ConfigMap用于保存配置数据的键值对，可以用来保存单个属性，也可以用来保存配置文件。ConfigMap跟secret很类似，但它可以更方便地处理不包含敏感信息的字符串。ConfigMap必须在Pod引用它之前创建
+Secret解决了密码、token、密钥等敏感数据的配置问题，而不需要把这些敏感数据暴露到镜像或者Pod Spec中。Secret可以以Volume或者环境变量的方式使用。 secret 数据卷可以让我们像内存目录一样来把秘密加载到容器里
+Admission Controller插件是一段代码，集群在接受一个请求之前，每一个Admission Controller插件都会按序运行。如果这个序列中的某个插件拒绝该请求，则整个的请求都会被立刻拒绝，返回一个错误给用户。
+Security Context的目的是限制不可信容器的行为，保护系统和其他容器不受其影响。
+Resource Quotas(资源配额)是用来限制用户资源用量的一种机制(内存，cpu，存储，对象)。
+PV/PVC/StorageClass：PV是集群中的资源(PersistentVolume).PVC是对这些资源的请求(PersistentVolumeClaim).StorageClass为管理员提供了一种描述他们提供的存储的“类”的方法。 不同的类可能映射到服务质量级别，或备份策略
+Network Policy提供了基于策略的网络控制(namespace/pod)，用于隔离应用并减少攻击面。
+DaemonSet保证在每个Node上都运行一个容器副本，常用来部署一些集群的日志、监控或者其他系统管理应用
+CronJob即定时任务，就类似于Linux系统的crontab，在指定的时间周期运行指定的任务
+Job负责批量处理短暂的一次性任务 (short lived one-off tasks)，即仅执行一次的任务，它保证批处理任务的一个或多个Pod成功结束
+Job Controller负责根据Job Spec创建Pod，并持续监控Pod的状态，直至其成功结束
+ThirdPartyResources是一种无需改变代码就可以扩展Kubernetes API的机制，可以用来管理自定义对象。 
+kubernetes ui：Kubernetes有一个基于web的用户界面，它可以图表化显示当前集群状态。
+Kubernetes API服务器为API对象验证和配置数据，这些对象包含Pod，Service，ReplicationController等等。API Server提供REST操作以及前端到集群的共享状态，所有其它组件可以通过这些共享状态交互。
+Volumes:与所在的Pod的生命周期相同(pod中容器共享数据卷)
+    
+	
+Apache Spark是一个快速通用的集群计算系统。
+Apache Storm是一个免费的开源分布式实时计算系统，实例:实时分析、在线机器学习、连续计算、分布式RPC、ETL等等。
+
+controller提供了集群范围内的自我修复，以及复制还有展示管理
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
