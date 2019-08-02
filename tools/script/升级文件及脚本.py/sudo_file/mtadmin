@@ -1,3 +1,0 @@
-###### open authority to mtadmin###################
-Cmnd_Alias CHECK_SERVICES = /usr/bin/firewall-cmd --list-all
-mtadmin ALL=(ALL)NOPASSWD:CHECK_SERVICES
