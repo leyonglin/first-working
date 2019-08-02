@@ -97,47 +97,7 @@ Settings-> Preference ->General -> Tab Bar  （session：会话）
 设置       首选项       通用        标签栏
 
 
-Win10：快捷键
-Win键+D：显示桌面
-Win键+Shift+左/右：将应用从一个显示屏移至另一个显示屏
-Win键+I：打开Windows 10设置
-Win键+X：打开高级用户功能
-Win键+Ctrl+D：创建一个新的虚拟桌面(Win键+Tab可解)
-Win键+Ctrl+左/右：切换虚拟桌面
-Win键+Ctrl+F4：关闭最近使用的虚拟桌面
-Win键+Tab：激活多任务视图
-Win键+E：打开文件管理器
-Win键+G：打开Xbox游戏录制工具栏，供用户录制游戏视频或截屏
-Win键+L：锁定屏幕
-Win键+R：运行
-Win键+1/2/3：打开任务栏中固定的程序，1代表任务栏中第一个应用图标
-Shift +左/右/上/下:移动光标并选中文本
-Win键+左/右/上/下：移动应用窗口，可多程序同屏
 
-
-wimdows添加命令行命令：
-将应用程序及应用程序拓展(.dll)复制到wimdows的命令路径 C:\Windows\System32 下，同时需要相应的库文件(vcredist_x64(应用程序)：c++库文件)   
-DLL(Dynamic Link Library)文件为动态链接库文件，又称“应用程序拓展”，是软件文件类型
-.exe 可执行文件(应用程序)  .dll应用程序拓展  .acm文件为音频压缩管理驱动程序文件为音频压缩管理驱动程序,主要是为Windows系统提供各种声音格式的编码和解码功能
-.DAT 数据文件(无绝对定义)  .ax是媒体播放的插件文件,用于支持播放某种媒体文件的解码  
-.bin文件是PE光盘镜像文件(二进制文件)。 BIN文件它可以是任何内容,它并不是多见到的doc、jpg、mp3等具有特定程序可以打开的文件
-OCX 是对象类别扩充组件（Object Linking and Embedding (OLE) Control Extension）；是可执行的文件的一种，但不可直接被执行 
-PE文件的全称是Portable Executable，意为可移植的可执行的文件，常见的EXE、DLL、OCX、SYS、COM都是PE文件，PE文件是微软Windows操作系统上的程序文件（可能是间接被执行，如DLL）
-后缀为asp asa asc的文件都是ASP文件Active Server Page（ASP，活动服务器页面）就是一个编程环境，在其中，可以混合使用HTML、脚本语言以及组件来创建服务器端功能强大的Internet应用程序
-CHS，是FDISK在分区期间所需磁盘信息。CHS寻址模式：CHS寻址模式将硬盘划分为磁头（Heads）、柱面(Cylinder)、扇区(Sector)。
-EFI是windowsNT6以上系统里面里的启动文件。用于引导GPT分区,里面都是一些引导信息,系统启动后会读取efi文件,然后获取引导信息今儿加载系统相关文件
-.h为头文件，.c为源文件，其实两者都是代码，头文件用于共享，只用一句#include就能包含，当然.c也可以包含；二是如果你要写库的话，可是你又不想暴露你的源代码，你可以把.c编译成.obj或是.lib发给别人用，然后把.h作为使用说明书。所以一般情况下，.h里面全部都是声明，.c里面全部都是实现，有了.h就可以编译，有了.lib或你的.obj就可以连接
-.iec：音频文件  INI文件被用来对操作系统或特定程序初始化或进行参数设置  .nls是多国语言资源文件、字符转换,文件是额外的中文语言显示支持文件，通常是特殊编码的语言编码集
-.IME 是输入法编辑器(Input Method Editor) 程序配置文件，使用此种输入法，不需特殊的键盘（对应各种语言的键盘）即可输入东亚诸国（如中文、日文、韩文、俄文等）的各种文字
-.ec Informix ESQL/C Source
-.irc Internet Relay Chat Script
-.ies IESNA Photometric Data
-.idc Core IDC Image
-.ief Image Exchange Format Bitmap File
-.eic East India Company Saved Game
-.isc ISP Configuration File
-.iex The Tuttles Madcap Misadventures Data
-.ie MyEclipse Image
 
 
 xshell：

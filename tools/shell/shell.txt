@@ -1,0 +1,193 @@
+ vim .vimrc
+ set cursorline
+ set autoindent
+ set number  （:set nonu ）   
+ 
+ 
+ ！！！脚本是重复改变但有规律的事情，例：pool${i}/config/.git  别急
+ man bash 如果写shell脚本一定要提前阅读该说明
+ 
+ #!/bin/bash   或者 #!/usr/bin/env bash
+ set -e        执行错误即退出(man bash查看该命令错误的定义)
+ set -x        输出执行代码(变量会被替换)与执行结果
+               shellcheck,不写进代码行中,代码检测网站https://www.shellcheck.net/，也可以下载命令行，并且可以集成到编辑器中(但是效果并不是很好)
+ 			  变量操作(man bash  全文查找Parameter Expansion)
+               函数中，局部变量加local
+               trap信号(trap sighandler INT)
+ 			  https://explainshell.com/执行过程
+ 			  
+ exec 3<>hello.txt	        hello.txt以读写方式绑定到文件描述符"3"
+ echo "hello exec"  >&3      写进文件描述符3(第一次覆盖，后面追加)，相当于写进hello.txt
+ exec 3>&-  关闭写    exec 3<&- 关闭读
+ 
+ exec 100>&1    将文件描述符100连接到标准输出    exec 1>hello.txt # 将输出重定向到文件hello.txt
+ exec 1>&100 100>&- # 将标准输出连接到100    将描述符100关了
+ 			  
+ add_db_master_ip () {
+ # add master db ip address, run in slave database server
+     while true;do
+         read -p "请输入主库所有IP地址:" db_master_ip
+         read -p "主库IP地址为:$db_master_ip 确定吗(y/n)" db_master_ip_yn
+         case $db_master_ip_yn in
+         y|Y)
+         dbmasterip=$db_master_ip
+         break;;
+         n|N)
+         continue;;
+         esac
+     done
+ }	
+ 
+ 
+ for i in $ip;do
+ expect << EOF
+         spawn /opt/apps/mysql/bin/mysql -uroot -p -S /opt/data/data_16303/mysql.sock -e "    
+         grant all privileges on gameplat_analysis.* TO 'gameplat_analysis_dev'@'$i' identified by 'xjVXkB>Q6JpB61r${rand_pass}';
+         flush privileges;"
+         expect "Enter password:" {send "9tN6GFGK60Jk8BNkBJM611GwA66uDFeG\r"}
+         expect eof
+ EOF
+ done
+ 
+ 
+ #!/bin/bash
+ file="/tmp/pack1.txt"
+ while read -r pack
+ do apt -y remove $pack
+ done<"$file"
+ 		  
+ for i in "1 2"; do echo ${i}; echo ok; done		  
+ 
+ 1 2 == {1,2} == {1..2}
+ 
+ 
+ 基本教程：
+ shell是指在Linux内核和用户之间的解释器程序，负责向内核翻译及传达用户/程序指令   cat /etc/shells
+ 
+ bash特性：快捷键、tab补齐、命令历史、别名、标准输入输出、重定向、管道     (C+r)
+ 
+ shell脚本:提前写好可执行语句，特定时候完成特定任务，顺序，批量处理，解释型程序
+ 
+ 查看变量：$变量名/${变量名}    失效unset
+ 
+ 变量类型：环境变量(大写)env/set  /etc/profile // ~/.bash_profile    位置变量$1..$n    预定义变量$0 $$ $? $# $* $@     自定义变量
+ shell变量的值默认视为文本，当进行数学运算，自动转换称整数
+ 
+ ""  ''   ``==$()     ${数组/截取}
+ 
+ read [-p提示语] 变量             stty -echo：
+ 
+ local     export [-n取消]  
+ eval即对结果多执行一遍（主要用在对参数的特殊处理上面的，例如转义和变量转变）
+ #例1
+ #name=woodie
+ #cmd="echo Helllo $name\! "
+ #echo $cmd && eval $cmd  
+ #例2
+ #aabbcc=alibaba a=aa b=bb c=cc  alibaba="hello world"
+ #eval echo \$\$$a$b$c   &&   echo \\$\$$a$b$c   &&   eval echo \\$\$$a$b$c   &&   eval eval echo \\$\$$a$b$c
+ 
+ 计算：1.expr 算式(\*)     2.$[算式]或$((算式)) --- 值引用变量可省略$，$[i+=1]/$[i++]自增    3. let i++;echo $i 自增 
+      小数：echo "scale=4;$a*56.56;5/3" |bc  --运算符也可换成比较符
+ 	 
+ test 选项 参数 == [选项 参数]      查看帮助：help test
+ 
+ -z字符串为空 -n字符串不为空    ==  !=     -eq -ne -ge -gt -le -lt    -e -d -f -r -w -x    多条件组合：&&  ||
+ 
+ if [ ]; then CMD; fi                 #关键字换行就不用; 不换行需要在关键词前加；   
+ if [ ]; then CMD; else CMD; fi
+ 
+ for var in val; do CMD; done         #关键字换行就不用; 不换行需要在关键词前加； 
+ c语言风格的for循环： for ((初值;条件;步长控制))       for ((i=1;i<=${#arr[@]};i++ )); do CMD; done
+ 
+ while 条件; do CMD; done 
+ 
+ case $1 in 
+ var1)
+    CMD;;
+ var2)
+    CMD;;
+ *)
+    CMD[;;]
+ esac  
+ 
+ 函数：
+ 1. function 函数名{
+     CMD...
+    }
+ 2.函数名() {
+     CMD...
+    }
+ 
+ 中断与退出：break n(默认为1，跳出当前循环(for、while、until))  continue终止本次循环，进行下一次，exit跳出脚本
+ 
+ 字符串截取：
+ 1.${var:起始位:长度}                    # 起始从0开始，0可省略 
+ 2.expr substrate "$var" 起始位 长度     # 起始从1开始
+ 3.echo $var | cut -b 起始位-结束位      # 起始从1开始，起始位-结束位 1可省略
+ 替换：
+ 一个：${var/old/new}  全部：${var//old/new}
+ 掐头(从左往右)：最短匹配：${var#*关键词}      最长匹配：${var##*关键词}        #/var/log/message
+ 去尾(从右往左)：最短匹配：${var%关键词*}      最长匹配：${var%%关键词*}
+ 初始值：${var:-word}
+ 
+ 
+ 数组：整体赋值：数组名=(值1 值2 ...)     单个元素赋值：数组名[下标]=值  #下标从0开始
+ 获取：单个：${数组名[下标]}   所有：${数组名[@]}   值个数：${#数组名[@]}     多个：${数组名[@]:起始:个数}
+ 
+ 预期交互：expect 为交互式过程自动输送预先准备的文本或指令
+ 
+ 正则：基本元字符：^ $ . + ? * {n} {n,m} {n,}
+       其它：[]范围内单字匹配 ()整体  |或者 \b单词边界 
+ 
+ 
+ sed流式编辑器：
+ 1. 前置命令 | sed [选项] '条件+指令'
+ 2. sed [选项] '条件+指令'  文件.. ..
+ 选项：-n屏蔽默认输出   -i实际修改   -r支持正则但应作为首个选项
+ 条件：行号或者/正则/                                                #2,4p输出234行  2p;4p输出24行  4,+10p输出4及后面10行  $=输出文件的行数 
+ 动作指令：p打印  d删除   s替换                                      # ！取反  s/old/new/ 3g  替换第一个，第三个，全部      $d删除文件最后一行
+           i行前插入  a行后插入 c替换
+ 
+ 
+ awk编程语言/数据处理引擎
+ 1.前置命令 | awk [选项] '[条件]{指令}'
+ 2.awk [选项] '[条件]{指令}' 文件.. ..
+ 选项：-F[] 指定分隔符
+ 内置变量：FS=":" 与-F一样    $n第n个字段    $0整行文本内容   NF最后一个字段,列数   NR行数
+ 过滤时机: BEGIN{} {} END{}          #每个段都可以添加条件，每个段都一样一个{}  即awk -F[:] 'BEGIN{} {} END{}' filename
+ 条件：/正则/  $7!~/bash$/ 
+       数值/字符串比较 > < == != >= <=
+       逻辑比较&&  ||   
+ 	  运算符+-*/%  ++ -- += -= *= /=
+ 流程控制：单分支：if(条件){编辑指令}    双分支：if(条件){编辑指令1}else{编辑指令2}   
+           多分支(else连接多个if条件)：if(条件){编辑指令1}else if(条件){编辑指令}
+   awk -F[:] 'BEGIN{i=0;j=0}{if($3>=500){i++}else{j++}}END{print i,j}' /etc/passwd
+   awk  '{ip[$1]++} END{for(i in ip) {print ip[i],i}}' ip.txt | sort -nr               #{print ip[i],i}  逗号表示空一格
+   netstat -n | awk '/^tcp/ {++S[$NF]} END {for(a in S) print a, S[a]}'
+   awk [ 选项] ' BEGIN{ 指令} { 指令} END{ 指令} ' 文件
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
