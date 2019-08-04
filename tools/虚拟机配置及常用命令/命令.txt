@@ -1,6 +1,8 @@
 
 su student -s /bin/bash -c "CMD"
 
+
+
 ls -F(/目录*可执行文件@符号链接=套接字%涂改>门，进程间通讯 |FIFO管道通讯)(简-p) -o所有者-g所属组 --time-tyle=[full/long]-iso
    -1(数字1，每行一个) -X以扩展名排序 -B不显示结尾~  --hide="正则"
 

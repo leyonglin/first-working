@@ -87,17 +87,17 @@
  #aabbcc=alibaba a=aa b=bb c=cc  alibaba="hello world"
  #eval echo \$\$$a$b$c   &&   echo \\$\$$a$b$c   &&   eval echo \\$\$$a$b$c   &&   eval eval echo \\$\$$a$b$c
  
- 计算：1.expr 算式(\*)     2.$[算式]或$((算式)) --- 值引用变量可省略$，$[i+=1]/$[i++]自增    3. let i++;echo $i 自增 
+ 计算：1.$[算式]或$((算式)) --- 值引用变量可省略$，$[i+=1]/$[i++]自增    2. let i++;echo $i 自增   3.expr 算式(\*) 运算符两边需要空格，支持变量    
       小数：echo "scale=4;$a*56.56;5/3" |bc  --运算符也可换成比较符
  	 
- test 选项 参数 == [选项 参数]      查看帮助：help test
+ test 选项 参数 == [ 选项 参数 ]      查看帮助：help test
  
  -z字符串为空 -n字符串不为空    ==  !=     -eq -ne -ge -gt -le -lt    -e -d -f -r -w -x    多条件组合：&&  ||
  
  if [ ]; then CMD; fi                 #关键字换行就不用; 不换行需要在关键词前加；   
  if [ ]; then CMD; else CMD; fi
  
- for var in val; do CMD; done         #关键字换行就不用; 不换行需要在关键词前加； 
+ for var in val; do CMD; done         #关键字换行就不用; 不换行需要在 关键词前 加； 
  c语言风格的for循环： for ((初值;条件;步长控制))       for ((i=1;i<=${#arr[@]};i++ )); do CMD; done
  
  while 条件; do CMD; done 
@@ -129,11 +129,21 @@
  一个：${var/old/new}  全部：${var//old/new}
  掐头(从左往右)：最短匹配：${var#*关键词}      最长匹配：${var##*关键词}        #/var/log/message
  去尾(从右往左)：最短匹配：${var%关键词*}      最长匹配：${var%%关键词*}
- 初始值：${var:-word}
+ ${var}	              变量，界定范围
+ ${var:-word}	      如果var为空或者未设定，返回word，var不变
+ ${var:=word}	      如果var为空或者未设定，返回word，且var=word
+ ${var:+word}	      如果var有值，返回word，var不变
+ ${var:?word}	      如果变量var为空或者未设定，返回word并退出shell，word没有值则输出：parameter null or not set，用于检测var是否被正常赋值
+ ${var-word}	      如果var未设定，返回word，如果var未空或者有值，返回var
+ ${var:num}	          字符串截取，返回var中第num个字符到末尾的所有字符，正从左往右，负从右往左，有空格：${var: -2}，没有空格：${var:1-3}或${var:(-2)}
+
+
+
  
  
  数组：整体赋值：数组名=(值1 值2 ...)     单个元素赋值：数组名[下标]=值  #下标从0开始
  获取：单个：${数组名[下标]}   所有：${数组名[@]}   值个数：${#数组名[@]}     多个：${数组名[@]:起始:个数}
+ 多行合并成一行：tr '\n' ' ' 
  
  预期交互：expect 为交互式过程自动输送预先准备的文本或指令
  
@@ -156,16 +166,20 @@
  选项：-F[] 指定分隔符
  内置变量：FS=":" 与-F一样    $n第n个字段    $0整行文本内容   NF最后一个字段,列数   NR行数
  过滤时机: BEGIN{} {} END{}          #每个段都可以添加条件，每个段都一样一个{}  即awk -F[:] 'BEGIN{} {} END{}' filename
+ 过滤时机：awk [选项] 'BEGIN{指令} {指令} END{指令} ' 文件
  条件：/正则/  $7!~/bash$/ 
        数值/字符串比较 > < == != >= <=
        逻辑比较&&  ||   
  	  运算符+-*/%  ++ -- += -= *= /=
  流程控制：单分支：if(条件){编辑指令}    双分支：if(条件){编辑指令1}else{编辑指令2}   
            多分支(else连接多个if条件)：if(条件){编辑指令1}else if(条件){编辑指令}
-   awk -F[:] 'BEGIN{i=0;j=0}{if($3>=500){i++}else{j++}}END{print i,j}' /etc/passwd
+   awk -F[:] 'BEGIN{i=0;j=0}{if($3>=500){i++}else{j++}}END{print i,j}' /etc/passwd 
+   awk -F: 'BEGIN{i=0;j=0;k=0} {if($3<500){i++} else if($3>=500&&$3<=1000){j++} else{k++}} END{print i,j,k}' /etc/passwd   
+   ##“else if”这个是必须有空格的  最后的else是不需要条件    BEGIN多个初始值用;分开     END{print }用,分开
+   
    awk  '{ip[$1]++} END{for(i in ip) {print ip[i],i}}' ip.txt | sort -nr               #{print ip[i],i}  逗号表示空一格
    netstat -n | awk '/^tcp/ {++S[$NF]} END {for(a in S) print a, S[a]}'
-   awk [ 选项] ' BEGIN{ 指令} { 指令} END{ 指令} ' 文件
+   
   
 
 

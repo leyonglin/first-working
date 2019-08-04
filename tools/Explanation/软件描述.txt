@@ -2,6 +2,12 @@
 PCI(Peripheral Component Interconnect)是一种由英特尔（Intel）公司1991年推出的用于定义局部总线的标准/外设组件互连标准。此标准允许在计算机内安装多达10个遵从PCI标准的扩展卡。
    适合为显卡，声卡，网卡，MODEM等设备提供连接接口，工作频率为33MHz/66MHz,64bit的PCI总线，称为PCI-X    
 
+动态页面：
+ ASP技术是基于.NET平台的一种动态网页技术(iis)小型网站
+ PHP语言是HTML内嵌式的语言，PHP可以跨平台，并且具有更好的数据库交互能力。PHP在UNIX/Linux平台下运行的性能很好。接口不规范
+ JSP技术在基于java的平台上广泛地使用，是进行Java web开发的一种核心组件
+   CGI（Common Gateway Interface，公用网关接口）为HTTP服务器与其他机器上的程序服务通信交流的一种工具，CGI程序须运行在网络服务器上。
+   FastCGI是一个可伸缩的，高速地在HTTP服务器和动态脚本语言间通信的接口（在Linux下，FastCGI接口即为socket，这个socket可以是文件socket，也可以是IP socket），主要优点是把动态语言和HTTP服务器分离出来
 /proc/cmdline 启动时传递给kernel的参数信息
 /proc/filesystems 内核当前支持的文件系统类型
 /proc/interrupts x86架构中的每个IRQ中断数

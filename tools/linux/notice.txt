@@ -1,4 +1,6 @@
 
+了解整个架构，了解哪些地方需要配置及配置作用(统一/指定的配置)，原因很重要
+
  编译：最好指定安装路径
  安装：1.linux系统版本   2.程序版本   3.操作步骤   4.配置   5.安全策略
  
@@ -26,9 +28,14 @@
  说明： -n 显示IP地址，不查主机名，  -m 设置跳数  -q 4每个网关发送4个数据包    -w 把对外发探测包的等待响应时间设置为3秒
  
  
+
  top
  vmstat -w 2  
- iostat -x 2  //  iotop -o
+ iostat -x 2  //  iotop -o                  #io
+ pidstat -r -p PID 2                        #上下文
+ jstat -gccause PID 1000                    #jvm GC
+ mpstat  [-P ALL[cpuid] 2]                  #cpu
+ 
  
  修改配置后服务重载，有时候会失效，请记住ps查看程序时间
 

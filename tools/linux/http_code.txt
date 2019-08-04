@@ -11,7 +11,7 @@ geoip:404自定义
 域名没绑定：cdn与直解都是自定义阿里云404
 tomcat没启动：cdn与直解都是502 Bad Gateway
 cdn没添加，但服务器添加了：400 bad request
-
+普通域名强制证书域名访问：400 Bad Request
 
 
 
