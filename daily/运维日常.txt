@@ -1,6 +1,8 @@
 
 firewalld  mysql(重做主从)/授权  crontab  pom文件  pom脚本 [redis，mysql要能写]  sersync本机及备战ip  计划任务  采集ip及域名 公共服务器 hostlist   解析  群通知   
 
+http://deploy_check.yibofafa666.com/deploy_check/    查看发布
+
 web-master  web-slave db-master db-slave  web-db-master  web-db-slave
    主站       备站      主库      从库       主站主库      备站从库
 

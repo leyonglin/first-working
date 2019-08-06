@@ -1,4 +1,16 @@
 
+inurl:admin/mp3                             url中包含admin/mp3
+金庸site:edu.cn                               在edu.cn站点搜索金庸
+金庸filetype:doc                              包含金庸的doc文件
+info:www.sina.com.cn                     匹配内容
+intitle:"UC浏览器"                            在标题中搜索   
+allintitle:"index of" "backup files"    标题中搜索其后的所有检索词
+allinurl:mp3 list
+inanchor:席欣悦
+define:ironic
+link:www.newhua.com
+related:www.9apps.com	
+
 https://github.com/search[/advanced]
 
 GitHub Trend：https://github.com/trending 

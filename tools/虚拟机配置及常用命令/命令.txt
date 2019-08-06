@@ -430,12 +430,15 @@ less:Ö»ÄÜ²é¿´    ¿ÉÒÔÏòÇ°Ïòºó·­Ò³/²éÕÒ   /keyword£º´ÓÎÄ¼þÊ×²¿ÏòÎÄ¼þÎ²²¿ÒÀ´Î²éÕÒ£
 mtr£ºÓöµ½Êý¾Ý´«ÊäÑÓ³ÙÊ§°ÜµÄÎÊÌâ£¬¼ì²â¶ª°üÂÊ
 ²ÎÊý:-r ÒÔ±¨¸æÄ£Ê½ÏÔÊ¾  -c ÉèÖÃÃ¿Ãë·¢ËÍÊý¾Ý°üµÄÊýÁ¿ -s ÓÃÀ´Ö¸¶¨pingÊý¾Ý°üµÄ´óÐ¡  -4/6 IPv4/6 
 
+tar ÊÇ¹éµµ gzµÈÊÇÑ¹Ëõ
 
-Vim£º 
+cat 1 2 > 3 ºÏ²¢ÎÄ¼þ
+
+Vim£º +n½øÈëÎÄ¼þ¹â±êÎ»ÓÚµÚnÐÐ      i/I/a/A/o/O      £ºw±£´æ  £º-pÍË³ö   wp=x=ZZ   DÉ¾³ýµ±Ç°¹â±êµ½ÐÐÎ²
 ÐÐÄÚÌø×ª£º0: ¾ø¶ÔÐÐÊ×  $: ¾ø¶ÔÐÐÎ²  ^: Ìø×ªÖÁÐÐÊ×µÄµÚÒ»¸ö·Ç¿Õ°××Ö·û  H£ºÒÆ¶¯¹â±êµ½ÆÁÄ»ÉÏÃæ   M£ºÒÆ¶¯¹â±êµ½ÆÁÄ»ÖÐ¼ä  L£ºÒÆ¶¯¹â±êµ½ÆÁÄ»ÏÂÃæ
           nx: É¾³ý¹â±êËùÔÚ´¦¼°ÏòºóµÄ¹²n¸ö×Ö·û     Á¬ÐøuÃüÁî¿É³·Ïû´ËÇ°µÄn´Î±à¼­²Ù×÷  
           G ×îºóÒ»ÐÐ(vim + filename)    gg µÚÒ»ÐÐ
-		  dw É¾³ý¹â±êÖ®ºóµÄµ¥´ÊÊ£Óà²¿·Ö¡£   d$ É¾³ý¹â±êÖ®ºóµÄ¸ÃÐÐÊ£Óà²¿·Ö¡£ dawÉ¾³ý¹â±êËùÔÚµ¥´Ê
+		  dw É¾³ý¹â±êÖ®ºóµÄµ¥´ÊÊ£Óà²¿·Ö¡£   d$/D É¾³ý¹â±êÖ®ºóµÄ¸ÃÐÐÊ£Óà²¿·Ö    dawÉ¾³ý¹â±êËùÔÚµ¥´Ê
 
 ¶àÆÁ
   ÔÚÃüÁîÄ£Ê½ÏÂ£º      :sp {filename}   ÔÙ´ò¿ªÒ»¸öÎÄ¼þ   ctrl+w+ÉÏÏÂ¼ü¿ÉÇÐ»»     :qa¿É¹Ø±ÕÆäËü´°¿Ú(ÎÞÐÞ¸Ä)

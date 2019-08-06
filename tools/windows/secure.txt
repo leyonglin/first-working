@@ -1,0 +1,81 @@
+黑客：恶意，破坏   ----黑帽子
+骇客：技术人员     ---灰帽子
+红客：中国特色的   ---白帽子
+
+肉鸡--抓鸡---webshell 脚本工具
+后门   跳板：IP隐藏
+旁站入侵
+c段入侵：网关抓包
+黑盒测试：外部测试
+白盒测试：内部测试/代码审计
+APT攻击
+渗透测试：处于保护目的，与入侵相反
+
+
+
+vmware：VMware Workstation Pro下载这个版本
+
+
+命令：
+ncpa.cpl : 网络连接
+services.msc:服务
+regedit：注册表
+msconfig：通过“引导”和”启动“ 提高开机速度
+
+dos命令：
+color /?
+net use k: \\192.168.1.1\c$   \\ net start service  \\ net user 用户名 passwd
+ping -t -l 65535 www.baidu.com
+systeminfo
+
+快捷键：
+W+E
+W+D
+W+break
+
+
+C:\Windows\System32   #配置文件目录
+C:\Program Files      #程序目录
+
+unix收费？
+发行版：内核+应用软件包/私有设置
+内核：uname -r    xx:xx(奇数代表开发版):xx 
+hd：IDE设备     sd：scsi设备
+
+sr代表 scsi + rom     /dev/cdrom 只是一个到sr0的符号链接
+sd代表 scsi + disk
+sg 代表 scsi + generic
+st代表 scsi + tape
+
+CMD [option实现功能] [para对象]
+cp -r/f/i/p
+
+
+tar (-p保持属性)是归档(-c)    gz等是压缩
+
+cat 1 2 > 3 合并文件
+
+Vim： +n进入文件光标位于第n行      i/I/a/A/o/O      ：w保存  ：-p退出   wp=x=ZZ   
+     -R只读(超级管理员例外) -r意外退出时正在编辑的文件   D删除当前光标到行尾  :.,$d
+
+rpm -qa/i/e/l
+
+
+路由器 猫 交换机 pc
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
