@@ -81,6 +81,13 @@
  more /etc/fstab 
  fdisk -l                      
  
+ 挂载光盘：mount -t iso9660 /dev/cdrom /mnt/cdrom/
+ 
+ sr代表 scsi + rom          #/dev/cdrom 只是一个到sr0的符号链接
+ sd代表 scsi + disk
+ sg 代表 scsi + generic
+ st代表 scsi + tape
+ 
  
  df -Th[a]  [file/directory/disk/part]  可以查看某文件/目录/磁盘是挂载到哪里(已经挂载的)
  /dev/hda1或/dev/sda1表示，并口硬盘为hd(IDE硬盘)，串口硬盘(SATA硬盘)或SCSI硬盘为sd，第三位为该类型设备的顺序号为abc(第几块设备),第四位为该硬盘的分区号1~4
@@ -98,5 +105,6 @@
  /etc/fstab：/dev/hda1   /   ext4        defaults   0 0  -- mount -a  --  lsblk
  ！！！格式化文件系统可以加选项-f强制覆盖，但...请谨慎使用
  
+
 
 

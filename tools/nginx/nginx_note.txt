@@ -1,204 +1,220 @@
 
 
-Nginx：
-参考文档：1.http://nginx.org/en/docs/    2.http://tengine.taobao.org/book/index.html
-nginx组成部分:any(包含全部),main(Core functionality),events(Core functionality),http(对应core),server,location,mail,stream, 
-
-./configure --prefix=/opt/apps/nginx --with-http_stub_status_module --with-http_ssl_module --with-http_geoip_module --with-http_gzip_static_module --with-ipv6 --with-http_realip_module  --user=swadmin --group=swadmin
-配置ngx_lua-waf  隐藏nginx版本   优化buffer  自定义日志格式    fastcgi网站加速(网站静态缓存加速方案)    网站静态缓存加速方案    限速limit及限制单个IP单位时间访问次数
-自动识别CPU,分配进程	自动识别CPU，分配进程	最大打开文件数(与内核配合)	 设置proxy_cache缓存    gzip压缩配置   IP黑名单及GeoIP 访问IP限制/白名单    搭建虚拟机(include)
-监听多个端口   自定义错误返回页面  设置后缀名处理方法   proxy_pass
-
-
-优点：1.高并发-高性能   2.可拓展性好   3.高可靠性   4.热部署   5.BSD许可证
-组成：1.nginx二进制可执行文件：由各模块源码编译出的一个文件
-      2.nginx.conf配置文件：控制nginx的行为
-	  3.access.log访问日志：记录每一条http请求信息
-	  4.error.log错误日志：定位问题
-nginx.org:nginx开源   nginx.com:nginx plus商业版
-openresty.org：开源   openresty.com:商业版   ---      防火墙
-Tengine是由淘宝网发起的Web服务器项目。它在Nginx的基础上,针对大访问量网站的需求,添加了很多高级功能和特性，但无法跟着nginx一起更新
-
-wget http://nginx.org/download/nginx-1.14.2.tar.gz  && tar -xf nginx-1.14.2.tar.gz && cd nginx-1.14.2
-cp -r contrib/vim/* ~/.vim/      语法高亮
-src目录：./src源代码目录(框架)
-查看可用参数：./configure --help | more      1.预编译时，找哪些文件作为辅助文件 */PATH    2.模块使用:添加--with-*   移除--without 
-产生的中间文件会放在objs目录下，ngx_modules.c文件决定有哪些模块会被编译进去   
-make编译，编译完成产生中间文件和二进制文件(已将所有的源码编译进来了)，存放在objs目录下。
-make install 安装
-
-nginx配置语法：
-1.配置文件由指令(direct)与指令块构成，有些指令块可以设置名字，由模块决定的
-2.每条指令以;结尾，指令(名)与一/多条参数间以空格符号分隔
-3.指令块以{}大括号将多条指令组织在一起
-4.include语句允许组合多个配置文件以提升可维护性
-5.使用#符号添加注释
-6.使用$符号使用变量
-7.部分指令的参数支持正则表达式(location)
-时间单位参数：ms--milliseconds  s--seconds  m--minutes  h--hours  d--days  w--weeks  M--months,30days   y--years,365days
-空间单位参数: 默认(无单位)--bytes   k/K--kilobytes  n/M--megabytes  g/G--gigabytes
-http配置的指令块:http  server  upstream(反代)  location 
-nginx的下游(客户端)---nginx(反代)---nginx的上游(后端服务器)
-
-
-模块文档1：http://nginx.org/en/docs
-ngx_http_autoindex_module                               使网站访问目录结构与服务器一致(共享)
-ngx_http_core_module(模块) -- Embedded Variables        内置变量解释
-
-模块文档2：./configure   1. cd objs/    2.vim ngx_modules.c(编译文档)  3. cd src/http/modules/  
-                         4. src(框架源代码目录)/http(框架文件)/modules/(第三方模块源代码存放路径)搜索ngx_command_t
-
-$http_host 则是读取请求头header里面的key，所有请求头里面的key再nginx里面都可以通过小写和下划线来让nginx读取。例如header里面的Host就能转成$http_host, user_agent可以转成$http_user_agent。
-
-kill -SIGTERM pid  子进程向父进程告知，要退出了
-nginx命令行
-格式:nginx -s reload   /  kill -SIGHUP  pid  重载
-帮助:-? -h   使用指定的配置文件:-c  指定(覆盖)配置指令:-g  指定运行目录:-p  发送信号:-s  stop|quit|reload|reopen(重新开始日志记录)  语法检查:-t/T   版本信息:-v/V 
-
-热部署:1.备份旧的二进制文件nginx命令,复制objs目录下nginx到对应目录(make)  
-    2.kill -USR2 PID(会再启动一个nginx的master进程)进行平滑升级
-      kill -WINCH PID  旧的master下worker进程优雅退出，不在接受请求，但master进程不会自动退出，便于回退版本(reload旧的master起worker进程)
-日志备份：1.将旧的改名    2.1 nginx -s reopen   2.2  kill -USR1 `cat ${pid_path}`(推荐)
-nginx是用户态
-
-
-1.网站根目录  
-  location / {
-    1.root dlib/;
-    2.alias dlib/;
-  }
-2.location / {return 200 "reback message"}
-压缩：gzip on;
-显示结构:autoindex on;
-限制大文件传输速度set $limit_rate 1K;
-日志格式: 1. log_format  main(名字)  $...            不同url可以设置不同日志格式
-          2. access_log  logs/access.log  main
-listen ip/port    只监听ip的端口(默认0.0.0.0，所有IP)
-upstream：反向代理 ngx_http_upstream_module 
-cache缓存：ngx_http_proxy_module
-GoAccess：日志可视化 https://goaccess.io/[get-started]    相当于生成html文件并启动进程，然后nginx访问该进程接口，由该进程推送最新变更。   
-  1.安装软件包，启动：goaccess log_path -o html_path(生成结果存放路径) --real-time-html --time-format='%H:%M:%S' --date-format='%d/%b/%Y' --log-format=COMBINED
-  2.在nginx配置文件里添加locate--指向生成的html路径
-
-ssl3.0(Secure Sockets Layer安全套接层) ---> tls1.3(Transport Layer Security安全传输层协议)  
-在表示层发挥作用，通过握手--交换密钥--告警--对称加密的应用数据   
-TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256   TLS_ECDHE(密钥交换)_RSA(身份验证)_WITH_AES(算法)_128(强度)_GCM(分组模式)_SHA256(MAC/PRF签名hash算法)
-对称加密：性能好，但会被破解      非对称加密：安全但性能差        
-证书订阅人向登记机构申请并验证身份，通过CSR向CA申请颁发，CA传给证书订阅人公钥和私钥，并保留私钥，浏览器将证书部署在服务器上
-客户访问web服务器，得到公钥，去向CRL服务器/OCSP响应程序验证是否有效，也可以由web服务器帮助客户端进项验证
-证书类型：1.域名验证(DV)证书：仅验证域名归属(免费)  <  2.组织验证(OV)证书：验证机构信息(价格) <  3.拓展验证(EV)证书：更严格认证，浏览器url栏有可能会显示机构信息
-部署nginx证书：1.下载软件包：python2-certbot-nginx          2.certbot --nginx --nginx-server-root=/usr/local/nginx/conf  -d  域名
-
-openresty:整合了Nginx和lua的框架：下载openresty源码包 --在bundle目录下有相关模块(nginx(c模块)和lua模块)  http://openresty.org/cn/
-
-nginx采用事件驱动的模型：master进程(监控) work进程(与cpu数量一致/绑定)处理请求  CM进程(缓存管理)  CL进程(缓存载入)   
-
-
-进程间管理：使用信号(也可以使用共享内存)
-信号：master进程：监控worker进程-->CHLD      worker进程：TERM/INT(stop)立刻停止   QUIT(quit)优雅停止  HUP(reload)重载  USR1(reopen)重新打开日志文件(日志切割)  USR2  WINCH
-
-
-重载流程：1.向master进程发送HUP信号(reload命令) 2.master进程校验配置语法是否正确(nginx -t) 3.master进程打开可能打开新配置的监听端口 4.master进程用新配置启动新的worker子进程  5.master进程向老worker子进程发送QUIT信号  6.老worker进程关闭监听句柄，处理完当前连接后结束进程
-
-热升级：1.将旧nginx文件换成新nginx文件(备份nginx命令) 2.向master进程发送USR2信号  3.master进程修改pid文件名，加后缀.oldbin  4.master进程用新nginx文件启动新master进程  5.向老master进程发送WINCH信号，关闭老worker  6.回滚：向老nginx发送HUP，向新master发送QUIT
-
-优雅的关闭：针对http请求。1.设置定时器  2.关闭监听句柄(socker)  3.关闭空闲连接   4.在循环中等待全部连接关闭  5.退出进程
-
-网络收发：数据流：应用层(浏览器)--传输层(双方端口)--网络层(双方ip)--链路层-以太网(网线)-路由器-广域网-路由器-以太网--链路层--网络层--传输层--应用层(nginx)
-http数据会被切割成众多报文mtu(网络层1500)：mss：即报文大小，tcp层指中间每个环节最大的mtu值(最终几百字节)  ：每收到一个mss就是一个网络事件(读写事件?)
-每个(服务端)框架都有一个事件收集，分发者，再去连接对应的方法/api/接口
-
-epoll事件驱动模型：启动nginx--listern状态(epoll)(sleep)--tcp创建了三次握手--操作系统通知epoll--找操作系统(内核)要事件---放到事件队列中--顺序获取
-
-单进程阻塞状态，需要在进程需要不断切换(操作系统的进程调度)，5微秒
-work的优先级调高，分配的时间片多
-阻塞：调用的方法因不满足条件而被切换到别的进程去。   非阻塞：不会在事件片没用完时被切换到别的进程
-同步(可同时调用多个方法)与异步是相对于调用方法而言：同步非阻塞方法，相对简单 
-
-内存池：可以减少内存碎片,分配小块内存,或者可以整合小块内存     大块内存走的操作系统的cache分配内存
-请求内存池：4K         连接内存池(预分配)：256|512B    header_buffer：1K    request_pool：4K   
-一个tcp连接可以有多的http请求
-
-worker进程之间使用共享内存来共享数据(slab内存管理器)，管理使用信号管理。
-
-nginx动态库和静态库：静态库会直接编译进nginx的二进制可执行文件(nginx)以.a结尾，动态库只保留调用地址，以.so结尾的(window是以.dll结尾的)
-1.由源文件编译生成一堆.o，每个.o里都包含这个编译单元的符号表   2.ar命令将很多.o转换成.a，成为静态库
-1.动态模块编译时./configure --prefix=/usr/local/nginx --with-http_image_filter_module=dynamic    
-2.替换动态库     3.通过nginx配置文件配置load_module+动态模块路径   
-
-nginx配置的context:1.指令允许出现在哪些块下(模块文档)    合并
-
-1.nginx框架进行客户端建立连接   2.接收http的请求行(line)  3.解析url  4.接收http的请求头(header)  5.nginx选择配置块  6.处理请求方式
-
-元字符:(1) . 匹配除换行符外的字符   (2)\w 匹配字母/数字/下划线/汉字   (3)\s 匹配任意空白符  (4)\d匹配数字  (5)\b匹配单词开始或结束  (6)^ 匹配字符串开始  (7)$匹配字符串结束
-重 复 :(1)* 零或以上  (2)+ 最少一次    (3)?  0或1   (4){n} n次  (5){n,} n次或以上    (6)(n,m) n-m次
+ Nginx：
+ 参考文档：1.http://nginx.org/en/docs/    2.http://tengine.taobao.org/book/index.html
+ nginx组成部分:any(包含全部),main(Core functionality),events(Core functionality),http(对应core),server,location,mail,stream, 
  
-server块：1.精确匹配   2.*在前的泛域名   3.*在后的泛域名   4.按正则表达式匹配   5. default server / listen default
-return块：context：server,location,if    状态码：444：关闭连接   301永久 302临时  303:临时允许改变方法  307：临时不允许改变方法  308永久不允许改变方法
-		  1.return code [text]    2.return code URL   3.return URL
-error_page code ...[=[response]] uri;    context: http,server,location,if in location     1.error_page 403 404 /400.html  2.error_page 404=[200] /empty.gif/[url]  3. location / {error_page 404 = @123;}  location @123 {}
-rewrite:rewrite regex(正则) replacement [flag:行为]   context:server,location,if    flag:last break redirect permanent          rewrite_log on;(会在error.log中出现)
-if：context:server,location    if (condition) {...} 
-表达式：1.变量是否为空/0   2比较：=或!=  3.正则:大小写敏感~或!~ 不敏感~*或!~*   4.文件是否存在-f 或!-f  5.-d或!d  6.-e !-e   7.-x或!-x
-location： context：server,location    location [=|~|~*|^~] uri {...}   location @name {...}     1.精确匹配  2.匹配正则优先
-merge_slashes on|off   context:http,server
-http_limit_conn(req优先)_module:限制单位时间连接数与并发数， zone就是定义共享内存池
-http_access_module:限制ip访问顺序执行    context: http,server,location,limit_except
-ngx_http_auth_basic_module：http basic authentication协议(认证：隐形401)    context: http,server,location,limit_except   (htpasswd)
-ngx_http_auth_request_module:原理:收到请求后，生成子请求，通过反向代理技术把请求传递给上游服务，2xx继续执行，4xx，返回响应状态码客户端(统一认证)
-satisfy指令：satisfy all|any;     any是仅有一个access/auth通过就可以...    all需要所有通过
-ngx_http_try_files_module：框架模块，无法without的。context：server,location     syntax：try_file file...uri; 或 try_file file...=code(文件是由root/alias指令指定的)
-   上面的file也可以是$uri 或者 @lasturl  --- location @lasturl {}
-ngx_http_mirro_module:实时拷贝流量,处理请求时，生成子请求访问其它服务(测试环境),但对子请求的返回值不做处理
-ngx_http_static_module：提供了root和alias指令，alias_con：location    root_con：http,server,location,if in location 
-index(返回文件内容)先执行于autoindex(目录结构)
-ngx_http_concat_module:当页面需要访问多个小文件时，把内容合并到一次http响应中返回，提高性能。用法：在url后加上??，后通过多个，逗号分隔文件，有参数通过?添加参数
-		Tengine(https://github.com/alibaba/nginx-http-concat)   编译时：--add-module=../nginx-http-concat/  
-ngx_http_log_module：缓存大小，缓存事件，缓存压缩
-ngx_http_image_filter_module：过滤模块
-变量提供模块和变量使用模块可以不一样
-HTTP框架提供的变量：
-1.http请求相关的变量：arg_参数名(url中某个具体参数的值) query_string=args=全部url参数  is_args 有参数为?,否则返回值   content_length：标识包体长度的值
-                     content_type标识请求包体类型头部的值   uri=document_uri(不同于url，不包括?后面参数)  request_uri=url   scheme协议名
-					 request_method 请求方法  request_length 所有请求内容的大小   remote_user 用户名   request含方法于协议  request_body(请求中的包体，当且仅当反向代理同时设定用内存存放) request_body(临时存放请求包体的文件) 
-2.tcp连接相关的变量   3.nginx处理请求过程中产生的变量   4.nginx系统变量
-5.$http_host 则是读取请求头header里面的key，所有请求头里面的key再nginx里面都可以通过小写和下划线来让nginx读取。例如header里面的Host就能转成$http_host, user_agent可以转成$http_user_agent。
-referer模块：简单有效的防盗链手段
-map模块：1.变量与字符串组合  2.default规则(没有则返回空字符串)  3.case规则(hostnames 前后* / ~和~*)   4.include语法 / volatile禁止变量缓存
-         map $var..$new_var {匹配内容 返回值;...;}   context：http 
-ngx_http_split_clients_module:生成新的百分比的变量,支持小数点后2位，为其它ab测试提供更多的可能性   context：http
-ab测试：在同一时间维度，分别让组成成分相同（相似）的访客群组（目标人群）随机的访问这些版本，收集各群组的用户体验数据和业务数据，最后分析、评估出最好版本，正式采用
-geo模块:可以根据ip及子网掩码生成新的返回值
-geoip:https://dev.maxmind.com/geoip/legacy/
-http的keepalive：多个http请求通过复用tcp连接
-对上游服务使用keeplive长连接(默认编译进去的: ngx_http_upstream_keepalive_module模块)
-AKF拓展立方体上：1.x轴(水平)拓展:无差别为客户服务   2.y轴(垂直):功能上进行拆分,处理不同url(需要更改代码)    3.z轴:引流(根据ip/用户) 成本居中
-反向代理：四层简单(udp--udp, tcp--tcp)，七层复杂(可以引流到不同功能服务器(redis/mysql/uwsgi...))
-          1.round-robin   2.ip_hash与hash算法
-缓存:时间缓存    空间缓存(使用少)
-
-
-
-真实ip:  1.tcp四元组(网络五元组)  2.http头部X-Forwarded-For用于传递ip   3.HTTP头部X-Real-ip用于传递用户IP   4.网络存在方向代理(前提)
-realip模块：
-
-
-
-nginx.conf
-   include  blacklist;
-   include  vhosts/*.conf;
+ nginx -V  查看当前已编译模块
+ 安装nginx安装第三方模块实际上是使用--add-module重新安装一次nginx
+ 
+ ./configure --prefix=/opt/apps/nginx --with-http_stub_status_module --with-http_ssl_module --with-http_geoip_module --with-http_gzip_static_module --with-ipv6 --with-http_realip_module  --user=swadmin --group=swadmin --add-module=../upload/ngx_tcpwrappers/
+ 配置ngx_lua-waf  隐藏nginx版本   优化buffer  自定义日志格式    fastcgi网站加速(网站静态缓存加速方案)    网站静态缓存加速方案    限速limit及限制单个IP单位时间访问次数
+ 自动识别CPU,分配进程	自动识别CPU，分配进程	最大打开文件数(与内核配合)	 设置proxy_cache缓存    gzip压缩配置   IP黑名单及GeoIP 访问IP限制/白名单    搭建虚拟机(include)
+ 监听多个端口   自定义错误返回页面  设置后缀名处理方法   proxy_pass  ip2location(第三方模块)
+ 
+ proxy_set_header用来重定义发往后端服务器的请求头。
+ 语法格式： proxy_set_header Field Value;      #Field传到后端服务器的字段名，Value字段值，可以是变量(最后有例子)    
+ 
+ 
+ 
+ 优点：1.高并发-高性能   2.可拓展性好   3.高可靠性   4.热部署   5.BSD许可证
+ 组成：1.nginx二进制可执行文件：由各模块源码编译出的一个文件
+       2.nginx.conf配置文件：控制nginx的行为
+ 	  3.access.log访问日志：记录每一条http请求信息
+ 	  4.error.log错误日志：定位问题
+ nginx.org:nginx开源   nginx.com:nginx plus商业版
+ openresty.org：开源   openresty.com:商业版   ---      防火墙
+ Tengine是由淘宝网发起的Web服务器项目。它在Nginx的基础上,针对大访问量网站的需求,添加了很多高级功能和特性，但无法跟着nginx一起更新
+ 
+ wget http://nginx.org/download/nginx-1.14.2.tar.gz  && tar -xf nginx-1.14.2.tar.gz && cd nginx-1.14.2
+ cp -r contrib/vim/* ~/.vim/      语法高亮
+ src目录：./src源代码目录(框架)
+ 查看可用参数：./configure --help | more      1.预编译时，找哪些文件作为辅助文件 */PATH    2.模块使用:添加--with-*   移除--without 
+ 产生的中间文件会放在objs目录下，ngx_modules.c文件决定有哪些模块会被编译进去   
+ make编译，编译完成产生中间文件和二进制文件(已将所有的源码编译进来了)，存放在objs目录下。
+ make install 安装
+ 
+ nginx配置语法：
+ 1.配置文件由指令(direct)与指令块构成，有些指令块可以设置名字，由模块决定的
+ 2.每条指令以;结尾，指令(名)与一/多条参数间以空格符号分隔
+ 3.指令块以{}大括号将多条指令组织在一起
+ 4.include语句允许组合多个配置文件以提升可维护性
+ 5.使用#符号添加注释
+ 6.使用$符号使用变量
+ 7.部分指令的参数支持正则表达式(location)
+ 时间单位参数：ms--milliseconds  s--seconds  m--minutes  h--hours  d--days  w--weeks  M--months,30days   y--years,365days
+ 空间单位参数: 默认(无单位)--bytes   k/K--kilobytes  n/M--megabytes  g/G--gigabytes
+ http配置的指令块:http  server  upstream(反代)  location 
+ nginx的下游(客户端)---nginx(反代)---nginx的上游(后端服务器)
+ 
+ 
+ 模块文档1：http://nginx.org/en/docs
+ ngx_http_autoindex_module                               使网站访问目录结构与服务器一致(共享)
+ ngx_http_core_module(模块) -- Embedded Variables        内置变量解释
+ 
+ 模块文档2：./configure   1. cd objs/    2.vim ngx_modules.c(编译文档)  3. cd src/http/modules/  
+                          4. src(框架源代码目录)/http(框架文件)/modules/(第三方模块源代码存放路径)搜索ngx_command_t
+ 
+ $http_host 则是读取请求头header里面的key，所有请求头里面的key再nginx里面都可以通过小写和下划线来让nginx读取。例如header里面的Host就能转成$http_host, user_agent可以转成$http_user_agent。
+ 
+ kill -SIGTERM pid  子进程向父进程告知，要退出了
+ nginx命令行
+ 格式:nginx -s reload   /  kill -SIGHUP  pid  重载
+ 帮助:-? -h   使用指定的配置文件:-c  指定(覆盖)配置指令:-g  指定运行目录:-p  发送信号:-s  stop|quit|reload|reopen(重新开始日志记录)  语法检查:-t/T   版本信息:-v/V 
+ 
+ 热部署:1.备份旧的二进制文件nginx命令,复制objs目录下nginx到对应目录(make)  
+     2.kill -USR2 PID(会再启动一个nginx的master进程)进行平滑升级
+       kill -WINCH PID  旧的master下worker进程优雅退出，不在接受请求，但master进程不会自动退出，便于回退版本(reload旧的master起worker进程)
+ 日志备份：1.将旧的改名    2.1 nginx -s reopen   2.2  kill -USR1 `cat ${pid_path}`(推荐)
+ nginx是用户态
+ 
+ 
+ 1.网站根目录  
+   location / {
+     1.root dlib/;
+     2.alias dlib/;
+   }
+ 2.location / {return 200 "reback message"}
+ 压缩：gzip on;
+ 显示结构:autoindex on;
+ 限制大文件传输速度set $limit_rate 1K;
+ 日志格式: 1. log_format  main(名字)  $...            不同url可以设置不同日志格式
+           2. access_log  logs/access.log  main
+ listen ip/port    只监听ip的端口(默认0.0.0.0，所有IP)
+ upstream：反向代理 ngx_http_upstream_module 
+ cache缓存：ngx_http_proxy_module
+ GoAccess：日志可视化 https://goaccess.io/[get-started]    相当于生成html文件并启动进程，然后nginx访问该进程接口，由该进程推送最新变更。   
+   1.安装软件包，启动：goaccess log_path -o html_path(生成结果存放路径) --real-time-html --time-format='%H:%M:%S' --date-format='%d/%b/%Y' --log-format=COMBINED
+   2.在nginx配置文件里添加locate--指向生成的html路径
+ 
+ ssl3.0(Secure Sockets Layer安全套接层) ---> tls1.3(Transport Layer Security安全传输层协议)  
+ 在表示层发挥作用，通过握手--交换密钥--告警--对称加密的应用数据   
+ TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256   TLS_ECDHE(密钥交换)_RSA(身份验证)_WITH_AES(算法)_128(强度)_GCM(分组模式)_SHA256(MAC/PRF签名hash算法)
+ 对称加密：性能好，但会被破解      非对称加密：安全但性能差        
+ 证书订阅人向登记机构申请并验证身份，通过CSR向CA申请颁发，CA传给证书订阅人公钥和私钥，并保留私钥，浏览器将证书部署在服务器上
+ 客户访问web服务器，得到公钥，去向CRL服务器/OCSP响应程序验证是否有效，也可以由web服务器帮助客户端进项验证
+ 证书类型：1.域名验证(DV)证书：仅验证域名归属(免费)  <  2.组织验证(OV)证书：验证机构信息(价格) <  3.拓展验证(EV)证书：更严格认证，浏览器url栏有可能会显示机构信息
+ 部署nginx证书：1.下载软件包：python2-certbot-nginx          2.certbot --nginx --nginx-server-root=/usr/local/nginx/conf  -d  域名
+ 
+ openresty:整合了Nginx和lua的框架：下载openresty源码包 --在bundle目录下有相关模块(nginx(c模块)和lua模块)  http://openresty.org/cn/
+ 
+ nginx采用事件驱动的模型：master进程(监控) work进程(与cpu数量一致/绑定)处理请求  CM进程(缓存管理)  CL进程(缓存载入)   
+ 
+ 
+ 进程间管理：使用信号(也可以使用共享内存)
+ 信号：master进程：监控worker进程-->CHLD      worker进程：TERM/INT(stop)立刻停止   QUIT(quit)优雅停止  HUP(reload)重载  USR1(reopen)重新打开日志文件(日志切割)  USR2  WINCH
+ 
+ 
+ 重载流程：1.向master进程发送HUP信号(reload命令) 2.master进程校验配置语法是否正确(nginx -t) 3.master进程打开可能打开新配置的监听端口 4.master进程用新配置启动新的worker子进程  5.master进程向老worker子进程发送QUIT信号  6.老worker进程关闭监听句柄，处理完当前连接后结束进程
+ 
+ 热升级：1.将旧nginx文件换成新nginx文件(备份nginx命令) 2.向master进程发送USR2信号  3.master进程修改pid文件名，加后缀.oldbin  4.master进程用新nginx文件启动新master进程  5.向老master进程发送WINCH信号，关闭老worker  6.回滚：向老nginx发送HUP，向新master发送QUIT
+ 
+ 优雅的关闭：针对http请求。1.设置定时器  2.关闭监听句柄(socker)  3.关闭空闲连接   4.在循环中等待全部连接关闭  5.退出进程
+ 
+ 网络收发：数据流：应用层(浏览器)--传输层(双方端口)--网络层(双方ip)--链路层-以太网(网线)-路由器-广域网-路由器-以太网--链路层--网络层--传输层--应用层(nginx)
+ http数据会被切割成众多报文mtu(网络层1500)：mss：即报文大小，tcp层指中间每个环节最大的mtu值(最终几百字节)  ：每收到一个mss就是一个网络事件(读写事件?)
+ 每个(服务端)框架都有一个事件收集，分发者，再去连接对应的方法/api/接口
+ 
+ epoll事件驱动模型：启动nginx--listern状态(epoll)(sleep)--tcp创建了三次握手--操作系统通知epoll--找操作系统(内核)要事件---放到事件队列中--顺序获取
+ 
+ 单进程阻塞状态，需要在进程需要不断切换(操作系统的进程调度)，5微秒
+ work的优先级调高，分配的时间片多
+ 阻塞：调用的方法因不满足条件而被切换到别的进程去。   非阻塞：不会在事件片没用完时被切换到别的进程
+ 同步(可同时调用多个方法)与异步是相对于调用方法而言：同步非阻塞方法，相对简单 
+ 
+ 内存池：可以减少内存碎片,分配小块内存,或者可以整合小块内存     大块内存走的操作系统的cache分配内存
+ 请求内存池：4K         连接内存池(预分配)：256|512B    header_buffer：1K    request_pool：4K   
+ 一个tcp连接可以有多的http请求
+ 
+ worker进程之间使用共享内存来共享数据(slab内存管理器)，管理使用信号管理。
+ 
+ nginx动态库和静态库：静态库会直接编译进nginx的二进制可执行文件(nginx)以.a结尾，动态库只保留调用地址，以.so结尾的(window是以.dll结尾的)
+ 1.由源文件编译生成一堆.o，每个.o里都包含这个编译单元的符号表   2.ar命令将很多.o转换成.a，成为静态库
+ 1.动态模块编译时./configure --prefix=/usr/local/nginx --with-http_image_filter_module=dynamic    
+ 2.替换动态库     3.通过nginx配置文件配置load_module+动态模块路径   
+ 
+ nginx配置的context:1.指令允许出现在哪些块下(模块文档)    合并
+ 
+ 1.nginx框架进行客户端建立连接   2.接收http的请求行(line)  3.解析url  4.接收http的请求头(header)  5.nginx选择配置块  6.处理请求方式
+ 
+ 元字符:(1) . 匹配除换行符外的字符   (2)\w 匹配字母/数字/下划线/汉字   (3)\s 匹配任意空白符  (4)\d匹配数字  (5)\b匹配单词开始或结束  (6)^ 匹配字符串开始  (7)$匹配字符串结束
+ 重 复 :(1)* 零或以上  (2)+ 最少一次    (3)?  0或1   (4){n} n次  (5){n,} n次或以上    (6)(n,m) n-m次
   
-      ip.conf        ## 119.28.75.54 1;  geoip限制可以自定义
-
-      location ~ /\.ht {
-              deny  all;                          ## 这种默认返回状态码是403
-      		include vhosts/zongkong.filter;     ## allow 185.189.0.0/16;
-          }
-
-
-
-
-
+ server块：1.精确匹配   2.*在前的泛域名   3.*在后的泛域名   4.按正则表达式匹配   5. default server / listen default
+ return块：context：server,location,if    状态码：444：关闭连接   301永久 302临时  303:临时允许改变方法  307：临时不允许改变方法  308永久不允许改变方法
+ 		  1.return code [text]    2.return code URL   3.return URL
+ error_page code ...[=[response]] uri;    context: http,server,location,if in location     1.error_page 403 404 /400.html  2.error_page 404=[200] /empty.gif/[url]  3. location / {error_page 404 = @123;}  location @123 {}
+ rewrite:rewrite regex(正则) replacement [flag:行为]   context:server,location,if    flag:last break redirect permanent          rewrite_log on;(会在error.log中出现)
+ if：context:server,location    if (condition) {...} 
+ 表达式：1.变量是否为空/0   2比较：=或!=  3.正则:大小写敏感~或!~ 不敏感~*或!~*   4.文件是否存在-f 或!-f  5.-d或!d  6.-e !-e   7.-x或!-x
+ location： context：server,location    location [=|~|~*|^~] uri {...}   location @name {...}     1.精确匹配  2.匹配正则优先
+ merge_slashes on|off   context:http,server
+ http_limit_conn(req优先)_module:限制单位时间连接数与并发数， zone就是定义共享内存池
+ http_access_module:限制ip访问顺序执行    context: http,server,location,limit_except
+ ngx_http_auth_basic_module：http basic authentication协议(认证：隐形401)    context: http,server,location,limit_except   (htpasswd)
+ ngx_http_auth_request_module:原理:收到请求后，生成子请求，通过反向代理技术把请求传递给上游服务，2xx继续执行，4xx，返回响应状态码客户端(统一认证)
+ satisfy指令：satisfy all|any;     any是仅有一个access/auth通过就可以...    all需要所有通过
+ ngx_http_try_files_module：框架模块，无法without的。context：server,location     syntax：try_file file...uri; 或 try_file file...=code(文件是由root/alias指令指定的)
+    上面的file也可以是$uri 或者 @lasturl  --- location @lasturl {}
+ ngx_http_mirro_module:实时拷贝流量,处理请求时，生成子请求访问其它服务(测试环境),但对子请求的返回值不做处理
+ ngx_http_static_module：提供了root和alias指令，alias_con：location    root_con：http,server,location,if in location 
+ index(返回文件内容)先执行于autoindex(目录结构)
+ ngx_http_concat_module:当页面需要访问多个小文件时，把内容合并到一次http响应中返回，提高性能。用法：在url后加上??，后通过多个，逗号分隔文件，有参数通过?添加参数
+ 		Tengine(https://github.com/alibaba/nginx-http-concat)   编译时：--add-module=../nginx-http-concat/  
+ ngx_http_log_module：缓存大小，缓存事件，缓存压缩
+ ngx_http_image_filter_module：过滤模块
+ 变量提供模块和变量使用模块可以不一样
+ HTTP框架提供的变量：
+ 1.http请求相关的变量：arg_参数名(url中某个具体参数的值) query_string=args=全部url参数  is_args 有参数为?,否则返回值   content_length：标识包体长度的值
+                      content_type标识请求包体类型头部的值   uri=document_uri(不同于url，不包括?后面参数)  request_uri=url   scheme协议名
+ 					 request_method 请求方法  request_length 所有请求内容的大小   remote_user 用户名   request含方法于协议  request_body(请求中的包体，当且仅当反向代理同时设定用内存存放) request_body(临时存放请求包体的文件) 
+ 2.tcp连接相关的变量   3.nginx处理请求过程中产生的变量   4.nginx系统变量
+ 5.$http_host 则是读取请求头header里面的key，所有请求头里面的key再nginx里面都可以通过小写和下划线来让nginx读取。例如header里面的Host就能转成$http_host, user_agent可以转成$http_user_agent。
+ referer模块：简单有效的防盗链手段
+ map模块：1.变量与字符串组合  2.default规则(没有则返回空字符串)  3.case规则(hostnames 前后* / ~和~*)   4.include语法 / volatile禁止变量缓存
+          map $var..$new_var {匹配内容 返回值;...;}   context：http 
+ ngx_http_split_clients_module:生成新的百分比的变量,支持小数点后2位，为其它ab测试提供更多的可能性   context：http
+ ab测试：在同一时间维度，分别让组成成分相同（相似）的访客群组（目标人群）随机的访问这些版本，收集各群组的用户体验数据和业务数据，最后分析、评估出最好版本，正式采用
+ geo模块:可以根据ip及子网掩码生成新的返回值
+ geoip:https://dev.maxmind.com/geoip/legacy/
+ http的keepalive：多个http请求通过复用tcp连接
+ 对上游服务使用keeplive长连接(默认编译进去的: ngx_http_upstream_keepalive_module模块)
+ AKF拓展立方体上：1.x轴(水平)拓展:无差别为客户服务   2.y轴(垂直):功能上进行拆分,处理不同url(需要更改代码)    3.z轴:引流(根据ip/用户) 成本居中
+ 反向代理：四层简单(udp--udp, tcp--tcp)，七层复杂(可以引流到不同功能服务器(redis/mysql/uwsgi...))
+           1.round-robin   2.ip_hash与hash算法
+ 缓存:时间缓存    空间缓存(使用少)
+ 
+ 
+ 
+ 真实ip:  1.tcp四元组(网络五元组)  2.http头部X-Forwarded-For用于传递ip   3.HTTP头部X-Real-ip用于传递用户IP   4.网络存在方向代理(前提)
+ realip模块：
+ 
+ 
+ 
+ nginx.conf
+    include  blacklist;
+    include  vhosts/*.conf;
+   
+       ip.conf        ## 119.28.75.54 1;  geoip限制可以自定义
+ 
+       location ~ /\.ht {
+               deny  all;                          ## 这种默认返回状态码是403
+       		include vhosts/zongkong.filter;     ## allow 185.189.0.0/16;
+           }
+ 
+ 
+ 
+ 
+ if ($ip2location_country_long = ""){set $mytest "Null";}
+ if ($ip2location_country_long != ""){
+     set $mytest "$ip2location_country_long; $ip2location_region; $ip2location_city";
+ }
+ 
+ proxy_set_header iplocation $mytest;
+ proxy_set_header iplocation "$ip2location_country_long; $ip2location_region; $ip2location_city";
+ 
+ 
+ 
 
 
 
