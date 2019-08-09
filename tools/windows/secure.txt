@@ -21,6 +21,7 @@ ncpa.cpl : 网络连接
 services.msc:服务
 regedit：注册表
 msconfig：通过“引导”和”启动“ 提高开机速度
+compmgmt.msc：计算机管理
 
 dos命令：
 color /?
@@ -36,6 +37,8 @@ W+break
 
 C:\Windows\System32   #配置文件目录
 C:\Program Files      #程序目录
+
+可以先进入相应的window目录，然后再路径处输入cmd，即可直接在相应路径打开cmd
 
 unix收费？
 发行版：内核+应用软件包/私有设置
