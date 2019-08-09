@@ -1,3 +1,5 @@
+
+
 安装(linux)：
 wget https://www.python.org/ftp/python/3.5.7/Python-3.5.7.tgz
 tar -xf Python-3.5.7.tgz 
@@ -52,8 +54,8 @@ preferences--->brower packges ---> user ---> Python3.sublime-build（SUBLIME-BUI
 	   
 pip安装：https://pypi.org/project/pip/  ---> Installation	   
          将下载下来的脚本执行(需在sublime里配置并能运行脚本)
-		 进入pip应用程序目录下下载模块：pip install pygame
-	   
+		 进入pip应用程序目录下下载模块：pip install pygame(cmd-->where pip)
+	    
 	   
 	   
 	   

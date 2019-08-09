@@ -83,7 +83,7 @@ docker logs [-f] [-t] [--tail] 容器名  （默认返回所有）
 docker info
 docker inspect
 docker images 
-
+docker cp comtainer_name:path  host_path  #将容器里的东西拷贝到宿主机
 
 docker start/stop/kill
 docker rm
@@ -130,8 +130,8 @@ docker的c/s模式
 3.fd://socketfd
 
 docker数据：/var/lib/docker/volumes 
-docker volume                
-数据卷：/var/lib/docker/volumes/   由数据卷纳管，非docker程序不能修改
+docker volume                      #！！！绕过ufs，避免重复写且持久化
+数据卷：/var/lib/docker/volumes/   #命名卷所在目录路径，由数据卷纳管，非docker程序不能修改
 绑定挂载：可以是任何目录，非docker程序也可以修改
 tmpfs挂载：仅保存在主机的系统内存，并不会写进文件系统,与容器的生存周期一致
 
@@ -154,7 +154,7 @@ docker stacks：部署命令,docker stacks只是swarm mode的一部分(在servic
 docker machine: 管理工具(集群:#docker-machine ssh myvm1 "docker node ls"可以在一台机器上管理管理其它docker服务器，感觉不是很重要)
 
 Docker stack会忽略了“构建”指令，无法使用stack命令构建新镜像，它是需要镜像是预先已经构建好的。 所以docker-compose更适合于开发场景；
-docker-compose -f docker-compose up                         #需要安装Docker -compose
+docker-compose -f docker-compose up                         #需要安装Docker -compose,下载地址：https://github.com/docker/compose/releases
 docker stack deploy -c docker-compose.yml somestackname     #Docker Stack功能包含在Docker引擎中
 
 原始镜像:体积大，可以调试
@@ -290,24 +290,25 @@ docker build [OPTIONS] PATH | URL | -
 --force-rm=false   --no-cache=false  --pull=false  -q,--quiet=false   --rm=true   -t,--tags="REPOSITORY"
 实例：docker build -t="REPOSITORY:TAGS" .
 
-dockerfile文件的命令：顺序执行
+dockerfile文件的命令：顺序执行， -f ../Dockerfile.php 可以指定构建文件
+                     ！！！docker build -t nginx .  这个.(当前目录下)称为镜像构建上下文(context)，docker会先将.目录打包上传到server端，copy等指令第一个参数是上下文的相对路径，第二个参数是镜像中的路径
 #escape                                   escape指令设置用于在Dockerfile中转义字符的字符。如果未指定，则缺省转义字符为\
 #添加注释信息
 FROM  REPOSITORY:TAGS                     第一条非注释指令
 ARG[=<value>]							  也可以命令行传参build-args <arg>=<value>  或者 ${user:-some_user} 设置默认值  但遇到ENV后会被覆盖
 										  预定义变量HTTP_PROXY  http_proxy  HTTPS_PROXY  https_proxy  FTP_PROXY  ftp_proxy  NO_PROXY  no_proxy
 MAINTAINER  Author or message             维护人
-RUN  CMD                                    构建时执行的命令
+RUN  CMD                                    构建时执行的命令(每一个run都会启动一个容器，使用docker ps -a,构建成功会销毁)
 	两种模式：1.shell模式：/bin/sh -c CMD     2.exec模式：(可以指定其它的shell模式)["executable" , "param" , "param..."] .md 或者 !README.md
-EXPOSE  port                               开放的端口(容器运行时，仍需要在run命令中指定)
+EXPOSE  port                               开放的端口(不决定容器进程的端口，仅是描述信息，容器运行时，仍需要在run命令/配置文件中指定)
 [HEALTHCHECK]CMD ["","",""...]             [健康检查--interval= --timeout= --start-period= --retries=]
 										   与RUN相似，但是是在容器启动是执行的，如果容器启动是指定命令，则会被覆盖。一般搭配ENTERYPOINT，为其提供默认参数
 SHELL ["executable", "parameters"]
 ENTERYPOINT                                与CMD区别是不会被覆盖，除非添加参数docker run --entrypoint,因此可以是ENTERYPOINT指定命令，CMD指定参数
-ADD <src> <dest>  ["<src>"..."<dest>"]     src是本地相对路径，dest是本地绝对路径，对于远程url，建议使用wget或者curl获取文件,包含类似tar的解压功能
+ADD <src> <dest>  ["<src>"..."<dest>"]     仅自动解压缩时使用，src是本地相对路径，dest是本地绝对路径，对于远程url，建议使用wget或者curl获取文件,包含类似tar的解压功能
 COPY <src> <dest> ["<src>"..."<dest>"]     src是本地相对路径，dest是本地绝对路径，对于远程url，建议使用wget或者curl获取文件，适合单纯复制文件
 VOLUME ["/data"]                           卷，存在一个或多个容器，绕过联合文件系统，提供数据共享或数据持久化功能
-WORKDIR                                    工作目录，指定命令都在改目录下运行，使用绝对路径
+WORKDIR                                    工作目录，指定命令都在改目录下运行，使用绝对路径(不能是cd，因为执行环境不同/每一个命令都是一层容器)
 ENV <key><value>   <key>=<value>           设置环境变量，构建和运行中都有效                            
 USER                                       以什么用户执行  user/user:group/user:gid/uid...
 ONBUILD                                    触发器，当镜像被其它镜像当作基础镜像执行时，或出发[dockerfile--image--image(触发)]
@@ -1103,7 +1104,7 @@ The following sub-options (supported for docker-compose up and docker-compose ru
     stdin_open: true
     tty: true		 
 
-volumes:
+volumes:                               #即上面有命名卷，有docker统一管理
   mydata:
   dbdata:
 
