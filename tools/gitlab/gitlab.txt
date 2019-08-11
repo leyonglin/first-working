@@ -32,7 +32,7 @@ github:账号：leyonglin   密码：Aas183***.
     cd /etc/gitlab/ssl
     openssl req -newkey rsa:2048 -x509 -nodes -days 3560 -out gitlab.crt -keyout gitlab.key
 vim /etc/gitlab/gitlab.rb
-external_url 'https://192.168.18.13:8888' (720-740之间,这是干啥用的？)
+external_url 'https://192.168.18.13:8888' (外部访问url，端口与nginx一致)
 nginx['enable'] = true
 nginx['redirect_http_to_https'] = true
 nginx['ssl_certificate'] = "/etc/gitlab/ssl/gitlab.crt"
@@ -43,7 +43,7 @@ gitlab-ctl reconfigure
 忽略文件：git ignore文件(参考文档：https://github.com/github/gitignore)
        (路径：/var/opt/gitlab/git-data/repositories/username/git.git/info/exclude )
 
-不使用默认的SSH端口(双端口)：在服务器sshd增加12345并放通外网对其的访问，内网不受影响扔可以使用默认的22号端口做版本控制。
+不使用默认的SSH端口(双端口)：在服务 器sshd增加12345并放通外网对其的访问，内网不受影响扔可以使用默认的22号端口做版本控制。
    客户端机创建key,然后将公钥丢到Gitlab上
    在.ssh目录创建config文件
    cat  ~/.ssh/config
