@@ -189,7 +189,7 @@ lsblk [-f/-p/-h/-S/-m] [device]
 fdisk -l
 blkid
 
-
+comm是对两个已经有序的文件进行比较   -1 不输出文件1 特有的行    -2 不输出文件2 特有的行    -3 不输出两个文件共有的行
 rmdir  删除空目录
 basename显示文件名或目录名。basename [pathname] [suffix]如果指定后缀名，将会被去掉
 dirname显示文件或目录路径。
@@ -601,6 +601,8 @@ fdisk -l
 swapon -s   
 cat /proc/cmdline   #查看内核启动参数
 
+awk '{ip[$1]++}END{for(i in ip){print i,ip[i]}}' access.log-20190801 | column -t
+awk -F[:] 'BEGIN{i=0;j=0;k=0} {if($3<500){i++}else if($3>=500&&$3<1000){j++} else{k++}} END{print i,j,k}' passwd
 
 
 

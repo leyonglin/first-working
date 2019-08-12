@@ -6,7 +6,7 @@
  sync; echo 2 > /proc/sys/vm/drop_caches     #清除目录项和inode
  sync; echo 3 > /proc/sys/vm/drop_caches     #清除页面缓存，目录项和inode
  关闭swap：
- swapoff -a
+ nohup swapoff -a &>/dev/null &
  
  vmstat：  vmstat -w 1(间隔) -S(指定单位) m [-d/-a]
  procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----
