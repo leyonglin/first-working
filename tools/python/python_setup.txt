@@ -29,7 +29,7 @@ preferences--->brower packges ---> user ---> Python3.sublime-build（SUBLIME-BUI
 
 插件：
    1.安装Package Control组件   
-   快捷键：C+S+p
+   快捷键：C+S+p(下面这句只有一半)
       import  urllib.request,os;pf='Package Control.sublime-package';ipp=sublime.installed_packages_path();urllib.request.install_opener(urllib.request.build_opener(urllib.request.ProxyHandler()));open(os.path.join(ipp,pf),'wb').write(urllib.request.urlopen('http://sublime.wbond.net/'+pf.replace(' ','%20')).read())
 
    2.SublimeREPL: Tools--->SublimeREPL--->Python      #交互：https://www.cnblogs.com/JackyXu2018/p/8821482.html
@@ -52,9 +52,10 @@ preferences--->brower packges ---> user ---> Python3.sublime-build（SUBLIME-BUI
        },   	
 	   	
 	   
-pip安装：https://pypi.org/project/pip/  ---> Installation	   
-         将下载下来的脚本执行(需在sublime里配置并能运行脚本)
-		 进入pip应用程序目录下下载模块：pip install pygame(cmd-->where pip)
+pip安装：1.在下载python的时候可以选择(记得选择)
+         2.https://pypi.org/project/pip/  ---> Installation	   
+           将下载下来的脚本执行(需在sublime里配置并能运行脚本)
+		   进入pip应用程序目录下下载模块：pip install pygame(cmd-->where pip)
 	    
 	   
 	   

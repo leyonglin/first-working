@@ -6,8 +6,7 @@ gitlab/github:代码托管中心(git服务器:维护远程库)
 外网环境：github和码云
 gitlab参考文档：https://about.gitlab.com
 通过快照方式，以行为单位
-团队内部写作：
---pull--工作区(写代码)--git add . -- 暂存区(临时存储,方便撤销)-- git commit --本地库(历史版本)--git push --远程库(代码托管中心)  
+团队内部写作：--pull--工作区(写代码)--git add . -- 暂存区(临时存储,方便撤销)-- git commit --本地库(历史版本)--git push --远程库(代码托管中心)  
 跨团队协作
 远程库1--fork--远程库2--pull request --审核--merge--远程库1
 
@@ -20,6 +19,10 @@ gitlab参考文档：https://about.gitlab.com
 查看标签：git tag
 上传标签：git push origin --tags
 标签回退：git checkout v1.1 (master 回退到最新版本)
+
+pull requests：请求合并    review:代码审查   issues：问题/bug
+tags.v4.9.2 == release-v4.9.2  第四个大版本，添加9个功能，打补丁2次   
+git工作流: 集中式工作流(过渡,一个分支)---功能分支工作流(master--feature)---gitflow工作流(公司master--devops--feature)----forking工作流(跨公司/跨国)
 
 第一次：	  
 查看状态：git status    1.位于哪个branch     2.工作区有没有提交的    3.缓存区有没有提交的 
