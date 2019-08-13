@@ -1,0 +1,48 @@
+
+域名反转:
+
+JSP将Java代码和特定变动(引用变量)内容嵌入到静态的页面中，实现以静态页面为模板，动态生成其中的部分内容，而且不受跨平台问题的限制
+Servlet（Server Applet），全称Java Servlet，是用Java编写的服务器端程序。其主要功能在于交互式地浏览和修改数据，生成动态Web内容。狭义的Servlet是指Java语言实现的一个接口，广义的Servlet是指任何实现了这个Servlet接口的类
+jsp：是包含java程序片的html文件  servlet：是包含html的java文件
+jsp就是前台展示用的，用于显示；你点击jsp上的按钮就会触发servlet，servlet相当于控制器，控制按钮action的流向，如跳转到另一个网页之类的；javabean就是类了，servlet也可以转到javabean里处理一些事物，执行一些函数等等
+
+IntelliJ IDEA：(src & web-WEB-INF + project)商业化销售的Java集成开发环境 (eclipse---myeclipse---spring sts)（调用javac编译）
+
+markdown：一种可以使用普通文本编辑器编写的标记语言，通过简单的标记语法，它可以使普通文本内容具有一定的格式(有道云创建一个markdown，点击菜单行的help)
+          ##二级标题    ``引用(格式变了)    ![注释](连接地址)   [注释](超链接)    
+		  */- 注释(无序列表，有个空格)    ```java 代码 ```（代码，空格代表换行，java代表哪种语言，可以不写自动识别） 
+		  
+		  
+maven：工具，和开发环境无关，使用 标准的目录结构 和默认构建生命周期。简化和标准化项目建设过程。处理编译，分配，文档，团队协作和其他任务的无缝连接
+            (src-main-java & resources & webapp & src-test-java + project-pom.xml)
+setting.xml ：本地仓库
+pom.xml ：依赖文件(中央仓库)  #POM 代表项目对象模型。它是 Maven 中工作的基本单位，这是一个 XML 文件。它始终保存在该项目基本目录中的 pom.xml 文件。
+  Maven 坐标：
+     <groupId>log4j</groupId>          #项目组的编号 <groupId>域名反转</groupId>  全球唯一
+     <artifactId>log4j</artifactId>    #项目的 ID，同时定义了artifact 在存储库中的位置。
+     <version>1.2.17</version>         #升级的时候修改这里的版本号
+	 
+serverlet的中间件：tomcat(可以将serverlet展现在浏览器上)
+
+语言化版本规范： 
+   1.1.1
+     第一个1代表架构变化(大版本/框架的升级)
+	 第二个1代表功能性上变化
+	 第三个1代表修改bugfix
+   或者逢n进一	 
+  
+maven版本：发行版--不可修改
+           快照版x.x.x-时间序列(SNAPSHOT)--每次刷新maven都会自动更新快照版本 
+   
+
+系统架构是指，整合应用系统程序大的结构  
+三层架构：视图层 View、服务层 Service，与持久层 DAO
+          View 层：用于接收用户提交请求的代码
+          Service/manager 层：系统的业务逻辑主要在这里完成
+          DAO 层：直接操作数据库的代码
+MVC ： Model 模型、View 视图，及 Controller 控制器。(view--Controller解析---Model 处理--Controller渲染,再发送给客户端。 
+          View：视图，为用户提供使用界面，与用户直接进行交互。
+          Model：模型，承载数据，并对用户提交请求进行计算的模块。其分为两类，一类称为数据承载 Bean，一类称为业务处理 Bean。所谓数据承载 Bean 是指实体类，专门用户承载业务数据的，如 Student、User 等。而业务处理 Bean 则是指 Service 或 Dao 对象， 专门用于处理用户提交请求的。
+          Controller：控制器，用于将用户请求转发给相应的 Model 进行处理，并根据 Model 的计算结果向用户提供相应响应
+三层架构 + MVC : view--Controller/serverlet(Service+DAO)---jsp
+这两种结构，既有区别，又有联系。均是为了降低系统模块间的耦合度/系统复杂度

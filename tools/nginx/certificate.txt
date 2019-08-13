@@ -1,0 +1,18 @@
+
+
+X.509 - 这是一种证书标准,主要定义了证书中应该包含哪些内容
+格式：
+  PEM - Privacy Enhanced Mail 以"-----BEGIN..."开头, "-----END..."结尾,内容是BASE64编码.Openssl使用 PEM格式来存放各种信息,它是 openssl 默认采用的信息存放方式，
+  查看PEM格式证书的信息:openssl x509 -in certificate.pem -text -noout
+  Apache和NGINX服务器偏向于使用这种编码格式.
+  DER – 辨别编码规则 (DER) 可包含所有私钥、公钥和证书。它是大多数浏览器的缺省格式，PEM 是用文本报头包围的 DER。
+证书：
+  CRT：常见于UNIX系统
+  CER：常见于Windows系统
+  KEY - 通常用来存放一个公钥或者私钥
+    PEM格式查看KEY的办法:openssl rsa -in mykey.key -text -noout
+    DER格式的话,同理应该这样了:openssl rsa -in mykey.key -text -noout -inform der
+  CSR - Certificate Signing Request,即证书签名请求，是向权威证书颁发机构获得签名证书的申请,其核心内容是一个公钥(当然还附带了一些别的信息),在生成这个申请的时候,同时也会生成一个私钥
+  PFX/P12 ：对nginx服务器来说,一般CRT和KEY是分开存放在不同文件中的,但Windows的IIS则将它们存在一个PFX文件中，PFX通常会有一个"提取密码"
+  p7b - 以树状展示证书链(certificate chain)，同时也支持单个证书，不含私钥。
+  JKS - 即Java Key Storage,这是Java的专利,跟OpenSSL关系不大

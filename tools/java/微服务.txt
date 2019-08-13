@@ -105,7 +105,7 @@ DAO层：使用Hibernate来封装数据库访问操作
 Service层：业务逻辑层为Controller层提供具体业务的实现
 Controller层承担了部分业务逻辑实现，使其臃肿，难以测试。
 
-pom.xml ：依赖文件/spring boot托管(与注解配合)
+pom.xml ：maven项目依赖文件/spring boot托管(与注解配合)
 注解：@... 感觉像python模块的导入
 
 
@@ -137,12 +137,6 @@ Service Mesh 又译作“服务网格”，作为服务间通信的基础设施�
 broker：缓存代理，Kafka集群中的一台或多台服务器统称broker.
 
 w3c：非严格html检查
-
-IntelliJ IDEA是一种商业化销售的Java集成开发环境（Integrated Development Environment，IDE）工具软件，由JetBrains软件公司（前称为IntelliJ）开发
-
-JSP将Java代码和特定变动内容嵌入到静态的页面中，实现以静态页面为模板，动态生成其中的部分内容，而且不受跨平台问题的限制
-
-Servlet（Server Applet），全称Java Servlet，未有中文译文。是用Java编写的服务器端程序。其主要功能在于交互式地浏览和修改数据，生成动态Web内容。狭义的Servlet是指Java语言实现的一个接口，广义的Servlet是指任何实现了这个Servlet接口的类
 
 
 
