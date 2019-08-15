@@ -205,8 +205,6 @@ stat file/Directory      du -sh     df -h      ldd CMD     命令：file/type
 stat命令显示的是文件的I节点信息(文件系统管理的一个数据结构，是一个64字节长的表，包含了描述文件所必要的全部信息)。Linux文件系统以块为单位存储信息，为了找到某一个文件所在存储空间的位置，用I节点对每个文件进行索引。
 dig 与host相似
 dd if=/dev/hdb | gzip > /root/image.gz  备份/dev/hdb全盘数据，并利用gzip工具进行压缩，保存到指定路径(if=源文件 of=目标文件)
-测速：写dd if=/dev/zero bs=1024 count=1000000 of=/root/1Gb.file   读dd if=/root/1Gb.file bs=64k | dd of=/dev/null
-确定硬盘的最佳块大小：dd if=/dev/zero bs=1024 count=1000000 of=/root/1Gb.file (改变bs和count的值)
 传文件：目标：nc -lvp 1234 >test.txt   源服务器：nc -w 1 10.57.22.128 1234 < mysql.pass 
               nc -l 1567 | tee test              nc 172.31.100.7 1567     
               nc -l 1567 < file.txt              nc -n 172.31.100.7 1567 > file.txt

@@ -46,3 +46,44 @@ MVC ： Model 模型、View 视图，及 Controller 控制器。(view--Controlle
           Controller：控制器，用于将用户请求转发给相应的 Model 进行处理，并根据 Model 的计算结果向用户提供相应响应
 三层架构 + MVC : view--Controller/serverlet(Service+DAO)---jsp
 这两种结构，既有区别，又有联系。均是为了降低系统模块间的耦合度/系统复杂度
+
+业务是核心，技术是服务业务的
+复杂度：简单业务：一个事务    普通业务：三个事务    复杂业务：七个事务
+耦合度：多张表相互依赖，一改全改---强关联性
+一个类只做一种事 --- 高内聚
+一个方法只做一件事
+只写一次(重构原则：事不过三，三则重构)
+
+
+servlet 服务器小程序
+       1.处理业务逻辑   2.处理页面展示
+jsp就是servlet处理页面展示(脚本<%%>可以处理业务逻辑)	   
+
+.net 只是微软推出的一种编程开发环境/软件框架
+
+
+前后分离：
+jquery是JavaScript 框架(JavaScript 库:支持多种请求)
+Vue 渐进式 JavaScript 框架，只关注视图层，只负责布局，不负责通讯(其它功能有插件/第三方库实现)
+vue-router跳转  vuex状态管理   
+前端开发之优雅降级(向下兼容)与渐进(向上兼容)增强
+前端三要素：
+  HTML（结构）：静态，超文本标记语言（Hyper Text Markup Language），决定网页的结构和内容
+  CSS（表现）：花样，层叠样式表（Cascading Style Sheets），设定网页的表现样式
+  JavaScript（行为）：动态，是一种弱类型脚本语言，其源代码不需经过编译，而是由浏览器解释运行，用于控制网页的行为
+CSS 预处理器：让css能编程
+关注点分离(Separation of concerns, SoC)
+前端--node.js--后端     node.js后端技术，能作为前端中间件,方便前端开发应用
+
+
+
+
+
+
+
+
+
+
+
+
+
