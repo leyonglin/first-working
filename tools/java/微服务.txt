@@ -161,9 +161,10 @@ w3c：非严格html检查
 缓存雪崩：redis中多个key同时失效，需要重新去数据库取值
 
 
-
-
-
+ Mesos是Apache下的开源分布式资源管理框架，被称为是分布式系统的内核
+ Consul服务发现，服务暴露方式
+ traefik的配置会自动的、动态的配置更新自己。
+ entrypoint是traefik的网络入口，entrypoint监听端口，SSL，做流量redirect
 
 
 

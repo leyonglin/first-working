@@ -1,4 +1,11 @@
 
+mysql
+oracle  大型商业公司
+sqlserver   Microsof(微软)
+db2       IBM
+sqlite3   手机端ios/安卓
+postgresql   UCB(加利福尼亚大学伯克利分校) 学院派
+
 关系型数据库：事务机制--事务就是强一致性的体现
   B/B+树结构   随机读写  尽量降低树的高度
   事务是由一组SQL语句组成的逻辑处理单元，事务具有以下4个属性，通常简称为事务的ACID属性（强事务机制）。

@@ -11,7 +11,7 @@ geoip:404自定义
 域名没绑定：cdn与直解都是自定义阿里云404
 tomcat没启动：cdn与直解都是502 Bad Gateway
 cdn没添加，但服务器添加了：400 bad request
-普通域名强制证书域名访问：400 Bad Request
+普通域名强制证书域名访问//走了cdn，且cdn没绑定，请求无效(ip无解析) (Bad request);出现这个请求无效报错说明请求没有进入到后台服务里：400 Bad Request
 该域名未绑定到系统中：前台解析后台。。。
 
 
@@ -21,8 +21,7 @@ app 400/502错误 可以将cdn回源ip添加*:8085s
  nginx 404 被拉入黑名单，一般是geo IP模块对国家地区限制，这是国家IP加白，不区分走不走cdn， 需要在ip.conf 里面加白。
  nginx 403 是我们nginx 黑名单限制，现在我们加了realip 模块，如果业主走自己cdn，那需要把业主的cdn加到cdnfilter.conf这个文件，set_real_ip_from x.x.x.x/x, 同时需要在blacklist.conf 中把误封的cdn ip 注释掉。如果业主没走自己cdn 需要在blacklist.conf中把误封的ip 注释掉，一定是注释掉不要删除, 注释后面可以备注下客户ip误封什么的。
  阿里云404没绑定域名或没重启nginx，自定义
- 转圈圈：打不开页面，要判断是不是以前的firewalld里面封的，需要在blacklist.xml 中删除ip，如果blacklist.xml没有该ip 那么应该是网络问题或者被打机房封了ip。
- 400可能是走了cdn，且cdn没绑定，请求无效(ip无解析) (Bad request);出现这个请求无效报错说明请求没有进入到后台服务里；
+ 转圈圈：打不开页面，要判断是不是以前的firewalld里面封的，需要在blacklist.xml 中删除ip，如果blacklist.xml没有该ip 那么应该是网络问题或者被打机房封了ip。 
  走cdn可能有500
  tomcat没起会有502，或者连接数太多，响应时间长。nginx和tomcat域名错乱  ///  启动中...  ///  tomcat_8001 没启动，走直解是502，走cdn是504
  502解析前后台颠倒 产生错误的原因：连接超时 我们向服务器发送请求 由于服务器当前链接太多，导致服务器方面无法给于正常的响应，产生此类报错

@@ -1,6 +1,4 @@
 
-su student -s /bin/bash -c "CMD"
-
 
 
 ls -F(/Ä¿Â¼*¿ÉÖ´ÐÐÎÄ¼þ@·ûºÅÁ´½Ó=Ì×½Ó×Ö%Í¿¸Ä>ÃÅ£¬½ø³Ì¼äÍ¨Ñ¶ |FIFO¹ÜµÀÍ¨Ñ¶)(¼ò-p) -oËùÓÐÕß-gËùÊô×é --time-tyle=[full/long]-iso
@@ -20,14 +18,7 @@ majflt/s: Ã¿ÃëÖ÷È±Ò³´íÎó´ÎÊý(major page faults)£¬µ±ÐéÄâÄÚ´æµØÖ·Ó³Éä³ÉÎïÀíÄÚ´æµØÖ
 VSZ:      ¸Ã½ø³ÌÊ¹ÓÃµÄÐéÄâÄÚ´æ(ÒÔkBÎªµ¥Î»)
 RSS:      ¸Ã½ø³ÌÊ¹ÓÃµÄÎïÀíÄÚ´æ(ÒÔkBÎªµ¥Î»)
 %MEM:     ¸Ã½ø³ÌÊ¹ÓÃÄÚ´æµÄ°Ù·Ö±È
-Command:  À­Æð½ø³Ì¶ÔÓ¦µÄÃüÁî
-					 
-pidstat -l  [-p PID] [-C cmd] [-wt 5] 
-cswch£º×ÔÔ¸ÉÏÏÂÎÄÇÐ»»£¬½ø³ÌÔËÐÐÊ±ÓÉÓÚÏµÍ³×ÊÔ´²»×ã£¬ÈçIO,ÄÚ´æµÈÔ­Òò²»µÃ²»½øÐÐÇÐ»»¡£
-nvcswch£º·Ç×ÔÔ¸ÉÏÏÂÎÄÇÐ»»£¬±ÈÈçÊ±¼äÆ¬ÓÃÍê£¬ÏµÍ³µ÷¶ÈÈÃÆäËûÈÎÎñÔËÐÐ£¬»òÕß¾ºÕùCPUµÄÊ±ºòÒ²»á·¢Éú
-×ÔÔ¸µÄÇÐ»»µÄ¶àÁË£¬±íÃ÷ÔÚµÈ´ý×ÊÔ´£¬ÈçIO
-·Ç×ÔÔ¸µÄÇÐ»»µÄ¶àÁË£¬±íÃ÷CPU±»ÈÎÎñ¾ºÕù
-ÖÐ¶ÏÊý¶à£¬Òª½áºÏ/proc/interrupts·ÖÎö¾ßÌåÖÐ¶ÏÇé¿ö
+Command:  À­Æð½ø³Ì¶ÔÓ¦µÄÃüÁî					
 
 uid£º±»¼à¿ØÈÎÎñµÄÕæÊµÓÃ»§±êÊ¶ºÅ
 tid£º±»¼à¿ØÏß³ÌµÄ±êÊ¶ºÅ
@@ -107,20 +98,13 @@ nohup swapoff -a &>/dev/null &
 
 time dd if=/dev/zero of=test.db bs=8k count=5000 oflag=direct
 1.timeÓÐ¼ÆÊ±×÷ÓÃ£¬ddÓÃÓÚ¸´ÖÆ£¬´Óif¶Á³ö£¬Ð´µ½of£»
-2.if=/dev/zero²»²úÉúIO£¬Òò´Ë¿ÉÒÔÓÃÀ´²âÊÔ´¿Ð´ËÙ¶È£»time dd if=/dev/zero of=test bs=4k count=10000 oflag=direct
-3.of=/dev/null²»²úÉúIO£¬¿ÉÒÔÓÃÀ´²âÊÔ´¿¶ÁËÙ¶È£»time dd if=test of=/dev/null bs=4k count=10000 iflag=direct
+2.if=/dev/zero²»²úÉúIO£¬Òò´Ë¿ÉÒÔÓÃÀ´²âÊÔ´¿Ð´ËÙ¶È£»time dd if=/dev/zero of=test bs=4k count=10000 oflag=direct,nonblock/oflag=dsync/conv=fsync   ##µÚÒ»ÖÖÊÇÌø¿ª»º´æ£¬Ö±½Ó¶ÁÐ´£¬µÚ¶þÖÖÊÇ¶ÁÒ»´ÎÐ´Ò»´Î£¬µÚÈýÖÖÊÇÏÈÐ´µ½»º´æÔÙÒ»´ÎÐÔÐ´µ½´ÅÅÌ
+3.of=/dev/null²»²úÉúIO£¬¿ÉÒÔÓÃÀ´²âÊÔ´¿¶ÁËÙ¶È£»time dd if=test of=/dev/null bs=4k count=10000 iflag=direct iflag=direct,nonblockoflag=dsync/conv=fsync
 4.½«/tmp/test¿½±´µ½/varÔòÍ¬Ê±²âÊÔÁË¶ÁÐ´ËÙ¶È£»
 5.bsÊÇÃ¿´Î¶Á»òÐ´µÄ´óÐ¡£¬¼´Ò»¸ö¿éµÄ´óÐ¡£¬countÊÇ¶ÁÐ´¿éµÄÊýÁ¿¡£oflag=direct½«Ìø¹ýÄÚ´æ»º´æ£¬direct ¶ÁÐ´Êý¾Ý²ÉÓÃÖ±½ÓIO·½Ê½£»
 ÅäºÏiostatµÄÒ»ÆðÊ¹ÓÃ¹Û²ì´ÅÅÌÐÔÄÜ¡£dd²âÊÔÊÇË³ÐòÐ´Èë´ÅÅÌ£¬½á¹ûÊÇ²Î¿¼Öµ,²âÊÔÊ±Ò»¶¨¼ÓdirectÖµ£¬ÎÞ»º´æ²âÊÔ¡£ÐèÒªºÍÏßÉÏÕý³£´ÅÅÌ±È¶Ô£¬·ñÔòÃ»ÓÐ²Î¿¼¼ÛÖµ¡£
 
 ²é¿´selinux×´Ì¬ÃüÁî£ºsestatus
-
-·ÖÇø£º
-fdisk /dev/sda
-m -- p -- n -- Ñ¡¸ñÊ½p(¿ÉÒÔ¿Õ¸ñ) -- Ñ¡·ÖÇø1(¿ÉÒÔ¿Õ¸ñ) -- ÆðÊ¼(¿ÉÒÔ¿Õ¸ñ) -- ½áÊø+size{K,M,G} -- p [--d]
-lsblk -f(ÇÐ¼ÇÏÈ²é¿´ÒÔÇ°Ê¹ÓÃÊ²Ã´ÎÄ¼þÏµÍ³µÄ)-- ¸ñÊ½»¯£ºmkfs.ext4 /dev/sda1 // mkfs -t xfs /dev/sda1 --  lsblk -f /df -T    
-/etc/fstab£º/dev/hda1   /   ext4        defaults   0 0  -- mount -a  --  lsblk
-£¡£¡£¡¸ñÊ½»¯ÎÄ¼þÏµÍ³¿ÉÒÔ¼ÓÑ¡Ïî-fÇ¿ÖÆ¸²¸Ç£¬µ«...Çë½÷É÷Ê¹ÓÃ
 
 nohup sleep 60 &>aa.txt &
 nohup:Ç°Ì¨ÁíÆð¶ÀÁ¢ÓÚµ±Ç°»á»°µÄ½ø³ÌÔËÐÐ£¬¿É±»Ctrl+c(SIGINT ÐÅºÅ)ÖÐ¶Ï
@@ -581,7 +565,6 @@ ip a | grep -A 3 "state UP"    //  ifconfig    | grep 'inet addr:'| grep -v '127
 route -n  // ip route  //  cat /etc/sysconfig/network
 cat /etc/resolv.conf
 rpm -qa | wc -l   //   yum list installed | wc -l
-df -Th // lsblk // du -sh
 ethtool ens33 | grep -i speed
 ping -c3 -i2 -s512 www.cnblogs.com // ping Íø¹Ø // traceroute [-d] www.cnblogs.com // telnet www.blogs.com 80 // ss -antl //  curl [-I] www.baidu.com
 nmcli device show
@@ -600,7 +583,31 @@ swapon -s
 cat /proc/cmdline   #²é¿´ÄÚºËÆô¶¯²ÎÊý
 
 awk '{ip[$1]++}END{for(i in ip){print i,ip[i]}}' access.log-20190801 | column -t
-awk -F[:] 'BEGIN{i=0;j=0;k=0} {if($3<500){i++}else if($3>=500&&$3<1000){j++} else{k++}} END{print i,j,k}' passwd
+awk -F[:] 'BEGIN{i=0;j=0} {if($3<500){i++}else if($3>=500&&$3<1000){j++} else{k++}} END{print i,j,k}' passwd     #ÕâÊÇÓÐÂß¼­µÄ(½«ÆäÖÐÒ»¸ö500¸Ä³É100)
 
+time dd if=/dev/zero of=test.db bs=8k count=5000 oflag=direct
+1.timeÓÐ¼ÆÊ±×÷ÓÃ£¬ddÓÃÓÚ¸´ÖÆ£¬´Óif¶Á³ö£¬Ð´µ½of£»
+2.if=/dev/zero²»²úÉúIO£¬Òò´Ë¿ÉÒÔÓÃÀ´²âÊÔ´¿Ð´ËÙ¶È£»time dd if=/dev/zero of=test bs=4k count=10000 oflag=direct,nonblock/oflag=dsync/conv=fsync   ##µÚÒ»ÖÖÊÇÌø¿ª»º´æ£¬Ö±½Ó¶ÁÐ´£¬µÚ¶þÖÖÊÇ¶ÁÒ»´ÎÐ´Ò»´Î£¬µÚÈýÖÖÊÇÏÈÐ´µ½»º´æÔÙÒ»´ÎÐÔÐ´µ½´ÅÅÌ
+3.of=/dev/null²»²úÉúIO£¬¿ÉÒÔÓÃÀ´²âÊÔ´¿¶ÁËÙ¶È£»time dd if=test of=/dev/null bs=4k count=10000 iflag=direct iflag=direct,nonblockoflag=dsync/conv=fsync
 
+  lsblk [-f/-p/-h/-S/-m] [device]  ²é¿´´ÅÅÌÕûÌåÇé¿ö--- df -Th[a]  [file/directory/disk/part]  ¿ÉÒÔ²é¿´shiyonglv¼°¹ÒÔØÇé¿ö[mount] ---du [-sh/ah]  /*²é¿´´óÐ¡
+  iostat -x ²é¿´´ÅÅÌ¸ºÔØ --- iotop -o ²é¿´ÄÇ¸ö³ÌÐò¶ÁÐ´¼°i/o´óÐ¡
+  free -h /top ¿ÉÒÔ²é¿´swap /top -H -p -PID  
+  top ²é¿´cpu¸ºÔØ
+  dig/ping/traceroute  ÍøÂç£¨dns/Íø¹Ø/Â·ÓÉ£©
+pidstat -l  [-p PID] [-C cmd] [-wt 5] 
+cswch£º×ÔÔ¸ÉÏÏÂÎÄÇÐ»»£¬½ø³ÌÔËÐÐÊ±ÓÉÓÚÏµÍ³×ÊÔ´²»×ã£¬ÈçIO,ÄÚ´æµÈÔ­Òò²»µÃ²»½øÐÐÇÐ»»¡£
+nvcswch£º·Ç×ÔÔ¸ÉÏÏÂÎÄÇÐ»»£¬±ÈÈçÊ±¼äÆ¬ÓÃÍê£¬ÏµÍ³µ÷¶ÈÈÃÆäËûÈÎÎñÔËÐÐ£¬»òÕß¾ºÕùCPUµÄÊ±ºòÒ²»á·¢Éú
+×ÔÔ¸µÄÇÐ»»µÄ¶àÁË£¬±íÃ÷ÔÚµÈ´ý×ÊÔ´£¬ÈçIO
+·Ç×ÔÔ¸µÄÇÐ»»µÄ¶àÁË£¬±íÃ÷CPU±»ÈÎÎñ¾ºÕù
+ÖÐ¶ÏÊý¶à£¬Òª½áºÏ/proc/interrupts·ÖÎö¾ßÌåÖÐ¶ÏÇé¿ö
+  ·ÖÇø£º
+   fdisk /dev/sda
+   m -- p -- n -- Ñ¡¸ñÊ½p(¿ÉÒÔ¿Õ¸ñ) -- Ñ¡·ÖÇø1(¿ÉÒÔ¿Õ¸ñ) -- ÆðÊ¼(¿ÉÒÔ¿Õ¸ñ) -- ½áÊø+size{K,M,G} -- p [--d]
+   lsblk -f(ÇÐ¼ÇÏÈ²é¿´ÒÔÇ°Ê¹ÓÃÊ²Ã´ÎÄ¼þÏµÍ³µÄ)-- ¸ñÊ½»¯£ºmkfs.ext4 /dev/sda1 // mkfs -t xfs /dev/sda1 --  lsblk -f /df -T    
+   /etc/fstab£º/dev/hda1   /   ext4        defaults   0 0  -- mount -a  --  lsblk
+   £¡£¡£¡¸ñÊ½»¯ÎÄ¼þÏµÍ³¿ÉÒÔ¼ÓÑ¡Ïî-fÇ¿ÖÆ¸²¸Ç£¬µ«...Çë½÷É÷Ê¹ÓÃ
+stat file/Directory 
+lsof +D derectory/file
 
+  su student -s /bin/bash -c "CMD"
