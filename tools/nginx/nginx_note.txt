@@ -8,7 +8,7 @@
  安装nginx安装第三方模块实际上是使用--add-module重新安装一次nginx
  
  ./configure --prefix=/opt/apps/nginx --with-http_stub_status_module --with-http_ssl_module --with-http_geoip_module --with-http_gzip_static_module --with-ipv6 --with-http_realip_module  --user=swadmin --group=swadmin --add-module=../upload/ngx_tcpwrappers/
- 配置ngx_lua-waf  隐藏nginx版本   优化buffer  自定义日志格式    fastcgi网站加速(网站静态缓存加速方案)    网站静态缓存加速方案    限速limit及限制单个IP单位时间访问次数
+ 配置ngx_lua-waf  隐藏nginx版本   优化buffer  自定义日志格式    fastcgi网站加速(网站静态缓存加速方案)  限速limit及限制单个IP单位时间访问次数
  自动识别CPU,分配进程	自动识别CPU，分配进程	最大打开文件数(与内核配合)	 设置proxy_cache缓存    gzip压缩配置   IP黑名单及GeoIP 访问IP限制/白名单    搭建虚拟机(include)
  监听多个端口   自定义错误返回页面  设置后缀名处理方法   proxy_pass  ip2location(第三方模块)
  

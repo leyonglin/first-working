@@ -588,7 +588,7 @@ awk -F[:] 'BEGIN{i=0;j=0} {if($3<500){i++}else if($3>=500&&$3<1000){j++} else{k+
 time dd if=/dev/zero of=test.db bs=8k count=5000 oflag=direct
 1.time有计时作用，dd用于复制，从if读出，写到of；
 2.if=/dev/zero不产生IO，因此可以用来测试纯写速度；time dd if=/dev/zero of=test bs=4k count=10000 oflag=direct,nonblock/oflag=dsync/conv=fsync   ##第一种是跳开缓存，直接读写，第二种是读一次写一次，第三种是先写到缓存再一次性写到磁盘
-3.of=/dev/null不产生IO，可以用来测试纯读速度；time dd if=test of=/dev/null bs=4k count=10000 iflag=direct iflag=direct,nonblockoflag=dsync/conv=fsync
+3.of=/dev/null不产生IO，可以用来测试纯读速度；time dd if=test of=/dev/null bs=4k count=10000 iflag=direct iflag=direct,nonblock/iflag=dsync/conv=fsync
 
   lsblk [-f/-p/-h/-S/-m] [device]  查看磁盘整体情况--- df -Th[a]  [file/directory/disk/part]  可以查看shiyonglv及挂载情况[mount] ---du [-sh/ah]  /*查看大小
   iostat -x 查看磁盘负载 --- iotop -o 查看那个程序读写及i/o大小

@@ -1,6 +1,6 @@
 
 
-Kubernetes:
+Kubernetes: 官网：https://kubernetes.io/docs/home/
 自己组织的：
 Master : APIServer,schedule,controller manager,etcd
 Node   : runtime(容器运行环境),kube-proxy(service的透明代理和负载均衡器),kubelet(负责管理Kubernetes创建的的容器)
