@@ -173,11 +173,16 @@ w3c：非严格html检查
  entrypoint是traefik的网络入口，entrypoint监听端口，SSL，做流量redirect
 
 
+大数据：不光数据量大，维度广(数据库表的字段多)
+服务网格是一个基础设施层，功能在于处理服务间通信，职责是负责实现请求的可靠传递
+kubeadm:一键安装kubernetes集群(初始化 Kubernetes 集群)
+kubelet:部署容器(负责启动 Pod 和容器)
+kubectl:命令行管理工具
 
 
-
-
-
+负载均衡：实现轮询
+集群：数据同步
+高可用：崩溃恢复
 
 
 

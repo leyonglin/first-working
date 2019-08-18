@@ -11,6 +11,8 @@
 十一月November —— Nov.
 十二月December—— Dec.
 
+terminology：术语
+
 星期日 Sunday=Sun.
 星期一 Monday=Mon.
 星期二 Tuesday=Tues.
