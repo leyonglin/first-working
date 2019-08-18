@@ -40,6 +40,7 @@ cd hcache     #查看buffer与cache
 make build    #需要依赖go环境(golang 如果不是服务需要，这个依赖挺多的)
 cp hcache /usr/local/bin/ 
 
-
-
-
+httpstat:用于以更好，简单和清晰的方式监视cURL统计信息 // python httpstat.py --help
+wget -c https://raw.githubusercontent.com/reorx/httpstat/master/httpstat.py
+python httpstat.py  https://www.baidu.com/
+cURL是一个利用URL语法在命令行下工作的文件传输工具
