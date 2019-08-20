@@ -61,6 +61,7 @@
  select * from information_schema.processlist where Command != 'Sleep' order by Time desc;
  找出所有执行时间超过 5 分钟的线程，拼凑出 kill 语句，方便后面查杀select concat('kill ', id, ';') from information_schema.processlist where Command != 'Sleep' and Time > 300 order by Time desc;
  
+ set global read_only=0; ----> show variables like '%read_only'; ---> read_only OFF 
  
  查看从库状态：
  show slave status\G;
