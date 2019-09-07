@@ -2,16 +2,16 @@
 
 快捷键：
 1.打开和隐藏侧边栏
-view--side bar--show/hide side bar
+  view--side bar--show/hide side bar
 2.字体放大缩小
-ctrl ++  /ctrl --
+  ctrl ++  /ctrl --
 3.创建和取消多个光标：
-ctrl+鼠标左键单击
+  ctrl+鼠标左键单击
 4.批量多选相同的块
-ctrl+d
+  ctrl+d
 5.注释/取消注释
-ctrl+/
+  ctrl+/
 6.交替换行
-ctrl+shift=上下键
+  ctrl+shift=上下键
 7.保存文件
-ctrl+s
+  ctrl+s

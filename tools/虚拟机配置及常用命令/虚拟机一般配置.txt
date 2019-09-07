@@ -11,6 +11,7 @@ yum  --help && yum clean all && yum repolist
 yum -y install   chrony psmisc net-tools findutils coreutils  bash-completion wget vim-enhanced yum-utils \
                 tree epel-release telnet tcpdump bind-utils dos2unix lrzsz iproute iotop strace procps-ng lsof \
 				httping bridge-utils traceroute nmap sysstat htop sysstat socat
+rm -f epel-testing.repo && yum -y install httping htop				
 systemctl restart chronyd	
 yum makecache
 			
