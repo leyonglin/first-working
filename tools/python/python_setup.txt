@@ -33,8 +33,10 @@ tools --> build system --> new build system... --> 保存下列内容成 Python3
       import  urllib.request,os;pf='Package Control.sublime-package';ipp=sublime.installed_packages_path();urllib.request.install_opener(urllib.request.build_opener(urllib.request.ProxyHandler()));open(os.path.join(ipp,pf),'wb').write(urllib.request.urlopen('http://sublime.wbond.net/'+pf.replace(' ','%20')).read())
   完整：import urllib.request,os,hashlib; h = '6f4c264a24d933ce70df5dedcf1dcaee' + 'ebe013ee18cced0ef93d5f746d80ef60'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)   
 
-   2.SublimeREPL: Tools--->SublimeREPL--->Python      #交互：https://www.cnblogs.com/JackyXu2018/p/8821482.html
-   preferences--->key bindings    
+   2. 交互
+    SublimeREPL: 安装插件 C+S+p ---> install package ---> sublimerepl (插件名称)      #交互：https://www.cnblogs.com/JackyXu2018/p/8821482.html    
+                          设置SublimeREPL运行的Python环境 : preferences --> browse packages...   ---> ..\SublimeREPL\config\Python\ Main.sublime-menu  -->  找到id 为 repl_python行，修改 "cmd": ["python", "-i", "-u","$file_basename"]
+    preferences--->key bindings        #设置快捷键
        {
        "keys": ["f5"],                                                 #这个需要C+b执行一下，不然识别不到最新的，并且每次都会新开启一个页面
        "caption": "SublimeREPL: Python - RUN current file",
