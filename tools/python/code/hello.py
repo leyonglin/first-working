@@ -30,5 +30,10 @@
 # print(hour * 60)       #字符串是可以相乘的
 # hour = int(hour)
 # print(hour * 60)
-if 100:
-	print("Ture")
+# if 100:
+# 	print("Ture")
+s = 'aaa\nbbb'
+print(s)
+s1 = '''aaa   #三引号可以自动折行
+bbb'''
+print(s1)
