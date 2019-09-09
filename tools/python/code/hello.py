@@ -142,7 +142,31 @@
 # while len(L) < 40:
 # 	L.append(L[-1]+L[-2])
 # print(L)
-print(set({1:1, 2:2}.items()))
+# print(set({1:1, 2:2}.items()))
+def say_hello():
+	print("hello world")
+say_hello()
+v=say_hello()
+# print(v)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
