@@ -158,10 +158,130 @@
 # d1={'c':300, 'b':200, 'a':100}
 # myfun(**d1)
 
-def myfun(a,b,c):
-  print(a,b,c)
-s1=[1,2]
-myfun(3,*s1)
+# def myfun(a,b,c):
+#   print(a,b,c)
+# s1=[1,2]
+# myfun(3,*s1)
+
+# def func(a, b, *args):
+# 	print(a, b)
+# 	print(len(args), args)
+# # func()
+# func(0, 1, 2, 3)
+
+# def mymax(a, *args):
+# 	if not args:
+# 		return max(a)
+# 	else:
+# 		return max(a, *args)
+# print(mymax([6, 8, 3, 5]))
+# print(mymax(1, 3, 5, 7))
+
+# def myfun(a, *, b, c):
+# 	print(a, b,c)
+# myfun(1, b=2, c=3)
+
+# def myfun2(a, *args, c, d):
+# 	print(a, args, c, d)
+# myfun2(1, 2, 3, c=5, d=6)
+# myfun2(1, **{'d':4, 'c':3})
+
+# def fun(**kwargs):
+# 	print('num=', len(kwargs))
+# 	print('kwargs=', kwargs)
+# fun(name='lin', age=35, address='CN')
+# fun(a=1, b='b', c=[2,3], d=True)
+
+# def myfun(a,b,c):
+#   print(a,b,c)
+# s1={1,2,3}
+# myfun(*s1)
+
+# a=1
+# def fx(b):
+# 	c=3
+# 	print(a,b,c)
+# fx(2)
+
+
+# a=1
+# c=3
+# def fn(c,d):
+# 	e=300
+# 	print('locals() 返回：', locals())
+# 	print('globals() 返回：', globals())
+# 	print(c,globals()['c'])
+# fn(100,200)
+
+# def fn():
+# 	print("hello world")
+# f1=fn
+# print(f1,fn)
+# print(f1())
+
+# def f1():
+# 	print('hello f1')
+# def f2():
+# 	print('hello f2')
+# def fx(fn):
+# 	print(fn)
+# 	fn()	
+
+# fx(f1)
+
+# def myinput(fn):
+# 	L = [1, 3, 5]
+# 	return fn(L)
+# print(myinput(max))
+
+# def get_num():
+# 	return max
+# L=[1, 3, 5, 7]
+# f=get_num()
+# print(f(L))
+
+# v=1
+# def fn():
+# 	global v
+# 	# v=2
+# fn()
+# print(v)
+
+# fx = lambda n: (n ** 2 + 1) % 5 == 0
+fx = lambda n: True if (n ** 2 + 1) % 5 == 0 else False
+print(fx(3))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
