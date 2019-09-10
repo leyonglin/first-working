@@ -696,9 +696,13 @@ lambda 表达式：创建一个匿名函数对象，同def雷士，但不提供�
 		myadd = lambda x, y: x + y       #创建一个匿名函数赋值给变量myadd(可以这样理解，myadd是函数名，x,y是形参 ，x+y为return表达式)
 	说明：1.是表达式，被调用时，返回表达式的结果的引用  2.创建的函数只能包含一条表达式   3.简单可随时创建和销毁，有利于减少程序的耦合度
 
-
-
-作用域2：02：55：00
+eval()函数：把一个字符串当成一个表达式来执行，返回表达式执行后的结果(自带print)
+	格式：eval(source, globals=None, locals=None)
+		s='1+2+3'  eval(s)     #输出6
+exec()函数：把一个字符串当成程序来执行(和函数一样，不自带print，无默认返回None)	
+	格式：eval(source, globals=None, locals=None)
+	从网上下载一个字符串(程序组成)，exec(s)就能使之执行
+	
 
 
 

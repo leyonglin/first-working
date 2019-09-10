@@ -248,10 +248,11 @@
 # print(v)
 
 # fx = lambda n: (n ** 2 + 1) % 5 == 0
-fx = lambda n: True if (n ** 2 + 1) % 5 == 0 else False
-print(fx(3))
+# fx = lambda n: True if (n ** 2 + 1) % 5 == 0 else False
+# print(fx(3))
 
-
+s='1+2+3'  
+print(exec(s))
 
 
 
