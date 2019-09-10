@@ -143,11 +143,28 @@
 # 	L.append(L[-1]+L[-2])
 # print(L)
 # print(set({1:1, 2:2}.items()))
-def say_hello():
-	print("hello world")
-say_hello()
-v=say_hello()
+# def say_hello():
+# 	print("hello world")
+# say_hello()
+# v=say_hello()
 # print(v)
+
+# def myfun(a,b,c):
+#   print(a,b,c)
+# myfun(b=2,c=3,a=1)
+
+# def myfun(a,b,c):
+#   print(a,b,c)
+# d1={'c':300, 'b':200, 'a':100}
+# myfun(**d1)
+
+def myfun(a,b,c):
+  print(a,b,c)
+s1=[1,2]
+myfun(3,*s1)
+
+
+
 
 
 
