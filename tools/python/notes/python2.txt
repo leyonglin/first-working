@@ -1,0 +1,31 @@
+
+
+01： 高阶函数 map filter sorted eval exec
+
+面向过程编程：普通编程
+函数式编程：用一系列函数解决问题
+函数的可重入性，当一个函数的输入一定，则输出必然一定的函数称为可重入函数
+	可重入函数内一定不会访问除局部变量以外的变量
+高阶函数high order function
+	包含其中一个条件的函数：1.函数接受一个或多个函数作为参数传入   2.函数返回一个函数
+	内置的高阶函数：map   filter   sorted
+	map函数：map(func, *iterable)
+		返回一个可迭代对象，此可迭代对象用函数func对可迭代对象iterable中每一个元素作为参数后得到新的数据
+	1.print(sum(map(lambda x: x**2, range(1, 10))))	
+	2.def mypow(x,y):
+		  return x**y
+	  for i in map(mypow,[1,2,3],(4,3,2,1)):
+		  print(i)
+	
+	filter函数：filter(function, iterable)
+		作用：筛选可迭代对象iterable中的数据(对每个function返回数据进行bool求值)，返回一个iterable中符合条件的可迭代对象的数据
+	
+	sorted函数：将原可迭代对象的数据(可排序对象)进行排序，生成排序后的列表
+		格式：sorted(iterable, key=None, reverse=False)
+		key是一个用来提供作为排序的依据的值
+			L=[1,-2,5,-3]
+			L1=sorted(L,key=abs,reverse=True)     #按绝对值由大到小排序
+			print(L1)
+			
+			
+高阶函数2 00:00:00
