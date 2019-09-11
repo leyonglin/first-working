@@ -1,4 +1,6 @@
 
+快照：jstack -l javapid > /tmp/jvm.dump      #jvm快照，需要以启动用户身份执行
+
 firewalld  mysql(重做主从)/授权  crontab  pom文件  pom脚本 [redis，mysql要能写]  sersync本机及备战ip  计划任务  采集ip及域名 公共服务器 hostlist   解析  群通知   
 
 http://deploy_check.yibofafa666.com/deploy_check/    查看发布
