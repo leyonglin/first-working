@@ -102,15 +102,20 @@
 # print(next(it))
 # print(next(it))
 
-def myyield():  #生成器函数
-	yield 2
-	yield 3
-	print(1)
-	yield 5
-	print(10)
-gen = myyield()   #调用生成器函数来创建一个生成器
-it = iter(gen)    #用生成器获取对应的迭代器
-print(next(it))   #访问迭代器，每次访问，从上一个yield语句之后执行直至yield语句为止
-print(next(it))   #访问迭代器
-print(next(it))   #访问迭代器,会打印出1和5，1是函数内print(1)打印出来的，5是print(next(it))
-print(next(it))   #输出10，但由于没有yield语句，会报错StopIteration
+# def myyield():  #生成器函数
+# 	yield 2
+# 	yield 3
+# 	print(1)
+# 	yield 5
+# 	print(10)
+# gen = myyield()   #调用生成器函数来创建一个生成器
+# it = iter(gen)    #用生成器获取对应的迭代器
+# print(next(it))   #访问迭代器，每次访问，从上一个yield语句之后执行直至yield语句为止
+# print(next(it))   #访问迭代器
+# print(next(it))   #访问迭代器,会打印出1和5，1是函数内print(1)打印出来的，5是print(next(it))
+# print(next(it))   #输出10，但由于没有yield语句，会报错StopIteration
+
+L1=[1,2,3,4]
+L2=['a','b','c']
+for t in enumerate(L2,2):
+	print(t)
