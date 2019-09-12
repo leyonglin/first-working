@@ -73,16 +73,44 @@
 # print(eline(4))
 # # L2 = [1, 4, 6, 4, 1]
 
-def mydeco(fn):            #装饰器函数
-	def fx():
-		print('1')
-		fn()
-		print('2')
-	return fx
+# def mydeco(fn):            #装饰器函数
+# 	def fx():
+# 		print('1')
+# 		fn()
+# 		print('2')
+# 	return fx
 
-@mydeco          
-def  myfun():
-	 print('myfun')
+# @mydeco          
+# def  myfun():
+# 	 print('myfun')
 
-#@mydeco 相当于myfunc()被调用了后，先fn=myfun 再myfun=mydeco(myfun)   
-myfun()
+# #@mydeco 相当于myfunc()被调用了后，先fn=myfun 再myfun=mydeco(myfun)   
+# myfun()
+
+# def  chengfabiao(n):
+# 	for i in range(1,n+1):
+# 		for j in range(1,i+1):
+# 			if j<=i:
+# 				print("%d*%d=%d\t" % (i,j,i*j),end=' ')
+# 		print()
+# chengfabiao(5)
+
+# L=[1,3,5]
+# it=iter(L)
+# print(next(it))
+# print(next(it))
+# print(next(it))
+# print(next(it))
+
+def myyield():  #生成器函数
+	yield 2
+	yield 3
+	print(1)
+	yield 5
+	print(10)
+gen = myyield()   #调用生成器函数来创建一个生成器
+it = iter(gen)    #用生成器获取对应的迭代器
+print(next(it))   #访问迭代器，每次访问，从上一个yield语句之后执行直至yield语句为止
+print(next(it))   #访问迭代器
+print(next(it))   #访问迭代器,会打印出1和5，1是函数内print(1)打印出来的，5是print(next(it))
+print(next(it))   #输出10，但由于没有yield语句，会报错StopIteration
