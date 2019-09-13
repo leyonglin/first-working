@@ -458,7 +458,8 @@ assert语句(断言语句)：当真值表达式为False时，用错误数据创�
 				(windows上常用)
 		国际标准：UNICODE  <--> UTF-8(8-bit Unicode Transformation Format)  #utf-8是支持多国(国际),0~127为ascii码为二字节的，后面是各国文字，中国文字为三字节
 				（linux/mac os x/ios/android常用）
-	python的编码(encode)字符串：以上 + ascii(只支持英文)	
+	python的外部编码(encode)字符串：以上 + ascii(只支持英文)	 内部字符串用的都是UNICODE
+	
 	编码注释：在源文件中第一行或第二行写入如下内容为编码注释,作用是告诉解释执行器，当前的.py文件的编码格式是什么
 		# -*- coding:gbk/utf-8 -*-     --->  #设置源文件编码格式为：gbk/utf-8
 	

@@ -142,7 +142,25 @@
 # v=say_hello()			
 # print(v)				
 
-import sys
-print(sys.stdin.readline())
-sys.stdout.write("标准输出\n")
-sys.stderr.write("错误输出\n")
+# import sys
+# print(sys.stdin.readline())           #从键盘读取
+# sys.stdout.write("标准输出\n")         #标准输出
+# sys.stderr.write("错误输出\n")         #错误输出
+
+# try
+#     fr=open('mynote.txt', 'rb')  #二进制读方式打开
+#     b = fr.read()                #返回字节串，不会自动解码
+#     print(b)
+#     fr.close()
+# except OSError:
+# 	print("打开文件失败")
+
+# try:
+# 	fbw = open('mybinary.bin', 'wb')   #二进制写入文件
+#     s = '你好'                         #输入字符串
+#     b=s.encode('utf-8')                #对字符串进行编码，不编码会报错
+#     fbw.write(b)
+#     fbw.close()
+#     print('文件写入成功')
+# except OSError:
+# 	print("打开文件失败")
