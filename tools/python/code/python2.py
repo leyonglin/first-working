@@ -115,7 +115,15 @@
 # print(next(it))   #访问迭代器,会打印出1和5，1是函数内print(1)打印出来的，5是print(next(it))
 # print(next(it))   #输出10，但由于没有yield语句，会报错StopIteration
 
-L1=[1,2,3,4]
-L2=['a','b','c']
-for t in enumerate(L2,2):
-	print(t)
+# L1=[1,2,3,4]
+# L2=['a','b','c']
+# for t in enumerate(L2,2):
+# 	print(t)
+
+def myfactorial(n):
+	s=1                     #只传递一次
+	for x in range(1,n+1):
+		s*=x
+		yield s             #保留上次s的值
+
+print(list(myfactorial(5)))
