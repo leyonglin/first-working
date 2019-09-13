@@ -120,10 +120,29 @@
 # for t in enumerate(L2,2):
 # 	print(t)
 
-def myfactorial(n):
-	s=1                     #只传递一次
-	for x in range(1,n+1):
-		s*=x
-		yield s             #保留上次s的值
+# def myfactorial(n):
+# 	s=1                     #只传递一次
+# 	for x in range(1,n+1):
+# 		s*=x
+# 		yield s             #保留上次s的值
 
-print(list(myfactorial(5)))
+# print(list(myfactorial(5)))
+
+# L = { x + str(y) for x in 'ABC' for y in range(6) if y % 2 ==1 }
+# print(L)
+
+# t = tuple(range(5))
+# print(t)
+
+# def say_hello():  
+# 	return 2      
+# 	print("hello world")
+# 	return 1
+# # say_hello()				
+# v=say_hello()			
+# print(v)				
+
+import sys
+print(sys.stdin.readline())
+sys.stdout.write("标准输出\n")
+sys.stderr.write("错误输出\n")

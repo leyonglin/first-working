@@ -401,7 +401,7 @@ python3中的序列类型： 字符串str  列表list  元组tuple   字节串by
 	作用：用简易方法生成列表
 	语法： [表达式 for 变量 in 可迭代对象]  或者  [表达式 for 变量 in 可迭代对象 if 真值表达式]
 	列表推导式的嵌套：[表达式 for 变量1 in 可迭代对象1 if 真值表达式1 for 变量2 in 可迭代对象2 if 真值表达式2 ...]      #先执行for，在执行表达式
-	
+		[ x + str(y) for x in 'ABC' for y in range(6) if y % 2 ==1 ]  #输出['A1', 'A3', 'A5', 'B1', 'B3', 'B5', 'C1', 'C3', 'C5']
 
 	
 
@@ -445,8 +445,8 @@ reversed(iterable)         #反向输出
 	删除：del 语句     语法：del 字典[键]
 字典的in / not in 运算符：用来判断一个键是否存在字典中。示例：  'name(key)' in dict 
 字典的迭代访问：字典是可迭代对象，字典只能对'键'进行访问	
-    for k in d:
-    	print(k)    #只能返回'键'
+    for k,v in d:
+    	print(k,v)    #只能返回'键'
 字典可用函数：
     len(x)  #返回字典的键值对个数
     max(x)  #返回键最大值
@@ -540,11 +540,12 @@ reversed(iterable)         #反向输出
 		函数调用是一个表达式，如果函数内部没有return语句，则函数执行完毕后返回None对象
 	def say_hello():                 #创建函数名变量
 		print("hello world")         #语句块
-	say_hello()						 #函数调用，执行函数包含的所有语句，遇return中断返回
-	v=say_hello()					 #函数调用并创建变量v绑定函数调用后的return返回值
-	print(v)						 #函数无return语句，输出None
+		return 1
+	say_hello()						 #函数调用，输出hello world，返回1，执行函数包含的所有语句，遇return中断返回
+	v=say_hello()					 #输出hello world，返回1赋值给v，函数调用并创建变量v绑定函数调用后的return返回值
+	print(v)						 #输出1(函数无return语句，输出None)
 
-	return语句：用于函数中结束当前函数的执行，返回到调用该函数的地方，同时返回一个对象的引用关系
+	return语句：用于函数中结束当前函数的执行(遇return结束函数调用并返回)，返回到调用该函数的地方，同时返回一个对象的引用关系
 	语法：return [表达式]
 	1.return不带表达式，默认返回None
 	2.如果没有return语句，执行完最后语句后返回None
