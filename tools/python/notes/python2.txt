@@ -2,7 +2,7 @@
 
 01： 高阶函数 map filter sorted eval exec
 
-面向过程编程：普通编程
+面向过程编程：普通编程，基本单位是函数
 函数式编程function programing：用一系列函数解决问题
 函数的可重入性，当一个函数的输入一定，则输出必然一定的函数称为可重入函数
 	可重入函数内一定不会访问除局部变量以外的变量
@@ -76,7 +76,7 @@
             def  myfun(name):
             	 print('myfun')
             
-            #@mydeco 相当于myfunc()被调用了后，先fn=myfun，myfun调用了fx再调用fn， 再myfun=mydeco(myfun)   
+            #@mydeco 相当于myfunc()被调用了后，与添加该语句 myfun=mydeco(myfun) 效果一样的   
             myfun()                    #返回其他fx函数执行结果
 
 函数的文档字符串：函数内第一次未赋值给任何变量的字符串是此函数的文档字符串
@@ -297,8 +297,8 @@ assert语句(断言语句)：当真值表达式为False时，用错误数据创�
 			print(1)
 			yield 5
 			print(10)
-		gen = myyield()   #调用生成器函数来创建一个生成器对象
-		it = iter(gen)    #用生成器获取对应的迭代器
+		gen = myyield()   #调用生成器函数来创建一个生成器对象(可迭代对象)
+		it = iter(gen)    #用iter(iterable)函数获取对应的迭代器
 		print(next(it))   #访问迭代器，每次访问，从上一个yield语句之后执行直至yield语句为止
 		print(next(it))   #访问迭代器
 		print(next(it))   #访问迭代器,会打印出1和5，1是函数内print(1)打印出来的，5是print(next(it))
@@ -381,9 +381,9 @@ assert语句(断言语句)：当真值表达式为False时，用错误数据创�
 		  2.默认文件中存储的都是字符(文字)数据，在读写中会自动进行编码转换操作
 		  3.以行为单位分隔，在python内统一用'\n'作用换行符进行分隔
 	各操作系统的换行符：linux -- '\n'    windows -- '\r\n'   mac os -- '\n'(旧mac -- '\r')
-	mode模式字符的含义：
+	mode模式字符的含义：编辑word--->以r打开文件--->将文件内容全部存到内存上去--->关闭文件--->以w方式打开文件--->将内存中内容写入文件--->关闭文件
 		'r'     #以只读方式打开(默认)
-		'w'		#以只写方式打开，删除原有文件内容(不存在则创建)
+		'w'		#以只写方式打开，删除原有文件内容(不存在则创建)，推荐
 		'x'		#以写模式创建并打开新文件，文件存在则产生fileexistserror报错
 		'a'		#以只读打开文件，文件存在则追加到文件末尾
 		'b'     #二进制模式打开

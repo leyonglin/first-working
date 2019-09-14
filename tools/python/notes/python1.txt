@@ -28,7 +28,7 @@ https://docs.python.org/zh-cn/3/library/index.html
       True     1
       False    0
 空值None：表示不存在的特殊对象
-作用：用来占位    变量解除绑定
+	作用：用来占位    变量解除绑定
 
 表达式：数字+运算符    括号()可以提高优先级  
 算术运算符：
@@ -50,7 +50,7 @@ https://docs.python.org/zh-cn/3/library/index.html
 python中自动化内存管理和引用计数
    python中，变量没有类型
    关联/绑定/引用都是指一个变量和一个对象的关联关系
-查看变量：help("__main__")   
+查看变量：help("__main__")或dir([object])   
 删除变量：del 变量                     #解除绑定关系
 is/is not 运算符   #判断两个对象是否为一个对象id(内存地址)，并返回True/False(a=b才算绑定一个对象   -5到256区间的数字永远存在于小整数池中，是例外)
 id(x)    #函数，返回对象的内存地址
@@ -271,7 +271,7 @@ while 语句：根据一定条件，重复的执行一条语句或多条语句
 
 while 语句的嵌套(语句是可以嵌套的)：while 语句本身是语句，和其他语句一样，可以嵌套到任何复合语句中
 
-break语句：用于循环语句(while,for语句)中，用来终止当前循环语句的执行
+break语句：用于循环语句(while,for,if语句)中，用来终止当前循环语句的执行
 语法：break
 	1.break语句通常于if语句组合使用  2.终止循环时，else子句的语句将不会执行  3.break仅跳出当前循环
 
