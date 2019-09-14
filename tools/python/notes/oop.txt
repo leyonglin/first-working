@@ -241,19 +241,69 @@
 
 03： 继承(inheritance) 和 派生(derived) 封装 多态
 
+用于类的函数：
+	issubclass(cls, class_or_tuple)判断一个类cls是否继承自其它的类class_or_tuple，如果此类cls是class或tuple中一个派生子类则返回True，否则返回False
+
+封装enclosure：
+	指隐藏类的实现细节，让使用者不关心这些细节
+	封装的目的是让使用者通过尽可能少的方法(属性)操作对象
+私有属性和方法
+	python类中，以双下划线('__')开头，不以双下划线结尾的标识符为私有成员，私有成员只能使用该类的方法进行访问和修改
+	1.以__开头的属性为私有属性    2.以__开头的方法为私有方法
+	实例：
+		class A:
+			def __init__(self):
+				self.__p1 = 100     #私有属性
+				# self._p2 = 200      #不是私有属性
+				# self.__p3__ = 300   #不是私有属性
+			def show_info(self):
+				print(self.__p1)    #此对象的实例方法可以访问和修改私有属性
+				self.__m()            #调用私有方法
+			def __m(self):
+				print("A类对象的__m方法被调用")			
+		a = A()
+		a.show_info()     #只能使用该类的方法进行访问和修改
+		# print(a.__p1)   #外部不允许访问私有属性
+		# print(a._p2)    #可以访问
+		# print(a.__p3__) #可以访问
+		# a.__m()           #无法直接访问私有方法
+	注意：python的封装是假的封装(模拟的封装)  --->  a._A__p1  可以访问到(查看dir(obj))
+
+多态polymorphic:
+	指在有继承/派生关系的类中，调用基类对象的方法，实际能调用子类的覆盖方法的现象叫多态
+	状态：静态(编译时状态)   动态(运行时状态)
+	说明：1.多态调用的方法与对象相关，不写类型相关   2.python全部对象都只有"运行时状态(动态)"，没有c++语言里的编译时状态(静态)
+	示例：
+		class Shape:
+			def draw(self):
+				print("Shape的draw()被调用")
+		class Point(Shape):
+			def draw(self):
+				print('正在画一个点！')
+		class Circle(Point):
+			def draw(self):
+				print('正在画一个圆！')
+		def my_draw(s):
+			s.draw()     #c++等语言有静态(编译时状态)，编译时会根据s的类型调用相应方法，python是弱类型的，因此只能在运行时，根据对象才能决定调用那个方法
+		
+		s1=Circle()
+		my_draw(s1)
+		
+面向对象编程语言的特征： 继承   封装   多态
+
+多继承：
+	指一个子类继承自两个或两个以上的基类
+	语法: class 类名(基类名1, 基类名2, ...)
+	说明：
+		一个子类同时继承自多个父类，父类中的方法可以同时被继承下来
+		如果两个父类中有同名的方法，而在子类中又没有覆盖此方法时，调用结果难以确定
+	多继承的MRO(Method Resolution Order)
+		python3的类的__mro__属性：
+			用来记录类的方法查找顺序  --->  A.__mro__
+		super()函数就是根据__mro__来调用上层的方法(super(B, b).play()--->B上层类的方法)
 
 
-
-
-
-
-
-
-
-
-
-
-
+2-00:00:00
 
 
 

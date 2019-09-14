@@ -46,19 +46,19 @@
 # h1.study("python")
 
 
-class A:
-	def work(self):
-		print("A.work被调用")
-class B(A):
-	def work(self):
-		print("B.work被调用!!!")
-	def super_work(self):
-		self.work()                  #调用B类方法
-		super(B, self).work()         #调用方法
-		super().work()               #必须在方法内调用
-b=B()
-b.work()              #B被调用
-super(B, b).work()    #A.work被调用
+# class A:
+# 	def work(self):
+# 		print("A.work被调用")
+# class B(A):
+# 	def work(self):
+# 		print("B.work被调用!!!")
+# 	def super_work(self):
+# 		self.work()                  #调用B类方法
+# 		super(B, self).work()         #调用方法
+# 		super().work()               #必须在方法内调用
+# b=B()
+# b.work()              #B被调用
+# super(B, b).work()    #A.work被调用
 
 		
 # class Human:
@@ -77,3 +77,54 @@ super(B, b).work()    #A.work被调用
 
 # s1=Student('张飞', 15, 80)
 # s1.infos()
+
+
+# class A:
+# 	def __init__(self):
+# 		self.__p1 = 100     #私有属性
+# 		# self._p2 = 200      #不是私有属性
+# 		# self.__p3__ = 300   #不是私有属性
+# 	def show_info(self):
+# 		print(self.__p1)    #此对象的实例方法可以访问和修改私有属性
+# 		self.__m()            #调用私有方法
+# 	def __m(self):
+# 		print("A类对象的__m方法被调用")			
+# a = A()
+# a.show_info()     #只能使用该类的方法进行访问和修改
+# # print(a.__p1)   #外部不允许访问私有属性
+# # print(a._p2)    #可以访问
+# # print(a.__p3__) #可以访问
+# # a.__m()           #无法直接访问私有方法
+
+# class Shape:
+# 	def draw(self):
+# 		print("Shape的draw()被调用")
+# class Point(Shape):
+# 	def draw(self):
+# 		print('正在画一个点！')
+# class Circle(Point):
+# 	def draw(self):
+# 		print('正在画一个圆！')
+# def my_draw(s):
+# 	s.draw()     #c++等语言有静态(编译时状态)，编译时会根据s的类型调用相应方法，python是弱类型的，因此只能在运行时，根据对象才能决定调用那个方法
+
+# s1=Circle()
+# my_draw(s1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
