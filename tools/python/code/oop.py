@@ -111,6 +111,114 @@
 # s1=Circle()
 # my_draw(s1)
 
+# s="I'm Teacher"
+# print(str(s))
+# print(repr(s))
+
+# class MyNumber:
+# 	def __init__(self, val):
+# 		self.data = val
+# 	# def __str__(self):
+# 	# 	return "自定义数字： %d" % self.data
+# 	# def __repr__(self):                          #此方法返回来的字符串一定是能表示self对象的表达式字符串
+# 	# 	return "MyNumber(%d)" % self.data
+		
+# n1 = MyNumber(100)
+# print('str(n1) =', str(n1))
+# print(n1.__str__())
+# print(n1)                    #在print内部会将n2用str(x)转为字符串再写到sys.stdout
+# print('repr(n1 =', repr(n1))
+
+# class MyList:
+# 	def __init__(self, iterable=()):
+# 		self.__data = [x for x in iterable]     #私有属性
+# 	def __repr__(self):
+# 		return 'MyList(%s)' % self.__data
+# 	def __len__(self):
+# 		return len(self.__data)
+# myl = MyList([1, 0, 2, -1])
+# print(myl)
+# print(len(myl))                                #len()内建函数，需要上面的函数重写，自定义的类创建的实例才能够使用内建函数进行操作
+
+# #此示例将自定义的类MyList创建的对象制作称为可迭代对象
+# class MyList:
+# 	def __init__(self, iterable=()):
+# 		self.__data = [x for x in iterable]     #私有属性
+# 	def __repr__(self):
+# 		return 'MyList(%s)' % self.__data
+# 	def __iter__(self):         #此方法用于返回一个能访问self对象的迭代器
+# 		print("被调用")
+# 		return MyListIterator(self.__data)    #返回跌掉其，是因为由__next__方法
+# class MyListIterator:              #此类用来描述能够访问MyList类型的对象的迭代器
+# 	def __init__(self,lst):
+# 		self.data_lst=lst 
+# 		self.cur_index=0          #迭代器访问的起始位置
+# 	def __next__(self):           #此方法用来实现迭代器协议
+# 		if self.cur_index >= len(self.data_lst):
+# 			raise StopIteration
+# 		r = self.data_lst[self.cur_index]
+# 		self.cur_index += 1
+# 		return r
+
+# myl = MyList([1, 0, 2, -1])
+# it = iter(myl)                #等同于调用it=myl.__iter__()
+# print(next(it))
+# for x in myl:                 #TypeError: 'MyList' object is not iterable
+# 	print(x)
+
+# class A:         #此类的对象可以用于with语句进行管理
+# 	def __enter__(self):                    #第一步，进入with语句
+# 		print("此方法是在with语句内执行的")  
+# 		return self   #self将被with中的as变量绑定
+# 	def __exit__(self, exc_type, exc_val, exc_tb):
+# 		print("您已离开with语句")           #第三步，退出with语句
+# with A() as a:                     
+# 	print("这是with语句内部输出")            #第二步
+# print("程序正常执行")                       #第四步
+
+# class MyNumber:
+# 	def __init__(self, v):
+# 		self.data = v      #self.data用来保存对象的数据
+# 	def __repr__(self):
+# 		return "MyNumber(%d)" % self.data
+# 	# def add(self, other):          #定制self+other的规则
+# 	# 	v = self.data + other.data
+# 	# 	return MyNumber(v)
+# 	def __add__(self, other):          #特殊的方法名，是n3 = n1 + n2，能执行并且不报错
+# 		return MyNumber(self.data + other.data)
+
+# n1 = MyNumber(100)
+# n2 = MyNumber(200)
+# # n3 = n1.add(n2)
+# n3 = n1 + n2   #等同于n3=n1.__add__(n2)
+# print(n3)
+
+# class MyList:
+# 	def __init__(self, iterable=()):
+# 		self.data = [x for x in iterable]  
+# 	def __repr__(self):
+# 		return 'MyList(%s)' % self.data
+# 	def __neg__(self):                  #负号运算符重载
+# 		G = (-x for x in self.data)
+# 		return MyList(G)
+
+# L1 = MyList([1,-2,3,-4,5])
+# L2 = -L1
+# print(L2)
+
+
+# class MyList:
+# 	def __init__(self, iterable=()):
+# 		self.data = [x for x in iterable]  
+# 	def __repr__(self):
+# 		return 'MyList(%s)' % self.data
+
+
+# L1=MyList([1,-2,3,-4,5])
+# if 1 in L1:                  #等同于if not L1.__contains__(4)
+# 	print("2在L1内")
+# else:
+# 	print('2不在L1内')
 
 
 
@@ -121,9 +229,7 @@
 
 
 
-
-
-
+#
 
 
 
