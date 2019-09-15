@@ -439,7 +439,7 @@
 04： 异常高级 运算符重载
 
 异常(高级)
-	while 语句块      #异常处理语句
+	with 语句块      #异常处理语句
 	语法：
 		with 表达式1 [as 变量1], 表达式2 [as 变量2], ...:
 			语句块
@@ -642,10 +642,35 @@ slice函数：help(slice)
 		slice(start=None, stop=None, step=None)
 
 			
-2-03:14:00
+特性属性@property
+	实现其它语言所拥有的getter 和 setter功能
+	作用：用来模拟一个属性，通过@property装饰器，可以对模拟属性的赋值和取值加以控制
+	示例：
+		class Student:
+			def __init__(self, s):
+				self.__score=s
+			@property
+			def score(self):			#getter用来获取数据
+				print("getter被调用")   #作用和getscore的函数一样
+				return self.__score
+			# def getscore(self):         #获取数据
+			# 	return self.__score 	
+			@score.setter
+			def score(self, s):      #此方法使用setter，用来设置值加以限制以保证数据的准确性
+			# def setscore(self, s)
+				print("setter被调用")
+				if 0<= s <= 100:
+					self.__score=s
+
+		s = Student(50)
+		# s.setscore(100)
+		score = s.score                 #访问特性属性score,实质是调用原s.getscore()
+		print('成绩是：', score)
+		s.score=100                     #修改特性属性score的值,实质是调用原s.setscore()
+		print('成绩是：', score)
 
 
-
+PEP8编码规范
 
 
 
