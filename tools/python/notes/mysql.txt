@@ -84,57 +84,86 @@
  4.选择一个字段创建索引:create index name on t1(name);
  5.再次执行查询语句并查看执行时间，进行比较
  
- 1.普通索引(index):1.可设置多个字段   2.把经常用来查询的字段设置为索引字段
- 2.唯一索引(unique):
- 3.主键索引(primary key)
+1.普通索引(index):1.可设置多个字段,字段值无约束   2.把经常用来查询的字段设置为索引字段   3.key标志：MUL
+		创建表时：create table t1(...,...,),index(name),index(id),...);
+		已有表中：create index 索引名  on  表名(字段名)；
+		查看：1.desc 表名;    2.show  index from 表名\G; 
+		删除：drop index 索引名 on 表名;
+ 2.唯一索引(unique)&&自增长(auto_increment):1.可设置多个字段   2.字段值不允许重复，但可以为空值   3.key标志：UNI
+		创建表时：create table t1(...,...,),unique(name),unique(id),...);
+		已有表中：create unique index 索引名  on  表名(字段名)；
+		查看：1.desc 表名;    2.show  index from 表名\G; 
+		删除：drop index 索引名 on 表名;
+ 3.主键索引(primary key):1.只能有一个字段为主键字段   2.字段值不允许重复，也不能为NULL  
+						 3.KEY标志：PRI    4.通常设置记录编号字段id，能够唯一锁定一条记录（自增长修改初始值：alter table 表名 AUTO_INCREMENT=10000;）
+		创建表时：... id int primary key auto_increment      复合主键(两个id与name同时相同才会报错)：id int auto_increment,name varchar(20),primary key(id,name)
+		已有表中:alter table 表名 add primary key(id);
+		删除：1.删除自增长属性modify:alter table 表名 modify id int  2.alter table 表名 drop primary key;
  4.外键(foreign key)
-
-1-02:33:56
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ 
+ 
+ 数据导入：把文件系统中内容导入到数据库中(.csv 可用execl表格打开)
+	语法格式：load  data infile "文件名"  into table 表名 fields terminated by "分隔符" lines terminated by "\n";
+	导入：1.在数据库中创建对应的表   2.1查看搜索路径show variables like "secure_file_priv"     2.2 执行数据导入,文件需在指定目录下
+ 数据导出：把输出到终端的数据表的记录导出到系统文件里
+	语法格式： select ... from 表名 into outfile "文件名" fields terminated by "分隔符" lines terminated by "\n";
+ 
+ 表的复制：
+	语法：create table 表名 select ... from 表名 where 条件;
+ 
+ 复制表结构：
+	语法：create table 表名 select ... from 表名 where false;
 
 
 
 
 
 04： 事务 Python3数据库编程
+
+外键(foreign key):让当前的字段值在另一张表的范围内去选择，主从表字段数据类型要一致，主表：被参考字段是主键
+	创建表时：...foreign key(参考字段名) reference 主表(被参考字段名) on delete 级联动作(cascade) on update 级联动作
+	已有表时：alter table 表名 add foreign key(参考字段名) reference 主表(被参考字段名) on delete 级联动作 on update 级联动作
+	删除外键：alter table 表名 drop foreign key 外键名;
+	查看外键: show create table 表名;
+	级联动作：1.cascade：数据级联删除，级联更新   2.restrict(默认)：从表中有相关联记录，不允许主表操作   3.set null：主表删除，更新，从表相关联记录字段值为NULL
+ 
+嵌套查询(子查询)：把内层的查询结果作为外层的查询条件
+	语法：select ... from 表名 where 字段名 运算符 (select ... from 表名 where 条件);
+ 
+ 多表查询：
+	1.笛卡尔积：不加where条件
+		语法：select ... from 表1,表2;  
+	2.加where条件
+		语法: select ... from 表1,表2 where 条件;
+ 
+2-00:00:00
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 05： ORM
