@@ -220,26 +220,50 @@
 # else:
 # 	print('2不在L1内')
 
-class Student:
-	def __init__(self, s):
-		self.__score=s
-	@property
-	def score(self):			#getter用来获取数据
-		print("getter被调用")   #作用和getscore的函数一样
-		return self.__score
-	# def getscore(self):         #获取数据
-	# 	return self.__score 	
-	@score.setter
-	def score(self, s):      #此方法使用setter，用来设置值加以限制以保证数据的准确性
-	# def setscore(self, s)
-		print("setter被调用")
-		if 0<= s <= 100:
-			self.__score=s
+# class Student:
+# 	def __init__(self, s):
+# 		self.__score=s
+# 	@property
+# 	def score(self):			#getter用来获取数据
+# 		print("getter被调用")   #作用和getscore的函数一样
+# 		return self.__score
+# 	# def getscore(self):         #获取数据
+# 	# 	return self.__score 	
+# 	@score.setter
+# 	def score(self, s):      #此方法使用setter，用来设置值加以限制以保证数据的准确性
+# 	# def setscore(self, s)
+# 		print("setter被调用")
+# 		if 0<= s <= 100:
+# 			self.__score=s
 
-s = Student(50)
-# s.setscore(100)
-score = s.score                 #访问特性属性score,实质是调用原s.getscore()
-print('成绩是：', score)
-s.score=100                     #修改特性属性score的值,实质是调用原s.setscore()
-print('成绩是：', score)
+# s = Student(50)
+# # s.setscore(100)
+# score = s.score                 #访问特性属性score,实质是调用原s.getscore()
+# print('成绩是：', score)
+# s.score=100                     #修改特性属性score的值,实质是调用原s.setscore()
+# print('成绩是：', score)
 
+# class MyList:
+#     def __init__(self, iterable=()):
+#         self.__data = list(iterable)               #可以用别的数据类型
+#     def __repr__(self):
+#         return "MyList(%s)" % self.__data
+#     def __getitem__(self, i):
+#         print('i的值是：', i)
+#         return self.__data[i]
+#     # def __setitem__(self,i,v):  
+#     #     print("call __setitem__", i, v)
+#     #     self.__data[i] = v
+#     # def __delitem__(self,i):
+#     #     self.__data.pop(i)
+
+# L = MyList([1, -2, 3, 5, 6])
+# # x = L[1]                                            #调用__getitem__方法
+# # print(x)
+# # print(L)
+# # L[3] = 400                                          #调用__getitem__方法
+# # print(L)
+# # del L[3]
+# # print(L)                                            #调用__delitem__方法
+# print(L[::2])                                         #等同于printL[slice(None, None, 2)]
+ 

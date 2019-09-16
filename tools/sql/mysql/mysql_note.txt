@@ -124,7 +124,7 @@
  
  显示数据表结构:  desc 表名;   //   describe 表名;
  
- 远程登陆mysql：mysql -hlocalhost -uroot -p
+ 远程登陆mysql：mysql -hlocalhost -uroot -p -P3306 -S /opt/data/data_16303/mysql.sock
  使用gzip命令对备份文件进行压缩：：mysqldump phpbb_db_backup | gzip > /usr/backups
  
  
@@ -152,16 +152,6 @@
  alter table table_name drop index index_name/primary key ;
  
  
- 建库：create database 库名;
- 删库：drop database 库名;
- 
- 进入指定库：use 库名;
- 建表：create table 表名(字段列表);
- 删表：drop table 表名;
- 
- 清空表中记录：delete from 表名;
- 
- 
  for i in $ip;do
  expect << EOF
          spawn /opt/apps/mysql/bin/mysql -uroot -p -S /opt/data/data_16303/mysql.sock -e "    
@@ -171,6 +161,97 @@
          expect eof
  EOF
  done
+ 
+ 
+ 查库：show databases;   (库名区分大小写)
+ 位置：select database;
+ 建库：create database [if not exists] 库名 character set utf8;
+ 查看：show create database 库名;
+ 删库：drop database 库名; 
+ 进入指定库：use 库名;
+ 查表：show tables;
+ 查表:show create table 表名;
+ 建表：create table 表名(字段列表(字段名 数据类型, ...))character set utf8;
+ 删表：drop table 表名;
+ 表结构：desc 表名;
+ 插入：insert into 表名 values(值1),(值2)...;   或 insert into 表名(字段1,字段2,...) values(值1),(值2)...;
+ 查看: select *(字段,...) from 表名 where 条件(字段=(运算符)值,...);
+ 清空表中记录：delete from 表名;
+ 
+ 配置文件：
+	[mysqld]
+	charactr_set_server = utf8      #默认字符集
+ 
+ 数据类型：1.节省空间(varchar)    2.效率高(char)
+	数值类型宽度(显示宽度，不够用0补充)和存储没有关系[有/无符号signed/unsigned],decimal(m,n)整数部分和小数部分分开存储
+	字符类型宽度不够则无法存入
+	枚举 单选enum  多选set
+	时间 datetime(Null) = timestamp(系统时间) = date("年月日") + time("时分秒")
+ 
+ 日期时间函数：
+ now()				返回服务器当前时间
+ curldate()			当前日期
+ date("datetime")	提取年月日
+ time("datetime") 	提取时分秒
+ year("datetime")	提取年
+ 
+ 日期时间运算：where * from 表名 where 字段名 运算符(now()-interval 时间间隔单位(1 day));
+ 
+ 表字段操作:alter table 表名 操作(add/drop/modify/rename/change) 字段名 数据类型 位置(first/after 字段名)；
+ 表记录操作：
+	删除：delete from 表名 where 条件;
+	更新：update 表名 set 字段1=值1, ...where 条件(可以使用括号()); 
+ 
+ NULL：空值，只能用is、is not 去匹配
+ "":空字符串，只能用 =  != 去匹配
+ 模糊查询(like)
+	where 字段名 like 表达式
+	_:匹配单个字符   %:匹配0到多个字符
+	
+  集合函数：
+	avg(字段名)：平均值
+	sum   max  min   count
+	
+ 高级查询：表达式从行而下顺序结构
+	select ...聚合函数 from 表名
+	where  ...
+	group by ...:给查询的结果进行分组
+	having  ...：对查询结果进一步筛选
+	order by  字段名 ASC/DESC : 给查询结果排序 
+	limit [m,]n  ：显示查询记录的第m条开始，条数n
+
+ distinct:不显示字段的重复值。语法：select distinct 字段1, 字段2 from 表名；
+	distinct和from之间的所有字段值都相同才会去重
+ 
+ 约束：保证数据的一致性，有效性
+	分类：1.默认约束(default)    2.非空约束(not null)
+ 
+ 索引：对数据库中表的一列或多列的值进行排序的一种结构(BTree)
+	优点：加快数据的检索速度
+	缺点：1.数据更新时，索引需要动态维护，降低数据的维护速度    2.索引需要占用物理存储空间
+ 1.索引运行时间检测： set profiling=1；(show variables like "profiling")
+ 2.执行查询语句：
+ 3.查看执行时间：show profiles;
+ 4.选择一个字段创建索引:create index name on t1(name);
+ 5.再次执行查询语句并查看执行时间，进行比较
+ 
+ 1.普通索引(index):1.可设置多个字段   2.把经常用来查询的字段设置为索引字段
+ 2.唯一索引(unique):
+ 3.主键索引(primary key)
+ 4.外键(foreign key)
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
  
  
  

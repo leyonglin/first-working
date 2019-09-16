@@ -395,7 +395,7 @@
 		d=Dog()
 		setattr(d,'color','白色')   #等同于d.color='白色'
 
-迭代器(高级)：有__next__方法，则说明即使可迭代对象又是迭代器
+迭代器(高级)：
 	由iter(x)函数返回，可以通过next(it)函数取值的对象就是迭代器
 迭代器协议：
 	指对象能够使用next()函数获取下一项数据，在没有下一项数据时触发一个StopIteration异常来终止迭代的约定
@@ -504,7 +504,7 @@
 		def __xxx__(self, other):
 			语句块
 
-	实例：
+	示例：
 		class MyNumber:
 			def __init__(self, v):
 				self.data = v      #self.data用来保存对象的数据
@@ -635,7 +635,30 @@ in / not in 运算符重载
 	__setitem__(self,i,v)		self[i]=v 				索引/切片赋值
 	__delitem__(self,i)			del self[i]				del语句删除索引/切片
 	
-
+	示例：
+		class MyList:
+			def __init__(self, iterable=()):
+				self.__data = list(iterable)               #可以用别的数据类型
+			def __repr__(self):
+				return "MyList(%s)" % self.__data
+			def __getitem__(self, i):
+				print('i的值是：', i)
+				return self.__data[i]
+			# def __setitem__(self,i,v):  
+			#     print("call __setitem__", i, v)
+			#     self.__data[i] = v
+			# def __delitem__(self,i):
+			#     self.__data.pop(i)
+		
+		L = MyList([1, -2, 3, 5, 6])
+		# x = L[1]                                            #调用__getitem__方法
+		# print(x)
+		# print(L)
+		# L[3] = 400                                          #调用__getitem__方法
+		# print(L)
+		# del L[3]
+		# print(L)                                            #调用__delitem__方法
+		print(L[::2])                                         #等同于printL[slice(None, None, 2)]
 slice函数：help(slice)
 	作用:用于创建一个slice对象，此对象用于切片操作的传值
 	格式:
