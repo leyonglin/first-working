@@ -407,19 +407,19 @@
 	可迭代对象内部要定义__iter__(self)方法来返回迭代器对象
 	示例：
 	此示例将自定义的类MyList创建的对象制作称为可迭代对象
-		class MyList:                                     #该类创建的对象是可迭代对象(有__iter__方法，并且返回迭代器)
+		class MyList:                                  	   #该类创建的对象是可迭代对象(有__iter__方法，并且返回迭代器)
 			def __init__(self, iterable=()):
-				self.__data = [x for x in iterable]       #私有属性
+				self.__data = [x for x in iterable]      	 #私有属性
 			def __repr__(self):
 				return 'MyList(%s)' % self.__data
-			def __iter__(self):         #此方法用于创建并返回一个能访问self对象的迭代器
+			def __iter__(self):        						 #此方法用于创建并返回一个能访问self对象的迭代器
 				print("被调用")
-				return MyListIterator(self.__data)    #返回迭代器(MyListIterator(self.__data))，是因为由__next__方法
-		class MyListIterator:              #此类用来描述能够访问MyList类型的对象的迭代器
+				return MyListIterator(self.__data)      	#返回迭代器(MyListIterator(self.__data))，是因为由__next__方法
+		class MyListIterator:             					 #此类用来描述能够访问MyList类型的对象的迭代器
 			def __init__(self,lst):
 				self.data_lst=lst 
-				self.cur_index=0          #迭代器访问的起始位置
-			def __next__(self):           #此方法用来实现迭代器协议
+				self.cur_index=0         					 #迭代器访问的起始位置
+			def __next__(self):         					  #此方法用来实现迭代器协议
 				if self.cur_index >= len(self.data_lst):
 					raise StopIteration
 				r = self.data_lst[self.cur_index]
@@ -427,9 +427,9 @@
 				return r
 		
 		myl = MyList([1, 0, 2, -1])
-		it = iter(myl)                #调用方法，等同于调用it=myl.__iter__()，返回的是MyListIterator(self.__data)
-		print(next(it))
-		for x in myl:                 #TypeError: 'MyList' object is not iterable
+		it = iter(myl)               						 #调用方法，等同于调用it=myl.__iter__()，返回的是MyListIterator(self.__data)
+		print(next(it))										 #上两条语句可以替换成执行it = MyListIterator([1, 0, 2, -1])，再执行print(next(it))，结果也是一样的
+		for x in myl:               						  
 			print(x)
 
 ##个人小结：有一个类，有实例方法__iter__，则该类创建的实例就是可迭代对象，实例调用__iter__方法的时候，返回迭代器(类，有__next__方法)
@@ -574,7 +574,7 @@
 	__rlshift__(self, lhs)	    lhs  <<	self		左移
 	__rrshift__(self, lhs)	    lhs  >>	self		右移
 
-复合赋值位运算符重载：集合
+复合位运算符重载：集合
 	方法名                  	运算符和表达式      说明      
 	__iand__(self, rhs)			self &=  rhs 		位与
 	__ior__(self, rhs)			self |=  rhs 		位或
@@ -687,9 +687,9 @@ slice函数：help(slice)
 
 		s = Student(50)
 		# s.setscore(100)
-		score = s.score                 #访问特性属性score,实质是调用原s.getscore()
+		score = s.score                 #访问特性属性score,看似直接操作类变量，实质是调用原s.getscore()
 		print('成绩是：', score)
-		s.score=100                     #修改特性属性score的值,实质是调用原s.setscore()
+		s.score=100                     #修改特性属性score的值,看似直接操作类变量，实质是调用原s.setscore()
 		print('成绩是：', score)
 
 

@@ -16,7 +16,7 @@
  建表：create table 表名(字段列表(字段名 数据类型, ...))character set utf8;
  删表：drop table 表名;
  表结构：desc 表名;
- 插入：insert into 表名 values(值1),(值2)...;   或 insert into 表名(字段1,字段2,...) values(值1),(值2)...;
+ 插入：insert into 表名 values(值1,值2,...);   或 insert into 表名(字段1,字段2,...) values(值1,值2,...);
  查看: select *(字段,...) from 表名 where 条件(字段=(运算符)值,...);
  清空表中记录：delete from 表名;
  
@@ -72,7 +72,7 @@
 
 03： 约束 索引
 
-约束：保证数据的一致性，有效性
+约束constraint：保证数据的一致性，有效性
 	分类：1.默认约束(default)    2.非空约束(not null)
 
  索引：对数据库中表的一列或多列的值进行排序的一种结构(BTree)
@@ -114,7 +114,7 @@
  复制表结构：
 	语法：create table 表名 select ... from 表名 where false;
 
-
+ 将execl表格保存为.csv格式，再用文本文档打开，另存为utf-8编码。
 
 
 
@@ -135,35 +135,167 @@
 		语法：select ... from 表1,表2;  
 	2.加where条件
 		语法: select ... from 表1,表2 where 条件;
+
+ 连接查询：多张表(比多表查询效率高)
+	1.内连接(inner join)
+		语法格式: select 字段名列表 from 表1 inner join 表2 on 条件 inner join 表2 on 条件 ...;
+	2.外连接：没匹配到的用NULL填充
+		2.1 左连接(left join):以左表为主，显示查询结果
+			select 字段名列表 from 表1 left join 表2 on 条件 left join 表2 on 条件;			
+		2.2 右连接(right join)：以右表为主显示查询结果
+			select 字段名列表 from 表1 a right outer join 表2 on 条件;
+			
+ 锁：解决客户端并发访问的冲突问题
+	分类：
+		锁类型：读锁(共享锁)：有读锁时，无法更改      写锁(互斥锁，排他锁)：有写锁时，无法查与更新
+		锁粒度：行级锁row：Innodb          表级锁：MyISAM
  
-2-00:00:00
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ 存储引擎(engine：处理表的处理器):
+	查看所有：show engines;
+	查看已有表：show create table 表名;
+	指定：create table ... engine=myisam charset=utf8;  或 alter table 表名 engine=myisam;
+  InnoDB:
+		1.支持事务、外键、行级锁    
+		2.共享表空间
+			表名.frm:表结构和索引信息
+			表名.idb:表记录
+  Myisam：
+		1.支持表级锁
+		2.独享表空间
+			表名.frm:表结构
+			表名.MYD:表记录
+			表名.MYI:索引信息
+  Memory：数据存于内存中，重启表数据消失，表结构还在硬盘
+  
+  执行查询操作多的表使用Myisam     执行写操作多的表使用innodb
+ 
+  账号管理：远程授权连接
+	grant 权限列表 on 库名.表名 to "用户名"@"%(ip)" identified by "密码"  with grant option;
+	权限列表：all privileges、select 库表.表名、update 库表.表名 
 
 
 
 05： ORM
+
+	数据备份：命令行
+		完整备份：mysqldump -u用户名 -p 源库名 > **.sql
+			源库名：--all-databases         #所有库
+					库名      				#单个库
+					-B 库名1 库名2 ...      #多个库
+					库名 表1 表2 ...		#多表
+		恢复：mysql -u用户名 -p 目标库名 < **.sql		(恢复指定库需要先从库)
+			mysql -u用户名 -p --one-database 库名 < **.sql (从全部备份中恢复一个库，先创建库)
+			恢复库时，要先创建，如果已有库恢复，同名表数据会被覆盖，新增表不会被删除
+		增量备份：
+
+	调优：1.创建索引：(select where order by常涉及到的字段)
+		2.选择合适存储引擎：执行查询操作多的表使用Myisam     执行写操作多的表使用innodb
+		3.sql语句优化(避免全表扫描)
+			1.where 子句尽量不适用 !=  ，否则全表扫描
+			2.尽量避免NULL判断is null，否则全表扫描
+				解决方法：字段设置not null/默认值0
+			3.尽量避免用or连接条件，否则全表扫描
+				解决方法：sql语句用union all拼接
+			4.模糊查询尽量避免使用前置%  ,否则全表扫描
+			5.尽量避免使用in和not in,否则全表扫描	
+				优化前：select id from t1 where id in(1,2,3);
+				优化后: select id from t1 where id between 1 and 4;
+			6.不要使用select * ...
+				解决方法：用具体字段代替* , 不返回用不到的字段
+	事务和事务回滚：
+		事务：一件事从开始发生到结束的整个过程，确保数据的一致性
+		应用：1.begin;(自动关闭autocommit)    2. sql命令...      3.commit;(提交)/rollback;(回滚)
+
+	离线安装模块：1.下载并解压   2.python3 setup.py install
+	
+	
+对象关系映射（Object Relational Mapping，简称ORM）是通过使用描述对象和数据库之间映射的元数据，将面向对象语言程序中的对象自动持久化到关系数据库中。本质上就是将数据从一种形式转换到另外一种形式。 这也同时暗示着额外的执行开销；ORM作为一种中间件实现，则会有很多机会做优化
+游标（cursor）:游标是系统为用户开设的一个数据缓冲区，存放SQL语句的执行结果,游标总是与一条SQL 选择语句相关联因为游标由结果集（可以是零条、一条或由相关的选择语句检索出的多条记录）和结果集中指向特定记录的游标位置组成
+	示例：
+		# -*- coding:utf-8 -*-
+		# create database dbforpymysql charset="utf8";
+		# create table userinfo(id int,name varchar(30),age int(10));
+		# insert into userinfo(id,name,age) values (1,"frank",123);
+		import pymysql
+		# import hashlib from sha1   #加密模块
+		#连接数据库
+		
+		db = pymysql.connect(host="192.168.3.3",user="root",passwd="123456",\
+							database="dbforpymysql",charset="utf8",port=3306)
+		#使用cursor()方法创建一个游标对象
+		cursor = db.cursor()
+		#使用execute()方法执行SQL语句
+		# cursor.execute("SELECT * FROM userinfo")
+		try:                                                     #顺序执行，出现错误则不会往下执行
+			set_id = input("输入id：")
+			set_name = input("输入名字：")
+			sql = "delete from userinfo where name='林乐勇'"        #汉字用单引号引起来
+			cursor.execute(sql)
+			print("delete ok")
+			sql = "INSERT INTO userinfo(id,name,age) VALUES(%s,%s,'123')"   #占位符%s
+			cursor.execute(sql,[set_id,set_name])                           #列表参数
+			print("insert ok")
+			sql = "select * from userinfo"
+			cursor.execute(sql)
+			print("select ok")
+			db.commit()
+		except Exception as e:
+			db.rollback()
+			print("failed",e)
+		#使用fetall()获取全部数据，fetchone()获取第一条查询数据，fetchmany(n)获取那条数据
+		data = cursor.fetchall()
+		dataone = cursor.fetchone()
+		#打印获取到的数据
+		print(data)                   #返回数据类型为元组嵌套
+		print("fetchont:",dataone)    #fetch的数据，取一条，少一条，类似迭代器
+		#提交到数据库
+		# db.rollback()
+		db.commit()
+		print('ok')
+		#关闭游标和数据库的连接
+		cursor.close()
+		db.close()
+		#运行结果
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -223,7 +223,7 @@
  distinct:不显示字段的重复值。语法：select distinct 字段1, 字段2 from 表名；
 	distinct和from之间的所有字段值都相同才会去重
  
- 约束：保证数据的一致性，有效性
+ 约束constraint：保证数据的一致性，有效性
 	分类：1.默认约束(default)    2.非空约束(not null)
  
  索引：对数据库中表的一列或多列的值进行排序的一种结构(BTree)
@@ -278,16 +278,92 @@
 	2.加where条件
 		语法: select ... from 表1,表2 where 条件;
  
+ 连接查询：多张表(比多表查询效率高)
+	1.内连接(inner join)
+		语法格式: select 字段名列表 from 表1 inner join 表2 on 条件 inner join 表2 on 条件 ...;
+	2.外连接：没匹配到的用NULL填充
+		2.1 左连接(left join):以左表为主，显示查询结果
+			select 字段名列表 from 表1 left join 表2 on 条件 left join 表2 on 条件;			
+		2.2 右连接(right join)：以右表为主显示查询结果
+			select 字段名列表 from 表1 a right outer join 表2 on 条件;
+			
+ 锁：解决客户端并发访问的冲突问题
+	分类：
+		锁类型：读锁(共享锁)：有读锁时，无法更改      写锁(互斥锁，排他锁)：有写锁时，无法查与更新
+		锁粒度：行级锁row：Innodb          表级锁：MyISAM
  
+ 存储引擎(engine：处理表的处理器):
+	查看所有：show engines;
+	查看已有表：show create table 表名;
+	指定：create table ... engine=myisam charset=utf8;  或 alter table 表名 engine=myisam;
+  InnoDB:
+		1.支持事务、外键、行级锁    
+		2.共享表空间
+			表名.frm:表结构和索引信息
+			表名.idb:表记录
+  Myisam：
+		1.支持表级锁
+		2.独享表空间
+			表名.frm:表结构
+			表名.MYD:表记录
+			表名.MYI:索引信息
+  Memory：数据存于内存中，重启表数据消失，表结构还在硬盘
+  
+	执行查询操作多的表使用Myisam     执行写操作多的表使用innodb
  
+	账号管理：授权连接
+		grant 权限列表 on 库名.表名 to "用户名"@"%(ip)" identified by "密码"  with grant option;
+		权限列表：all privileges、select 库表.表名、update 库表.表名
  
- 
- 
- 
- 
- 
- 
- 
+	数据备份：命令行
+		完整备份：mysqldump -u用户名 -p 源库名 > **.sql
+			源库名：--all-databases         #所有库
+					库名      				#单个库
+					-B 库名1 库名2 ...      #多个库
+					库名 表1 表2 ...		#多表
+		恢复：mysql -u用户名 -p 目标库名 < **.sql		(恢复指定库需要先从库)
+			mysql -u用户名 -p --one-database 库名 < **.sql (从全部备份中恢复一个库，先创建库)
+			恢复库时，要先创建，如果已有库恢复，同名表数据会被覆盖，新增表不会被删除
+		增量备份：
+
+	调优：1.创建索引：(select where order by常涉及到的字段)
+		2.选择合适存储引擎：执行查询操作多的表使用Myisam     执行写操作多的表使用innodb
+		3.sql语句优化(避免全表扫描)
+			1.where 子句尽量不适用 !=  ，否则全表扫描
+			2.尽量避免NULL判断is null，否则全表扫描
+				解决方法：字段设置not null/默认值0
+			3.尽量避免用or连接条件，否则全表扫描
+				解决方法：sql语句用union all拼接
+			4.模糊查询尽量避免使用前置%  ,否则全表扫描
+			5.尽量避免使用in和not in,否则全表扫描	
+				优化前：select id from t1 where id in(1,2,3);
+				优化后: select id from t1 where id between 1 and 4;
+			6.不要使用select * ...
+				解决方法：用具体字段代替* , 不返回用不到的字段
+	事务和事务回滚：
+		事务：一件事从开始发生到结束的整个过程，确保数据的一致性
+		应用：1.begin;(自动关闭autocommit)    2. sql命令...      3.commit;(提交)/rollback;(回滚)
+
+	图形化管理工具：workbench
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
