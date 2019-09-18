@@ -231,9 +231,9 @@ kangle也是一款专为做虚拟主机研发的web服务器。实现虚拟主�
 两台架构前后台.xml: 替换令牌码  网卡名称  磁盘名称  挂载目录
 
 
-xaomenlebo006.com  javalebogame006.com  javazhuip10.com
-tgapp6001.com      tgapp6002.com        tgapp6003.com
-xinapp10           app_jiasu10
+xaomenlebo007.com  javalebogame007.com  javazhuip11.com
+tgapp7001.com      tgapp7002.com        tgapp7003.com
+xinapp11           app_jiasu11
 
 
 

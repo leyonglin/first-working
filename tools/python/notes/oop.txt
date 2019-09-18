@@ -143,7 +143,12 @@
 		print('A.v=', A.get_v())   #调用类方法得到类变量的值
 		A.set_v(100)               #使用方法调用改变类变量的值
 		print('A.v=', A.get_v())
-		# a.color = '白色'
+		a = A()          
+		print(a.v)      			#实例可以直接访问类变量
+		a.v=200        				 #无法改变类变量，改变的是实例属性
+		print(a.v)     
+		print(A.v)    
+		
 	
 	静态方法@staticmethod:
 		静态方法是定义在类的内部的普通函数，此函数的作用域是类的内部
@@ -331,7 +336,7 @@
 		n1 = MyNumber(100)
 		print('str(n1) =', str(n1))
 		print(n1.__str__())
-		print(n1)                    #在print内部会将n2用str(x)转为字符串再写到sys.stdout
+		print(n1)                   					 #在print内部会将n2用str(x)转为字符串再写到sys.stdout
 		print('repr(n1 =', repr(n1))
 		
 	str(obj)函数调用方法说明：
@@ -415,7 +420,7 @@
 			def __iter__(self):        						 #此方法用于创建并返回一个能访问self对象的迭代器
 				print("被调用")
 				return MyListIterator(self.__data)      	#返回迭代器(MyListIterator(self.__data))，是因为由__next__方法
-		class MyListIterator:             					 #此类用来描述能够访问MyList类型的对象的迭代器
+		class MyListIterator:             					 #迭代器(有__next__方法),此类用来描述能够访问MyList类型的对象的迭代器，独立的，不一定要经过 it = iter(myl)
 			def __init__(self,lst):
 				self.data_lst=lst 
 				self.cur_index=0         					 #迭代器访问的起始位置
@@ -428,7 +433,9 @@
 		
 		myl = MyList([1, 0, 2, -1])
 		it = iter(myl)               						 #调用方法，等同于调用it=myl.__iter__()，返回的是MyListIterator(self.__data)
-		print(next(it))										 #上两条语句可以替换成执行it = MyListIterator([1, 0, 2, -1])，再执行print(next(it))，结果也是一样的
+		print(next(it))										 #上两条语句可以替换成执行it = MyListIterator([1, 0, 2, -1])，再执行print(next(it))，结果也是一样的，不能用for，会报错'MyListIterator' object is not iterable
+		#it = MyListIterator([1, 0, 2, -1])
+		#print(next(it))		
 		for x in myl:               						  
 			print(x)
 
