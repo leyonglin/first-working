@@ -224,24 +224,70 @@ http响应：
 io密集型程序：在程序执行过程中存在大量io操作，而cpu运算操作较少，效率较低
 计算/cpu密集型程序：在程序执行中cpu运算较多，io操作相对较少，运算速度快
 
-io分类：
+io分类：网络io
 	阻塞io：io的默认形态，是效率较低的一种io情形，逻辑简单
 		阻塞情况：
 			1.因为某种条件没有达成造成的阻塞(accept/recv/input)
-			2.处理io数据传输时间较长形成的阻塞	
+			2.处理io数据传输时间较长形成的阻塞(网络io/文件读写过程)	
 	非阻塞io:通过修改io事件的属性，使其变为非阻塞状态(让一些条件阻塞函数不再阻塞)
-	io多路复用
+		非阻塞io往往和循环判断一起使用
+			s.setblocking(False)  #将套接字设置为非阻塞状态
+			s.settimeout(5)       #将套接字设置为超时时间
+		超时检测：
+			将原本阻塞的函数设置一个最长阻塞时间，如果时间内跳线达成则正常运行，如果仍然阻塞则视为超时，继续向下运行或产生异常
+	io多路复用：
+		同时监控多个io事件，当哪个io事件准备就绪就执行哪个io事件，以此形成可用同时操作多个io的并发行为，避免一个io阻塞，造成所有io都无法执行
+		io准备就绪：一种io必然要发生的临界状态
+	io多路复用编程实现
+		1.将io设置为关注io
+		2.将关注io提交给内核监测
+		3，处理内核给我们反馈的准备就绪的io
+		(具体方案：select/poll/epoll)
+	帮助步骤：1.import select   2.dir(select)/help(select)     3.help(select.select)
+	说明：
+		import select
+		rs,ws,xs = select(rlist, wlist, xlist[, timeout])
+		功能：监控io事件，阻塞等待io事件发生
+		参数：
+			rlist   (读)列表(存放监控等待处理的io事件，被动接受的io)
+			wlist   (写)列表(存放主动操作的io事件)
+			xlist    列表(关注出错处理的io事件)
+			timeout  超时时间
+		返回值：列表，返回对应准备就绪的io
+
+	示例：
+		#io多路复用
+		from select import select
+		from socket import *
+		#创建套接字作为关注io
+		s = socket()
+		s.setsockopt(SOL_SOCKET,SO_REUSEADDR,1)
+		s.bind(('0.0.0.0',8888))
+		s.listen(5)
+		rlist = [s]
+		wlist = []
+		xlist = []
+		while  True:
+			#提交监测关注的io等待io发生
+			print('waiting')
+			rs,ws,xs = select(rlist, wlist, xlist)
+			for r in rs:                          #遍历，知道那个io准备就绪了
+				if r is s:                        #通过判断，是初始关注io则做不同的io事件
+					c,addr = r.accept()
+					print('connect from',addr)
+					rlist.append(c)               #将连接io添加到列表，这样连接io也是关注io，就能持续通信
+				else:                             #上面会有多个if判断，最后这里，相当于除了初始关注的io，其它的都是已连接的，能直接通信
+					data = r.recv(1024)
+					if not data:                  #这里本来是判断无数据发送，则该io执行下列语句，但好像试不出来
+						rlist.remove(r)           #如果结束通信，则将连接io从关注列表移除
+						r.close()                 #关闭套接字
+					else:                         #如果断开(if匹配)则不再发送数据
+						print(data.decode())
+						r.send(b'Receive your message\n')
 
 
-1-02：26
 
-
-
-
-
-
-
-
+2-02:00（休息中）
 
 
 

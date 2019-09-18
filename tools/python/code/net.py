@@ -309,4 +309,64 @@
 # f.close()
 # s.close()
 
+# #非阻塞
+# from socket import *
+# from time import sleep,ctime
+# s = socket()
+# s.bind(('127.0.0.1',8888))
+# s.listen(3)
+# #将套接字设置为非阻塞
+# s.setblocking(False)
+# 将套接字设置超时时间
+# s.settimeout(5)
+# while True:
+# 	print("waiting for connect...")
+# 	try:
+# 		c,addr = s.accept()
+# 	except BlockingIOError:
+# 		sleep(2)
+# 		print(ctime())
+# 		continue
+# 	else:
+# 		print("Connect from",addr)
+# 		while  True:
+# 			data = c.recv(1024).decode()
+# 			if not data:
+# 				break
+# 			print(data)
+# 			c.send(ctime().encode())
+# 		c.close()
 
+
+#io多路复用
+from select import select
+from socket import *
+#创建套接字作为关注io
+s = socket()
+s.setsockopt(SOL_SOCKET,SO_REUSEADDR,1)
+s.bind(('0.0.0.0',8888))
+s.listen(5)
+rlist = [s]
+wlist = []
+xlist = []
+while  True:
+	#提交监测关注的io等待io发生
+	print('waiting')
+	rs,ws,xs = select(rlist, wlist, xlist)
+	for r in rs:                          #遍历，知道那个io准备就绪了
+		if r is s:                        #通过判断，是初始关注io则做不同的io事件
+			c,addr = r.accept()
+			print('connect from',addr)
+			rlist.append(c)               #将连接io添加到列表，这样连接io也是关注io，就能持续通信
+		else:                             #上面会有多个if判断，最后这里，相当于除了初始关注的io，其它的都是已连接的，能直接通信
+			data = r.recv(1024)
+			if not data:                  #这里本来是判断无数据发送，则该io执行下列语句，但好像试不出来
+				rlist.remove(r)           #如果结束通信，则将连接io从关注列表移除
+				r.close()                 #关闭套接字
+			else:                         #如果断开(if匹配)则不再发送数据
+				print(data.decode())
+				r.send(b'Receive your message\n')
+	# print('有io事件发生')
+	# c,addr = rs[0].accept()
+	# print(rs)
+	# print('connect from',addr)
