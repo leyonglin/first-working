@@ -1,0 +1,111 @@
+
+
+01： 僵尸进程 聊天室项目实践
+
+如何避免僵尸进程产生
+	1.处理子进程退出状态
+		pid,status = os.wait()
+		功能：在父进程中阻塞等待处理子进程退出
+		返回值：pid退出的子进程的pid号，status获取子进程退出状态
+		示例：
+			#处理僵尸进程os.wait()
+			# import os
+			# from time import sleep
+			# pid = os.fork()
+			# if pid < 0:
+			# 	print("error")
+			# elif pid == 0:
+			# 	sleep(3)
+			# 	print("child process pid",os.getpid())
+			# 	os._exit(2)
+			# else:
+			# 	pid,status = os.wait()         #阻塞函数，对退出进程进行处理
+			# 	print(pid,status)
+			# 	print(os.WEXITSTATUS(status))  #获取子进程退出状态
+			# 	while True:
+			# 		pass		
+		pid,status = os.waitpid(pid, option)
+		功能：在父进程中阻塞等待处理子进程退出
+		参数：pid  -1表示等待任意子进程退出   >0 表示等待对应PID号的子进程退出
+			  option  0表示阻塞等待         WNOHANG表示非阻塞
+		返回值：pid退出的子进程的pid号，status获取子进程退出状态			
+		示例：
+			#处理僵尸进程os.waitpid()
+			import os
+			from time import sleep
+			pid = os.fork()
+			if pid < 0:
+				print("error")
+			elif pid == 0:
+				sleep(3)
+				print("child process pid",os.getpid())
+				os._exit(2)
+			else:
+				while True:                                 #持续监测
+					sleep(1)
+					pid,status = os.waitpid(-1,os.WNOHANG)  #通过非阻塞的形式捕获子进程退出      
+					if status != 0:                         #判断是否还有子进程，不然后面获取子进程退出状态会报错
+						break
+					else:
+						print(pid,status)
+						print(os.WEXITSTATUS(status))  #获取子进程退出状态
+
+	2.让父进程先退出(父进程(初始执行进程)先退出，会暂时丧失对终端的控制)
+		1.父进程创建子进程等待子进程退出
+		2.父进程创建二级子进程后立即退出
+		3.二级子进程变成孤儿进程，和原来的父进程各自执行事件
+		示例：
+			#创建二级子进程
+			import os
+			from time import sleep
+			def f1():
+				sleep(3)
+				print("one thing")
+			def f2():
+				sleep(4)
+				print("second thing")
+			pid = os.fork()
+			if pid<0:
+				print("error")
+			elif pid == 0:
+				#创建二级子进程
+				p = os.fork()
+				if p ==0:
+					f2()
+				else:
+					os._exit(0)
+			else:
+				os.wait() #等一级子进程退出
+				f1()
+
+
+
+功能：类似qq群聊
+1.进入聊天室需要输入姓名及密码
+2.有人进入及退出聊天室会通知其他人
+3.一个发送，其他人都能收到
+
+代码编写流程(便于每步测试)：搭建网络连接 -->  创建多进程  --> 每个进程功能编写 --> 项目功能模块实现
+
+
+
+
+1-02:17:55
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+02： multiprocessing 进程池技术，进程间通信
+03： 进程通信 进程同步互斥
+04： threading线程 线程同步互斥 GIL
+05： 并发编程 tftp文件服务器

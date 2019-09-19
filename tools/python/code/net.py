@@ -98,7 +98,6 @@
 # 		break
 # 	data = sockfd.recv(1024)
 # 	print("接受到", data.decode())
-
 # #关闭套接字
 # sockfd.close()
 
@@ -142,7 +141,6 @@
 # 		break
 # 	data = sockfd.recv(1024)
 # 	print("接受到", data.decode())
-
 # #关闭套接字
 # sockfd.close()
 
@@ -522,21 +520,57 @@
 # sockfd.close()
 
 
-import os
-import time
-print('********')  #1.原进程会输出，新进程不会
-a = 1              #2.执行并存在于内存空间
-#创建新的进程，新进程复制原有进程的全部代码段和空间，但只会执行fork之后的语句，原有进程fork返回新进程的pid，新进程pid返回0
-pid = os.fork()
-print('b')
-if pid < 0:
-	print('failed')
-elif pid==0:
-	print('new')
-	print('a=',a)   #2.会打印，因为复制内存空间的时候，内存空间就有了
-	a = 1000        #会改变a的值，但是改变的是新进程的内存空间
-else:
-	sleep 1         
-	print('old')
-	print('paren',a)#打印出来的还是原有进程空间的a=1
-print('ok')
+# import os
+# import time
+# print('********')  #1.原进程会输出，新进程不会
+# a = 1              #2.执行并存在于内存空间
+# #创建新的进程，新进程复制原有进程的全部代码段和空间，但只会执行fork之后的语句，原有进程fork返回新进程的pid，新进程pid返回0
+# pid = os.fork()
+# print('b')
+# if pid < 0:
+# 	print('failed')
+# elif pid==0:
+# 	print('new')
+# 	print('a=',a)   #2.会打印，因为复制内存空间的时候，内存空间就有了
+# 	a = 1000        #会改变a的值，但是改变的是新进程的内存空间
+# else:
+# 	sleep 1         
+# 	print('old')
+# 	print('paren',a)#打印出来的还是原有进程空间的a=1
+# print('ok')
+
+#进程退出
+# import os,sys
+#结束进程后不再执行后面内容
+# os._exit(0)
+# sys.exit("hello world")
+# try:
+# 	sys.exit("hello world")
+# except SystemExit as e:
+# 	print("exit:",e)
+# print("process exit")
+
+#僵尸进程
+# import os
+# from time import sleep
+# pid = os.fork()
+# if pid < 0:
+# 	print("create process failed")
+# elif pid == 0:
+# 	print("Child Process:",os.getpid())
+# 	print("Child print exit")
+# else:
+# 	print("parent process")
+# 	while True:
+# 		pass
+
+
+
+
+
+
+
+
+
+
+
