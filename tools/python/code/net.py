@@ -338,35 +338,205 @@
 # 		c.close()
 
 
-#io多路复用
-from select import select
-from socket import *
-#创建套接字作为关注io
-s = socket()
-s.setsockopt(SOL_SOCKET,SO_REUSEADDR,1)
-s.bind(('0.0.0.0',8888))
-s.listen(5)
-rlist = [s]
-wlist = []
-xlist = []
-while  True:
-	#提交监测关注的io等待io发生
-	print('waiting')
-	rs,ws,xs = select(rlist, wlist, xlist)
-	for r in rs:                          #遍历，知道那个io准备就绪了
-		if r is s:                        #通过判断，是初始关注io则做不同的io事件
-			c,addr = r.accept()
-			print('connect from',addr)
-			rlist.append(c)               #将连接io添加到列表，这样连接io也是关注io，就能持续通信
-		else:                             #上面会有多个if判断，最后这里，相当于除了初始关注的io，其它的都是已连接的，能直接通信
-			data = r.recv(1024)
-			if not data:                  #这里本来是判断无数据发送，则该io执行下列语句，但好像试不出来
-				rlist.remove(r)           #如果结束通信，则将连接io从关注列表移除
-				r.close()                 #关闭套接字
-			else:                         #如果断开(if匹配)则不再发送数据
-				print(data.decode())
-				r.send(b'Receive your message\n')
+#io多路复用 select
+# from select import select
+# from socket import *
+# #创建套接字作为关注io
+# s = socket()
+# s.setsockopt(SOL_SOCKET,SO_REUSEADDR,1)
+# s.bind(('0.0.0.0',8888))
+# s.listen(5)
+# rlist = [s]
+# wlist = []
+# xlist = []
+# while  True:
+# 	#提交监测关注的io等待io发生
+# 	print('waiting')
+# 	rs,ws,xs = select(rlist, wlist, xlist)#返回io对象列表
+# 	for r in rs:                          #遍历，知道那个io准备就绪了
+# 		if r is s:                        #通过判断，是初始关注io则做不同的io事件
+# 			c,addr = r.accept()
+# 			print('connect from',addr)
+# 			rlist.append(c)               #将连接io添加到列表，这样连接io也是关注io，就能持续通信
+# 		else:                             #上面会有多个if判断，最后这里，相当于除了初始关注的io，其它的都是已连接的，能直接通信
+# 			data = r.recv(1024)
+# 			if not data:                  #这里本来是判断无数据发送，则该io执行下列语句，但好像试不出来
+# 				rlist.remove(r)           #如果结束通信，则将连接io从关注列表移除
+# 				r.close()                 #关闭套接字
+# 			else:                         #如果断开(if匹配)则不再发送数据
+# 				print(data.decode())
+# 				r.send(b'Receive your message\n')
 	# print('有io事件发生')
 	# c,addr = rs[0].accept()
 	# print(rs)
 	# print('connect from',addr)
+
+
+# # io多路复用
+# from select import select
+# from socket import *
+# #创建套接字作为关注io
+# s = socket()
+# s.setsockopt(SOL_SOCKET,SO_REUSEADDR,1)
+# s.bind(('0.0.0.0',8888))
+# s.listen(5)
+# rlist = [s]
+# wlist = []
+# xlist = [s]                               #出错列表
+# while  True:
+# 	#提交监测关注的io等待io发生
+# 	print('waiting')
+# 	rs,ws,xs = select(rlist, wlist, xlist)#返回io对象列表
+# 	for r in rs:                          #遍历，知道那个io准备就绪了
+# 		if r is s:                        #通过判断，是初始关注io则做不同的io事件
+# 			c,addr = r.accept()
+# 			print('connect from',addr)
+# 			rlist.append(c)               #将连接io添加到列表，这样连接io也是关注io，就能持续通信
+# 		else:                             #上面会有多个if判断，最后这里，相当于除了初始关注的io，其它的都是已连接的，能直接通信
+# 			data = r.recv(1024)
+# 			if not data:                  #这里本来是判断无数据发送，则该io执行下列语句，但好像试不出来,是不是telnet问题
+# 				rlist.remove(r)           #如果结束通信，则将连接io从关注列表移除
+# 				r.close()                 #关闭套接字
+# 			else:                         #如果断开(if匹配)则不再发送数据
+# 				print(data.decode())
+# 				wlist.append(r)			  #将客户端套接字放入wlist列表				
+# 	for w in ws:                          #wlist是主动io，一旦有io则立刻返回
+# 		r.send(b'Receive your message\n')
+# 		wlist.remove(w)
+# 	for x in xs:                          #出错列表
+# 		if x is s:
+# 			s.close()
+
+#poll
+# from socket import *
+# from select import *
+# #创建套接字作为关注io
+# s = socket()
+# s.setsockopt(SOL_SOCKET,SO_REUSEADDR,1)
+# s.bind(('0.0.0.0',8888))
+# s.listen(5)
+# #创建poll对象
+# p = poll()
+# #fileno  --->io对象的字典
+# fdmap = {s.fileno():s}
+# #注册关注的io
+# p.register(s,POLLIN | POLLERR)
+# while  True:
+# 	#进行io监控
+# 	events = p.poll()
+# 	for fd,event in events:
+# 		if fd == s.fileno():
+# 			c,addr = fdmap[fd].accept()
+# 			print("connect from",addr)
+# 			#添加新的关注事件
+# 			p.register(c,POLLIN)
+# 			fdmap[c.fileno()] = c
+# 		elif event & POLLIN:
+# 			data = fdmap[fd].recv(1024)
+# 			if not data:
+# 				p.unregister(fd)
+# 				fdmap[fd].close()
+# 				del fdmap[fd]
+# 			else:
+# 				print(data.decode())
+# 				fdmap[fd].send(b'Receive\n')
+
+# #epoll
+# from socket import *
+# from select import *
+# #创建套接字作为关注io
+# s = socket()
+# s.setsockopt(SOL_SOCKET,SO_REUSEADDR,1)
+# s.bind(('0.0.0.0',8888))
+# s.listen(5)
+# #创建poll对象
+# p = epoll()                                #将生成对象改成epoll()    
+# #fileno  --->io对象的字典
+# fdmap = {s.fileno():s}
+# #注册关注的io
+# p.register(s,EPOLLIN | EPOLLERR)           #将所有poll对象事件改成epoll对象
+# while  True:
+# 	#进行io监控
+# 	events = p.poll()
+# 	for fd,event in events:
+# 		if fd == s.fileno():
+# 			c,addr = fdmap[fd].accept()
+# 			print("connect from",addr)
+# 			#添加新的关注事件
+# 			p.register(c,POLLIN)
+# 			fdmap[c.fileno()] = c
+# 		elif event & POLLIN:
+# 			data = fdmap[fd].recv(1024)
+# 			if not data:
+# 				p.unregister(fd)
+# 				fdmap[fd].close()
+# 				del fdmap[fd]
+# 			else:
+# 				print(data.decode())
+# 				fdmap[fd].send(b'Receive\n')
+
+#本地套接字一端
+# from socket import *
+# import os
+# #确定套接字文件
+# sock_file = './sock_file'
+# #判断文件是否已经存在
+# if os.path.exists(sock_file):
+# 	os.remove(sock_file)
+# #创建本地套接字
+# sockfd = socket(AF_UNIX,SOCK_STREAM)
+# #绑定套接字文件
+# sockfd.bind(sock_file)
+# #监听
+# sockfd.listen(3)
+# #消息收发
+# while True:
+# 	c,addr = sockfd.accept()
+# 	while True:
+# 		data = c.recv(1024)
+# 		if data:
+# 			print(data.decode())
+# 			c.send(b'Receive')
+# 		else:
+# 			break
+# 	c.close()
+# sockfd.close()
+
+
+#本地套接字另一端
+# from socket import *
+# #确保通信两端使用的是同一个套接字文件
+# sock_file = './sock_file'
+# #创建本地套接字
+# sockfd = socket(AF_UNIX,SOCK_STREAM)
+# #连接另一端
+# sockfd.connect(sock_file)
+# #收发消息
+# while  True:
+# 	msg=input('>>')
+# 	if msg:
+# 		sockfd.send(msg.encode())
+# 		print(sockfd.recv(1024).decode())
+# 	else:
+# 		break
+# sockfd.close()
+
+
+import os
+import time
+print('********')  #1.原进程会输出，新进程不会
+a = 1              #2.执行并存在于内存空间
+#创建新的进程，新进程复制原有进程的全部代码段和空间，但只会执行fork之后的语句，原有进程fork返回新进程的pid，新进程pid返回0
+pid = os.fork()
+print('b')
+if pid < 0:
+	print('failed')
+elif pid==0:
+	print('new')
+	print('a=',a)   #2.会打印，因为复制内存空间的时候，内存空间就有了
+	a = 1000        #会改变a的值，但是改变的是新进程的内存空间
+else:
+	sleep 1         
+	print('old')
+	print('paren',a)#打印出来的还是原有进程空间的a=1
+print('ok')

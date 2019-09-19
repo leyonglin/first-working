@@ -273,6 +273,21 @@
 		# print(a.__p3__) #可以访问
 		# a.__m()           #无法直接访问私有方法
 	注意：python的封装是假的封装(模拟的封装)  --->  a._A__p1  可以访问到(查看dir(obj))
+		class Per_num():
+			text = 1
+			__data = 0
+			def __init__(self):
+				Per_num.__data += 1         #类.类变量名，每创建一个对象，都会自增1
+			def countnum(self):
+				return self.__data
+		
+		if __name__ == '__main__':
+			person2 = Per_num()
+			person1 = Per_num()
+			print('text',person1.text)
+			# print('data',person1.__data)     #私有属性外部无法访问
+			print('all object:',person1.countnum())
+			
 
 多态polymorphic:
 	指在有继承/派生关系的类中，调用基类对象的方法，实际能调用子类的覆盖方法的现象叫多态

@@ -267,3 +267,18 @@
 # # print(L)                                            #调用__delitem__方法
 # print(L[::2])                                         #等同于printL[slice(None, None, 2)]
  
+# class Per_num():
+# 	text = 1
+# 	__data = 0
+# 	def __init__(self):
+# 		Per_num.__data += 1
+# 	def countnum(self):
+# 		return self.__data
+
+# if __name__ == '__main__':
+# 	person2 = Per_num()
+# 	person1 = Per_num()
+# 	print('text',person1.text)
+# 	# print('data',person1.__data)     #私有属性外部无法访问
+# 	print('all object:',person1.countnum())
+# 	
