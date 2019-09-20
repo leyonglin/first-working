@@ -271,3 +271,145 @@ env:python3.5
 # pool.close()
 # pool.join()
 # print(r)
+
+#管道通信
+# from multiprocessing import Process,Pipe
+# import os,time
+# #创建管道对象
+# fd1,fd2 = Pipe()
+# def fun(name):
+# 	time.sleep(3)
+# 	#向管道写入内容
+# 	fd1.send("hello "+ str(name))
+# jobs = []
+# for i in range(5):
+# 	p = Process(target=fun,args = (i,))
+# 	jobs.append(p)
+# 	p.start()
+# for i in range(5):
+# 	#读取管道
+# 	data = fd2.recv()
+# 	print(data)
+# for j in jobs:
+# 	j.join()
+
+#消息队列简单使用
+# from multiprocessing import Queue
+# from time import sleep
+# #创建队列
+# q = Queue(3)       #创建消息队列
+# q.put(1)           #存入数据
+# sleep(0.5)
+# print(q.empty())  
+# q.put(2)
+# print(q.full())
+# q.put(3)
+# print(q.qsize())
+# # q.put(4.True,3)   #True 表示非阻塞，但是队列满了会报错，3表示超时时间
+# print(q.get())      #获取队列数据，先进先出
+# q.close()        #关闭队列
+
+#消息队列
+# from multiprocessing import Process,Queue
+# import time
+# #创建消息队列
+# q = Queue()
+# def fun1():
+# 	time.sleep(1)
+# 	q.put({'a':1})
+# def fun2():
+# 	time.sleep(2)
+# 	print(q.get())
+# p1=Process(target = fun1)
+# p2=Process(target = fun2)
+# p1.start()
+# p2.start()
+# p1.join()
+# p2.join()
+
+#共享内存
+# from multiprocessing import Process,Value
+# import time
+# import random
+# #创建共享内存
+# money = Value('i',2000)
+
+# def deposite():
+# 	for i in range(100):
+# 		time.sleep(0.05)
+# 		#对value属性操作即操作共享内存数据
+# 		money.value += random.randint(1,200)
+# def withdraw():
+# 	for i in range(100):
+# 		time.sleep(0.04)
+# 		money.value -= random.randint(1,180)
+# d = Process(target = deposite)
+# w = Process(target = withdraw)
+# d.start()
+# w.start()
+# d.join()
+# w.join()
+# print('余额：', money.value)
+
+#共享内存
+# from multiprocessing import Process,Array
+# import time
+# #创建共享内存，初始放入列表
+# # shm = Array('i',[1,2,3,4,5])
+# #创建共享内存，开辟5个整形空间
+# # shm = Array('i',5)
+# #存入字符串,要求是bytes格式
+# shm = Array('c',b'Hello')
+# def fun():
+# 	for i in shm:
+# 		# shm[3] = 100      #子进程修改，父进程可以打印出来修改后内容
+# 		shm[0] = b'h'
+# p = Process(target = fun)
+# p.start()
+# p.join()
+# #遍历整形
+# # for i in shm:
+# # 	print(i)	
+# print(shm.value) #打印字符串
+
+#信号通信
+# import os
+# import signal
+# #向20959发送信号
+# os.kill(20959,signal.SIGKILL)   #输出已杀死
+
+# import signal
+# import time
+# signal.alarm(3)    #输出闹钟
+# time.sleep(2)
+# signal.alarm(5)    #第二个如果执行会覆盖第一个时间
+# while True:
+# 	time.sleep(1)
+# 	print("sleep")
+
+#信号修改
+# import signal
+# from time import sleep
+# signal.alarm(5)
+# #使用默认信号
+# # signal.signal(signal.SIGALRM,signal.SIG_DFL)
+# #忽略信号
+# signal.signal(signal.SIGALRM,signal.SIG_IGN)
+# while True:
+# 	sleep(2)
+# 	print("wait")
+
+from signal import *
+import time
+#信号处理函数
+def handler(sig,frame):
+	if sig == SIGALRM:
+		print("接收到时钟信号")
+	else:
+		print("就不结束")
+alarm(5)
+signal(SIGALRM,handler)       #接收到信号，将信号传给函数第一个形参，再调用函数
+signal(SIGINT,handler)
+while True:
+	time.sleep(2)
+	print("wait")
