@@ -342,7 +342,7 @@
 		class MyNumber:
 			def __init__(self, val):
 				self.data = val
-			def __str__(self):
+			def __str__(self):                           #原有的str返回的是<__main__.MyNumber object at 0x00A7FF70>
 				return "自定义数字： %d" % self.data
 			def __repr__(self):                          #此方法返回来的字符串一定是能表示self对象的表达式字符串
 				return "MyNumber(%d)" % self.data

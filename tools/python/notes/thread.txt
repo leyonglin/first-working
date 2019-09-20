@@ -3,7 +3,7 @@
 01： 僵尸进程 聊天室项目实践
 
 如何避免僵尸进程产生
-	1.处理子进程退出状态
+	1.处理子进程退出状态 os.wait()   os.waitpid
 		pid,status = os.wait()
 		功能：在父进程中阻塞等待处理子进程退出
 		返回值：pid退出的子进程的pid号，status获取子进程退出状态
@@ -68,8 +68,8 @@
 			if pid<0:
 				print("error")
 			elif pid == 0:
-				#创建二级子进程
-				p = os.fork()
+				#创建二级子进程,二级进程的代码从这里os.fork开始执行
+				p = os.fork()          
 				if p ==0:
 					f2()
 				else:
@@ -85,27 +85,221 @@
 2.有人进入及退出聊天室会通知其他人
 3.一个发送，其他人都能收到
 
-代码编写流程(便于每步测试)：搭建网络连接 -->  创建多进程  --> 每个进程功能编写 --> 项目功能模块实现
 
+multiprocessing 模块创建进程
+	1.需要将要执行的事件封装为函数
+	2.使用multiprocessing模块中process类创建进程对象
+	3.通过对象属性设置和process的初始化函数对进程进行设置，绑定要执行的函数
+	4.启动进程，会自动执行进程绑定的函数
+	5.完成进程的回收
+	#创建子进程流程：
+	process()          #功能：创建进程对象   参数：name 进程名称  target(必须) 绑定参数   args 元组给target函数按照位置传参   kwargs字典给target函数按照键值对传参 
+	p.start()          #功能：启动进程（target函数会自动进行，此时进程真正被创建）
+	p.join([timeout])  #功能：阻塞等待回收子进程     参数 超时时间
 
-
-
-1-02:17:55
-
-
-
-
-
-
-
-
-
+	使用multiprocessing创建子进程，同样子进程复制父进程的全部代码段，子进程只执行传入函数(target = fun)的语句，父子进程各自执行互不影响，父子进程有各自的运行空间
+	如果join没回收到子进程，子进程退出后也会变成僵尸进程
+	示例：
+		import multiprocessing as mp
+		from time import sleep
+		def fun():
+			sleep(3)
+			print('子进程事件')
+		#创建进程对象
+		p = mp.Process(target = fun)
+		#启动进程
+		p.start()
+		#语句会继续执行
+		sleep(2)
+		print('这是父进程')
+		#阻塞/超时回收进程
+		p.join()
+	使用multiprocessing创建子进程往往父进程只是用来进程回收进程的，子进程只执行传入函数(target = fun)的语句
+		示例：
+		import multiprocessing as mp
+		from time import sleep
+		import os
+		def fun1():
+			sleep(3)
+			print('子进程事件1',os.getpid())
+		def fun2():
+			sleep(2)
+			print('子进程事件2',os.getpid())
+		#创建进程对象
+		thing = [fun1,fun2]
+		L = []
+		for i in thing:
+			p = mp.Process(target = i)
+			L.append(p)
+			#启动进程
+			p.start()
+		for j in L:
+			#阻塞/超时回收进程，虽然2号进程先退出，会短暂阻塞在1号进程，但是系统在2号进程退出时会记录状态，回收完1号进程，会再回收2号进程
+			j.join()               
 
 
 
 
 
 02： multiprocessing 进程池技术，进程间通信
+
+os.path.getsize():获取文件大小
+1.如果子进程从父进程拷贝对象，对象和网络或者文件相关联，那么父子进程会使用同一套对象属性，相互有一定的关联性
+2.如果在子进程中单独创建对象，则和父进程完全没有关联
+multiprocessing方法：
+p.is_alive()   #判断进程生命周期状态，处于生命周期返回True，否则返回False
+p.name         #进程名称 默认为process-1
+p.pid          #进程的pid号
+p.daemon       #默认状态False 主进程退出不会影响子进程执行，设置为True，则子进程会随着主进程结束而结束
+			   # 要在start之前设置，一般不会join一起使用
+
+创建自定义进程类
+	1.继承Process
+	2.编写自己的__init__，同时加载父类init方法
+	3.重写run方法，可以通过生成的对象调用start自动运行
+	示例：
+		#自定义进程类
+		from multiprocessing import Process
+		import time
+		class ClockProcess(Process):
+			def __init__(self,value):
+				self.value = value
+				super(ClockProcess,self).__init__()
+			def run(self):
+				for i in range(3):
+					print('the time is {}'.format(time.ctime()))
+					time.sleep(self.value)
+		
+		#创建自定义进程类的对象
+		p = ClockProcess(2)
+		#自动调用run
+		p.start()
+		p.join()
+		
+多进程优缺点：
+	优点：1.可以使用计算机多核，进行任务的并发执行，提高执行效率    2.空间独立，数据安全    3.运行不受其他进程影响，创建方便
+	缺点：进程的创建和删除消耗的系统资源较多
+		
+进程池技术：
+	产生原因：如果有大量任务需要多进程完成，则可能需要频繁的创建删除进程，给计算机带来较多的资源消耗
+	原理：创建适当的进程放入进程池，用来处理待处理事件，处理完毕后进程不销毁，仍然在进程池中等待处理其它事件，进程的复用降低了资源的消耗
+	使用方法：
+		1.创建进程池，在池内放入适当的进程(与核数一致)
+		2.将事件加入到进程池等待队列
+		3.不断取进程执行事件，直到所有事件执行完毕
+		4.关闭进程池，回收进程
+	from multiprocessing import Pool
+		Pool(processes)                    #功能：创建进程池对象                参数：表示进程池中有多少进程processes = n
+		pool.apply_async(fun,args,kwds)    #功能：将事件放入到进程池队列(异步，多进程执行速度/输出顺序不一定)        参数：func 事件函数(要先于进程池对象之前创建)    args 以元组形式给func传参   kwds 以字典形式给func传参
+										   #返回值：返回一个代表进程池事件的对象   通过调用 "返回对象.get()" 可以获得事件函数的返回值
+	    #pool.apply(fun,args,kwds)   	   #功能：将事件放入到进程池队列(同步)        参数：func 事件函数(要先于进程池对象之前创建)    args 以元组形式给func传参   kwds 以字典形式给func传参
+		pool.close()                       #功能：关闭进程池，不能新增事件，但仍可以执行原有事件 
+		pool.join()                        #功能：回收进程池
+		pool.map(func,iter)                #功能：将要做的事件放到进程池   参数：func 执行函数  iter迭代对象          返回值：返回事件函数的返回值列表    r = pool.map(fun,range(10))是一个返回值列表
+
+	示例：
+		#进程池
+		# from multiprocessing import Pool
+		# from time import sleep,ctime
+		# def worker(msg):
+		# 	sleep(2)
+		# 	print(msg)
+		# 	return msg
+		# result = []
+		# #创建进程池
+		# # pool = Pool(4)
+		# pool = Pool(processes = 4)
+		# for i in range(10):
+		# 	msg = 'hello %d' % i
+		# 	#将事件放入进程池队列，等待执行
+		# 	# pool.apply(func = worker,args = (msg,))  #同步
+		# 	# pool.apply_async(func = worker,args = (msg,))
+		# 	r = pool.apply_async(func = worker,args = (msg,))
+		# 	result.append(r)
+		# #关闭进程池
+		# pool.close()
+		# #回收
+		# pool.join()
+		# for i in result:	
+		# 	print(i.get())
+
+进程间通信(IPC)
+原因：进程空间相对独立，资源无法相互获取，此时在不同进程间通信需要专门方法
+	
+	
+
+
+2-00：40：00
+
+
+
+
+
+
+
+
+
+
+
+
 03： 进程通信 进程同步互斥
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 04： threading线程 线程同步互斥 GIL
 05： 并发编程 tftp文件服务器
+
+
+
+
+
+
+
+

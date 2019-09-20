@@ -433,9 +433,20 @@ reversed(iterable)         #反向输出
 	创建字典：d = {'k1': 'v1', 'k2':'v2', ... }    #K不能重复，且只能用不可变类型 ；v可以存储任意数据
 字典的构造函数dict：1.dict()     2.dict(iterable)    3.dict(**kwatgs) #用关键字传参形式创建一个新的字典
 	d1=dict((['name', 'lin'], 'ab'))   #iterable必须是成对序列
-	print(d1)
+	print(d1)                          #输出结果{'name': 'lin', 'a': 'b'}
 	d2=dict(name='lin', age=15)   #关键字传参
 	print(d2)
+	操作示例：
+		test = {1:'a',2:'b'}
+		for i in test:                       #遍历字典的键
+			print('i =',i)
+		for j,k in test.items():             #遍历字典的键值
+			print('j = %s,k = %s' % (i,j))
+		for m in test.values():              #遍历字典的值
+			print('m =',m)
+		for n in test.keys():                #遍历字典的键
+			print('n =',n)
+	
 	
 字典操作:统计及操作速度快
 	字典的键索引：用[]运算符可以获取字典内'键'对应'值'

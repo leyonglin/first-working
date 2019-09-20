@@ -218,8 +218,7 @@
 		# insert into userinfo(id,name,age) values (1,"frank",123);
 		import pymysql
 		# import hashlib from sha1   #加密模块
-		#连接数据库
-		
+		#连接数据库		
 		db = pymysql.connect(host="192.168.3.3",user="root",passwd="123456",\
 							database="dbforpymysql",charset="utf8",port=3306)
 		#使用cursor()方法创建一个游标对象
