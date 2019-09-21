@@ -562,16 +562,121 @@ env:python3.5
 # t.join()
 
 
-#多进程基于fork完成多进程网络并发
-from socket import *
-import os,sys
-#创建套接字
-HOST = '0.0.0.0'
-PORT = 8888
-ADDR = (HOST,PORT)
-#创建tcp套接字
-s = socket()  
-#套接字重用
-s.setsockopt(sol_socket,so_reuseaddr,1)
-s.bind()
-s.listen(5)
+#多进程基于fork完成多进程网络并发，发送消息
+# from socket import *
+# import os,sys
+# #客户端处理函数
+# def client_handler(c):
+# 	print('client:',c.getpeername())
+# 	while True:
+# 		data = c.recv(1024)
+# 		if not data:
+# 			break
+# 		print(data.decode())
+# 		c.send(b'Receive your message')
+# 	c.close()
+# 	sys.exit(0)   #将子进程销毁
+# #创建套接字
+# HOST = '0.0.0.0'
+# PORT = 8888
+# ADDR = (HOST,PORT)
+# #创建tcp套接字
+# s = socket()  
+# #套接字重用
+# s.setsockopt(SOL_SOCKET,SO_REUSEADDR,1)
+# s.bind(ADDR)
+# s.listen(5)
+# #循环等待客户端退出
+# print('listen to the port 8888...')
+# while True:
+# 	try:
+# 		c,addr = s.accept()
+# 	except KeyboardInterrupt:
+# 		sys.exit('exit server')
+# 	except Exception as e:
+# 		print('Error',e)
+# 		continue
+# #创建新的进程处理客户端请求
+# 	pid = os.fork()
+# #子进程处理客户端请求，因为在循环里，所以循环也是fork之后的语句
+# 	if pid == 0:
+# 		p = os.fork()  #创建子进程处理僵尸进程
+# 		if p == 0:
+# 			s.close()
+# 			client_handler(c)
+# 		else:
+# 			os.exit(子进程未创建成功)
+# #父进程或者创建进程失败都继续邓艾下个客户端连接	
+# 	else:
+# 		c.close()
+# 		os.wait('子进程退出处理') #处理退出子进程
+# 		continue
+
+# #tcp客户端
+# from socket import *
+# #创建套接字
+# sockfd = socket(AF_INET, SOCK_STREAM)
+# #发起连接
+# server_addr = ('127.0.0.1', 8888)
+# sockfd.connect(server_addr)
+# #消息发送接收
+# while True:
+#     data = input("发送>>")
+#     if not data:
+#         break
+#     sockfd.send(data.encode())
+#     data = sockfd.recv(1024)
+#     print("接受到", data.decode())
+# #关闭套接字
+# sockfd.close()
+
+# #ftp服务器,未完成，自己写
+# from socket import *
+# import os,sys,time,signal
+# #定义全局变量
+# file_path = '/root/'
+# host = '0.0.0.0'
+# port = 8888
+# addr = (host,port)
+# #将文件服务器功能写在类中
+# class Ftpserver(object):
+# 	pass
+# #创建套接字，接收客户端连接，创建新的进程
+# def main():
+# 	sockfd = socket()
+# 	sockfd.setsockopt(SOL_SOCKET,SO_REUSEADDR,1)
+# 	sockfd.bind(ADDR)
+# 	sockfd.listen(5)
+# 	#处理子进程退出
+# 	signal.signal(signal.SIGCHLD,signal.SIG_IGN)  #忽略该信号
+# 	print('listen the port 8000...')
+# 	while True:
+# 		try:
+# 			connfd,addr = s.accept()
+# 		except KeyboardInterrupt:
+# 			sockfd.close()
+# 			sys.exit('exit server')
+# 		except Exception as e:
+# 			print('Error',e)
+# 			continue
+# 		print('connect server',addr)
+# 		#创建子进程
+# 		pid = os.fork()
+# 		if pid == 0:
+# 			sockfd.close()
+# 			pass
+# 		else:
+# 			connfd.close()
+# 			continue
+
+# if __name__ == '__main__':
+# 	main()
+
+
+
+# #ftp客户端
+# from socket import *
+# import sys
+# import time
+# class Ftpclient():
+# 	pass
