@@ -261,9 +261,9 @@
 # 	c,addr = s.accept()
 # 	print("connect",addr)
 # 	data = c.recv(4096)
-    # request_lines = data.splitlines()   #将request请求按行分隔
-    # for line in request_lines:
-    #     print(line.decode())
+#     request_lines = data.splitlines()   #将request请求按行分隔
+#     for line in request_lines:
+#         print(line.decode())
 # 	print("*********************************")
 # 	#print(data)   #浏览器发来的http请求
 # 	print("*********************************")

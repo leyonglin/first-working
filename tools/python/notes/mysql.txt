@@ -5,26 +5,26 @@
 数据库：逻辑概念，存储数据，侧重于存储
 数据仓库：数据量庞大，主要用于数据分析，数据挖掘
 
- 查库：show databases;   (库名区分大小写)
- 位置：select database;
- 建库：create database [if not exists] 库名 character set utf8;
- 查看：show create database 库名;
- 删库：drop database 库名; 
- 进入指定库：use 库名;
- 查表：show tables;
- 查表:show create table 表名;
- 建表：create table 表名(字段列表(字段名 数据类型, ...))character set utf8;
- 删表：drop table 表名;
- 表结构：desc 表名;
- 插入：insert into 表名 values(值1,值2,...);   或 insert into 表名(字段1,字段2,...) values(值1,值2,...);
- 查看: select *(字段,...) from 表名 where 条件(字段=(运算符)值,...);
- 清空表中记录：delete from 表名;
- 
- 配置文件：
+查库：show databases;   (库名区分大小写)
+位置：select database;
+建库：create database [if not exists] 库名 character set utf8;
+查看：show create database 库名;
+删库：drop database 库名; 
+进入指定库：use 库名;
+查表：show tables;
+查表:show create table 表名;
+建表：create table 表名(字段列表(字段名 数据类型, ...))character set utf8;
+删表：drop table 表名;
+表结构：desc 表名;
+插入：insert into 表名 values(值1,值2,...);   或 insert into 表名(字段1,字段2,...) values(值1,值2,...);
+查看: select *(字段,...) from 表名 where 条件(字段=(运算符)值,...);
+清空表中记录：delete from 表名;
+
+配置文件：
 	[mysqld]
 	charactr_set_server = utf8      #默认字符集
- 
- 数据类型：1.节省空间(varchar)    2.效率高(char)
+
+数据类型：1.节省空间(varchar)    2.效率高(char)
 	数值类型宽度(显示宽度，不够用0补充)和存储没有关系[有/无符号signed/unsigned],decimal(m,n)整数部分和小数部分分开存储
 	字符类型宽度不够则无法存入
 	枚举 单选enum  多选set
@@ -34,31 +34,31 @@
 
 02： 运算符 子句
 
- 日期时间函数：
+日期时间函数：
  now()				返回服务器当前时间
  curldate()			当前日期
  date("datetime")	提取年月日
  time("datetime") 	提取时分秒
  year("datetime")	提取年
  
- 日期时间运算：where * from 表名 where 字段名 运算符(now()-interval 时间间隔单位(1 day));
+日期时间运算：where * from 表名 where 字段名 运算符(now()-interval 时间间隔单位(1 day));
  
- 表字段操作:alter table 表名 操作(add/drop/modify/rename/change) 字段名 数据类型 位置(first/after 字段名)；
- 表记录操作：
+表字段操作:alter table 表名 操作(add/drop/modify/rename/change) 字段名 数据类型 位置(first/after 字段名)；
+表记录操作：
 	删除：delete from 表名 where 条件;
 	更新：update 表名 set 字段1=值1, ...where 条件(可以使用括号()); 
 	
- NULL：空值，只能用is、is not 去匹配
- "":空字符串，只能用 =  != 去匹配
- 模糊查询(like)
+NULL：空值，只能用is、is not 去匹配
+"":空字符串，只能用 =  != 去匹配
+模糊查询(like)
 	where 字段名 like 表达式
 	_:匹配单个字符   %:匹配0到多个字符
 	
-  集合函数：
+集合函数：
 	avg(字段名)：平均值
 	sum   max  min   count
 	
- 高级查询语句：语句是自上而下顺序结构
+高级查询语句：语句是自上而下顺序结构
 	select ...聚合函数 from 表名
 	where  ...
 	group by ...:给查询的结果进行分组
@@ -66,7 +66,7 @@
 	order by  字段名 ASC/DESC : 给查询结果排序 
 	limit [m,]n  ：显示查询记录的第m条开始，条数n
 	
- distinct:不显示字段的重复值。语法：select distinct 字段1, 字段2 from 表名；
+distinct:不显示字段的重复值。语法：select distinct 字段1, 字段2 from 表名；
 	distinct和from之间的所有字段值都相同才会去重
 
 
@@ -75,7 +75,7 @@
 约束constraint：保证数据的一致性，有效性
 	分类：1.默认约束(default)    2.非空约束(not null)
 
- 索引：对数据库中表的一列或多列的值进行排序的一种结构(BTree)
+索引：对数据库中表的一列或多列的值进行排序的一种结构(BTree)
 	优点：加快数据的检索速度
 	缺点：1.数据更新时，索引需要动态维护，降低数据的维护速度    2.索引需要占用物理存储空间
  1.索引运行时间检测： set profiling=1；(show variables like "profiling")
@@ -89,32 +89,32 @@
 		已有表中：create index 索引名  on  表名(字段名)；
 		查看：1.desc 表名;    2.show  index from 表名\G; 
 		删除：drop index 索引名 on 表名;
- 2.唯一索引(unique)&&自增长(auto_increment):1.可设置多个字段   2.字段值不允许重复，但可以为空值   3.key标志：UNI
+2.唯一索引(unique)&&自增长(auto_increment):1.可设置多个字段   2.字段值不允许重复，但可以为空值   3.key标志：UNI
 		创建表时：create table t1(...,...,),unique(name),unique(id),...);
 		已有表中：create unique index 索引名  on  表名(字段名)；
 		查看：1.desc 表名;    2.show  index from 表名\G; 
 		删除：drop index 索引名 on 表名;
- 3.主键索引(primary key):1.只能有一个字段为主键字段   2.字段值不允许重复，也不能为NULL  
+3.主键索引(primary key):1.只能有一个字段为主键字段   2.字段值不允许重复，也不能为NULL  
 						 3.KEY标志：PRI    4.通常设置记录编号字段id，能够唯一锁定一条记录（自增长修改初始值：alter table 表名 AUTO_INCREMENT=10000;）
 		创建表时：... id int primary key auto_increment      复合主键(两个id与name同时相同才会报错)：id int auto_increment,name varchar(20),primary key(id,name)
 		已有表中:alter table 表名 add primary key(id);
 		删除：1.删除自增长属性modify:alter table 表名 modify id int  2.alter table 表名 drop primary key;
- 4.外键(foreign key)
+4.外键(foreign key)
+
  
- 
- 数据导入：把文件系统中内容导入到数据库中(.csv 可用execl表格打开)
+数据导入：把文件系统中内容导入到数据库中(.csv 可用execl表格打开)
 	语法格式：load  data infile "文件名"  into table 表名 fields terminated by "分隔符" lines terminated by "\n";
 	导入：1.在数据库中创建对应的表   2.1查看搜索路径show variables like "secure_file_priv"     2.2 执行数据导入,文件需在指定目录下
- 数据导出：把输出到终端的数据表的记录导出到系统文件里
+数据导出：把输出到终端的数据表的记录导出到系统文件里
 	语法格式： select ... from 表名 into outfile "文件名" fields terminated by "分隔符" lines terminated by "\n";
- 
- 表的复制：
+
+表的复制：
 	语法：create table 表名 select ... from 表名 where 条件;
- 
- 复制表结构：
+
+复制表结构：
 	语法：create table 表名 select ... from 表名 where false;
 
- 将execl表格保存为.csv格式，再用文本文档打开，另存为utf-8编码。
+将execl表格保存为.csv格式，再用文本文档打开，另存为utf-8编码。
 
 
 
@@ -130,13 +130,13 @@
 嵌套查询(子查询)：把内层的查询结果作为外层的查询条件
 	语法：select ... from 表名 where 字段名 运算符 (select ... from 表名 where 条件);
  
- 多表查询：
+多表查询：
 	1.笛卡尔积：不加where条件
 		语法：select ... from 表1,表2;  
 	2.加where条件
 		语法: select ... from 表1,表2 where 条件;
 
- 连接查询：多张表(比多表查询效率高)
+连接查询：多张表(比多表查询效率高)
 	1.内连接(inner join)
 		语法格式: select 字段名列表 from 表1 inner join 表2 on 条件 inner join 表2 on 条件 ...;
 	2.外连接：没匹配到的用NULL填充
@@ -145,12 +145,12 @@
 		2.2 右连接(right join)：以右表为主显示查询结果
 			select 字段名列表 from 表1 a right outer join 表2 on 条件;
 			
- 锁：解决客户端并发访问的冲突问题
+锁：解决客户端并发访问的冲突问题
 	分类：
 		锁类型：读锁(共享锁)：有读锁时，无法更改      写锁(互斥锁，排他锁)：有写锁时，无法查与更新
 		锁粒度：行级锁row：Innodb          表级锁：MyISAM
- 
- 存储引擎(engine：处理表的处理器):
+
+存储引擎(engine：处理表的处理器):
 	查看所有：show engines;
 	查看已有表：show create table 表名;
 	指定：create table ... engine=myisam charset=utf8;  或 alter table 表名 engine=myisam;
@@ -167,9 +167,9 @@
 			表名.MYI:索引信息
   Memory：数据存于内存中，重启表数据消失，表结构还在硬盘
   
-  执行查询操作多的表使用Myisam     执行写操作多的表使用innodb
+执行查询操作多的表使用Myisam     执行写操作多的表使用innodb
  
-  账号管理：远程授权连接
+账号管理：远程授权连接
 	grant 权限列表 on 库名.表名 to "用户名"@"%(ip)" identified by "密码"  with grant option;
 	权限列表：all privileges、select 库表.表名、update 库表.表名 
 
@@ -177,36 +177,39 @@
 
 05： ORM
 
-	数据备份：命令行
-		完整备份：mysqldump -u用户名 -p 源库名 > **.sql
-			源库名：--all-databases         #所有库
-					库名      				#单个库
-					-B 库名1 库名2 ...      #多个库
-					库名 表1 表2 ...		#多表
-		恢复：mysql -u用户名 -p 目标库名 < **.sql		(恢复指定库需要先从库)
-			mysql -u用户名 -p --one-database 库名 < **.sql (从全部备份中恢复一个库，先创建库)
-			恢复库时，要先创建，如果已有库恢复，同名表数据会被覆盖，新增表不会被删除
-		增量备份：
+数据备份：命令行
+	完整备份：mysqldump -u用户名 -p 源库名 > **.sql
+		源库名：--all-databases         #所有库
+			库名      				#单个库
+			-B 库名1 库名2 ...      #多个库
+			库名 表1 表2 ...		#多表
+	恢复：mysql -u用户名 -p 目标库名 < **.sql		(恢复指定库需要先从库)
+		mysql -u用户名 -p --one-database 库名 < **.sql (从全部备份中恢复一个库，先创建库)
+		恢复库时，要先创建，如果已有库恢复，同名表数据会被覆盖，新增表不会被删除
+	增量备份：
+	
 
-	调优：1.创建索引：(select where order by常涉及到的字段)
-		2.选择合适存储引擎：执行查询操作多的表使用Myisam     执行写操作多的表使用innodb
-		3.sql语句优化(避免全表扫描)
-			1.where 子句尽量不适用 !=  ，否则全表扫描
-			2.尽量避免NULL判断is null，否则全表扫描
-				解决方法：字段设置not null/默认值0
-			3.尽量避免用or连接条件，否则全表扫描
-				解决方法：sql语句用union all拼接
-			4.模糊查询尽量避免使用前置%  ,否则全表扫描
-			5.尽量避免使用in和not in,否则全表扫描	
-				优化前：select id from t1 where id in(1,2,3);
-				优化后: select id from t1 where id between 1 and 4;
-			6.不要使用select * ...
-				解决方法：用具体字段代替* , 不返回用不到的字段
-	事务和事务回滚：
-		事务：一件事从开始发生到结束的整个过程，确保数据的一致性
-		应用：1.begin;(自动关闭autocommit)    2. sql命令...      3.commit;(提交)/rollback;(回滚)
+调优：1.创建索引：(select where order by常涉及到的字段)
+	2.选择合适存储引擎：执行查询操作多的表使用Myisam     执行写操作多的表使用innodb
+	3.sql语句优化(避免全表扫描)
+		1.where 子句尽量不适用 !=  ，否则全表扫描
+		2.尽量避免NULL判断is null，否则全表扫描
+			解决方法：字段设置not null/默认值0
+		3.尽量避免用or连接条件，否则全表扫描
+			解决方法：sql语句用union all拼接
+		4.模糊查询尽量避免使用前置%  ,否则全表扫描
+		5.尽量避免使用in和not in,否则全表扫描	
+			优化前：select id from t1 where id in(1,2,3);
+			优化后: select id from t1 where id between 1 and 4;
+		6.不要使用select * ...
+			解决方法：用具体字段代替* , 不返回用不到的字段
+			
+			
+事务和事务回滚：
+	事务：一件事从开始发生到结束的整个过程，确保数据的一致性
+	应用：1.begin;(自动关闭autocommit)    2. sql命令...      3.commit;(提交)/rollback;(回滚)
 
-	离线安装模块：1.下载并解压   2.python3 setup.py install
+离线安装模块：1.下载并解压   2.python3 setup.py install
 	
 	
 对象关系映射（Object Relational Mapping，简称ORM）是通过使用描述对象和数据库之间映射的元数据，将面向对象语言程序中的对象自动持久化到关系数据库中。本质上就是将数据从一种形式转换到另外一种形式。 这也同时暗示着额外的执行开销；ORM作为一种中间件实现，则会有很多机会做优化

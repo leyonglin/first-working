@@ -11,7 +11,7 @@
 	内置的高阶函数：map   filter   sorted
 	map函数：map(func, *iterable)
 		返回一个可迭代对象，此可迭代对象用函数func对可迭代对象iterable中每一个元素作为参数后得到新的数据
-	1.print(sum(map(lambda x: x**2, range(1, 10))))	
+	1.print(sum(map(lambda x: x**2, range(1, 10))))	     #用的是运算符号
 	2.def mypow(x,y):
 		  return x**y
 	  for i in map(mypow,[1,2,3],(4,3,2,1)):
@@ -19,7 +19,7 @@
 	
 	filter函数：filter(function, iterable)
 		作用：筛选可迭代对象iterable中的数据(对每个function返回数据进行bool求值)，返回一个iterable中符合条件的可迭代对象的数据
-	
+		b = list(filter(lambda x : x > 5, a))      #用的是比较符号
 	sorted函数：将原可迭代对象的数据(可排序对象)进行排序，生成排序后的列表
 		格式：sorted(iterable, key=None, reverse=False)
 		key是一个用来提供作为排序的依据的值

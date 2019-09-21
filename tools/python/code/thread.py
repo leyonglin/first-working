@@ -399,17 +399,179 @@ env:python3.5
 # 	sleep(2)
 # 	print("wait")
 
-from signal import *
-import time
-#信号处理函数
-def handler(sig,frame):
-	if sig == SIGALRM:
-		print("接收到时钟信号")
-	else:
-		print("就不结束")
-alarm(5)
-signal(SIGALRM,handler)       #接收到信号，将信号传给函数第一个形参，再调用函数
-signal(SIGINT,handler)
-while True:
-	time.sleep(2)
-	print("wait")
+# from signal import *
+# import time
+# #信号处理函数
+# def handler(sig,frame):
+# 	if sig == SIGALRM:
+# 		print("接收到时钟信号")
+# 	else:
+# 		print("就不结束")
+# alarm(5)
+# signal(SIGALRM,handler)       #接收到信号，将信号传给函数第一个形参，再调用函数
+# signal(SIGINT,handler)
+# while True:
+# 	time.sleep(2)
+# 	print("wait")
+
+#信号量   第一次打印7句，第二次打印4句，第3次打印2句 
+# from multiprocessing import Semaphore,Process
+# from time import sleep
+# import os
+# #创建信号量
+# sem = Semaphore(3)
+# def fun():
+# 	print("1进程%d等待信号量"%os.getpid())   #4遍
+# 	#消耗一个信号量
+# 	sem.acquire()
+# 	print("2进程%d消耗信号量"%os.getpid())   #3+1遍
+# 	sleep(3)
+# 	sem.release()
+# 	print("3进程%d添加信号量"%os.getpid())  #3+1遍
+# jobs = []
+# for i in range(4):
+# 	p = Process(target = fun)
+# 	jobs.append(p)
+# 	p.start()
+# for i in jobs:
+# 	i.join()
+# print(sem.get_value())
+
+#同步，共同操作一个临界区，人为设置操作顺序
+# from multiprocessing import Event,Process
+# from time import sleep
+# def wait_event():
+# 	print('想操作临界区')
+# 	e.wait()
+# 	print('开始操作临界区资源',e.is_set())
+# 	with open('file') as f:
+# 		print(f.read())
+# def wait_timeout_event():
+# 	print('也想操作临界区')
+# 	e.wait(2)
+# 	if e.is_set():
+# 		with open('file') as f:
+# 			print(f.read())
+# 	else:
+# 		print('不能读取文件')
+# #事件对象
+# e = Event()
+# p1 = Process(target = wait_event)
+# p1.start()
+# p2 = Process(target = wait_timeout_event)
+# p2.start()
+# print('主进程操作')
+# sleep(3)
+# with open('file','w') as f:
+# 	f.write('I love China')
+# e.set()
+# print('释放临界区')
+# p1.join()
+# p2.join()
+
+# #互斥，锁控制进程执行顺序
+# from multiprocessing import Process,Lock
+# import sys
+# from time import sleep
+# lock = Lock()
+# def writer1():
+# 	lock.acquire()
+# 	for i in range(20):
+# 		sleep(0.05)
+# 		sys.stdout.write('1我想向终端写入\n')
+# 	lock.release()
+# def writer2():
+# 	lock.acquire()
+# 	for i in range(20):
+# 		sleep(0.05)
+# 		sys.stdout.write('2我想向终端写入\n')
+# 	lock.release()
+# w1 = Process(target = writer1)
+# w2 = Process(target = writer2)
+# w1.start()
+# w2.start()
+# w1.join()
+# w2.join()
+
+
+#创建线程
+# import threading
+# from time import sleep
+# import os
+# a = 1
+# #线程函数
+# def music():
+# 	global a                          #修改全局变量，不加会报错
+# 	print('分支线程a = ', a)
+# 	for i in range(2):
+# 		sleep(1)
+# 		print('listen music')
+# 	a = 100
+# #创建线程对象
+# t = threading.Thread(target = music)
+# t.start()
+# t.join()
+# print('主线程a =',a)                  #主线程和分支线程使用的是同一个进程的资源和空间
+
+# #线程锁
+# import threading
+# from time import sleep
+# s = None
+# e = threading.Event()
+# def bar():
+# 	print("bar1")
+# 	global s
+# 	s = "anhao"
+# def foo():
+# 	print('koulig')
+# 	sleep(2)
+# 	if s == "anhao":
+# 		print('zijierne')
+# 	else:
+# 		print('zouta')
+# 	e.set()    #验证完毕在执行
+# def fun():
+# 	print("hehe")
+# 	sleep(1)
+# 	global s
+# 	s = "xiaoji"
+# b = threading.Thread(target = bar)
+# f = threading.Thread(target = foo)
+# b.start()
+# f.start()
+# e.wait()   #运行bf之后其他内容不准许执行
+# fun()
+# b.join()
+# f.join()
+
+# import threading
+# a = b = 0
+# lock = threading.Lock()
+# def value():
+# 	while True:
+# 		lock.acquire()     #可以上锁，如果有锁存在则阻塞
+# 		if a != b:
+# 			print('no equel')
+# 		lock.release()     #解锁
+# t = threading.Thread(target = value)
+# t.start()
+# while True:
+# 	with lock:           #可以上锁，如果有锁存在则阻塞
+# 	a += 1
+# 	b += 1
+# t.join()
+
+
+#多进程基于fork完成多进程网络并发
+from socket import *
+import os,sys
+#创建套接字
+HOST = '0.0.0.0'
+PORT = 8888
+ADDR = (HOST,PORT)
+#创建tcp套接字
+s = socket()  
+#套接字重用
+s.setsockopt(sol_socket,so_reuseaddr,1)
+s.bind()
+s.listen(5)

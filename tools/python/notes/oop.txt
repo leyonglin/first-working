@@ -105,7 +105,7 @@
 	示例：
 		class Human:
 			man_count = 0          			 #类变量，可以被方法调用
-			def __init__(self)
+			def __init__(self):
 				self.__class__.man_count +=1  	 #可被调用
 		h1 = Human()
 		h1.man_count=1000          			 #为示例添加示例属性，不会更改类变量，直接调用则会调用类变量
@@ -271,7 +271,7 @@
 		# print(a.__p1)   #外部不允许访问私有属性
 		# print(a._p2)    #可以访问
 		# print(a.__p3__) #可以访问
-		# a.__m()           #无法直接访问私有方法
+		# a.__m()         #无法直接访问私有方法
 	注意：python的封装是假的封装(模拟的封装)  --->  a._A__p1  可以访问到(查看dir(obj))
 		class Per_num():
 			text = 1
