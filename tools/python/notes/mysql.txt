@@ -136,7 +136,7 @@ distinct:不显示字段的重复值。语法：select distinct 字段1, 字段2
 	2.加where条件
 		语法: select ... from 表1,表2 where 条件;
 
-连接查询：多张表(比多表查询效率高)
+连接/关联查询：多张表(比多表查询效率高)
 	1.内连接(inner join)
 		语法格式: select 字段名列表 from 表1 inner join 表2 on 条件 inner join 表2 on 条件 ...;
 	2.外连接：没匹配到的用NULL填充

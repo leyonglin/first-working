@@ -680,3 +680,118 @@ env:python3.5
 # import time
 # class Ftpclient():
 # 	pass
+
+
+# import traceback
+# a = 10
+# try:
+#  	b = a / 0
+# except Exception as e:
+#  	# print(e)
+#  	traceback.print_exc()
+# print('程序打印完毕')
+
+#集成模块的使用
+# from socketserver import *
+# #创建服务器类
+# class Server(ForkingMixIn,TCPServer):
+# 	pass
+# class Handler(StreamRequestHandler):
+# 	def handle(self):
+# 		#self.request ==> accept 返回的套接字
+# 		print("connect from",\
+# 			self.request.getpeername())
+# 		while True:
+# 			data = self.request.recv(1024)
+# 			if not data:
+# 				break
+# 			print(data.decode())
+# 			self.request.send(b'receive')
+# if __name__ == '__main__':
+# 	server_addr = ('0.0.0.0',8888)
+# 	#创建服务器对象
+# 	server = Server(server_addr,Handler)   
+# 	#启动服务器
+# 	server.serve_forever()               #自动监听地址server_addr，调用Handler处理请求
+
+#udp收发消息
+# data = self.rfile.readline()
+# self.wfile.write()
+
+#协程greenlet
+# from greenlet import greenlet
+# def test1():
+# 	print(123)
+# 	gr2.switch()
+# 	print(789)
+# def test2():
+# 	print(222)
+# 	gr1.switch()
+# 	print(666)
+# #协程对象
+# gr1 = greenlet(test1)
+# gr2 = greenlet(test2)
+# gr1.switch()
+
+#gevent
+# import gevent
+# from time import sleep
+# def foo(a,b):
+# 	print('a = %d,b = %d'%(a,b))
+# 	gevent.sleep(2)                     #协程特有阻塞条件
+# 	print('running foo again')
+# def bar():
+# 	print('running in bar')
+# 	gevent.sleep(3)
+# 	print('running bar again')
+# #生成协程
+# f = gevent.spawn(foo,1,2)
+# g = gevent.spawn(bar)
+# # sleep(3)
+# print('=====')
+# gevent.joinall([f,g])        #设置协程阻塞，触发阻塞，阻塞自动跳转
+
+#gevent协程服务器，协程通过加载多次handler(加载成多个协程空间)
+# import gevent
+# from gevent import monkey
+# monkey.patch_all()
+# from socket import *
+# from time import ctime
+# def server(port):
+# 	s=socket()
+# 	s.setsockopt(SOL_SOCKET,SO_REUSEADDR,1)
+# 	s.bind(('0.0.0.0',port))
+# 	s.listen(3)
+# 	while True:
+# 		c,addr = s.accept()
+# 		print('connect from',addr)
+# 		# handler(c)              #循环服务器
+# 		gevent.spawn(handler,c)   #协程服务器
+# def handler(c):
+# 	while True:
+# 		data = c.recv(1024)
+# 		if not	data:
+# 			break
+# 		print(data.decode())
+# 		c.send(ctime().encode())
+# 	c.close()
+# if __name__ == '__main__':
+# 	server(8888)
+
+#普通tcp客户端
+# from socket import *
+# #创建套接字
+# sockfd = socket(AF_INET, SOCK_STREAM)
+# #发起连接
+# server_addr = ('127.0.0.1', 8888)
+# sockfd.connect(server_addr)
+# #消息发送接收
+# while True:
+#     data = input("发送>>")
+#     if not data:
+#         break
+#     sockfd.send(data.encode())
+#     data = sockfd.recv(1024)
+#     print("接受到", data.decode())
+# #关闭套接字
+# sockfd.close()

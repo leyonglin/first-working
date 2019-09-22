@@ -357,7 +357,7 @@
 	str(obj)函数调用方法说明：
 		1.str(obj)函数先查找obj.__str__(方法)，调用此方法并返回结果
 		2.如果obj.__str__()方法不存在，则调用obj.__repr__方法并返回结果
-		3.如果obj.__rpr__方法不存在，则调用object类的__repr__实例方法显示<__main__.MyNumber object at 0x0389FF70>字符串
+		3.如果obj.__repr__方法不存在，则调用object类的__repr__实例方法显示<__main__.MyNumber object at 0x0389FF70>字符串
 	上述示例：
 		没有 __str__ 和 __repr__  返回值：
 			str(n1) = <__main__.MyNumber object at 0x00A7FF70>

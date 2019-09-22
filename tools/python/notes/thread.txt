@@ -257,7 +257,7 @@ python中有地址，没有指针，使用内存不方便
 		signal.pause()     #功能：阻塞等待接收一个信号，先让进程阻塞，直至有信号发送过来直接结束
 		signal.signal(signum,handler)  #功能：处理(修改)信号    参数：signum 要处理的信号   handler 信号的处理方法(SIG_DFL表示使用默认的方法处理 SIG_IGM表示忽略这个信号 func传入一个函数表示用指定函数处理(格式：def func(sig,frame) sig:捕获到的信号 frame：信号对象))      
 	5.信号量:   
-	6.套接字	
+	6.套接字：本地套接字	
 
 
                  管道         		 消息队列        		 共享内存
@@ -362,7 +362,7 @@ threading 模块创建线程
 		t.setName()						#设置线程名称
 		t.getName()                     #获取线程名称
 		threading.currentThread()		#获取当前线程对象   threading.currentThread().getName()
-		t.daemon =False                 #默认情况主线程退出不会影响分支线程执行  如果设置为True 则分支线程随主线程退出，等同t.setdaemon(False)
+		t.daemon =False                 #默认情况主线程退出不会影响分支线程执行,等同t.setdaemon(False),如果设置为True 则分支线程随主线程退出
 		t.isDaemon()
 创建自定义的线程类：
 	1.继承Thread    2.加载Thread中的__init__方法     3.重写run方法，该方法可以通过生成的对象调用start自动运行
@@ -463,12 +463,11 @@ python线程的GIL问题(全局解释器锁)
 	
 	并发服务器模型：能够同时处理多个客户端的请求
 		io并发：io多路复用
-		优点：资源消耗少，能同时处理多个io
-		缺点：只能监控io时间，当多个任务都是cpu计算时无法同时处理
-	
-	多进程多线程并发：为每个客户端创建单独的进程或者线程处理客户端请求
-		优点：每个客户端都可以长期占有服务器，能使用多核资源处理io或者cpu计算
-		缺点：资源消耗较高
+			优点：资源消耗少，能同时处理多个io
+			缺点：只能监控io时间，当多个任务都是cpu计算时无法同时处理	
+		多进程多线程并发：为每个客户端创建单独的进程或者线程处理客户端请求
+			优点：每个客户端都可以长期占有服务器，能使用多核资源处理io或者cpu计算
+			缺点：资源消耗较高
 
 
 多进程并发：
@@ -503,11 +502,108 @@ ftp文件服务器：
 
 
 
-
 05： 并发编程 tftp文件服务器
 
+多线程并发：threading的多线程并发
+	对比多进程并发：
+		1.消耗资源较少
+		2.线程应该更注意共享资源的操作
+		3.注意GIL问题，网络延迟较高，线程并发是可行方案
+	实现步骤：
+		1.创建套接字，绑定监听
+		2.接收客户端请求，创建新的线程处理客户端请求
+		3.主线程继续接收其它客户端连接
+		4.分支线程启动对应的函数处理客户端请求
+		5.当客户端断开，则分支线程结束
 
-1-00:00
+	import traceback  
+	traceback.print_exc()    #更详细的打印异常信息
+	示例:
+		import traceback
+		a = 10
+		try:
+			b = a / 0
+		except Exception as e:
+			# print(e)
+			traceback.print_exc()
+		print('程序打印完毕')
+
+
+集成模块的使用
+		socketserver   #功能：通过模块的不同类的组合完成多进程/多线程的tcp/udp的组合
+			StreamRequestHandler
+			StreamRequestHandler
+			TCPServer
+			UDPServer
+			ForkingMixIn            #创建多进程
+			ForkingTCPServer		#ForkingMixIn + TCPServer 即创建多进程又创建tcp 
+			ForkingUDPServer
+			ThreadingMixIn          #创建多线程
+			ThreadingTCPServer
+			ThreadingUDPServer
+
+使用集成模块编写http服务器
+	函数内部普通变量作用域为函数内部本身
+	但是类内的方法，如果self.argv，这个就变成变量属性，属于类内变量，而不是方法内变量，相当于扩大了作用范围
+
+
+
+协程基础：
+	定义：纤程，微线程。协程本质是一个单线程程序，所以协程不能够使用计算机多核资源。
+	作用：能够高效的完成并发任务，占有较少的资源，因此协程的并发量较高
+	原理：通过记录应用层的上下文栈区(函数/类空间)，实现再运行中进行上下文跳转，达到可以选择性的运行想要运行的部分，以此提高程序的运行效率
+	优点：消耗资源少，无需切换开销，无需同步互斥，io并发性好(io多路复用通过内核，协程是记录栈，更加节省资源，进程是进程切换，协程不需要切换，更加节省资源)
+	缺点：无法利用计算机多核
+	yield  --->  协程实现的基本关键字
+
+第三方库：
+	greenlet：
+		greenlet.greenlet()          #生成协程对象
+		gr.switch()					 #选择要执行的协程事件
+	gevent
+		1.将协程事件封装为函数
+		2.生成协程对象
+			gevent.spawn(func,argv)   #功能：生成协程对象     参数：func协程函数   argv给协程函数传参(不定参)    返回值:返回协程对象
+		3.回收协程
+			gevent.joinall()          #功能：回收协程         参数：列表   将要回收的协程放入列表
+			gevent.sleep(n)           #功能：设置协程阻塞，让协程跳转/触发协程特有阻塞执行    参数:n 阻塞时间
+		
+		from gevent import monkey
+		monkey.patch_all()             #功能：修改套接字的io阻塞行为，必须在socket导入之前使用
+	示例：
+		#gevent协程服务器，协程通过加载多次handler(加载成多个协程空间)
+		import gevent
+		from gevent import monkey
+		monkey.patch_all()
+		from socket import *
+		from time import ctime
+		def server(port):
+			s=socket()
+			s.setsockopt(SOL_SOCKET,SO_REUSEADDR,1)
+			s.bind(('0.0.0.0',port))
+			s.listen(3)
+			while True:
+				c,addr = s.accept()
+				print('connect from',addr)
+				# handler(c)              #循环服务器
+				gevent.spawn(handler,c)   #协程服务器
+		def handler(c):
+			while True:
+				data = c.recv(1024)
+				if not	data:
+					break
+				print(data.decode())
+				c.send(ctime().encode())
+			c.close()
+		if __name__ == '__main__':
+			server(8888)		
+
+
+
+
+
+
+
 
 
 
