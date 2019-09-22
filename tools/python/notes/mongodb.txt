@@ -64,17 +64,20 @@ mongo shell:用来操作mongodb数据库的界面，在这里可以使用mongo�
 		admin:存储用户信息
 		local:存储本地数据
 		config:存储分片信息
-	db.coll_name.insert({})  #插入数据，键值对数据格式
+	
 	db     #mongodb的全局量，代表当前正在使用的数据库
 		   如果不选择使用任何数据库db，默认是test，直接插入数据就会建立test数据库
-	db.coll_name.find()     #查找
 	db.dropDatabase()   #删除db所代表的数据库
-	1.db.createCollection(collection_name)  
-	2.当向一个集合中插入数据的时候如果集合不存在时则自动创建
+	1.db.createCollection(collection_name)   #创建集合
+	2.当向一个集合中插入数据的时候如果集合不存在时则自动创建---db.class.insert({'name':'lin','age':'25','sex':'man'})
 	show collections   // show table   #查看集合
 	db.coll_name.drop()     #删除集合
-	db.coll_name.renameCollection("新名")   #重命名
-	
+	db.coll_name.renameCollection("新名")   #重命名集合
+	db.coll_name.insert({})  #插入文档数据，键值对数据格式，插入时id域不存在则创建，存在则报错(db.class0 == db.getCollection('class0')
+		db.class.insert({'name':'lin','age':'25','sex':'man'})  == inserOne
+		db.class.insert([{'3':'3'},{'2':'2'}])   #插入多条文档  == inserMany
+	db.coll_name.find()     #查找文档
+	db.coll_name.save()     #插入时id域不存在则创建，存在则修改
 数据库命名规则：
 	1.使用utf-8(默认)
 	2.不能含有空格 . / \ '\0' 字符
@@ -111,29 +114,17 @@ mongo shell:用来操作mongodb数据库的界面，在这里可以使用mongo�
 	Null  object(内部文档/对象)  code(js代码)  regex(正则子串)   
 	ObjectId(自动生成ID标记)：_id：当mongodb插入文档时如果不指定_id域则自动生成_id域，值如果不自己指定即会自动生成一个objectId值
 		24位16进制数：8位文档创建时间，6位机器id  4位进程id   6位计数器
-
+	指定id插入：db.class1.insert({_id:1,'name':'lin','age':'25','sex':'man'})
+	
 集合中的文档：
 	1.集合中的文档不一定有相同的域(个数/域/数据类型都可能不同)
-	2.集合中文档各自比较独立，相互不影响
+	2.集合中文档各自比较独立，相互不影响，不支持外键关联
 集合创建原则：
 	1.集合中的文档要描述同一类事物
 	2.数据库中同一类数据尽量集中存放在相同的集合
 	3.集合中的文档嵌套层数不要太多
-
-
-2-02：44：50
-
-
-
-
-
-
-
-
-
-
-
-
+	插入操作中键可以不加引号，值需要加入引号
+	_id可以指定，但是不能重复
 
 
 
@@ -141,6 +132,39 @@ mongo shell:用来操作mongodb数据库的界面，在这里可以使用mongo�
 
 
 02： MongoDB Shell 文档 
+
+非关系型数据库和关系型数据库的区别
+	1.不是以关系模型构建的，结构比较自由
+	2.nosql不保障数据的一致性，但是读写能力强，抗高并发，海量数据处理
+	3.nosql技术还在发展，功能没关系型数据库成熟强大
+
+db.coll_name.find(query,field)   #功能：查找文档    参数：query  查找条件、相当于where字句    field查找的域(字段)(0表示不显示该域，1表示只显示该域)   返回值：查找到的所有文档
+	db.class1.find({b:'2'})
+	db.class1.find({age:'25'},{age:1,name:1})   #匹配age=25且只显示age和name域(字段)
+	db.class1.find({age:'25'},{_id:0,name:1})   #_id特殊，不指定为0都会显示，其它域不能混写
+db.coll_name.findOne(query,field)               #越慢插入越靠后。功能：查找第一条符合条件的文档   参数：同find    返回值：返回查找到的文档
+
+比较操作符
+$eq  等于  $lt 小于  $lte 小于等于  $gt 大于  $gte 大于等于  $ne不等于(使用ne也会查找到该域不存在的文档)
+$in  在[]里面   $nin不包含
+	db.class1.find({'a':{$eq:'5'}},{_id:0})        #注意只要用引号
+	db.class1.find({'a':{$gt:'5',$lt:'8'}},{_id:0})
+	所有的{}[]中都可以写多个条件
+	db.class1.find({'a':{$in:['3','4','5']}},{_id:0})
+
+逻辑比较符：
+$and  在query如果写多个条件默认为$and
+	 db.class1.find({'a':{$in:['3','5']},a:'5'},{_id:0})
+	 等同于  db.class1.find({$and:[{a:{$in:['3','5']}},{a:'5'}]},{_id:0})
+$or   逻辑或db.class1.find({$or:[{a:{$lt:5}},{'a':{$gt:'3'}}]},{_id:0})
+$not  逻辑非
+逻辑条件混合
+
+Array：[1,2,3]   #但不是列表。1.数组是有序的数据集合   2.mongo中数组也可以有多重数据元素混合
+
+
+
+2-00:00:00
 
 
 
