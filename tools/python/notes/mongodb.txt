@@ -4,7 +4,7 @@
 
 数据存储阶段
 文件管理阶段：
-	优点：使用简单，展现只管，长期保存，存储数据量比较大    
+	优点：使用简单，展现直观，长期保存，存储数据量比较大    
 	缺点：查找不方便，容易找出数据冗余，数据格式不规范
 数据库管理阶段：
 	优点：将数据结构化存储，降低冗余，提高了增删改查效率，方便扩展和程序调用
@@ -133,17 +133,27 @@ mongo shell:用来操作mongodb数据库的界面，在这里可以使用mongo�
 
 02： MongoDB Shell 文档 
 
+帮助文档：https://docs.mongodb.com/
+
 非关系型数据库和关系型数据库的区别
 	1.不是以关系模型构建的，结构比较自由
 	2.nosql不保障数据的一致性，但是读写能力强，抗高并发，海量数据处理
 	3.nosql技术还在发展，功能没关系型数据库成熟强大
 
 db.coll_name.find(query,field)   #功能：查找文档    参数：query  查找条件、相当于where字句    field查找的域(字段)(0表示不显示该域，1表示只显示该域)   返回值：查找到的所有文档
-	db.class1.find({b:'2'})
+	db.class1.find({b:'2'})[1]   #通过find查找道德记录可以用索引下标
 	db.class1.find({age:'25'},{age:1,name:1})   #匹配age=25且只显示age和name域(字段)
 	db.class1.find({age:'25'},{_id:0,name:1})   #_id特殊，不指定为0都会显示，其它域不能混写
 db.coll_name.findOne(query,field)               #越慢插入越靠后。功能：查找第一条符合条件的文档   参数：同find    返回值：返回查找到的文档
-
+db.coll_name.distinct(field)                    #功能：查找某个域的值范围
+db.coll_name.pretty()                           #格式化查询结果
+db.coll_name.limit()                            #功能:查询前几条结果
+db.coll_name.skip()                             #跳过前n条记录
+db.coll_name.count()                            #统计
+db.coll_name.sort({field,1/-1})                 #排序
+复合排序
+db.coll_name.remove(query,justone)              #功能：删除功能   参数：query同find   justone布尔值，false表示删除所有符合条件的文档
+db.coll_name.update(query,update,upsert,multi)  #功能：修改文档   参数：query筛选条件  同find    update要修改成什么内容，通常配合修改操作符(修改器)使用   upsert 布尔值 默认时false，如果query没有筛选到文档则不做任何操作，true则不存在则插入  multi布尔值，默认false表示只修改一条
 比较操作符
 $eq  等于  $lt 小于  $lte 小于等于  $gt 大于  $gte 大于等于  $ne不等于(使用ne也会查找到该域不存在的文档)
 $in  在[]里面   $nin不包含
@@ -151,6 +161,9 @@ $in  在[]里面   $nin不包含
 	db.class1.find({'a':{$gt:'5',$lt:'8'}},{_id:0})
 	所有的{}[]中都可以写多个条件
 	db.class1.find({'a':{$in:['3','4','5']}},{_id:0})
+$size  通过数组元素个数查找
+$slice 显示数组中指定项
+	db.class.find({},{_id:0,score:{$slice:[1,2]}})
 
 逻辑比较符：
 $and  在query如果写多个条件默认为$and
@@ -158,16 +171,15 @@ $and  在query如果写多个条件默认为$and
 	 等同于  db.class1.find({$and:[{a:{$in:['3','5']}},{a:'5'}]},{_id:0})
 $or   逻辑或db.class1.find({$or:[{a:{$lt:5}},{'a':{$gt:'3'}}]},{_id:0})
 $not  逻辑非
+
 逻辑条件混合
 
 Array：[1,2,3]   #但不是列表。1.数组是有序的数据集合   2.mongo中数组也可以有多重数据元素混合
 
+$mod 余数查找
+$type  指定类型的数据文档
 
-
-2-00:00:00
-
-
-
+练习：2-03:25:46
 
 
 
@@ -175,11 +187,128 @@ Array：[1,2,3]   #但不是列表。1.数组是有序的数据集合   2.mongo�
 
 03： 索引 聚合
 
-
-
-
-
-
-
-
+修改操作符(修改器)
+	$set #修改一个域的值(不存在则添加一个域)
+		db.class.update({'name':'lin'},{$set:{sex:'m'}})
+	$unset  #删除一个域
+		db.class.update({'name':'lin'},{$unset:{sex:' '}})
+	$rename #修改域的名称
+	$setOnInsert  #如果使用update插入文档，则将改修改器内容作为插入文档的一部分
+	$inc  #加法修改器
+		db.class.update({},{#inc:{age:'1'}},false,true)       #参数可以是正数负数，整数，小数
+	$mul  #乘法修改器
+	$min  #筛选文档的指定域小于min则不修改，大于min值则修改min值
+	$max  #如果筛选文档的指定域大于max值则不修改，小于则修改位max值
+	$push #向数组中添加一项
+	$pushALL  #向数组中添加多项
+	$pull     #从数组中删除一项
+	$each    #对多个值进行操作
+		db.class.update({'name':'lin'},{$push:{score:{$each:['9','8']}}})		
+	$position  #指定插入位置
+		db.class.update({'name':'lin'},{$push:{score:{$each:['9','8'],$position:1}}})
+	$pop  #弹出数组最后一项，-1为第一项
+	$sort
+	$addToSet:向数组中添加一项不重复的
+	
+new Date()  #自动生成当前时间	
+Date	#自动生成当前时间（字符串类型）	
+date.ISODate#插入指定时间，默认自动生成当前时间		
+valueOf	#获取当前时间戳
+	
+NULL类型
+值 null	   #存在却没值可赋值null,可以查找某个域不存在情况
+Object     #内部文档, 文档内部某个域的值还是一个文档数据则这个文档就是内部文档类型数据
+			通常使用外部文档域名，引用内部文档域名的方式使用内部文档
+			通过数组下标直接操作某一项
+	2-01：18：00
+	
+索引：
+	指建立指定键值及所在文档存储位置的对照清单，使用索引可以方便我们进行快速查找，减少遍历次数提高查找效率
+	ensureIndex()    #功能：创建索引    参数：索引域和索引选项
+	db.coll_name.getIndexes()   #查看索引
+	db.coll_name.dropIndex()    #删除索引   _id除外
+	索引类型：
+		复合索引，根据多个域创建多个索引
+		数组索引：子文档索引，如果对某个域的值为数组或者子文档的域创建索引，呢么通过数组或者子文档中某一项进行查找也是索引查找
+		唯一索引：创建索引的域的值不能重复
+		稀疏索引(间隙索引)：只针对有指定索引域的文档创建索引，没有该域则不插入所以表
+	索引约束：占用空间，更新慢
+	数据量小时不适合建立索引，当数据库进行频繁修改操作而不是查找操作也不适合创建索引
+聚合操作：对文档的筛选结果进行整理统计
+	db.coll_name.aggregate()     #功能：完成集合操作   参数：聚合条件，聚合操作符
+		$group  分组聚合
+			$sum  $max   $min 
+			$project：修改文档的显示效果  用法同 find(field)
+			$match:数据筛选 
+			$limit   $skip  $sort
+	聚合管道：将上一个聚合操作结果给下一个聚合继续操作
+	
+	
+	
 04： Python操作MongoDB 增删改查
+
+固定集合：
+	创建大小固定的集合，称之为固定集合
+	特点:1.能够淘汰早期数据    2.插入和顺序查找速度更快    3.可以控制集合的空间大小
+	使用：临时缓存/日志处理
+	db.createCollection(coll_name,{capped:true,size:10000,max:1000})   #capped:true创建固定集合  
+文件存储:
+	1.存储文件路径   
+		优点:节省数据库空间，操作简单     缺点：数据库或文件位置发生变化时需要修改数据库内容 
+	2.存储文件本身   将文件以二进制形式存储到数据库中
+
+GridFS存储大文件
+	大文件，mongodb > 16M 文件为大文件
+	方法：以两个集合配合的方法存储文件
+		fs.files:存储文件相关信息
+		fs.chunks：分块存储文件内容
+	命令：mongofiles -d dbname put file   ---存储文件
+		  mongofiles -d dbname get file   ---提取文件
+
+游标：cursor
+	通过获取操作数据库的返回结果，得到返回结果对象。通过游标可以进一步获取操作结果数据(类似for遍历和迭代器，游标效率更高，防止大量操作阻塞)
+	将返回结果赋给一个js变量，作为查找结果游标
+		var cursor = db.class.find()
+	查看是否有下一个结果
+		cursor.hasNext()
+	获取下一个结果
+		cursor.next()
+
+操作步骤：
+	1.创建mongodb的数据库连接对象
+		conn = pymongo.MongoClient('localhost',27017)
+	2.生成数据库对象
+		db = conn.stu  或 db = conn['stu']
+	3.生成集合对象
+		myset = db.class  或 myset = db['class']
+	4.集合操作(增删改查索引聚合)
+		# print(dir(myset))  #查看提供的方法		
+	5.关闭集合对象
+		
+
+
+
+2-00：31：00
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
