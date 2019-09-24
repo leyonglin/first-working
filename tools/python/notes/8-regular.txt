@@ -1,0 +1,184 @@
+
+正则表达式：即文本的高级匹配模式，提供搜索，替代等功能，本质是一系列由一系列特殊符号组成的字符，这个子串即正则表达式
+	动机：
+		1.文本处理已经成为计算机的常见工作之一
+		2.快速解决对文本内容的搜索，定位，提取时逻辑比较复杂的工作
+	匹配原理：由普通字符和特殊符号组成字符串，通过描述字符的重复和位置等行为，达到匹配某一类字符串的目的
+	特点：1.方便文本处理    2.支持语言众多    3.使用灵活多样
+	re.findall(pattern,string)
+		功能：使用正则表达式匹配目标字符串内容
+		参数:  pattern 正则表达式(一个单位)(独立于python)    
+			   string目标字符串
+		返回值：列表
+		import re
+		s = "hello 123"
+		re.findall("\d+",s)
+	元字符使用：
+		元字符：
+			a  						单个字符，包括汉字    
+			|  						或(已匹配过的字符，就不会再匹配)
+			.  						匹配除换行外的任意字符
+			^  						匹配字符串的开始位置
+			$  						匹配字符串的结束位置
+			*  						匹配前一个字符出现0次或多次
+			+  						匹配前一个字符出现1次或多次
+			？ 						匹配前一个字符出现0次或1次
+			{n}						匹配n次重复次数
+			{m,n}       			匹配m到n次重复次数(包含mn)
+			.+/.*       			匹配全部
+			[字符集]    			匹配字符集中任意一个字符([_a-zA-Z0-9])
+			[^字符集]   			过滤，即除字符集外的任意字符
+			\d == [0-9]				匹配任意数字字符
+			\D == [^0-9]			匹配任意非数字字符
+			\w                      普通字符(字母数字下划线及汉字)
+			\W						非普通字符
+			\s						匹配任意空字符[\r\t\n\v\f ]
+			\S                      匹配任意非空字符
+			\A == ^                 匹配字符串的开始位置
+			\Z == $                 匹配字符串的结束位置
+			\b						匹配单词边界位置(普通字符和非普通字符交界认为是单词边界)
+			\B						匹配非单词边界位置
+			
+		匹配单个字符： a . \d \D \w \W \s \S [..] [^..] 	
+		匹配重复：*  +  ?  {n}	 {m,n}
+		匹配位置:  ^  $  \A  \Z  \b  \B
+		其它： |  ()  \
+			
+		绝对匹配：
+			正则表达式要完全匹配目标字符串内容(\d+  --- "123"(完全匹配)  "as123df"(不是))
+			"^正则表达式$"    在正则表达式开始和结束位置加上^$
+			
+		正则表达式转义：	
+		
+		raw字串：原始字符串对内容不解释转义，就表达内容原本意义
+			
+		贪婪与非贪婪：	
+			贪婪模式：正则表达式的重复匹配总是尽可能多的向后匹配更多内容
+				*  +  ?  {3,5}
+					re.findall(r"ab{3,5}","abbbbbb")   --->  结果：['abbbbb']
+			非贪婪模式(懒惰模式)：尽可能少的匹配内容
+				*?  +?  ??  {3,5}?
+					re.findall(r"ab*?","abbbbbb")   --->  结果：['a']
+		
+		正则表达式的子组：
+			可以使用()为正则表达式建立子组，子组可以看作是正则表达式内部操作的一个整体，即先匹配整体，在内部子组匹配
+				子组是在正则表达式整体匹配到内容的前提下才会发挥作用，不影响正则表达式整体去匹配目标内容这一原则
+			re.findall(r"(ab)*","ababab")    #()会将ab当作一个整体
+		
+			子组所用：
+				1.作为内部整体可以改变某些元字符的行为(正则)
+					re.search(r"\w+@\w+\.(com|cn)","abc@123.com").group()   ---  'abc@123.com'
+					re.search(r"\w+@\w+\.(com|cn)","abc@123.cn").group()	---  'abc@123.cn'
+					re.search(r"\w+@\w+\.com|cn","abc@123.com").group()		---  'abc@123.com'
+					re.search(r"\w+@\w+\.com|cn","abc@123.cn").group()		---  'cn'
+				2.子组在某些操作中可以单独提取出匹配内容(编程)
+					re.search(r"(https|http|ftp)://\S+","https://www.baidu.com").group()   ---  'https://www.baidu.com'
+					re.search(r"(https|http|ftp)://\S+","https://www.baidu.com").group(1)  ---  'https'
+			子组注意事项：
+				1.一个正则表达式中可以有多个子组
+				2.子组一般由外到内，由左到右称之为第一组，第二组...
+				3.子组不能重叠，嵌套也不宜很多
+		
+		捕获组和非捕获组
+			格式：(?P<name>pattern)
+				作用：可以通过组名更方便获取某组内容
+					re.search(r"(?P<dog>ab)cdef",'abcdef').group('dog')
+			
+			
+		正则表达式设计原则：
+			1.正确性：能正确匹配到目标内容
+			2.排他性：除了目标内容，尽可能不会匹配到其他内容
+			3.全面性：不遗漏
+	 
+re模块:  1.可以直接调用dir(re)  2.可以通过complie生成的regex对象调用函数和属性dir(compile生成的对象)   3.  1和2 调用函数finditer  fullmatch  match  search 可以生成match对象(通过group方法可以获取匹配值)(dir(finditer生成对象))
+	re.findall(pattern,string,flags)
+		功能：从目标字符串查找正则匹配内容    参数：pattern 正则表达式   string目标字符串    flags 标志位    返回值：返回匹配到的内容，如果正则由子组则只返回子组对应内容
+	regex = compile(pattern,flags = 0)
+		功能：生成正则表达式对象    参数：pattern正则表达式  flags 功能标志位，丰富正则表达式的匹配功能    返回值:正则表达式对象
+		regex.findall(string,pos,endpos)
+			功能：从目标字符串查找正则匹配内容    参数：string目标字符串   pos匹配目标的起始位置   endpos匹配目标的终止位置    返回值：返回匹配到的内容，如果正则由子组则只返回子组对应内容
+	flags：多个标志位使用按位或连接
+	示例：其它直接调用和对象调用是一样的区别
+		import re
+		pattern = r"(ab)cd(ef)"
+		s = "abcdefghijkabcdef"
+		#re模块直接调用
+		l=re.findall(pattern,s)
+		print(l)
+		#compile对象调用
+		regex = re.compile(pattern)
+		l = regex.findall(s,1)
+		print(l)
+	
+	re.split(pattern,string,flags=0)
+		功能：根据正则匹配内容切割字符串    参数：pattern  string  flags   返回值：返回列表，列表中为切割的内容
+	
+	re.sub(pattern,replaceStr.string,max,flags)
+		功能：替换正则匹配到的目标子串部分   参数：pattern  string  replaceStr:要替换的内容      max：最多替换几次   flags    返回值：返回替换后的字符串
+		
+	re.subn(pattern,replaceStr.string,max,flags)
+		功能：替换正则匹配到的目标子串部分   参数：pattern  string  replaceStr:要替换的内容      max：最多替换几次   flags    返回值：返回一个元组，为实际替换了几处和替换后的字符串
+
+	re.finditer(pattern,string,flags)
+		功能：使用则这表达式匹配目标字符串    参数：pattern  string  flags   返回值：返回一个迭代对象，迭代到的内容是一个match对象(<re.Match object; span=(0, 4), match='2008'>)
+
+	re.fullmatch(pattern,string,flags)
+		功能：完全匹配目标字符串(相当于^正则表达式$)    参数：pattern  string  flags    返回值：返回匹配到的match对象，如果没匹配成功返回none，none没group会报错
+	
+	re.match(pattern,string,flags)
+		功能：从开头位置匹配目标字符串(相当于^正则表达式)    参数：pattern  string  flags    返回值：返回匹配到的match对象，如果没匹配成功返回none，none没group会报错
+
+	re.search(pattern,string,flags)
+		功能：正则表达式匹配目标字符串，只匹配第一处    参数：pattern  string  flags    返回值：返回匹配到的match对象，如果没匹配成功返回none，none没group会报错
+	
+	
+
+
+	compile对象方法：
+		'findall', 'finditer',  'fullmatch', 'match', 'scanner', 'search', 'split', 'sub', 'subn'
+
+	compile对象属性:
+		flags:标志位   
+		pattern：正则表达式
+		groups:正则表达式有多少子组
+		groupindex:捕获组形成组名和序列号的字典，组名为键，第几组为值
+
+	match属性变量：
+		pos：匹配目标字符串的开始位置
+		endpos：匹配目标字符串的结束位置
+		re：正则对象生成方法
+		string：目标字符串
+		lastgroup：最后一组组名
+		lastindex：最后一组是第几组
+	match属性方法	
+		'start'： 匹配内容的起始位置
+		'end'：匹配内容的结束位置
+		'span'：匹配内容的起止位置
+		'expand', 
+		'group'：获取对象的对应内容，默认为0表示获取全部内容，如果为序列号或子组名则为获取某个子组匹配的兑现改内容
+		'groupdict' ：获取捕获组名作为键，对应内容为值
+		'groups'：获取每个子组匹配内容  
+		'regs'：
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+			
+			
+			

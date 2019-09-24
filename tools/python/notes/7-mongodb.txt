@@ -323,8 +323,11 @@ GridFS存储大文件
 		conn.close()
 
 
+	#存储小文件，直接转换为二进制格式插入到数据库
+	import bson
+	bson.binary.Binary()  #功能：将bytes格式子串转换成mongodb的二进制存储格式
 
-2-03:47
+
 
 
 

@@ -36,7 +36,7 @@
 
 
 
-#将文件以grid方案存放到数据库
+#将文件以grid方案存放到数据库(大文件,即>16M)
 # from pymongo import MongoClient
 # import gridfs
 # conn = MongoClient('localhost',27017)
@@ -69,3 +69,27 @@
 # 			#写入到本地
 # 			f.write(data)
 # conn.close()
+
+
+# #小文件存储方案，直接转换二进制格式插入到数据库
+from pymongo import MongoClient
+import bson.binary
+conn = MongoClient('localhost',27017)
+#进入image数据库
+db = conn.image
+myset = db.mm
+
+# #存储图片
+# f = open('mm.jpg','rb')
+# #将图片内容转换为可存储的二进制格式
+# content = bson.binary.Binary(f.read())
+# #插入文档,存入名为mm.jpg的图片
+# myset.insert({'filename':'mm.jpg','data':content})
+# conn.close()
+
+#提取图片
+img = myset.find_one({'filename':'mm.jpg'})
+#将内容写入到本地
+with open('mm.jpg','wb') as f:
+	f.write(img['data'])
+conn.close()
