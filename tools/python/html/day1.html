@@ -1,0 +1,102 @@
+<!-- 告诉浏览器是html文档，并按html5渲染方式解析页面  -->
+<!doctype html>
+<!-- 显示是否翻译改网站，文档开始  -->
+<!--  -->
+<html lang="en">
+    <!-- head网页头部，一般配置是不呈现给用户看的  -->
+	<head>
+		<!-- 浏览器编码翻译引擎 -->
+		<meta charset='UTF-8'>
+		<!--关键字，排名匹配  -->
+		<meta name="Keywords" content="">
+		<!--网站描述  -->
+		<meta name="Description" content="">
+		<!-- 浏览器书签 -->
+		<title>百度一下 你就知道</title>
+		<!-- 加载小图标  -->
+		<link type="shortcut icon" href="../imges.png">
+	</head>
+	<!--网页的主体信息，所有需要呈现给用户的，需要显示在窗口中的内容，都在body中书写  -->
+	<body>
+
+		<!-- 标题标签 h1-h6-->
+		<h1 align='center'>
+		午饭吃什么
+		</h1>
+		<!-- 无法<h2>被识别 -->
+		<h2>红烧的<h2></h2>
+		<!-- 小于 空格 大于 人民币符号 -->
+		<h2>红烧的&lt;&nbsp;h1&gt;&yen;</h2>
+		<!-- 版权标志  -->
+		<h2>&copy;版权所有</h2>
+		<h2>&yen;120</h2>
+	<!-- 段落标签 向左对齐，居中，向右对其 -->
+	<p align='left'>这是一段文本</p>
+	<p align='center'>这是另一段文本</p>
+	<p align='right'>这是第三段文本</p>
+	<b>加粗</b>
+	<strong>有语义标签</strong>
+	<i>斜体</i>
+	<u>下划线</u>
+	<s>删除线</s>
+	<p>
+		<!-- 上标：<sup></sup>  下标：<sub></sub> -->
+		x<sup>2</sup> + y<sup>2</sup> =z<sup>2</sup>
+		</p>
+	<p>
+		x<sub>1</sub> + y<sub>2</sub> =100
+		<span>span文本</span>  
+		<!-- 水平线标签 -->
+		<hr>
+		<!-- 换行标签 -->
+		<br>
+		<label>label文本</label>
+	</p>
+	
+	<!-- 无需列表 ul嵌套li 每一个li元素代表一条数据 -->
+	<ul>
+		<li>无需列表1</li>
+		<li>无需列表2</li>
+	</ul>
+	<!-- 有序列表  -->
+	<ol>
+
+		<li>有序列表1</li>
+		<li>有序列表2</li>
+	</ol>
+	<!-- 定义列表 -->
+	<dl>
+		<dt>订单跟踪</dt>
+		<dd>查询订单</dd>
+	</dl>
+	<!-- 列表属性，只针对有序和无序列表 type：1 a A i(罗马数字) I   start：偏移量-->
+	<ol type="a" start="3">
+		<li>有序列表1</li>
+		<li>有序列表2</li>
+	</ol>
+	<!-- 无需列表  type: disc 默认实心圆点  circle空心圆点  square实心正方形  none不要符号-->
+	<ul type="circle">
+		<li>无需列表1</li>
+		<li>无需列表2</li>
+	</ul>
+	<!-- 图片标签 src:必填图片路径   width:设置图片狂顶，取值为像素200px   height:设置图片高度，像素单位可以省略  title:图片的描述信息，在鼠标悬停在图片上方时出现   alt:设置图片加载失败之后的提示文本-->
+	<img width="200px" height="200px" title="创造101-wxy" alt="美女" src="C:/Users/bangde/Desktop/piture/download2.jpg">
+	<img alt="美女" src="load1.jpg" >
+	 <!--文本超链接  语法：<a href="url">超链接内容</a>   href:必填属性，指定连接地址。""表示跳转至当前页包含网络请求，相当于刷新。 "#"表示当前页，不包含网络请求
+	target:设置目标文件的打开方式  _blank 新建窗口打开-->
+	<a>百度</a>
+	<a href="http://www.baidu.com"></a>
+	<a href="http://www.baidu.com">百度</a>
+	<a href="http://www.baidu.com" target="_blank">百度</a>
+	<!-- 图片超链接  -->
+	<a href="http://www.baidu.com" target="_blank">
+	<img  src="download1.jpg" >
+	</a>
+	<!-- 当前页面锚点链接 在指定文件的指定位置进行跳转 语法：1.<a href="#6">内容描述</a>  2.<a name="6"></a>-->
+	<a href="#6">内容描述</a>
+		<p>填充的内容</p>
+	<a name="6"></a>
+	<!-- 跳转页面给锚点 -->
+	<a href="url#6">锚点内容描述</a>
+	</body>
+</html>
