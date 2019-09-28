@@ -16,6 +16,7 @@ win+i window设置
 win+L 锁屏
 win +/-  放大镜
 win+数字  打开对应任务栏应用
+win+r    psr  步骤记录器
 
 磁贴：固定到“开始”快捷键
 
