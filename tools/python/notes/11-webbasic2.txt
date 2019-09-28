@@ -81,21 +81,60 @@ CSS布局方式
 				2.兄弟元素之间可以通过z-index的数值大小来调整堆叠次序
 				3.父子元素子元素永远在上，无法通过z-index来调整堆叠次序
 				4.兄弟元素的z-index取值相同，后来者居上
+	2.元素显示效果
+		1.display：
+		2.visibility：
+		3.透明度设置
+			1.属性：opacity  设置元素透明度
+			2.取值：0(透明) - 1(不透明)
+			3.注意：
+				1.元素使用opacity设置半透明。所有显示的内容(背景颜色，文本颜色等)都会呈现半透明效果
+				2.opacity是对元素整体透明度的设置，包含元素自身和内部的子元素
+				3.子元素同时透明度，最终透明度值是在父元素opacity取值的基础上再次进行透明度设置
+				4.行内块元素的垂直对齐方式
+					行内块元素：img  input  button
+					属性：vertical-align
+					取值：top\middle\bottom
+					作用：调整行内块元素左右元素与其自身的垂直对齐方式
+				5.设置鼠标形状
+					属性：cursor
+					取值：
+						1.default 默认值
+						2.pointer 鼠标在元素上展现为手指的样式
+						3.text    鼠标展示为"I"，表示普通文本info
+						4.crosshair  鼠标展示为"+"
+	3.列表相关属性
+		列表自带内外边距和项目符号
+		1.list-style-type
+			设置项目符号
+			取值：
+				1.none：取消项目符号，最常用
+				2.disc：实心圆点
+				3.circle 空心圆点
+				4.square 实心方块
+		2.list-style-image
+			指定图片作为项目符号
+			取值：url()
+		3.list-style-position
+			指定项目符号的显示位置
+			默认项目符号显示在内容外部，在左边的padding中展现
+			1.outside：默认值
+			2.inside 设置项目符号显示在内容区域
+		4属性简写：
+			属性：list-style
+			取值：type/image position
+			常用：
+				list-style:none
+					取消项目符号
 				
-				
-				
-				
-2-03：30				
-				
-				
-				
-				
-				
+	
+
+	
 
 02： 数据类型 运算符 流程控制 
 
 
-
+html的登录/注册代码
 
 
 
@@ -107,6 +146,18 @@ CSS布局方式
 
 03： 分支结构 循环结构 函数 
 
+1.JS组成
+	1.ECMAcript - JS的核心语法
+	2.内置对象 - BOM DOM 
+		BOM：Browser Object Model 浏览器对象模型，主要提供一组操作浏览器的方法
+		DOM：Document Object Model 文档对象模型，提供一组操作文档的方法
+	3.JS自定义对象	
+2.JS引入
+	1.元素绑定
+		将JS代码以事件的形式绑定在元素上
+		事件：用户行为触发的操作(鼠标操作，键盘操作)
+
+1-00：22:15
 
 
 
@@ -119,9 +170,6 @@ CSS布局方式
 
 
 04： 数组 String 
-
-
-
 
 
 
