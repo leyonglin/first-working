@@ -339,7 +339,7 @@ poll：
 		s.listen(5)
 		#创建poll对象
 		p = poll()
-		#fileno  --->io对象的字典
+		#fileno  --->io对象的字典,这个放在这里，说明监听套接字的时候就已经有文件描述符了，而不是连接时才有。
 		fdmap = {s.fileno():s}
 		#注册关注的io
 		p.register(s,POLLIN | POLLERR)
@@ -348,7 +348,7 @@ poll：
 			events = p.poll()
 			for fd,event in events:
 				if fd == s.fileno():
-					c,addr = fdmap[fd].accept()
+					c,addr = fdmap[fd].accept()     #连接上就能通讯了
 					print("connect from",addr)
 					#添加新的关注事件
 					p.register(c,POLLIN)
@@ -423,7 +423,7 @@ PID(process ID):
 		就绪态：进程具备执行条件，等待系统分配资源
 		运行态：进程占有cpu处于运行状态
 		等待态：进程暂时不具备执行条件，阻塞等待满足条件后再执行
-	五态：新建--(创建成功)--  就绪  --(调度)--  运行  --(释放资源)-- 终止
+	五态：新建--(创建成功)-- (io等待) --等待/阻塞 -- (io完成) -- 就绪  --(调度)--  运行  --(释放资源)-- 终止
 		新建态：创建一个新的进程，获取资源的过程
 		终止态：进程执行结束，资源释放回收的过程
 

@@ -141,7 +141,7 @@ pass语句：通常用来填充语法空白
        \0          字符串0
        \0oo        oo为两位八进制表示的字符
        \xXX        XX为两位十六进制表示的字符  
-       \uXXXX      Unicode 16的十六进制的字符(汉字)
+       \uXXXX      Unicode 16的十六进制的字符(汉字解码)
        \UXXXXXXXX  Unicode 32的十六进制表示的字符(汉字)
 		
 		ascii编码(0~127)  
