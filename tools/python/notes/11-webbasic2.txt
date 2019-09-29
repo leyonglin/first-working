@@ -156,7 +156,7 @@ html的登录/注册代码
 	1.元素绑定
 		将JS代码以事件的形式绑定在元素上
 		事件：用户行为触发的操作(鼠标操作，键盘操作)
-			eg:<h1 onclick="alert('弹窗显示文本');">点击</h1>
+			eg:<h1 onclick="alert('弹窗显示文本');">点击</h1>   #onclick后面可以接动态代码
 	2.文档内嵌
 		使用<script></script>,在标签中书写JS代码
 			et : <script>alert("文档内嵌")；</script>
@@ -586,35 +586,138 @@ JS的内置对象(数组就是一个内置对象)
 						getMinutes()分钟数
 						getSeconds()秒数
 						getMilliseconds()毫秒数
-
-
-
-2-02：30
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+					3.设置日期的显示方式
+						1.toString();
+						2.toLocaleString();
+							根据本地时间将date对象转换为字符串，返回以本地规则格式化后的日期
+						3.toLocaleTimeString();
+						4.toLocaleDateString();
+					4.BOM
+						1.BOM与DOM
+							BOM：Brower Object Model 浏览器对象模型(是windows的浏览器窗口对象)，提供操作浏览器的相关方法(有浏览器差异)
+							DOM：Document Object Model 文档对象模型，提供操作文档(页面)的相关方法(BOM(的一个对象)的共有标准化)
+						2.windows对象
+							1.表示浏览器窗口对象
+								自定义的全局变量和全局函数，默认都是windows对象的属性和方法，使用时可以省略window
+							2.对话框
+								1.window.alert();
+									普通警告框，参数为提示信息
+								2.window.prompt();
+									带有输入框的弹框，参数为提示信息，返回用户输入的字符串
+								3.window.confirm();
+									带有确定/取消按钮的提示框，参数为提示信息，返回布尔值，true表示用户点击确定，其它一律为False
+							3.定时器方法
+								1.分类：
+									周期性定时器(间歇调用)
+									一次性定时器(超时调用)
+								2.作用：
+									根据指定的时间间隔，周期性或一次性调用函数，执行
+								3.使用：
+									1.间歇调用
+										1.特点：每隔一段时间，自动执行某段代码
+										2.语法：
+											window.setInterval(fun,duration);
+											参数:
+												1.fun:表示要周期执行的代码
+												2.duration：间隔时长，默认以毫秒为单位
+											返回值：返回当前定时器的ID，实际上就是整数值
+													取消定时器时，根据定时器ID进行取消
+										3.取消间歇调用
+											语法：clearInterval(timeID);
+											作用：取消周期性定时器
+											参数：timeID 表示要取消定时器的ID 
+									2.超时调用
+										1.特点：超过指定的时间间隔之后，执行一次给定代码
+										2.语法：
+											setTimeout(fun,duration);
+											参数：
+											fun：要执行的代码段
+											duration：间隔时长，默认以毫秒为单位
+											返回值：返回当前定时器的ID
+										3.取消超时调用
+											clearTimeout(timer);
+										在给定的时间间隔内，程序不会阻塞或等待，而是向下执行其他语句
 
 
 
 07： jQuery介绍 jQuery选择器 jQuery操作DOM 
 
 
+window对象
+	1.window对象的属性
+		window对象的属性，都是对象类型的
+		1.screen对象
+			访问screen对象：window.screen  --->  获取屏幕信息
+		2.history对象
+			作用：包含当前窗口访问过的所有url
+			属性和方法：
+			1.属性：
+				length：当前窗口访问过的url数量
+			2.方法：
+				1.back():相当于后退按钮
+				2.forward():相当于前进按钮
+				3.go(num):跳转几步，num取值可正可负
+					正值表示前进几步，负值表示后退
+		3.location对象
+			1.作用：location对象保存的是当前窗口地址栏的信息，也是当前页面的url
+			2.属性：
+				href：可以获取当前窗口正浏览页面的url
+					  如果给href属性赋值，相当于页面调转
+			3.方法：
+				reload(param);  重载页面，相当于刷新操作
+				参数：
+					可选，默认为false,表示从缓存中加载
+					可设置为true，表示从服务器端重新请求，加载页面
+		4.navigator 对象
+			作用：保存浏览器相关的信息
+	2.DOM(document对象)
+		1.DOM：文档对象模型，核心是document对象，封装了所有HTML元素及操作HTML元素的属性和方法
+		2.节点对象：
+			网页在加载的过程中，会自动封装文档中所有的内容，生成一颗DOM树
+			包含HTML标签，文本，注释，每个标签，标签内容，标签属性，注释内容都对应称为节点
+			1.节点分类：
+				1.元素节点 - 网页中的每个标签都是元素节点
+				2.属性节点 - 每个标签中的标签属性都是属性节点
+				3.文本节点 - 标签中的文本内容
+				4.注释节点 - 文档中每段注释，都对应成一个节点
+				5.文档节点 - 整个HTML文档document
+				et:
+					<a href="#">百度</a>
+					元素节点:<a></a>
+					属性节点:href
+					文本节点:百度
+			2.节点操作:
+				1.获取节点
+				2.读取节点内容
+				3.创建节点
+				4.修改节点
+				5.删除节点
+			3.获取标签名获取元素节点：
+				1.根据标签名获取元素节点：
+					document.getElementsByTagName('a');    #获取a标签名
+					参数：标签名     返回值：节点列表(类数组结构，可以通过下标访问)
+				2.根据标签的class属性值，获取元素节点
+					document.getElementsByClassName('c1')
+					参数：class属性值
+					返回值：节点列表
+				3.根据标签name属性值获取元素节点
+					document.getElementsByName('uname')
+					参数：name属性值
+					返回值：节点列表
+				4.根据标签的id属性值获取具体的节点对象
+					document.getElementsByID('box')
+					参数：id属性值
+					返回值：具体的节点对象
+				元素节点常用属性
+				1.innerHTML：用来设置或读取元素节点的标签内容，赋值时，可识别HTML标签
+				2.innerText：设置或读取元素节点的标签内容，赋值时，不能识别HTML标签
+				3.value：用来设置或读取表单元素的值
+				使用注意：
+				根据代码从上到下的执行顺序，获取元素节点的操作，需在body加载完毕之后执行，注意代码书写顺序
+
+
+
+2-00:00
 
 
 
