@@ -642,7 +642,7 @@ CSS：cascading style sheet 层叠样式表
 					1.背景属性按照一定顺序设置
 					2.background-size单独设置
 					3.可以省略属性值，单独设置颜色或者背景图片
-			6.文本相关的属性
+			6.文本相关的属性(font)
 				1.字体相关的属性
 					1.字体大小
 						属性：font-size
@@ -671,7 +671,7 @@ CSS：cascading style sheet 层叠样式表
 						2.取值：style weight size family；
 							注意：
 								1.font-family是必填的
-					6.文本
+					6.文本(text)
 						1.文本颜色：
 							1.属性：color
 							2.取值：颜色值
@@ -697,7 +697,7 @@ CSS：cascading style sheet 层叠样式表
 								注意：
 									文本内容在当前行中始终是垂直居中的
 								特殊取值：无单位的数值，表示当前字体大小的背书
-					7.表格相关的属性
+					7.表格相关的属性(border)
 						1.基础样式是通用的
 						2.独有的CSS属性：
 							1.边框合并
