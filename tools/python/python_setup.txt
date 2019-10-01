@@ -15,6 +15,16 @@ python3 --version && pip3 --version && ansible --version
 python3 -m  venv /opt/pyvenv
 source /opt/pyvenv/bin/activate
 
+ubuntu:
+	sudo apt install python3  python3-pip
+	system -- region&&language -- manage install languages -- install/remove language  --  chinese --apply  （设置input sources）
+	pycharm: ubuntu software  下载 pycharm
+		file -- settings -- editor(font/pyhton可以设置字体和注释(line comment))
+		file -- settings -- project:project_name --project interpreter（设置编译器）					
+	
+
+
+
 WINDOWS：
 sublime 配置 python3
 https://www.cnblogs.com/honkly/p/6599642.html

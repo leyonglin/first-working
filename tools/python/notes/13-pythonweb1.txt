@@ -2,7 +2,81 @@
 
 01： Flask 框架 开发环境建立 模板 
 
-
+1.基本知识点
+	1.静态网页和动态网页
+		1.静态网页：不与服务器动态交互的网页
+		2.动态网页：允许与服务器做动态交互的
+		
+	2.服务器：给用户提供服务的机器称为服务器
+	
+	3.web服务器
+		作用：
+			1.存储web上的信息
+			2.能够接受用户的请求(request)并给出响应(response)
+			3.执行服务器端程序
+			4.具备一定的安全功能
+			
+	4.框架	
+		框架是一个为了解决开放性问题而存在一种程序结构，框架本身提供了一些最基本的功能。
+		
+	5.python web框架
+		1.Flask       轻量级
+		2.Webpy		  轻量级
+		3.Tornado	  异步框架
+		4.Django	  重量级框架
+		
+	6.框架模式
+		1.MTV
+			Models	   	 模型层，主要负责数据库建模
+			Templates	 模板层，用于处理用户的显示内容，如html
+			Views 		 视图，处理与用户打交道的内容(请求和响应)
+		2.MVC
+			Models  	 模型层，主要负责数据库建模
+			Views   	 视图，处理用户的显示内容
+			Controller   控制器，用户与用户交互的部分内容(请求和响应)
+	7.Flask是一个基于Python并且依赖于Jinja2模板引擎和Werkzeug WSGI服务的一个微型框架
+		WSGI：Web Server Gateway Interface(web服务器服务网关接口)
+		Flask是采用MTV的框架模式
+	
+2.安装Flask
+	1.查看已安装的Flask版本
+		1.安装Flask
+			pip3 install flask
+		2.import flask
+			flask.__version__
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 
 02： WEB 表单 数据库 
 
