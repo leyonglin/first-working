@@ -44,15 +44,51 @@
 			pip3 install flask
 		2.import flask
 			flask.__version__
+	2.Flask - 路由(route)
+		1.客户端发送请求给web服务器，web服务器再将请求发给Flask程序实例
+			程序实例需要知道每个url请求所对应的运行代码是谁。所以程序中必须创建一个url请求地址，到python运行函数的一个映射，处理url和函数之间的关系的程序就是路由
+		2.路由表示
+			@app.route('/')
+		3.带参数的路由
+			路由中可以携带参数表示不同数据
+			1.基本带参路由
+				@app.route('/show/<name>')
+				def show(name):
+					return 'xxx'
+			2.带多个参数的路由
+				@app.route('/show/<name>/<age>')
+				def show(name,age):
+					return 'xxx'
+			3.指定参数类型的路由
+				@app.route('/show/<name>/<int:age>')
+				def show(name,age)
+				
+				Flask中所支持的类型转换器
+					类型转换器		作用
+					缺省			字符串，不能有斜杆('/')
+					int:			整型
+					float:			浮点型
+					path:			字符串,可以有斜杠
+					
+			4.多url的路由匹配
+				@app.route('地址1')
+				@app.route('地址2')
+				...
+				def show(name,age):
+			
+			5.路由中设置HTTP请求方法
+				Flask路由也允许设置对应的请求方法(post/get),只有将匹配上请求方法的路径才能交给对应的视图处理函数去处理，所有的路由，默认只接受get请求
+				@app.route('/',methods=['get','post'])
+			6.url的反向解析
+				正向解析：程序自动解析，根据@app.route()中的访问路径，来匹配处理函数
+				反向解析：通过视图处理的函数的名称自动生成对应的访问路径
+				在Flask中实现反向解析:
+					url_for(funName,args)
+						funName:要生成地址的函数名
+						args:该地址中需要的函数
 		
 		
-		
-		
-		
-		
-		
-		
-		
+2-03:30		
 		
 		
 		
