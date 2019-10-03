@@ -40,17 +40,18 @@
 	{% endfor %} -->
 
 <!-- 声明一个宏：接收一个字符串参数 -->
-	{% macro showP(str) %}
+	<!-- {% macro showP(str) %}
 		<p style="background:orange;">{{str}}</p>
 	{% endmacro %}
-<!-- 调用宏，循环遍历params.list -->
+调用宏，循环遍历params.list
 	{% for i in params.list %}
 		{{showP(i)}}
 	{% endfor %}
+ -->
 
-
-
-
-
+<!-- http_request -->
+<!--     <h1>args : {{params.atgs}}</h1>
+    <h1>cookies : {{params.cookies}}</h1>
+ -->
 </body>
 </html>

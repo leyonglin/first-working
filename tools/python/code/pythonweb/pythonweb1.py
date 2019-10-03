@@ -116,10 +116,22 @@ app = Flask(__name__)
 # 	return render_template('01-template.html',params=locals())
 
 #macro
-@app.route('/01-template')
-def for_views():
-	list = ["1","2","3","4","5"]
-	return render_template('01-template.html',params=locals())
+# @app.route('/01-template')
+# def for_views():
+# 	list = ["1","2","3","4","5"]
+# 	return render_template('01-template.html',params=locals())
+
+
+
+#http_request：from flask import request
+@app.rout@app.route('/01-template')
+def request_views():
+	#查看有什么方法
+    print (dir(request)) 
+    #查看http相应方法的内容   
+    args = request.args
+    cookies = request.cookies
+    return render_template('01-template.html',params=locals())
 
 
 
