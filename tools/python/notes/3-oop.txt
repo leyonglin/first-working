@@ -690,6 +690,7 @@ slice函数：help(slice)
 特性属性@property
 	实现其它语言所拥有的getter 和 setter功能
 	作用：用来模拟一个属性，通过@property装饰器，可以对模拟属性的赋值和取值加以控制
+		  Python内置的@property装饰器就是负责把一个方法变成属性调用的：
 	示例：
 		class Student:
 			def __init__(self, s):
