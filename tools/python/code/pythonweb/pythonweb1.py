@@ -2,11 +2,14 @@
 from flask import *
 #将SQLAlchemy模块导入进来
 from flask_sqlalchemy import SQLAlchemy
+#支持原生的mysql操作，伪装成MYSQLdb
+import pymysql
+pymysql.install_as_MySQLdb()
 #将当前运行的主程序构建成Flask应用，以便接受用户的请求(request)并给出响应(response)
 app = Flask(__name__)
 
 #为app指定数据库的配置信息
-app.config['SQLALVHEMY_DARABASE_URI']='mysql//root:123456@192.168.3.5:3306/flask'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:123456@localhost:3306/flask'
 #创建SQLAlchemy的实例，并将app指定给实例,表示程序正在使用的数据库，具备SQLAlchemy中的所有功能
 db = SQLAlchemy(app)
 
@@ -143,15 +146,34 @@ db = SQLAlchemy(app)
 
 
 #models，与数据库交互
+#创建模型类-Models
+#创建Users类，映射到数据库中叫users表
+class Users(db.Model):
+    __tablename__="users"
+#创建自断：id，主键和自增
+    id=db.Column(db.Integer,primary_key=True)
+#创建字段：username，长度为80的字符串，不允许为空，值必须唯一
+    username=db.Column(db.String(80),nullable=False,unique=True)
+#创建字段：age，整数，允许为空
+    age=db.Column(db.Integer,nullable=True)
+#创建字段：email，长度为120的字符串，必须唯一
+    email=db.Column(db.String(120),unique=True)
+#初始化传入的参数，在这里是为了传入的字段值
+    def __init__(self,username,age,email):
+    	self.username = username
+    	self.age = age
+    	self.email = email
+
+#将创建好的实体类映射回数据库
+db.create_all()
+
+
 @app.route('/')
 def index():
+	user = Users('wang teacher','31','aaa@163.com')
+	db.session.add(user)
+	db.session.commit()
 	return "hello world"
-
-
-
-
-
-
 
 
 

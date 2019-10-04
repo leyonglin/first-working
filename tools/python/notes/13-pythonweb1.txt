@@ -372,13 +372,26 @@ Templates模板：相应的网页
 				Time			datetime.time		 时间
 				DateTime		datetime.datetime    日期和时间
 
+			option列选项：
+			选项名           	说明
+			primary_key			如果设置为True表示该列为主键
+			unique				如果设置为True表示该列值唯一
+			index				如果设置为True表示该列要创建索引
+			nullable			如果设置为True表示该列允许为空
+			default				如果设置为True表示该列默认值
+	
+	8.数据库操作
+		1.插入
+			1.创建实体对象
+			2.完成插入				
+				user = Users(字段值1,...)		#创建Users对象并赋值				
+				db.session.add(实体对象)		#将对象通过该方法插入到数据库				
+				db.session.commit()				#提交插入操作
+				  
+		
 
 
-3-01：25
-
-
-
-
+4-00:00
 
 
 
