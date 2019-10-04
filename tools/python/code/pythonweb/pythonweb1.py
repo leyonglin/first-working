@@ -1,6 +1,14 @@
+
 from flask import *
+#将SQLAlchemy模块导入进来
+from flask_sqlalchemy import SQLAlchemy
 #将当前运行的主程序构建成Flask应用，以便接受用户的请求(request)并给出响应(response)
 app = Flask(__name__)
+
+#为app指定数据库的配置信息
+app.config['SQLALVHEMY_DARABASE_URI']='mysql//root:123456@192.168.3.5:3306/flask'
+#创建SQLAlchemy的实例，并将app指定给实例,表示程序正在使用的数据库，具备SQLAlchemy中的所有功能
+db = SQLAlchemy(app)
 
 #@app.route，Flask中的路由定义，只要定义用户的访问路径。'/'表示整个网站的根路径,必须从根开始
 # @app.route('/')
@@ -124,18 +132,29 @@ app = Flask(__name__)
 
 
 #http_request：from flask import request
-@app.rout@app.route('/01-template')
-def request_views():
-	#查看有什么方法
-    print (dir(request)) 
-    #查看http相应方法的内容   
-    args = request.args
-    cookies = request.cookies
-    return render_template('01-template.html',params=locals())
+# @app.route('/01-template')
+# def request_views():
+# 	#查看有什么方法
+#     print (dir(request)) 
+#     #查看http相应方法的内容   
+#     args = request.args
+#     cookies = request.cookies
+#     return render_template('01-template.html',params=locals())
+
+
+#models，与数据库交互
+@app.route('/')
+def index():
+	return "hello world"
+
+
+
+
+
 
 
 
 
 if __name__ == '__main__':
 	#运行Flask应用(启动Flask服务) debug在开发是用True，生产环境用False
-    app.run(debug=True)
+    app.run(debug=True,port=5000,host='0.0.0.0')
