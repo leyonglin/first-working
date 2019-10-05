@@ -152,29 +152,29 @@ db = SQLAlchemy(app)
 #models，与数据库交互
 #创建模型类-Models
 #创建Users类，映射到数据库中叫users表
-class Users(db.Model):
-    __tablename__="users"
-#创建字段：id，主键和自增
-    id=db.Column(db.Integer,primary_key=True)
-#创建字段：username，长度为80的字符串，不允许为空，值必须唯一
-    username=db.Column(db.String(80),nullable=False,unique=True)
-#创建字段：age，整数，允许为空
-    age=db.Column(db.Integer,nullable=True)
-#创建字段：email，长度为120的字符串，必须唯一
-    email=db.Column(db.String(120),unique=True)
-#初始化传入的参数，在这里是为了传入的字段值
-    def __init__(self,username,age,email):
-    	self.username = username
-    	self.age = age
-    	self.email = email
+# class Users(db.Model):
+#     __tablename__="users"
+# #创建字段：id，主键和自增
+#     id=db.Column(db.Integer,primary_key=True)
+# #创建字段：username，长度为80的字符串，不允许为空，值必须唯一
+#     username=db.Column(db.String(80),nullable=False,unique=True)
+# #创建字段：age，整数，允许为空
+#     age=db.Column(db.Integer,nullable=True)
+# #创建字段：email，长度为120的字符串，必须唯一
+#     email=db.Column(db.String(120),unique=True)
+# #初始化传入的参数，在这里是为了传入的字段值
+#     def __init__(self,username,age,email):
+#     	self.username = username
+#     	self.age = age
+#     	self.email = email
 
-    #函数重写
-    def __repr__(self):
-        return "<Users:%r>" % self.username
+#     #函数重写
+#     def __repr__(self):
+#         return "<Users:%r>" % self.username
 
 
-#将创建好的实体类映射回数据库
-db.create_all()
+# #将创建好的实体类映射回数据库,即创建表
+# db.create_all()
 
 
 #访问则会提交下列数据
@@ -245,38 +245,81 @@ db.create_all()
 #     users = db.session.query(Users).all()
 #     return render_template('01-template.html',users=users)
 
-#完成a+b
-@app.route('/02-template',methods=['GET','POST'])
-def update_views():
-    if request.method=='GET':
-        #接收前端传递过来的用户id
-        id = request.args.get('id','')
-        # return "用户的🆔id为："+id
-        #将id对应的应乎的信息读取出来
-        # user = db.session.query(Users).filter(Users.id==id).first()
-        user = db.session.query(Users).filter_by(id=id).first()
-        #将读取出来的实体对象发送到02-template.html上显示,执行修改操作
-        return render_template('02-template.html',user=user)
-    else:
-        #接收前端传递过来的四个值(id,username,age,email)
-        id=request.form.get('id')
-        username = request.form.get('username')
-        age = request.form.get('age')
-        email = request.form.get('email')
-        user = Users(username,age,email)
-        #根据id查询出对应的users信息
-        user=Users.query.filter_by(id=id).first()
-        #将username,age,email的值分别再赋值给user对应的属性
-        user.username=username
-        user.age=age
-        user.email=email
-        #将user的信息保存回数据库
-        db.session.add(user)
-        #响应：重定向回01-template
-        return redirect('/01-template')
+#a-b
+# @app.route('/02-template',methods=['GET','POST'])
+# def update_views():
+#     if request.method=='GET':
+#         #输出查询结果，接收前端传递过来的用户id
+#         id = request.args.get('id','')
+#         # return "用户的🆔id为："+id
+#         #将id对应的应乎的信息读取出来
+#         # user = db.session.query(Users).filter(Users.id==id).first()
+#         user = db.session.query(Users).filter_by(id=id).first()
+#         #将读取出来的实体对象发送到02-template.html上显示,执行修改操作
+#         return render_template('02-template.html',user=user)
+#     else:
+#         #修改，接收前端传递过来的四个值(id,username,age,email)
+#         id=request.form.get('id')
+#         username = request.form.get('username')
+#         age = request.form.get('age')
+#         email = request.form.get('email')
+#         user = Users(username,age,email)
+#         #根据id查询出对应的users信息
+#         user=Users.query.filter_by(id=id).first()
+#         #将username,age,email的值分别再赋值给user对应的属性
+#         user.username=username
+#         user.age=age
+#         user.email=email
+#         #将user的信息保存回数据库
+#         db.session.add(user)
+#         #响应：重定向回01-template
+#         return redirect('/01-template')
 
+# #删除操作
+# @app.route('/06-delete')
+# def delete_views():
+# 	id = request.args.get('id')
+#     user=Users.query.filter_by(id=id).first()	
+# 	db.session.delete(user)
+# 	return redirect('/01-template')
 
+#一对多
+class Course(db.Model):
+	__tablename__="course"
+	id = db.Column(db.Integer,primary_key=True)
+	cname = db.Column(db.String(30))
 
+	def __init__(self,cname):
+		self.cname=cname
+	def __repr__(self):
+		return "<Course:%r>" % self.cname
+
+class Teacher(db.Model):
+	__tablename__="teacher"
+	id = db.Column(db.Integer,primary_key=True)
+	tname = db.Column(db.String(30))
+	tage = db.Column(db.Integer)
+	#增加一列：cource_id，引用自主键表(cource)的主键列(id)
+	course_id = db.Column(db.Integer,db.ForeignKey('course.id'))
+
+	def __init__(self,tname,tage):
+		self.tname=tname
+		self.tage=tage
+	def __repr__(self):
+		return "<Teacher:%r>" % self.tname
+
+#同步回数据库
+db.create_all()
+
+@app.route('/01-template')
+def add_cource():
+	course1 = Course('python')
+	course2 = Course('java')
+	course3 = Course('mysql')
+	db.session.add(course1)
+	db.session.add(course2)
+	db.session.add(course3)
+	return "add ok"
 
 if __name__ == '__main__':
 	#运行Flask应用(启动Flask服务) debug在开发是用True，生产环境用False
