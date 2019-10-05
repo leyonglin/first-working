@@ -1,4 +1,5 @@
 
+#程序流程就是，该程序运行，启动一个应用程序，监听一个端口，客户端访问，则会执行响应的程序。如果执行完的程序中负责渲染的html跳转到其它url，也会先返回该主程序找到对应的执行代码
 from flask import *
 #将SQLAlchemy模块导入进来
 from flask_sqlalchemy import SQLAlchemy
@@ -10,6 +11,8 @@ app = Flask(__name__)
 
 #为app指定数据库的配置信息
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:123456@localhost:3306/flask'
+#自动提交，即省略db.session.commit()
+app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN']=True
 #创建SQLAlchemy的实例，并将app指定给实例,表示程序正在使用的数据库，具备SQLAlchemy中的所有功能
 db = SQLAlchemy(app)
 
@@ -20,6 +23,7 @@ db = SQLAlchemy(app)
 #     return 'hello'
 
 #带一个参数的路由,<hello>和函数形参名称需保持一致
+#报错：ValueError: urls must start with a leading slash，是因为route路径不是从根开始少了一个/,即写成show/<hello>，
 # @app.route('/show/<hello>')
 # def show(hello):
 # 	return "<h1>传递进来的参数为:%s</h1>" % hello
@@ -150,7 +154,7 @@ db = SQLAlchemy(app)
 #创建Users类，映射到数据库中叫users表
 class Users(db.Model):
     __tablename__="users"
-#创建自断：id，主键和自增
+#创建字段：id，主键和自增
     id=db.Column(db.Integer,primary_key=True)
 #创建字段：username，长度为80的字符串，不允许为空，值必须唯一
     username=db.Column(db.String(80),nullable=False,unique=True)
@@ -164,16 +168,113 @@ class Users(db.Model):
     	self.age = age
     	self.email = email
 
+    #函数重写
+    def __repr__(self):
+        return "<Users:%r>" % self.username
+
+
 #将创建好的实体类映射回数据库
 db.create_all()
 
 
-@app.route('/')
-def index():
-	user = Users('wang teacher','31','aaa@163.com')
-	db.session.add(user)
-	db.session.commit()
-	return "hello world"
+#访问则会提交下列数据
+# @app.route('/')
+# def index():
+# 	#创建Users对象并赋值
+# 	user = Users('jiayao','33','aaaa@163.com')
+# 	#添加行数据
+# 	db.session.add(user)
+# 	db.session.commit()
+# 	return "hello world"
+
+
+#从01-template页面获取用户输入数据并提交到数据库
+# @app.route('/01-template',methods=['POST','GET'])
+# def register_views():
+#     if request.method == 'GET':
+#         return render_template('01-template.html')
+#     else:
+#         username = request.form.get('username')
+#         age = request.form.get('age')
+#         email = request.form.get('email')
+#         user = Users(username,age,email)
+#         db.session.add(user)
+#         return "Register ok"
+
+#查询
+# @app.route('/01-template')
+# def query_views():
+#     #测试query()函数
+#     # print(db.session.query(Users))
+#     # print(db.session.query(Users,Course))
+#     # print(db.session.query(Users.username,Users.email))
+#     users = db.session.query(Users).all()        #查询执行函数,下面结果是因为重写__repr__函数
+#     for user in users:
+#         print("姓名:%s，年龄:%d,邮箱:%s" % (user.username,user.age,user.email))
+#     #执行多项查询
+#     query = db.session.query(Users)
+#     user = query.first()
+#     print(user)
+#     count = query.count()
+#     print('共有%d条数据' % count)
+#     return "Query OK"
+
+
+#过滤器函数
+# @app.route('/01-template')
+# def queryall_views():
+#     #查询过滤器函数-filter()
+#     #查询年龄大雨30的Users的信息
+#     result = db.session.query(Users).filter(Users.age > 30).all()
+#     print(result)
+    # return "Query OK"
+
+
+# #使用Models查询数据
+# @app.route('/01-template')
+# def query_models():
+#     user = Users.query.filter(Users.id==1).first()
+#     # user = Users.query.filter_by(id=3).first()
+#     print(user)
+#     return "Query OK"
+
+
+#a在网页中以表格的形式打印出来
+# @app.route('/01-template')
+# def queryall_views():
+#     users = db.session.query(Users).all()
+#     return render_template('01-template.html',users=users)
+
+#完成a+b
+@app.route('/02-template',methods=['GET','POST'])
+def update_views():
+    if request.method=='GET':
+        #接收前端传递过来的用户id
+        id = request.args.get('id','')
+        # return "用户的🆔id为："+id
+        #将id对应的应乎的信息读取出来
+        # user = db.session.query(Users).filter(Users.id==id).first()
+        user = db.session.query(Users).filter_by(id=id).first()
+        #将读取出来的实体对象发送到02-template.html上显示,执行修改操作
+        return render_template('02-template.html',user=user)
+    else:
+        #接收前端传递过来的四个值(id,username,age,email)
+        id=request.form.get('id')
+        username = request.form.get('username')
+        age = request.form.get('age')
+        email = request.form.get('email')
+        user = Users(username,age,email)
+        #根据id查询出对应的users信息
+        user=Users.query.filter_by(id=id).first()
+        #将username,age,email的值分别再赋值给user对应的属性
+        user.username=username
+        user.age=age
+        user.email=email
+        #将user的信息保存回数据库
+        db.session.add(user)
+        #响应：重定向回01-template
+        return redirect('/01-template')
+
 
 
 

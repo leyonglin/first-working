@@ -3,11 +3,11 @@
 <head>
 	<meta charset="utf-8">
 	<title>Title</title>
-	<style>
+<!-- 	<style>
 		h1{
 			color:red;
 		}
-	</style>
+	</style> -->
 </head>
 <body>
 <!-- 	<h1>Templates传参</h1>
@@ -53,5 +53,52 @@
 <!--     <h1>args : {{params.atgs}}</h1>
     <h1>cookies : {{params.cookies}}</h1>
  -->
+
+
+<!-- 获取数据传入数据库 -->
+<!-- <form action="/01-template" method="post">
+<p>
+	用户名称：<input type="text" name="username">
+</p>
+<p>
+	用户年龄：<input type="number" name="age">
+</p>
+<p>
+	电子邮箱：<input type="email" name="email">
+</p>
+<p>
+	<input type="submit">
+</p>
+</form> -->
+
+<!-- a+b获取后台数据以表格形式打印出来 -->
+	<table border="1">
+		<tr>
+			<th>姓名</th>
+			<th>年龄</th>
+			<th>邮箱</th>
+			<th>操作</th>
+		</tr>
+		{% for user in users %}
+		<tr>
+			<td>{{user.username}}</td>
+			<td>{{user.age}}</td>
+			<td>{{user.email}}</td>
+			<td>
+<!-- 				<a href="#">修改</a>
+				<a href="#">删除</a>		 -->
+				<!--a-b修改键连接  -->
+				<a href="/02-template?id={{user.id}}">修改</a>
+				<a href="#">删除</a>-->
+
+			</td>
+		</tr>
+		{% endfor %}
+	</table>
+
+
+
+
+
 </body>
 </html>

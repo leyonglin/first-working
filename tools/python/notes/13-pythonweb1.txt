@@ -387,22 +387,72 @@ Templates模板：相应的网页
 				user = Users(字段值1,...)		#创建Users对象并赋值				
 				db.session.add(实体对象)		#将对象通过该方法插入到数据库				
 				db.session.commit()				#提交插入操作
-				  
+		2.删除已创建的表结构
+			db.drop_all()
+		3.数据库查询
+			1.基于db.session进行查询
+				1.db.session.query()
+					该函数会返回一个query对象，类型位BaseQuery，对象中包含了实体类对应的表中的所有数据
+					可以接收一/多个参数，参数表示要查询的实体对象是谁(Users/Users,Course/Users.username,Users.email)
+				2.查询执行函数
+					目的：在query()的基础上得到最终想要的结果
+					语法：db.session.query(...)查询执行函数()
+					函数              说明
+					all()			  以列表形式返回query()中所有查询函数结果(需要重写__repr__方法)
+					first()           只返回查询结果中的第一条结果，不存在返回null
+					first_or_404()    返回查询结果中的第一条结果，不存在终止当前请求并返回404
+					count()           返回查询结果的数量
+				3.查询过滤器函数
+					作用：在查询的基础上，筛选部分行数据
+					语法：db.session.query(...)过滤器函数(),查询执行函数()
+					过滤器函数 			说明
+					filter()			按指定条件进行过滤(多表，单表，定值，不定值)
+					filter_by()			按等值条件过滤时使用
+					limit()				按限制行数获取
+					order_by()			根据指定条件进行排序
+					group_by()          根据指定条件进行分组
+					过滤器函数详解：
+						1.filter()
+							注意：条件必须由模型类，属性构成
+							1.查询年龄大于30的Users的信息
+								db.session.query(Users).filter(Users.age>30).all()
+							2.查询年龄大于30并且id大于1的Users的信息(and)
+								db.session.query(Users).filter(Users.age>30,Users.id>1).all()
+							3.查询年龄大于30或者id大于1的Users的信息(or_())
+								db.session.query(Users).filter(or_(Users.age>30,Users.id>1)).all()
+							4.查询id为2的Users的信息
+								db.session.query(Users).filter(Users.id==2).all()
+							5.查询email中包含'w'的Users的信息 --模糊查询
+								模糊查询like需要使用实体类中属性提供的like()
+								db.session.query(Users).filter(Users.email.like('w%')).all()
+							6.查询id在[2,3]之间的Users的信息
+								模糊查询in需要使用实体类中属性提供的in_([])
+								db.session.query(Users).filter(Users.id.in_([2,3])).all()
+						2.聚合函数
+							db.session.query(func.聚合函数('列名').label('别名')).all()
 		
+			2.基于Models类进行查询(单表查询)
+				Models.query.查询过滤器函数(条件参数).查询执行函数()
+					user = Users.query.filter(Users.id==1).first()
+					user = Users.query.filter_by(id=3).first()
+				删除：
+					1.查询出要删除的实体对象
+						u=db.session.query(Models).filter_by(xxx).first()
+					2.根据提供的删除方法进行删除
+						db.session.delete(u)
+从业务逻辑上来说，永久性数据(用户)的删除并非永久删除，而是添加了一个权限判断字段(bool类型)。临时性数据可以真正删除
+					3.修改
+						1.查：
+						2.改：
+						3.保存：
 
 
-4-00:00
 
 
 
 
 
-
-
-
-
-
-
+5-02:38
 
 
 
