@@ -8,6 +8,8 @@ import pymysql
 pymysql.install_as_MySQLdb()
 #将当前运行的主程序构建成Flask应用，以便接受用户的请求(request)并给出响应(response)
 app = Flask(__name__)
+#设置sessionID使用的,一般是用来判断(登陆)状态
+app.config['SECRET_KEY'] = "jiayaowoxihuannimemeda"
 
 #为app指定数据库的配置信息
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:123456@localhost:3306/flask'
@@ -283,43 +285,180 @@ db = SQLAlchemy(app)
 # 	db.session.delete(user)
 # 	return redirect('/01-template')
 
-#一对多
-class Course(db.Model):
-	__tablename__="course"
-	id = db.Column(db.Integer,primary_key=True)
-	cname = db.Column(db.String(30))
+# #一对多
+# class Course(db.Model):
+# 	__tablename__="course"
+# 	id = db.Column(db.Integer,primary_key=True)
+# 	cname = db.Column(db.String(30))
+# 	#增加关联属性和反向引用关系
+# 	#关联属性：在course对象中通过那个属性能够得到对应的所有teacher
+# 	#反向引用关系：在teacher对象中通过那个属性能找到它对应的cource(程序运行时)
+# 	#course不直接存在teacher表中，而是程序运行时会teacher添加的一个属性course
+# 	teachers = db.relationship('Teacher',backref='course',lazy='dynamic')
 
-	def __init__(self,cname):
-		self.cname=cname
-	def __repr__(self):
-		return "<Course:%r>" % self.cname
 
-class Teacher(db.Model):
-	__tablename__="teacher"
-	id = db.Column(db.Integer,primary_key=True)
-	tname = db.Column(db.String(30))
-	tage = db.Column(db.Integer)
-	#增加一列：cource_id，引用自主键表(cource)的主键列(id)
-	course_id = db.Column(db.Integer,db.ForeignKey('course.id'))
+# 	def __init__(self,cname):
+# 		self.cname=cname
+# 	def __repr__(self):
+# 		return "<Course:%r>" % self.cname
 
-	def __init__(self,tname,tage):
-		self.tname=tname
-		self.tage=tage
-	def __repr__(self):
-		return "<Teacher:%r>" % self.tname
+# #多对多
+# #一对多
+# #一对一
+# class Teacher(db.Model):
+# 	__tablename__="teacher"
+# 	id = db.Column(db.Integer,primary_key=True)
+# 	tname = db.Column(db.String(30))
+# 	tage = db.Column(db.Integer)
+# 	#增加一列：cource_id，引用自主键表(cource)的主键列(id)
+# 	course_id = db.Column(db.Integer,db.ForeignKey('course.id'))
+#     #一对一,增加关联属性以及反向引用属性
+#     wife = db.relationship('Wife',backref='teacher',uselist=False)
+
+# 	# def __init__(self,tname,tage):
+# 	# 	self.tname=tname
+# 	# 	self.tage=tage
+# 	def __repr__(self):
+# 		return "<Teacher:%r>" % self.tname
+
+
+
+# #一对一
+# class Wife(db.Model):
+#     id=db.Column(db.Integer,primary_key=True)
+#     wname=db.Column(db.String(30))
+#     wage=db.Column(db.Integer)
+#     #增加一个列(外键)：表示引用自Teacher表的主键
+#     teacher_id=db.Column(db.Integer,db.ForeignKey('teacher.id'))
+#     def __init__(self,wname,wage):
+#       self.wname=wname
+#       self.wage=wage
+#     def __repr__(self):
+#         return "<Wife:%r>" % self.wname
+
+# #多对多
+# #使用db.Table创建
+# class Student(db.Model):
+#     __tablename__="student"
+#     id = db.Column(db.Integer,primary_key=True)
+#     sname = db.Column(db.String(30))
+#     sage = db.Column(db.Integer)
+   
+#     # def __init__(self,sname,sage):
+#     #   self.sname=tname
+#     #   self.sage=tage
+#     def __repr__(self):
+#         return "<Student:%r>" % self.sname
+
+
 
 #同步回数据库
-db.create_all()
+# db.create_all()
 
-@app.route('/01-template')
-def add_cource():
-	course1 = Course('python')
-	course2 = Course('java')
-	course3 = Course('mysql')
-	db.session.add(course1)
-	db.session.add(course2)
-	db.session.add(course3)
-	return "add ok"
+#添加数据库数据
+# @app.route('/01-template')
+# def add_cource():
+# 	course1 = Course('python')
+# 	course2 = Course('java')
+# 	course3 = Course('mysql')
+# 	db.session.add(course1)
+# 	db.session.add(course2)
+# 	db.session.add(course3)
+# 	return "add ok"
+# @app.route('/02-register-teacher')
+# def register_teacher():
+# 	teacher = Teacher()
+# 	teacher.tname = '王老师'
+# 	teacher.tage = 30
+# 	#先获取一个course对象
+# 	course=Course.query.filter_by(id=3).first()
+# 	#再将course对象赋值给teacher
+# 	teacher.course=course
+# 	#最后将teacher保存回数据库
+#     	#通过已定义的外键course_id赋值
+#     # teacher.course_id = 1	
+# 	db.session.add(teacher)
+# 	return "register_teacher ok"
+
+#查询
+# @app.route('/03-query-teacher')
+# def query_teacher():
+# 	# #通过course查找对应的所有老师
+# 	# #查找course_id为1的course对象
+# 	# course = Course.query.first_by(id=1).first()
+# 	# print(course.cname)
+# 	# #查找course对应的所有的teacher们
+# 	# teachers = course.teachers.all()
+# 	# for tea in teachers:
+# 	# 	print(tea.tname)
+# 	# return "Query ok"
+
+# 	#通过teacher查找对应的教师名称
+# 	teacher = Teacher.query.filter_by(id=1).first()
+# 	print(teacher.tname)
+# 	#通过teacher的course属性查找对应的course
+# 	course = teacher.course
+# 	print(course.cname)
+# 	return "ok"
+
+#a,一对多
+# @app.route('/04-regTeacher',methods=["GET","POST"])
+# def regTeacher():
+#     if request.method == "GET":
+#         #查询所有课程
+#         courses = Course.query.all()
+#         #将课程列表发送到html页面渲染
+#         return render_template('/01-template.html',courses=courses)
+#     else:
+#         #接收前端传递过来的数据
+#             tname = request.form.get("tname")
+#             tage = request.form.get("tage")
+#             course_id = request.form.get("course")    #该值不知道是什么原因，前端传值一直失败
+#             #将三个数据构建成Teacher对象，再保存回数据库
+#             teacher = Teacher()
+#             teacher.tname =tname
+#             teacher.tage=tage
+#             teacher.course_id=course_id
+#             db.session.add(teacher)
+#             return redirect('/02-template')
+
+# @app.route('/02-template')
+# def showTea():
+#     teachers = Teacher.query.all()
+#     return render_template('02-template.html',teachers=teachers)
+
+
+#存cookie
+@app.route('/01-serCookie')
+def serCookie():
+    resp = make_response('添加cookie成功')
+    #通过resp保存cookie的值到客户端浏览器中
+    resp.set_cookie('uname','jack',60*60*24*365)
+    return resp
+#取cookie
+@app.route('/02-getCookie')
+def getCookie():
+    print(request.cookies)
+    return "获取cookies成功"
+
+
+#存session
+@app.route('/03-setSession')
+def setSession():
+    session['uname'] = 'MrWang'
+    return "Set Session Success"
+#取session
+@app.route('/04-getSession')
+def getSession():
+    uname = session.get('uname','')
+    if uname:
+        return "用户名为"+uname
+    else:
+        return "没找到session信息"
+
+
+
+
 
 if __name__ == '__main__':
 	#运行Flask应用(启动Flask服务) debug在开发是用True，生产环境用False
