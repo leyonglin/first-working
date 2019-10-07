@@ -446,7 +446,7 @@ Templates模板：相应的网页
 						2.改：
 						3.保存：
 
-	关系映射：
+	关系映射：关联属性以及反向引用关系并非添加字段，而是执行的时候会创建的属性
 		一对多
 			语法：
 				1.在"多"的实体中，增加一个列，引用自"一"表的主键列
@@ -474,11 +474,22 @@ Templates模板：相应的网页
 				在数据库中使用第三张表(关联表)
 				1.创建第三张表
 					student_course=db.Table(
-						'student_course',
+						'关联表名',
 						db.Column(id,db.Integer,primary_key=True),
-						db.Column('student_id',db.Integer,db.ForeignKey('student.id')),
-						db.Column('course_id',db.Integer,db.ForeignKey('course.id'))
+						db.Column('外键列名',db.Type,db.ForeignKey('主表.主键')),
+						db.Column('外键列名',db.Type,db.ForeignKey('主表.主键'))
 					)
+				2.关联属性和反向引用关系
+					在任意一个实体中：
+						关联属性名=db.relationship(
+							'关联的实体类',
+							secondary='关联的第三张表名',
+							lazy='dynamic'
+							backref=db.backref(
+								'反向引用属性名',
+								lazy='dynamic'
+								)
+							)
 			  
 
 cookies / cookie
@@ -516,28 +527,6 @@ cookies / cookie
 					3.从session中删除书库
 						del session['key']
 					
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

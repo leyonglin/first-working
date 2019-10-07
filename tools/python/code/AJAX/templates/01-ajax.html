@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Title</title>
+    <<script>
+        function getXhr(){
+            if(window.XMLHttpRequest){ 
+                return new XMLHttpRequest():              
+            }else{
+                return new  ActiveXObject("Microsoft.XMLHTTP")
+            }
+        }
+    </script>
+</head>
+<body>
+    <<button onclick="console.log(getXhr())">创建xhr</button>
+</body>
+</html>

@@ -438,7 +438,9 @@ db = SQLAlchemy(app)
 # #取cookie
 # @app.route('/02-getCookie')
 # def getCookie():
+#     #获取当前站点对应的所有的cookie的值
 #     print(request.cookies)
+#	  #print(request.cookies.get('key'))
 #     return "获取cookies成功"
 
 

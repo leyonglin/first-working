@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Title</title>
+</head>
+<body>
+    <!--a,get GET异步请求 -->
+    <!-- <button onclick="btnAjax()">AJAX请求</button>
+    <div id="show"></div>
+        <script src="/static/js/common.js"></script>
+        <script>
+            function btnAjax(){
+            //1.创建xhr对象
+            var xhr = getXhr();
+            //2.创建请求 - open()
+            xhr.open('get','/02-server',true);
+            //3.设置回调函数 - onreadystatechange--判断状态并且接收数据
+            xhr.onreadystatechange = function(){
+                //监听xhr的状态码，readyState的值为4并且status的值是否为200
+                if(xhr.readyState == 4 && xhr.status == 200){
+                    //接收服务器端的响应数据
+                    var resText=xhr.responseText;
+                    //业务处理
+                    document.getElementById('show').innerHTML = resText;
+                }
+
+            }
+            //4.发送请求 - send()
+            xhr.send(null)
+            }
+        </script>  -->
+</body>
+</html>
