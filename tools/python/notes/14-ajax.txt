@@ -101,27 +101,53 @@ AJAX的核心对象-异步对象(XMLHttpRequest,简称"xhr")
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 02： 使用JSON进行数据交换 Jquery对Ajax的支持 跨域访问
 
-
-
-
-
-
-
+JSON
+	JavaScript Object Notation(JS对象表现形式) 是一种轻量级的数据交换格式，将复杂结构的字符串转换成JS对象的表现形式，方便前端解析
+	JSON的语法
+		1.使用{}表示一个对象
+		2.在{}中使用key:value的形式来表现属性(数据)
+		3.key必须使用""引起来，value是字符串，也必须用""引起来
+		4.多对key:value之间用,隔开
+		5.使用数组[]保存多个对象
+	使用jq循环遍历数组
+		1.$arr.each();
+			$arr:jquery中的数组
+			语法：
+				$arr.each(function(i,obj){
+					i:遍历出来的元素的下标
+					obj：遍历出来的元素
+				});
+			示例：
+				<script>
+					var arr=[JSON]
+					$(arr).each(function(i,obj){
+						console.log("第"+(i+1)+"个元素");
+						console.log("姓名:"+obj.name)
+					})
+		2.$.each()
+			$ -> jquery
+			语法：$.each(arr,function(i,obj){
+			
+			}),
+		
+	后台处理json
+		1.前后台json的处理流程
+			1.在后端先查询出/得到复杂结构的数据
+			2.在后端将负载结构的数据转换成复合json格式的字符串
+			3.在后端将json格式的字符串响应给前端
+			4.在前端将json格式的字符串再转换成js对象/数组
+			5.在前端对js对象/数组进行循环遍历/取值操作
+		2.Python中的Json处理
+			在python中可以使用json类完成json的转换
+			import json
+			json.dumps(元组|列表|字典)
+			return jsonStr
+		3.前端中的JSON处理
+			由于服务器端响应回来的数据是String，所以在前端对复杂结构的数据必须转换成JS对象或数组，然后再取值或遍历
+			在JS中：
+				var js对象 = JSON.parse(JSON字符串)
 
 
 

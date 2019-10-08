@@ -1,0 +1,13 @@
+可关闭服务
+SuperFetch服务(旧版本)  ----  sysmain服务(新版本)    作用是预载之前的行为
+Windows Search服务    作用：window自带文件索引，贼慢
+Connected User Experiences and Telemetry  作用：错误日志收集
+家庭组服务
+
+虚拟内存：内存够用的话，可以关闭
+
+
+尽量卸载不用的程序，或禁止自启
+
+
+控制面板 --- 管理工具 (优化工具)

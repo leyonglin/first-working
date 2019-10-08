@@ -38,7 +38,10 @@ app=Flask(__name__)
 #     age = request.form['age']
 #     return "姓名:%s,年龄:%s" % (uname,age)
 
-
+# #json
+# @app.route('/01-ajax')
+# def register():
+#     return render_template('01-ajax.html')
 
 
 
