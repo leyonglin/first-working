@@ -116,6 +116,7 @@ JSON
 			$arr:jquery中的数组
 			语法：
 				$arr.each(function(i,obj){
+					arr:jq的数组
 					i:遍历出来的元素的下标
 					obj：遍历出来的元素
 				});
@@ -129,7 +130,7 @@ JSON
 		2.$.each()
 			$ -> jquery
 			语法：$.each(arr,function(i,obj){
-			
+				arr:原生的js数组
 			}),
 		
 	后台处理json
@@ -142,17 +143,57 @@ JSON
 		2.Python中的Json处理
 			在python中可以使用json类完成json的转换
 			import json
-			json.dumps(元组|列表|字典)
+			jsonStr = json.dumps(元组|列表|字典)
+			resp = make_response(jsonStr)
 			return jsonStr
 		3.前端中的JSON处理
 			由于服务器端响应回来的数据是String，所以在前端对复杂结构的数据必须转换成JS对象或数组，然后再取值或遍历
 			在JS中：
 				var js对象 = JSON.parse(JSON字符串)
+				
+
+视频2有省份和城市的下拉菜单项目
+视频3：jquery的ajax请求封装
 
 
+跨域(cross domain)
+	1.非同源的网页，相互发送请求的操作就是跨域操作
+		http协议中有一种"同源策略"
+		同源：在多个地址中，相同协议，相同域名，相同端口被视为"同源"
+		在http中，必须是同源地址才能互相发送(异步)请求，非同源的请求会被拒绝(例外：<script>和<img>)
+			localhost 和 127.0.0.1 是非同源的
+	2.通过<script>向服务器发送请求
+		由服务器资源指定前端页面的那个方法来执行响应的数据
+		1.前端中想实现跨域操作时，动态创建script标记
+			var script=document.createElement("script")
+		2.为script元素设置相应的属性
+			1.设置type的值为text/javascript
+			2.设置src的值为请求地址
+		3.发送请求	
+			将创建好的script元素追加到网页中
+				var body = document.getElementsByTagName("body")[0]
+		4.在前端，创建处理数据的响应方法
+			function process(data){
+				...
+			}
+		5.在服务端响应数据
+			特点:指定调用前端的哪个处理方法
+				def xxx():
+					return "process('xxxx')"
+		#动态接收前端方法，用callback
 
-
-
+jquery的跨域
+	jsonp
+		方案一
+		$.axaj({
+			url:'xxx',
+			type:'get/post',
+			dataType:'jsonp',  指定为跨域访问
+			success:function(data){
+				响应内容
+			}
+		});
+		方案二
 
 
 
