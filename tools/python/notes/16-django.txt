@@ -157,15 +157,15 @@ Django中的模板：templates
 						在循环中允许使用forloop内置变量来获取循环的信息
 						forloop.counter
 						forloop.revcounter
+		3.过滤器
+			在变量输出显示之前，对变量的数据进行筛选和过滤
+			语法：{{变量|过滤器:参数}}
 
 
 
-2-02：31
 
 
-
-
-
+2-02.37
 
 
 

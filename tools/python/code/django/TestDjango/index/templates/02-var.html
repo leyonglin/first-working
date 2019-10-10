@@ -35,11 +35,11 @@
 {% for str in list %}
     <h2>
         {% if forloop.first %}
-            style="background:red;"
+            red
         {% elif forloop.last %}
-            style="background:yellow;"
+            yellow
         {%else%}
-            style="background:deeppink;"
+            deeppink
         {% endif%}
         <p>姓名:{{str}}</p>
         <h3>for的内置变量</h3>
