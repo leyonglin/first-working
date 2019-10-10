@@ -54,12 +54,44 @@ MTV：
 				3.kwargs:字典，用来向views传参的，可以省略
 				4.name:为url起别名，在地址反向解析时使用
 	
+配置应用：
+	1.urls.py
+	2.views.py(相同目录下创建自定义试图文件)
+	通过url向视图传参
+		1.使用正则表达式的子组传参，需要多个子组,中间用/隔开
+		2.字典传参
+			dic = {
+				'name':'sasuke',
+				'age':18
+				}
+django中的应用
+	应用就是网站中的一个独立的程序模块
+	在django中，主目录一般不处理具体的请求，主目录一般处理项目的初始化操作以及请求的分发(分布式请求处理)，而具体的请求是由各个应用去处理
+	创建应用：
+		1.指令:
+			python3 manage.py startapp 应用名称
+		2.在setting.py
+			INSTALLED_APPS中追加应用的名称来表示注册应用
+	应用的结构组成：
+		1.migrations文件夹
+			存放数据库的中间文件
+		2.__init__.py 
+			应用的初始化文件
+		3.admin.py
+			应用的后台管理配置文件
+		4.app.py
+			应用的属性配置文件
+		5.models.py
+			Models与模型相关的映射文件
+		6.tests.py
+			应用的单元测试文件
+		7.views.py
+			定义视图处理函数的文件
+	分布式路由系统：
+		在每个应用中分别创建urls.py格式和主路由文件一样
+		目的：为了处理各个应用中的请求路由
 	
-	
-2-01：02
-	
-	
-	
+	访问路径为：host:port/apps/path
 	
 	
 	
@@ -67,6 +99,70 @@ MTV：
 	
 
 02： Django介绍 Django中的应用 模板的加载方式 
+
+Django中的模板：templates
+	1.模板就是要动态呈现给用户的网页
+	  模板引擎是由Django自己提供的，而非Jinja2，与Flask语法稍微不同
+	2.模板设置
+		在setting.py中设置TEMPLATES变量
+		1.BACKEND：指定使用的模板引擎
+		2.DIRS：指定模板的存放目录
+			1.DIRS=[os.path.join(BASE_DIR,'templates')],
+				在项目的根目录的template目录中存放所有的模板
+			2.DIRS=['index.temp','music.temp']
+				在项目的index应用中的temp目录中存放模板及music应用中的temp目录中存放模板
+		3.APP_DIRS:是否要自动搜索应用中的templates目录
+		4.OPTIONS：额外配置
+	3.模板的加载方式
+		1.通过loader对象获取模板，再通过HttpResponse进行响应
+			1.先导入loader
+				from django.template import loader
+			2.通过loader加载模板
+				t = loader.get_template('模板名称')
+				t：从Django中得到的模板对象
+			3.将加载好的模板渲染成字符串,得到html
+				html = t.render()
+			4.通过HttpRequest将字符串进行响应并返回
+				return HttpRequest(html)
+		2.使用render直接加载并相应模板
+			return render(request,'模板名称')
+	4.模板的语法
+		1.变量
+			1.作用：将后端的数据传递到模板进行i西安市
+			2.允许作为变量的数据类型
+				字符串，整数，列表，元组，字典，函数，对象
+			3.变量的语法
+				变量必须封装到字典中才能传递给模板
+				dic = {
+					'name':'王老师',
+					'age':30,}				
+				1.使用loader加载模板
+					t = loader.get_template('模板名称')
+					html = t.render(dic)
+					return HttpRequest(html)
+				2.使用render加载模板
+					return render(request,'模板名称',dic)
+			4.在模板中使用变量
+				{{变量名}}
+		2.标签
+			1.作用：将服务器端的功能嵌入到模板中
+			2.语法：官方文档：https://docs.djangoproject.com/en/1.11/ref/templates/builtins/
+				{% 标签名 %}
+					...
+				{% end标签名 %}
+				
+				常用标签：在
+					if 和 for
+					内置变量：
+						在循环中允许使用forloop内置变量来获取循环的信息
+						forloop.counter
+						forloop.revcounter
+
+
+
+2-02：31
+
+
 
 
 

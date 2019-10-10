@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>
+        Title
+    </title>
+</head>
+<body>
+
+<!-- var_views -->
+<!-- <h3>姓名：{{name}}</h3>
+<h3>性别：{{gender}}</h3>
+<h3>年龄：{{age}}</h3>
+<h3>信息：{{massage}}</h3>
+<h3>list：{{list}}</h3>
+<h3>tup：{{tup}}</h3>
+<h3>tup[0]：{{tup.0}}</h3>
+<h3>dic：{{dic}}</h3>
+<h3>dic.name：{{dic.name}}</h3>
+<h3>function：{{show}}</h3>
+<h3>dog_name：{{dog.name}}</h3>
+<h3>dog.eat()：{{dog.eat}}</h3> -->
+<!-- var_views 打印不存在的变量不会报错，而是空 -->
+<!-- <h3>出生事件：{{times}}</h3> -->
+
+
+<!-- 标签 -->
+<!-- 服务端注释，html的注释不能限制服务端对代码的执行,页面html源码都不会出现 -->
+<!-- {% comment "服务端注释标签" %}
+<h3>tup[0]：{{tup.[0]}}</h3>
+{% endcomment %} -->
+
+<h3>循环for标签</h3>
+{% for str in list %}
+    <h2>
+        {% if forloop.first %}
+            style="background:red;"
+        {% elif forloop.last %}
+            style="background:yellow;"
+        {%else%}
+            style="background:deeppink;"
+        {% endif%}
+        <p>姓名:{{str}}</p>
+        <h3>for的内置变量</h3>
+        <div>counter:{{forloop.counter}}&nbsp;&nbsp;&nbsp;&nbsp;
+        counter0:{{forloop.counter0}}&nbsp;&nbsp;&nbsp;&nbsp;
+        revcounter:{{forloop.revcounter}}&nbsp;&nbsp;&nbsp;&nbsp;
+        revcounter0:{{forloop.revcounter0}}</div>
+    </h2>
+{% endfor %}
+
+
+</body>
+</html>
