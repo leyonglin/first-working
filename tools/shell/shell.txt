@@ -22,7 +22,9 @@
  
  exec 100>&1    将文件描述符100连接到标准输出    exec 1>hello.txt # 将输出重定向到文件hello.txt
  exec 1>&100 100>&- # 将标准输出连接到100    将描述符100关了
- 			  
+ a<b   表示从b重定向输入到a			  
+			  
+			  
  add_db_master_ip () {
  # add master db ip address, run in slave database server
      while true;do

@@ -20,31 +20,34 @@ from django.template import loader
 #     #通过HttpRequest将字符串进行响应并返回
 #     return HttpResponse(html)
 
-def temp_views(request):
-    return render(request,'01-template.html')
+# def temp_views(request):
+#     return render(request,'01-template.html')
 
-def var_views(request):
-    name = "jiayao"
-    age = 30
-    gender = '女'
-    massage = "漂亮也是生产力"
-    tup = ("lin","jiayao","leyong","xihuan")
-    list=["shijian","haoba","you","1"]
-    dic = {
-    'name':'jiayao',
-    'age':30,}
-    show = showMsg()    
-    dog = Dog()
-    dog.name = "memeda"  
-    print(locals())
-    return render(request,'02-var.html',locals())
+# def var_views(request):
+#     name = "jiayao"
+#     age = 30
+#     gender = '女'
+#     massage = "漂亮也是生产力"
+#     tup = ("lin","jiayao","leyong","xihuan")
+#     list=["shijian","haoba","you","1"]
+#     dic = {
+#     'name':'jiayao',
+#     'age':30,}
+#     show = showMsg()    
+#     dog = Dog()
+#     dog.name = "memeda"  
+#     print(locals())
+#     return render(request,'02-var.html',locals())
 
-def showMsg():
-    return "this is function"
+# def showMsg():
+#     return "this is function"
 
-class Dog():
-    name = "jiayao"
-    age = 18
+# class Dog():
+#     name = "jiayao"
+#     age = 18
 
-    def eat(self):
-        return "xihuanwo"
+#     def eat(self):
+#         return "xihuanwo"
+
+def static_views(request):
+    return render(request,'03-static.html')

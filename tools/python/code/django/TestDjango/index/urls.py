@@ -4,6 +4,7 @@ urlpatterns = [
     # url(r'^$',index_views),
     # url(r'^login$',login_views),
     # url(r'^register$',register_views),
-    url(r'^01-temp/$',temp_views),
-    url(r'^02-var/$',var_views),
+    # url(r'^01-temp/$',temp_views),
+    # url(r'^02-var/$',var_views),
+    url(r'^03-static/$',static_views),
     ]

@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Title</title>
+</head>
+<body>
+<h2>使用/static/的方式访问静态资源文件</h2>
+<img src="/static/images/download2.jpg" whdth="200">
+<h2>使用static标签访问静态资源</h2>
+{% load static %}
+<img src="{% static 'images/download2.jpg' %}" width="200">
+</body>
+</html>

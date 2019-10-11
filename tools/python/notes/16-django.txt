@@ -128,7 +128,7 @@ Django中的模板：templates
 			return render(request,'模板名称')
 	4.模板的语法
 		1.变量
-			1.作用：将后端的数据传递到模板进行i西安市
+			1.作用：将后端的数据传递到模板进行渲染
 			2.允许作为变量的数据类型
 				字符串，整数，列表，元组，字典，函数，对象
 			3.变量的语法
@@ -157,30 +157,64 @@ Django中的模板：templates
 						在循环中允许使用forloop内置变量来获取循环的信息
 						forloop.counter
 						forloop.revcounter
-		3.过滤器
+		3.过滤器:https://docs.djangoproject.com/en/2.2/ref/templates/builtins/#built-in-filter-reference
 			在变量输出显示之前，对变量的数据进行筛选和过滤
 			语法：{{变量|过滤器:参数}}
-
-
-
-
-
-2-02.37
-
-
-
-
+				{{value|upper}}
+				{{value|lower}}
+				{{value|add:num}}
+				{{value|floatformat:n}}
+				{{value|truncatechars:n}}
+		4.静态文件：
+			1.无需与服务器进行动态交互的文件
+			2.在django的静态文件的处理
+				在setting.py中设置有关静态文件的信息
+				1.设置静态文件的访问路径
+					在浏览器中通过那个地址能够找到静态文件
+					STATIC_URL = '/static/'
+				2.设置静态文件的存储路径
+					指定静态文件要保存在服务器那个目录处
+					STATICFILES_DIRS=(os.path.join(BASE_DIR,'static'),)
+				3.静态文件目录的存放位置：
+					1.在项目的根目录处创建一个static目录，用于保存静态文件
+					2.每个应用中也可以创建一个static目录，用于保存静态文件
+						访问路径:localhost:port/static/..
+			3.访问静态文件
+				1.直接访问静态文件
+					<img src="static/images/jiayao.jpg">
+				2.使用{% static %}
+					1.使用之前需要通过{% load static %} 加载static
+					2.使用静态资源时
+						<img src="{% static 'images/jiayao.jpg'%}">
+				
+			
 
 
 
 
 03： 模板中的语法（变量，标签，过滤器，静态文件，继承） ORM 创建和使用模型
 
+模板的继承
+	1.语法
+		1.在父模板中
+			必须标识出来哪些内容在子模版中允许被修改
+			标签:
+				{ % bloc 块名 % }
+					... ...
+				{ % endblock % }
+				block作用：
+					1.在父模板中没有任何影响，正常显示
+					2.在子模版中，允许被修改，但如果不做任何修改，则显示父模板内容
+		2.在子模版中
+			1.指定继承自哪些父模板
+				{% extends '父模板名称' %}
+			2.通过black标签，改写属于自己的内容
+				{% block 块名 %}
+				{% endblock %}
 
 
 
-
-
+1-01-20
 
 
 
