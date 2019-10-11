@@ -211,14 +211,10 @@ Django中的模板：templates
 			2.通过black标签，改写属于自己的内容
 				{% block 块名 %}
 				{% endblock %}
+			
 
 
-
-1-01-20
-
-
-
-
+2-00-00
 
 
 

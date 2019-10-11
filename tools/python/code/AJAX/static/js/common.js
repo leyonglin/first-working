@@ -15,3 +15,14 @@ function createXhr(){
 	}
 	return xhr;
 }
+
+
+<script src="/static/js/jquery-1.11.3.js"></script>
+{% block js %}
+	<script>
+		$(function(){
+			$("#btnRegister").click(function(){
+				location.href='/register';
+			});
+		});
+	</script>
