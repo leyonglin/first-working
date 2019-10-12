@@ -211,18 +211,103 @@ Django中的模板：templates
 			2.通过black标签，改写属于自己的内容
 				{% block 块名 %}
 				{% endblock %}
+反向解析：通过别名访问到url
+	1.在模板template上做反向解析
+		1.基本解析
+			{% url '别名' %}
+		2.带参的解析
+			{% url '别名' '参数1' '参数...' %}
+	2.在视图view上做反向解析
+		1.基本解析
+			reverse('别名')
+			url就是通过别名解析出来的地址
+		2.带参数的解析
+			reverse('别名',args=(参数1,参数2,...))
 			
+模型Models：
+	1.根据数据表结构而创建出来的class
+	
+	2.ORM：对象关系映射
+		三大特征：
+			1.表到类的映射
+			2.数据类型的映射
+			3.关系映射
+			
+	3.创建和配置数据库
+		1.创建数据库-webdb
+			create database webdb default charset utf8 collate utf8_general_ci;
+		2.Django的数据库配置
+			在setting.py中配置数据库的信息
+			ENGINE：指定要连接的数据库的驱动引擎
+				'ENGINE': 'django.db.backends.mysql',
+			NAME:指定要连接到的数据库的名称
+				数据库名
+		3.  USER PASSWORD  HOST PORT
+			以mysql数据库示例：
+				DATABASES = {
+					'default': {
+						'ENGINE': 'django.db.backends.mysql',
+						'NAME': 'webdb',
+						'USER': 'root',
+						'PASSWORD': 123456,
+						'HOST': 'localhost',
+						'PORT': 3306,
+					}
+				}
+			（缺少模块在setting.py同级下的__init__里面导入）
+			
+	4.数据库的同步操作
+		1.  ./manage.py makemigrations
+			作用：将每个应用下的models.py文件生成一个数据库的生成文件，并将中间文件保存到migrations的目录下
+		2.  ./manage.py migrate
+			作用： 将每个应用下的migrations目录中的中间文件同步到数据库中
+			
+	5.编写Models：https://docs.djangoproject.com/en/1.11/topics/db/models/
+		class Publisher(models.Model):
+			name = models.CharField(max_length=30)
+			属性 = models.FILETYPE(FIELD_OPTIONS)
+				FILETYPE:字段类型
+					BooleanField:编程语言是True/False,数据库是1/0
+					CharField：varchart
+					DateField：date(年月日)
+					DateTimeField：datetime(时分秒)
+					DecimalField：decimal类型，小数
+					FloatField：float
+					IntegerField：int
+					EmailField：varchart
+					URLField：varchart
+					ImageField : varchart 图片路径
+						image=models.ImageField(upload_to='images/')
+						
+				FIELD_OPTIONS:字段选项/说明
+					default:
+					null:
+					db_index:
+					db_column:指定当前属性映射到表中的类名
+					
 
 
-2-00-00
+
+
+
+
+04： 编写Models 数据的导入和导出及版本切换 通过模型增加、查询、修改、删除数据
+
+
+	6.相关指令
+		1.版本切换指令
+			./manage.py migrate 应用名称 版本号
+		2.通过数据库自动导出models类(容易出问题)
+			./manage.py inspectdb > file_name.py
+			
+	7.模型中的CRUD
 
 
 
 
 
-04： 编写Models 数据的导入和导出及版本切换 通过模型增加、查询、修改、删除数
-据
 
+1-01:14
 
 
 
