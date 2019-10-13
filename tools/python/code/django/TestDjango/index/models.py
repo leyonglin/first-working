@@ -15,6 +15,9 @@ class Publisher(models.Model):
     country = models.CharField(max_length=50)
     website = models.URLField()
 
+    def __repr__(self):
+        return "<Author:%r>" % self.name
+
 #追加两个表,如果需要修改/删除表，在实体类这里修改/删除
 class Author(models.Model):
     name = models.CharField(max_length=30)

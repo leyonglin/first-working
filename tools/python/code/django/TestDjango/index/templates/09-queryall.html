@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Title</title>
+</head>
+<body>
+    <table border="1" width="400">
+        <thead>
+            <tr>
+                <th>姓名</th>
+                <th>年龄</th>
+                <th>邮箱</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for au in authors %}
+            <tr>
+                <td>{{au.name}}</td>
+                <td>{{au.age}}</td>
+                <td>{{au.email}}</td>
+                <td>
+                    <a href="#">修改</a>
+                    {# /delete/一位及一位以上数字 #}
+                    <a href="/10-delete/{{au.id}}">删除</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

@@ -88,7 +88,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'webdb',
         'USER': 'root',
-        'PASSWORD': 123456,
+        'PASSWORD': 'abcde',
         'HOST': 'localhost',
         'PORT': 3306,
     }

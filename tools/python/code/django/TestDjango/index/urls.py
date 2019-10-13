@@ -8,3 +8,17 @@ urlpatterns = [
     # url(r'^02-var/$',var_views),
     url(r'^03-static/$',static_views),
     ]
+
+urlpatterns += [
+    # url(r'^06-add/$',add_views),
+    # url(r'^07-query/$',query_views),
+    # url(r'^08-update/$',update_views),
+    # url(r'^09-queryall/$',queryall_views),
+    # url(r'^10-delete/(\d+)/$',delete_views),
+    ]
+
+urlpatterns += [
+    url(r'^11-homework/$',homework_views),
+    
+
+    ]

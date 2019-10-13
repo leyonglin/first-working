@@ -301,16 +301,112 @@ Django中的模板：templates
 			./manage.py inspectdb > file_name.py
 			
 	7.模型中的CRUD
-
-
-
-
-
-
-1-01:14
-
-
-
+		1.增加数据
+			1.Entry.objects.create(属性值=值, ...)
+				Entry：实体类
+				返回值：
+					插入成功返回创建好的实体对象，插入失败返回None
+			2.创建一个Entry对象，并通过save()进行保存
+				obj=Entry(属性=值，...)
+				或obj.属性 = 值（修改）
+				obj.save()
+				无返回值，保存成功后，obj会被重新赋值
+			3.通过字典创建Entry对象，并通过save()进行保存
+				dic = {
+					'属性值1':'值1'
+					...
+				}
+				obj = Entry(**dic)
+				obj.save()
+		2.查询数据：https://docs.djangoproject.com/en/1.11/ref/models/querysets/
+			通过Entry.objects调用查询接口函数
+				Entry.objects.all()
+				Entry.objects提供了对该实体的所有的数据的查询
+			所有的接口函数，都可以通过一个query属性来得到所对应的sql语句
+				Entry.objects.all().query
+			1.获取所有的查询结果
+				方法:all()
+				用法：Entry.objects.all()
+				返回:QuerySet(列表，查询结果集)
+			2.查询指定列
+				方法：value()
+				返回：字典的查询结果集QuerySet
+			3.查询返回指定列
+				方法：values_list()
+				作用：将数据封装到元组中再封装到列表中
+			4.排序
+				方法：order_by()
+				语法：用法：Entry.objects.order_by('列...')  #默认升序排序，在列前加-表示降序
+			5.查询并只能返回一条结果
+				方法:get()   			#不存在或多余一条数据会异常
+			6.根据条件查询部分行
+				方法：filter(条件)
+				返回：QuerySet
+			7.非等值条件需要使用Field Lookups(查询谓词)
+				语法：Entry.objects.filter(属性__查询谓词=值)
+				注意：
+					1.每个查询谓词都是一个独立的功能条件
+						__exact: =
+						__gt:
+						__gte:
+						__year:
+						__contains:模糊查询 "%xxx%"
+						__range:  模糊查询 between  and
+						...
+					2.所有支持条件查询的位置处都支持查询谓词
+						filter() , get() , exclude()
+					查询处age小于等于30的Author的信息
+						Author.objects.filter(age__lte=30)
+					查询处所有包含"wang"的Author的信息
+						Author.objects.filter(name__contains('wang'))
+					查询处date的时间是2015年以后book信息
+						以后：book.objects.filter(date__year__gte=2015)
+						等于：book.objects.filter(date__year=2015）
+			8.取反
+				方法：exclude(条件)
+				Author.objects.exclude(条件)
+				
+			9.聚合函数(不带分组)
+				方法：aggregate(列名=聚合函数('列'),...)
+					Blog.objects.aggregate(number_of_entries=Count('entry'))
+				聚合函数
+				avg()
+				count()
+				sum()
+				min()
+				max()
+				
+			10.聚合查询(带分组)
+ 分组：当表中的列和聚合函数并用时，需要对表中的列进行分组，因为列有多个值，聚合函数没有只返回一个值
+ 使用Where约束来自数据库的数据，Where是在结果返回之前起作用的，Where中不能使用聚合函数。Having是一个过滤声明，是在查询返回结果集以后对查询结果进行的过滤操作，在Having中可以使用聚合函数。
+				方法：aggregate(列名=聚合函数('列'),...)
+				按id分组查询平均年龄
+					Author.objects.value('id').annotate(avgAhe=Avg('age')).all()
+				示例：	
+					Author.objects
+					.filter(id_gte=3)     				#where子句
+					.values('isActive')  			    #group by 子句(分组)
+					.annotate(avgAge=Avg('age'))        #查询聚合函数
+					.filter(avgAge_gte=30)				#having 子句
+					.order_by('排序列')					#order by 子句
+		3.修改数据
+			1.修改单个实体
+				1.查
+					通过get()查询出要修改的实体
+				2.改
+					通过实体对象的属性赋值
+				3.保存
+					通过实体对象save()方法保存数据回数据库
+			2.批量修改数据
+				调用QuerySet的update(属性=值，...)实现批量修改
+		4.删除数据
+			调用实体对象/查询结果集的delete()完成删除
+			1.删除单个对象
+				au=Author.objects.get(id=1)
+				au.delete()
+			2.批量删除
+				aulist = Author.objects.all()
+				aulist.delete()
 
 
 
@@ -319,13 +415,18 @@ Django中的模板：templates
 
 05： F()操作与Q()操作 用后台管理Models 一对多映射查询 
 
+	查询年龄大于平均年龄的
+	sql语句：
+		select * from index_author
+		where age > (select avg(age) from index_author);
+	年龄都加上10
+	sql语句
+		update index_author set age=age+10;
 
 
 
 
-
-
-
+1-00:52
 
 
 
