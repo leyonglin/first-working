@@ -51,8 +51,8 @@ from .models import *
 #     def eat(self):
 #         return "xihuanwo"
 
-def static_views(request):
-    return render(request,'03-static.html')
+# def static_views(request):
+#     return render(request,'03-static.html')
 
 # def add_views(request):
     # #通过entry.objects.create()实现数据的增加
@@ -129,8 +129,84 @@ def static_views(request):
 #     #使用redirect()完成重定向
 #     return HttpResponseRedirect('/09-queryall')
 
-def homework_views(request):
-    #查询年龄大于平均年龄的数据
-    avgAge = Author.objects.aggregate(avgAge=Avg('age'))['avgAge']
-    print(avgAge)
-    return HttpResponse('query ok') 
+# def homework_views(request):
+#     #查询年龄大于平均年龄的数据
+#     avgAge = Author.objects.aggregate(avgAge=Avg('age'))['avgAge']
+#     print(avgAge)
+#     return HttpResponse('query ok') 
+
+
+# def oto_views(request):
+#     #通过夫人查找对应的author信息
+#     # wife = Wife.objects.get(name = 'jiayao')
+#     # author = wife.author
+#     #通过author查找wife的信息
+#     author = Author.objects.get(name = 'linlaoshi')
+#     wife = author.wife
+
+#     print("夫人:%s,年龄:%d" % (wife.name,wife.age))
+#     print("作者:%s,年龄:%d" % (author.name,author.age))
+#     #通过王老师查找对应的wife信息
+#     return HttpResponse('query ok')
+
+# def otm_views(request):
+#     #查询id为1的图书信息，并查找对应的出版社
+#     # book = Book.objects.get(id=1)
+#     # publisher = book.publisher
+#     # print("书名:%s,出版时间：%s" % (book.title,book.publicate_date))
+#     # print("出版社:%s,城市:%s" % (publisher.name,publisher.city))
+
+#     #查询id为1的出版社的信息，并查找出对应的所有书籍
+#     pub = Publisher.objects.get(id=2)
+#     books = pub.book_set.all()
+#     print("出版社:%s,城市:%s" % (pub.name,pub.city))
+#     for book in books:
+#         print("书名:%s,出版时间：%s" % (book.title,book.publicate_date))
+#     return HttpResponse("otm ok")
+
+# def mtm_views(request):
+#     #通过Book查询Author
+#     book = Book.objects.get(id=3)
+#     print('书名:' + book.title)
+#     authors = book.authors.all()
+#     print("编写作者")
+#     for au in authors:
+#         print("姓名"+au.name)
+#     print("*************")
+#     #通过Author查询Book
+#     author = Author.objects.get(name="linlaoshi")
+#     print('作者姓名:'+author.name)
+#     books = author.book_set.all()
+#     print("编写的书籍:")
+#     for book in books:
+#         print(book.title)
+#     return HttpResponse('mtm ok')
+
+# def objects_views(request):
+#     count = Author.objects.isactive_count()
+#     return HttpResponse("isActive为True的数量为:%d" % count)
+
+
+# def request_views(request):
+#     print(dir(request))
+#     scheme = request.scheme
+#     path = request.path
+#     body = request.body
+#     full_path = request.get_full_path()
+#     host = request.get_host()
+#     method = request.method
+#     get = request.GET
+#     post = request.POST
+#     cookies = request.COOKIES
+#     meta = request.META
+#     return render('01-template.html',locals())
+    # return HttpResponse(scheme)
+
+
+#http://192.168.3.5/02-request/?year=2018&month=10&day=11
+def request02_views(request):
+    year = request.GET.get('year','1900')
+    month = request.GET.get('month','01')
+    day = request.GET.get('day','01')
+    print("传递的数据：%s年%s月%s日" %  (year,month,day))
+    return HttpResponse("get ok")

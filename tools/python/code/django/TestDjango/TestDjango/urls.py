@@ -31,8 +31,9 @@ Including another URLconf
 
 #主路由文件，配置分布式路由系统
 from django.conf.urls import url,include
-
+from django.contrib import admin
 urlpatterns = [
+    url(r'^admin/', admin.site.urls),
     url(r'^music/',include('music.urls')),
     url(r'^news/',include('news.urls')),
     url(r'^sport/',include('sport.urls')),

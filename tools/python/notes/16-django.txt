@@ -265,9 +265,10 @@ Django中的模板：templates
 	5.编写Models：https://docs.djangoproject.com/en/1.11/topics/db/models/
 		class Publisher(models.Model):
 			name = models.CharField(max_length=30)
+			picture = models.ImageField(upload_to='/static/upload/...')
 			属性 = models.FILETYPE(FIELD_OPTIONS)
 				FILETYPE:字段类型
-					BooleanField:编程语言是True/False,数据库是1/0
+					BooleanField:编程语言是True/False,数据库是1/0  (后台显示为勾选)
 					CharField：varchart
 					DateField：date(年月日)
 					DateTimeField：datetime(时分秒)
@@ -277,7 +278,7 @@ Django中的模板：templates
 					EmailField：varchart
 					URLField：varchart
 					ImageField : varchart 图片路径
-						image=models.ImageField(upload_to='images/')
+						image=models.ImageField(upload_to='images/') #路径不存在会自动创建
 						
 				FIELD_OPTIONS:字段选项/说明
 					default:
@@ -419,20 +420,242 @@ Django中的模板：templates
 	sql语句：
 		select * from index_author
 		where age > (select avg(age) from index_author);
+	model：Author.objects.aggregate(avgAge=Avg('age'))['avgAge']
 	年龄都加上10
 	sql语句
 		update index_author set age=age+10;
+	model：Author.objects.all().update(age=F('age')+10)
+F查询和Q查询
+	1.F()
+		作用：在执行过程中获取某列的值
+		语法：
+			from django.db.models import F
+			F('列名')：得到对应列的值
+			Author.objects.all().update(age=F('age')+10)
+	2.Q()
+		作用：在查询条件中可以完成or操作
+		from django.db.models import Q
+		filter.(Q(条件1)|Q(条件2))
 
-
-
-
-1-00:52
-
-
+原生raw的数据库操作方法
+	1.查询
+		函数：raw(sql语句)
+		语法：Entry.objects.raw(sql)
+		返回：QuerySet
+	2.增删改
+		from django.db import connection
+		def doSQL(request):
+			with connection.curso() as cursor:
+				sql = "update index_author set age=age+10"
+				cursor.execute(sql)
+				return "ok"
+		
+使用后台管理Models
+	1.后台的配置
+		url：localhost:8000/admin
+		创建后台管理员(超级用户)：
+		./manage.py createsuperuser
+		
+	2.组是权限的集合，用户权限一般来自组
+	
+	3.Models的基本管理
+		1.在应用中的admin.py中注册要管理的实体类
+			1.admin.py
+				作用：注册要管理的Models类，只有注册后才能管理
+			2.注册Models
+				from .models import *
+				admin.site.register(Entry)
+			3.重写models的str修改后台数据的可读性增高
+				    def __repr__(self):
+						return "<Author:%r>" % self.name
+			4.为实体类中的属性增加字段选项 - verbose_name
+				用于修改显示的字段名
+					class Author(models.Model):
+						name = models.CharField(max_length=30,verbose_name="姓名")
+						
+			5.通过Models类的内部类Meta定义其展现形式
+				class Author(models.Model):
+					... ...
+					class Meta:
+						1.db_table : 指定该实体类映射到的表的名称(该属性设置完成需要实时同步回数据库)
+						2.verbose_name : 定义类在admin中显示的名字(单数)
+						3.verbose_name_plural : 定义类在admin中显示的名字(复数)
+						4.ordering ： 指定数据在后台管理中显示的排序方式，取值为一个列表，默认升序，降序使用-
+			6.Models的高级管理
+				1.在admin.py中创建高级管理类并注册
+					1.定义EntryAdmin类，继承自admin.ModelAdmin
+						class AuthorAdmin(admin.ModekAdmin):
+							pass
+					2.注册高级管理类
+						admin.site.register(Entry,EntryAdmin)
+					3.允许再EntryAdmin中增加的属性
+						1.list_display
+							作用：定义在列表页上显示的字段们
+							取值：由属性名组成的元组或列表
+						2.list_display_links
+							作用：定义在列表页上也能链接到详情页的字段们
+							取值：list_display
+						3.list_editable
+							作用：定义在列表页上就能够修改的字段们
+							取值：在1而不在2中
+						4.search_fields
+							作用：定义顶部搜索栏中允许搜索的字段值们
+							取值：由属性名组成的元组或列表
+						5.list_filter
+							作用：列表页的右侧增加过滤器实现快速筛选
+							取值：由属性名组成的元组或列表(分组)
+						6.date_hierarchy
+							作用：列表页的顶部增加一个时间选择器
+							取值：必须是DateField或者DateTimeField
+						7.fields
+							作用：在详情页面中，指定要显示哪些字段并按照什么样的顺序显示
+							取值：由属性名组成的元组或列表
+						8.fieldsets
+							作用：在详情页面中对字段们进行分组显示
+							注意：fieldsets和fields不能共存
+							取值：collapse:折叠
+								fieldsets = (
+									#分组1
+									('分组名称1',{
+										'fields':('属性',...)
+										'classes':('collapse',)
+									}),
+									...
+								)
+关系映射： 		
+	1.一对一映射
+		1.在关联的两个类中，任意一个类都可以增加对另一个类的引用
+		2.语法：
+			属性 = models.OneToOneField(Entry)
+		3.过程：在数据库中会生成一个外键(author_id)列在wife表中，会引用在author表的主键(在wife中添加一个author的字段)
+				在Author中会增加一个隐式属性 - wife(运行时产生)，来表示author所对应的wife(实质就是反向引用属性)
+				在wife能选择author，author不能找到wife
+		4.查询：
+			1.正向查询：通过wife找author
+				特点：通过自定义的关联属性查找对应的实体
+				wife = Wife.objects.get(id=1)
+				author = wife.author
+			2.反向查询：通过Author找Wife
+				特点：通过反向引用属性查找对应的实体
+				author = Author.objects.get(id=1)
+				wife = author.wife
+						
+	2.一对多映射
+		1.  "一"个出版社可以出版"多"本书
+			在"多"表中增加对"一"表的外键引用
+			在"多"实体中增加对"一"实体的引用
+			在"多"实体中增加：
+				属性 = models.ForeignKey(Entry)
+		2.过程：
+			Book表中增加一个外键列publisher_id，引用自Publisher表中的主键
+			在实体类中会有一个publisher属性来表示对应的Publisher的对象
+			Publisher中会由一个隐式属性 - book_set(运行时产生)，用来表示该publisher对应的所有的Book对象的查询
+		3.查询
+			book = Book.objects.get(id=1)
+			publisher = book.publisher
+			print("书名:%s,出版时间：%s" % (book.title,book.publicate_date))
+			print("出版社:%s,城市:%s" % (publisher.name,publisher.city))
+				
+			#查询id为1的出版社的信息，并查找出对应的所有书籍
+			pub = Publisher.objects.get(id=2)
+			books = pub.book_set.all()
+			print("出版社:%s,城市:%s" % (pub.name,pub.city))
+			for book in books:
+				print("书名:%s,出版时间：%s" % (book.title,book.publicate_date))		
+			
+			
 
 
 
 06： 多对多映射查询 HttpRequest使用 csrf跨站点攻击 
+
+	3.多对多映射
+		1.在关联的两个类的任意一个类中，(book)增加：
+			属性 = models.ManyToManyField(Entry)
+		
+		2.正向引用：在Book中通过authors来表示对应的所有的书记
+		  反向引用：在Author中通过book_set(运行时产生)来表示对应的所有的作者们的查询	
+
+		3.查询：
+			正向查询：通过Book查询Author
+				authors = book.authors.all()
+			反向查询：通过Author查询Book
+				books = author.book_Set.all()
+
+自定义查询对象 - objects
+	objects 属性的类型为 models.Manager
+	1.声明EntryManager类，继承自models.Manager,允许在EntryManager中增加自定义的函数
+		class EntryManager(models.Manager):
+			def 函数名(self,自定义参数):
+				...
+				
+	2.使用EntryManager对象覆盖Models类中原有的objects(为什么实体类的对象/实例有objects方法，因为有默认的方法)
+		class Entry(models.Model):
+			objects = EntryManager()
+
+
+二、HttpRequest - 请求
+
+	1.HttpRequest:
+		对请求对象的封装，里面封装的是请求过程从的所有信息
+		在django中HttpResponst被封装成request对象并封装到视图处理函数中，在调用视图时自动传入
+	2.HttpRequest主要内容:
+		request.scheme：请求协议
+		request.body：请求主体
+		request.path：请求路径
+		request.get_full_path()：请求完整路径
+		request.get_host()：请求主机地址/域名
+		request.method：请求方式
+		request.GET
+		request.POST
+		request.COOKIES：封装了cookies中的所有数据
+		request.META：元数据
+			request.META.HTTP_REFERER:封装了请求的源地址
+	3.获取请求提交的数据
+		1.get请求
+			1.获取数据
+				request.GET['名称']
+				request.GET.get('名称')
+				request.GET.getlist('名称')
+			2.使用get方式提交数据的场合
+				1.表单中method为get的时候
+				2.地址栏上拼查询字符串的时候
+					1.locahost/path/?id&name=xxx
+					2.localhost/path/2018/10
+		2.post请求
+			
+
+
+
+
+2-02:37
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

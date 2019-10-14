@@ -6,7 +6,7 @@ urlpatterns = [
     # url(r'^register$',register_views),
     # url(r'^01-temp/$',temp_views),
     # url(r'^02-var/$',var_views),
-    url(r'^03-static/$',static_views),
+    # url(r'^03-static/$',static_views),
     ]
 
 urlpatterns += [
@@ -15,10 +15,20 @@ urlpatterns += [
     # url(r'^08-update/$',update_views),
     # url(r'^09-queryall/$',queryall_views),
     # url(r'^10-delete/(\d+)/$',delete_views),
+    # url(r'^11-homework/$',homework_views),
     ]
 
 urlpatterns += [
-    url(r'^11-homework/$',homework_views),
-    
+    # url(r'^13-oto/$',oto_views),
+    # url(r'^14-otm/$',otm_views),
+    # url(r'15-mtm/$',mtm_views),
+    ]
 
+urlpatterns += [
+    # url(r'^16-objects/$',objects_views),
+    ]
+
+urlpatterns += [
+    # url(r'^01-request/$',request_views),
+    url(r'^02-request',request02_views),
     ]
