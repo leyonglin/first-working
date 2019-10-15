@@ -623,43 +623,56 @@ F查询和Q查询
 					1.locahost/path/?id&name=xxx
 					2.localhost/path/2018/10
 		2.post请求
+			1.获取数据
+				request.POST['名称']
+				request.POST.get('名称')
+				request.POST.getlist('名称')
+			2.使用POST方式提交数据的场合
+				1.使用表单提交时可以使用post
+			3.CSRF verification failed(403)
+CSRF:Cross-Site Request Forgery(跨站点请求伪装)
+				解决方案：
+				1.取消csrf的验证
+					删除settings.py 中 MIDDLEWARE -- django.middleware.csrf.CsrfViewMiddleware
+				2.在处理函数上增加一个装饰器
+					@csrf_protect
+				3.可以在表单中的第一行增加：
+					{% csrf_token %}
+
+使用forms模块处理表单
+	1.forms模块的作用：通过forms模块，允许将表单与class结合(表单与实体类结合)，允许通过class生成表单
+	2.使用forms模块
+		1.在应用中创建forms.py文件
+		2.导入forms模块
+			from django import forms
+		3.创建class:一个class对应生成一个表单
+			class ClassName(forms.Form):
+				pass
+		4.创建属性
+			一个属性对应到表单中生成一个控件
+	3.在模板中解析form对象
+		1.在模板中
+			1.自定义<form></form>标签
+			2.自定义 提交按钮
+		2.处理方法
+			1.在views中创建forms的对象并发送到模板上
+				form = RemarkForm()
+				return render(request,'xxx.html',locals())
+			2.在模板中进行解析
+				1.手动解析
+					{% for field in form %}
+						{{field}}:表示独立的控件
+						{{field.label}}:表示label属性中的文本
+					{% endfor %}	
+				2.自动解析
+					{{form.as_p}}			
+						将form对象中的每个属性使用P标记包裹起来再显示	
+					{{form.as_ul}}			
+						将form对象中的每个属性解析成li标记，但必须自己提供ol或ul			
+					{{form.as_table}}			
+						将form对象中的每个属性解析成tr标记，但必须自己提供table			
 			
-
-
-
-
-2-02:37
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+			
 
 
 
@@ -668,22 +681,134 @@ F查询和Q查询
 
 07： 使用 forms 模块 模板中解析 form 对象 forms高级处理 
 
+错误：TypeError: metaclass conflict: the metaclass of a derived class must be a (non-strict) subclass of the metaclasses of all its bases
+原因：继承列表有误
+
+1.使用form模块
+	1.通过forms.Form 获取表单数据 - POST
+		1.通过forms.Form的构造函数来接收post数据
+			form = xxxForm(request.POST)
+		2.必须使form通过验证后再获取数据
+			form.is_valid()
+			返回True则通过所有验证，False则未通过验证，不能正常取值
+		3.获取表单中的数据
+			通过form.cleaned_data 来获取提交的数据(字典)
+	2.forms模块的高级处理
+		将Models和Forms结合到一起使用
+		1.在forms.py中创建class，继承自forms.ModelForm
+		2.创建内部类Meta，去关联Model
+			1.model：指定要关联的实体类
+			2.fields：指定从Model中取哪些字段生成控件
+				1.取值"__all__"，表示全部属性都要生成控件
+				2.取值列表，声明允许生成控件的属性名
+			3.labels：指定每个属性所关联的label，取值为字典
+				labels = {
+					'属性名':'label文本',
+					... ,
+				}
+		3.内置小部件 - widget	
+			1.小部件：表示的就是生成到网页上的控件类型以及其它的html属性
+			2.常用小部件类型
+				1.TextInput:type='text'(默认)
+				2.PasswordInput:type='password'
+				3.NumberInput:type='number'
+				4.EmailInput:type='email'
+				5.URLInput:type='url'
+				6.HiddenInput:type='hidden'
+				7.CheckboxInput:type='checkbox'
+				8.Textarea:<textarea></textarea>
+				9.Select:<select></select>
+			3.小部件的使用
+				1.继承自forms.Form类
+					1.基本版
+						只指定控件的类型
+						class RemarkForm(forms.Form):
+							属性 = forms.CharField(
+							label="文本"
+							widget=forms.小部件类型
+							)
+							
+					2.高级版
+						指定控件类型的基础上还允许设置一些相关的HTML属性到控件上
+						属性 = forms.CharField(
+							label = '文本',
+							widget = forms.小部件类型(
+								attrs = {
+									'html属性名':'属性值',
+									... ...
+									}
+								)
+							)
+					
+				2.继承自forms.ModelForm类
+					class xxxForm(forms.ModelForm):
+						class Meta:
+							model = xxx
+							fields = "__all__" 或[]
+							label = {
+								'属性名':'标签',
+								...
+							}
+							#指定小部件
+							widgets = {
+								'属性1':forms.小部件类型(
+								attrs={
+									'属性':'值'
+									...
+									}
+								),
+							}
+
+2.cookies和session
+	1.cookies	
+		1.django中使用cookies
+			1.设置cookies的值(将数据保存到客户端)
+				语法：	
+					响应对象.set_cookies(key,value,expires)
+					key:cookies的名字
+					value：cookie的值
+					expires:有效期，以秒为单位
+				1.不使用模板
+					resp = HttpRequest('响应内容str')
+					resp.set_cookie(key,value,expires)
+					return resp
+				2.使用模板
+					resp = render(request,'xxx.html',locals())
+					resp.set_cookie(key,value,expires)
+					return resp
+				3.使用重定向
+					resp = redirect('/地址/')
+					resp.set_cookie(key,value,expires)
+					return resp
+					
+			2.获取cookies的值
+				伴随着请求对象到达服务器之后再获得cookie的值
+				request.COOKIES:封装了当前访问站点下的所有的cookie的信息(字典)
+			3.删除cookie的值
+				通过响应对象通知客户端删除数据
+					resp.delete_cookie(key)
+	2.session
+		1.设置session的值
+			request.session['key']=值
+		2.获取session的值
+			value = request.session['key']
+			value = request.session.get('key')
+		3.删除session的值
+			del request.session['key']
+		4.有关session的配置
+			在setting.py中，有关session的设置
+			1.SESSION_COOKIE_AGE
+				作用：设置sessionID在cookies中的存活时间
+			2.SESSION_EXPIRE_AT_BROWSER_CLOSE = False   #作用：是否关闭浏览器使得Session过期（默认）
 
 
 
 
 
 
-
-
-
-08： cookies session会话
-
-
-
-
-
-
+	
+	
+	项目：登陆页面代码
 
 
 

@@ -11,6 +11,8 @@ from django.shortcuts import render
 #     return HttpResponse("register_views")
 from django.template import loader
 from django.urls import reverse
+
+from index.form import RemarkForm, WidgetForm1, WidgetForm2
 from .models import *
 
 
@@ -203,10 +205,78 @@ from .models import *
     # return HttpResponse(scheme)
 
 
-#http://192.168.3.5/02-request/?year=2018&month=10&day=11
-def request02_views(request):
-    year = request.GET.get('year','1900')
-    month = request.GET.get('month','01')
-    day = request.GET.get('day','01')
-    print("传递的数据：%s年%s月%s日" %  (year,month,day))
-    return HttpResponse("get ok")
+#GET,http://192.168.3.5/02-request/?year=2018&month=10&day=11
+# def request02_views(request):
+#     year = request.GET.get('year','1900')
+#     month = request.GET.get('month','01')
+#     day = request.GET.get('day','01')
+#     print("传递的数据：%s年%s月%s日" %  (year,month,day))
+#     return HttpResponse("get ok")
+
+# def post_views(request):
+#     if request.method == "GET":
+#         return render(request,'01-template.html')
+#     else:
+#         uname = request.POST.get('uname')
+#         upwd = request.POST.get('upwd')
+#         return HttpResponse("用户名：%s，用户密码：%s" % (uname,upwd))
+
+#注册用户
+# def register_views(request):
+#     if request.method == "GET":
+#         return render(request,'01-template.html')
+#     else:
+#         #接收前端传递过来的数据
+#         name = request.POST.get('name')
+#         age = request.POST.get('age')
+#         email = request.POST.get('email')
+#         #将数据封装成author的对象
+#         au = Author()
+#         au.name = name 
+#         au.age = age
+#         au.email = email
+#         #嗲用author的save()将数据保存到数据库
+#         au.save()
+#     return HttpResponse('register ok')
+
+
+#form模块
+# def form_views(request):
+#     if request.method == 'GET':
+#         #导入RemarkForm,创建RemarkForm的对象，并发送到06-form.html中
+#         form = RemarkForm()
+#         return render(request,'01-template.html',locals())
+#     else:
+#         # subject = request.POST.get('subject')
+#         # email = request.POST.get('email')
+#         # message = request.POST.get('message')
+#         # topic = request.POST.get('topic')
+#         # #复选框取值
+#         # isSaved = request.POST.get('isSaved','0')
+#         # return HttpResponse("subject:%s,email:%s,message:%s,topic:%s,isSaved:%s" % (subject,email,message,topic,isSaved))
+        
+#         #使用forms对象来接收提交的数据
+#         #将request.POST的数据提交给 RemarkForm
+#         form = RemarkForm(request.POST)
+#         #让RemarkForm的对象通过验证
+#         if form.is_valid():
+#             #通过验证后再获取各个控件的值
+#             cd = form.cleaned_data
+#             print(cd)
+#             print(cd['email'])
+#             # #如果存入数据库，保证model和form模块字段名一致的情况下
+#             # au = Author(**form.cleaned_data)
+#             # au.save()
+#         return HttpResponse("form_post ok")
+
+#form模块的小部件
+# def widget1_views(request):
+#     if request.method == "GET":
+#         form = WidgetForm1()
+#         return render(request,'01-template.html',locals())
+
+def widget2_views(request):
+    if request.method == 'GET':
+        form = WidgetForm2()
+        return render(request,'01-template.html',locals())
+        

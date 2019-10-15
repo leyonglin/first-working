@@ -30,5 +30,18 @@ urlpatterns += [
 
 urlpatterns += [
     # url(r'^01-request/$',request_views),
-    url(r'^02-request',request02_views),
+    # url(r'^02-request',request02_views),
+    # url(r'^03-post/$',post_views),
+    ]
+
+urlpatterns += [
+    #注册页面
+    # url(r'^04-register/$',register_views),
+    ]
+
+urlpatterns += [
+    #form模块
+    # url(r'^06-form/$',form_views),
+    # url(r'^08-widget1/$',widget1_views),
+    url(r'^09-widget2/$',widget2_views),
     ]
