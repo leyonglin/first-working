@@ -43,5 +43,10 @@ urlpatterns += [
     #form模块
     # url(r'^06-form/$',form_views),
     # url(r'^08-widget1/$',widget1_views),
-    url(r'^09-widget2/$',widget2_views),
+    # url(r'^09-widget2/$',widget2_views),
+    ]
+
+urlpatterns += [
+    url(r'^12-ajax/$',ajax_views),
+    url(r'^12-server/$',server12_views),
     ]

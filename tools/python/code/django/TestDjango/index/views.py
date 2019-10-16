@@ -275,8 +275,23 @@ from .models import *
 #         form = WidgetForm1()
 #         return render(request,'01-template.html',locals())
 
-def widget2_views(request):
-    if request.method == 'GET':
-        form = WidgetForm2()
-        return render(request,'01-template.html',locals())
+# def widget2_views(request):
+#     if request.method == 'GET':
+#         form = WidgetForm2()
+#         return render(request,'01-template.html',locals())
         
+
+
+def ajax_views(request):
+    return render(request,'03-static.html')
+
+def server12_views(request):
+    # list = ["NARUTO","HINATA","SAKURA","SASUKE"]
+    # jsonStr = json.dumps(list)
+    # return HttpResponse(jsonStr)
+    #查询Author中所有的数据
+    authors=Author.objects.all()
+    #将authors转换成json格式的字符串
+    jsonStr=serializers.serializer('json',authors)
+    print(jsonStr)
+    return HttpResponse(jsonStr)

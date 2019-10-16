@@ -3,6 +3,81 @@
 01： 爬虫的基础 分类 用途 法律风险 爬取网站前的准备工作 爬虫的广度优先简介 深度
 优先策略 
 
+1.网络爬虫
+	1.网络蜘蛛/网络机器人，抓取网络数据的程序
+	2.总结：用python程序模仿人类去访问网站，模仿的越逼真越好
+	3.用途：数据分析
+		python：请求模块，解析模块丰富成熟，强大的scrapy框架
+		java：代码笨重，代码量大
+		php：对多线程，异步支持不是很好
+		c++：效率高但代码成型慢
+	4.爬虫分类
+		1.通用网络爬虫(搜索引擎，遵守robots协议)
+			robots协议：https://www.taobao.com/robots.txt
+			1.搜索引擎如何获取1个新网址的url
+				1.网站主动向搜索引擎提供(百度站长平台)
+				2.和DNS服务商(万网)合作，快速收录新网站
+		2.聚焦网络爬虫
+			面向需求的爬虫：自己写的爬虫程序
+	5.数据爬取步骤
+		1.确定要爬取的url地址
+		2.向网站发请求获取相应的html页面
+		3.提取html页面中有用的数据
+			1.所需数据，保存
+			2.页面中新的url，继续第二步
+	6.Anaconda和spyder
+		1.Anaconda：科学计算的继承开发环境(集成多个库)
+		2.spyder：开发工具(编辑器)
+			常用快捷键
+				1.注释/取消注释：C+1
+				2.运行程序：F5
+				3.自动补全：tab
+	7.chrome插件
+		JSONView
+		Proxy SwitchyOmega
+		XPath Helper
+	8.GET和POST
+		1.GET：查询参数会在URL地址上显示，进行拼接
+		2.POST：查询参数和需要提交的数据隐藏在Form表单中，不会在URL中显示
+		3.url：  #瞄点   ?后面带参数   &参数分隔号
+		4.User-Agent
+			记录了用户的浏览器，操作系统等
+	9.请求模块：
+		1.模块：urllib.request
+		2.常用方法：
+			1.urllib.request.urlopen("url地址")
+				作用：向网站发起一个请求，并获取响应
+			2.urllib.request.Request({User-Agent})
+				1.使用流程
+					1.利用Request()方法构建请求对象
+					2.利用urlopen()方法获取响应对象
+					3.利用响应对象的read().decode("utf-8")获取内容
+				2.参数
+					1.url
+					2.headers = {"User-Agent":" "}
+			3.响应对象(res)的方法
+				1.res.read():读取服务器响应的内容
+				2.res.getcode():返回HTTP的响应码
+				3.geturl()
+					返回实际数据的URL
+		3.urllib.parse模块：url编码模块
+			作用：将url的汉字进行编码，是浏览器能识别
+			1.urlencode(字典)：{"wd":"美女"}
+				例如：urllib.parse.urlencode({"wd":"美女"})
+
+
+
+
+2-00：00
+
+
+
+
+
+
+
+
+
 
 
 
