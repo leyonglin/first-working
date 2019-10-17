@@ -1,10 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Wed Oct 16 20:14:34 2019
-
-@author: bangde
-"""
-
+#urllib模块爬取数据
 import urllib.request
 
 #利用Request()方法构建请求对象

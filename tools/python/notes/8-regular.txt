@@ -97,7 +97,7 @@ re模块:  1.可以直接调用dir(re)  2.可以通过complie生成的regex对�
 		功能：生成正则表达式对象    参数：pattern正则表达式  flags 功能标志位，丰富正则表达式的匹配功能    返回值:正则表达式对象
 		regex.findall(string,pos,endpos)
 			功能：从目标字符串查找正则匹配内容    参数：string目标字符串   pos匹配目标的起始位置   endpos匹配目标的终止位置    返回值：返回匹配到的内容，如果正则由子组则只返回子组对应内容
-	flags：多个标志位使用按位或连接
+	flags：多个标志位使用按位或连接(re.S让.能匹配\n  re.I忽略大小写)
 	示例：其它直接调用和对象调用是一样的区别
 		import re
 		pattern = r"(ab)cd(ef)"

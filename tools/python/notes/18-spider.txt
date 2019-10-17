@@ -3,6 +3,66 @@
 01： 爬虫的基础 分类 用途 法律风险 爬取网站前的准备工作 爬虫的广度优先简介 深度
 优先策略 
 
+django部署：
+	uwsgi:web服务器与web框架之间一种简单而通用的接口
+		1.确保Django项目能够运行
+			python3 manager.py runserver 0.0.0.0:8888
+		2.安装web服务器
+			1.安装
+			2.启动
+			3.验证：访问127.0.0.1
+		3.安装uwsgi
+			1.安装：pip3 install uwsgi
+			2.验证: uwgsi --http :9000 --chdir project_path --module project_Directory/wsgi.py
+				访问：127.0.0.1:9000
+	
+	项目部署
+		1.配置uwsgi(配置文件)和nginx通信端口  启动端口
+			1.在项目根目录(manager.py所在目录)中新建uwsgi启动文件:pro_nameUwsgi.ini
+				cat fruitdayUwsgi.ini
+					[uwsgi]
+					#指定和nginx通信端口
+					socket=127.0.0.1:8001
+					#项目路径
+					chdir=根目录
+					#wsgi.py路径
+					wsgi-file=project_Directory/wsgi.py
+					#进程数
+					processes=4
+					#线程数
+					thread=2
+					#uwsgi自身占用端口
+					stats=127.0.0.1:8080
+			2.配置nginx配置文件
+				cat uwsgi.conf
+					server{
+						listen 80;
+						server_name www.uwsgi.com;
+						#指定字符集
+						charset utf-8;
+						#指定收集静态文件路径
+						location /static{
+							alias 项目根目录/static;
+						}
+						#和uwsgi通信端口和通信文件
+						localtion /{
+							include uwsgi_params;
+							uwsgi_pass 127.0.0.1:8001;
+						}
+					}
+				拷贝uwsgi_params到项目根目录
+				修改默认访问路径并启动服务
+				
+			3.收集静态文件
+				1.在setting.py文件中添加路径(STATIC_ROOT)
+					STATIC_ROOT="项目根目录/static"
+				2.python3 manager.py collectstatic
+	
+			4.uwsgi启动项目
+				cd 项目根目录
+				uwsgi --ini  project_Directory/pro_nameUwsgi.ini
+
+
 1.网络爬虫
 	1.网络蜘蛛/网络机器人，抓取网络数据的程序
 	2.总结：用python程序模仿人类去访问网站，模仿的越逼真越好
@@ -61,19 +121,70 @@
 				3.geturl()
 					返回实际数据的URL
 		3.urllib.parse模块：url编码模块
-			作用：将url的汉字进行编码，是浏览器能识别
+			作用：将url的汉字进行编码，使浏览器能识别，有多个参数，会自动用&拼接
 			1.urlencode(字典)：{"wd":"美女"}
-				例如：urllib.parse.urlencode({"wd":"美女"})
+				例如：urllib.parse.urlencode({"wd":"美女","pn":50})
+			2.quote("字符串")
+			3.unquote("字符串")
 
 
 
+请求方式及参数
+	GET：查询参数会在URL地址上显示
+	POST
+		1.特点：URL地址无变化，数据是在Form表单中
+		2.data：表单数据要以bytes类型提交，不能是string
+		3.处理表单数据为bytes数据类型
+			1.把form表单数据定义为1各大字典
+			2.urlencode(data).encode("utf-8")
+				先编码得到字符串，再转码得到bytes数据类型
+	JSON模块
+		1.json.loads(json格式的字符串)
+			把json格式的字符串转为python中的字典
+			json.loads("key":"value")
 
-2-00：00
+正则表达式(re解析模块)
+	1.re使用流程
+		1.re使用方法1
+			1.创建编译对象：p = re.compile(r'正则表达式')
+				转义实例：或者直接加r就行了
+					import re
+					#理解1：首先python会对'\\\\'进行转义，得到正则表达式"\\"，在正则表达式里，要匹配\是要转义，即正则表达式要是"\\"
+					#理解2：要匹配字符串中的"\",由于"\"是特殊字符，因此正则表达式必须是"\\"才能匹配的上。但是，由于"\"在python中也是特殊字符，需要对每个"\"转义,因此变成"\\\\"
+					rlist=re.findall('\\\\',"aaa\dbbb")
+					print(rlist)
+					#得到结果是['\\']，即匹配成功(python输出"\"，由于"\"是特殊字符，因此python输出时会对"\"进行转义)
+			2.匹配字符串：rlist=p.findall("key":"value")
+		2.re使用方法2
+			rlist=re.findall(r'正则表达式',html)
+	2.表达式
+		a  						单个字符，包括汉字    
+		|  						或(已匹配过的字符，就不会再匹配)
+		.  						匹配除换行外的任意字符
+		^  						匹配字符串的开始位置
+		$  						匹配字符串的结束位置
+		*  						匹配前一个字符出现0次或多次
+		+  						匹配前一个字符出现1次或多次
+		？ 						匹配前一个字符出现0次或1次
+		{n}						匹配n次重复次数
+		{m,n}       			匹配m到n次重复次数(包含mn)
+		.+/.*       			匹配全部
+		[字符集]    			匹配字符集中任意一个字符([_a-zA-Z0-9])
+		[^字符集]   			过滤，即除字符集外的任意字符
+		\d == [0-9]				匹配任意数字字符
+		\D == [^0-9]			匹配任意非数字字符
+		\w                      普通字符(字母数字下划线及汉字)
+		\W						非普通字符
+		\s						匹配任意空字符[\r\t\n\v\f ]
+		\S                      匹配任意非空字符
+		\A == ^                 匹配字符串的开始位置
+		\Z == $                 匹配字符串的结束位置
+		\b						匹配单词边界位置(普通字符和非普通字符交界认为是单词边界)
+		\B						匹配非单词边界位置
 
-
-
-
-
+		匹配所有字符的方式:
+			[\s\S]*
+			.*,re.S(作用：匹配\n在内的所有字符)
 
 
 
@@ -82,6 +193,36 @@
 
 
 02： HTTPS协议解析 用抓包工具抓取分析网络数据包 BeautifulSoup XPath 
+
+1.数据分类
+	1.结构化的数据
+		特点：有固定的格式(html/xml/json)
+	2.非结构化数据
+		一般为二进制
+2.常用匹配:
+	p = re.compile(r"正则表达式",re.S)
+	robj = p.match(html)              #匹配字符串开头
+	r = r.group()
+3.常用方法：
+	1.findall(html)      所有全部匹配，返回1个列表
+	2.match(html)        匹配字符串开头，返回对象
+	3.search(html)       从开始匹配，匹配到第一个结束
+	4.对象.group()       从match或search返回对象中取结果
+
+
+
+
+
+1-02：30
+
+
+
+
+
+
+
+
+
 
 
 
