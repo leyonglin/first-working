@@ -218,22 +218,80 @@ django部署：
 	3.写入数据
 		writer.writerow(列表)
 		...
-	
-
-2-01:21
-
-
-
-
-
-
-
-
-
+5.数据持久化存储
+	1.mongodb
+	2.mysql
+	3.Anaconda安装
+		conda install pymongo
+6.远程连接数据库
+	1.bind-address = 0.0.0.0
+	2.添加用户
+		grant all privileges on *.* to "user@ip" identified by "passwd" with grant option;
+	3.防火墙
 
 
-03： HTTP协议的GET POST方法在爬虫中的使用 动态网站的Selenium+浏览器方案抓
-取 代理服务器的使用 
+
+
+
+03： HTTP协议的GET POST方法在爬虫中的使用 动态网站的Selenium+浏览器方案抓取 代理服务器的使用 
+
+http协议是一种无连接协议，客户端和服务端交互仅局限于请求/响应，为了维护连接，客户端在cookie保存用户信息
+	cookie：客户端信息保存用户身份
+	session：服务端信息确认用户身份
+
+
+requests模块(第三方模块)
+	1.常用方法
+		1.get(url,headers=headers)
+	2.响应对象res属性
+		1.encoding：响应编码
+		  res.encoding = "utf-8"
+		2.text  :字符串
+		3.content ：bytes(非结构化数据/二进制)
+		4.status_code:HTTPS响应码
+		5.url:返回实际数据的URL地址
+	3.get()方法中参数
+		1.查询参数:字典
+			网址：https://www.baidu.com/s?wd=美女&pn=90
+				params = {
+					"wd":key,
+					"pn":pn,
+					}   				#会自动编码和拼接
+				res = requests.get(url,params=params,headers=headers)
+				
+		2.使用代理(proxies)
+			快代理/全网代理
+			透明/高匿
+			1.格式： 			
+			#普通代理
+				proxies = proxies={"协议":"协议://IP:端口号"}
+			#私密代理
+				proxies = {"http":"http://用户名:密码@IP地址:端口号"}
+			验证：http://httpbin.org/get	
+		3.web客户端验证(auth)
+			1.auth = ("用户名","密码")
+
+
+
+
+2-00:52
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
