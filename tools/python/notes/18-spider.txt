@@ -210,11 +210,17 @@ django部署：
 	4.对象.group()       从match或search返回对象中取结果
 
 
+4.CSV模块使用流程
+	1.打开csv文件
+		with open("测试.csv","w",newline="",encoding="") as f:
+	2.初始化写入对象
+		writer=csv.writer(f)
+	3.写入数据
+		writer.writerow(列表)
+		...
+	
 
-
-
-1-02：30
-
+2-01:21
 
 
 
