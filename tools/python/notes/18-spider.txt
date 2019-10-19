@@ -251,6 +251,7 @@ requests模块(第三方模块)
 		4.status_code:HTTPS响应码
 		5.url:返回实际数据的URL地址
 	3.get()方法中参数
+	res = requests.get(url,params,headers,proxies,auth,verify)
 		1.查询参数:字典
 			网址：https://www.baidu.com/s?wd=美女&pn=90
 				params = {
@@ -271,22 +272,54 @@ requests模块(第三方模块)
 		3.web客户端验证(auth)
 			1.auth = ("用户名","密码")
 
+		4.SSL证书认证(verify)
+			1.verify = True(默认)：进行CA证书认证
+			2.verify = False: 不进行认证      #参数为True进行认证，访问https网站(没有进行CA认证)，抛出异常：SSLError
+
+	4.post
+		1.requests.post(url,data=data,headers=headers,...)    #其它get参数也可以用
+			data:字典，Form表单数据，不用编码，不用转码
+		
+xpath工具(解析)
+	1.在XML文档中查找信息的语言，同样适用于HTML文档的搜索
+	2.xpath辅助工具
+		1.Chrome插件：XPath Helper
+			打开/关闭:C+S+x
+		2.Firefox插件：XPath Checker
+		3.XPath编辑工具：XML quire
+			1.//:从整个文档中查找节点
+			2.@:选取某个节点的属性值
+				//title[@lang="en"] 或者 //tite[@lang] 或者 //title/@lang
+			3.匹配多路径
+				1.xpath表达式1 | xpath表达式2
+				2.获取所有book节点下的title子节点和price子节点
+					//book/title | //book/price
+			4.函数
+				1.contains():匹配一个属性值中包含某些字符串的节点
+					//title[contains(@lang,"e")]
+				2.text()：获取标签之间文本(<a href="/" id="channel">新浪社会</a>的新浪社会)
+					//title[contains(@lang,"e")]/text()
+
+			
+				#查找所有book节点一下的title子节点中，lang属性为"en"的节点
+					//book/title[@lang="en"]  
+				#查找bookstore下的第2个book节点下的title子节点
+					/bookstore/book[2]/title
+	
+lxml库及xptath使用
+	1.使用流程
+		1.导模块
+			from lxml import etree
+		2.创建解析对象
+			parseHtml=etree.HTML(html)
+		3.调用xpath
+			rlist=parseHtml.xpath('xpath表达式')
+			
+			
 
 
 
-2-00:52
-
-
-
-
-
-
-
-
-
-
-
-
+2-03:52
 
 
 

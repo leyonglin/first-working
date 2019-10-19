@@ -42,6 +42,7 @@ class NoteSpider():
 #        self.cursor.execute(ctab)
         ins = 'insert into tarenaNote(name) values(%s)'
         for r in rlist:
+            #如果有其它数据，可以用if判断并过滤
             self.cursor.execute(ins,[r])
             self.db.commit()
         self.cursor.close()
