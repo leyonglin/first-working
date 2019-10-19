@@ -27,17 +27,27 @@ parseHtml = etree.HTML(html)
 #1.匹配出所有的href的值
 r1 = parseHtml.xpath("//a/@href")
 print(r1)
+#print("*"*30,"*"*30)
+print("\n",)
+
 #2.把href中的/匹配出来
 r2=parseHtml.xpath('//div[@class="wrapper"]/a/@href')
 print(r2)
+print("\n",)
+
 #3.把href中的非/匹配出来
 r3=parseHtml.xpath('//ul[@id="nav"]/li/a/@href')
 #r3=parseHtml.xpath('//ul[@id="nav"]//a/@href')
 print(r3)
+print("\n",)
+
 #4.获取所有a节点的文本内容
 #r4=parseHtml.xpath('//a')
+#r4=r4[1].text
 r4=parseHtml.xpath('//a/text()')
 print(r4)
+print("\n",)
+
 #5.获取所有a节点文本内容（不包括最上面的新浪社会）
 #r5=parseHtml.xpath('//ul[@id="nav"]/li/a')
 r5=parseHtml.xpath('//ul[@id="nav"]/li/a/text()')

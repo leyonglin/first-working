@@ -238,6 +238,9 @@ django部署：
 http协议是一种无连接协议，客户端和服务端交互仅局限于请求/响应，为了维护连接，客户端在cookie保存用户信息
 	cookie：客户端信息保存用户身份
 	session：服务端信息确认用户身份
+	headers = {"User-Agent":"Mozilla/5.0"
+		"cookie":""
+		}
 
 
 requests模块(第三方模块)
@@ -286,7 +289,7 @@ xpath工具(解析)
 		1.Chrome插件：XPath Helper
 			打开/关闭:C+S+x
 		2.Firefox插件：XPath Checker
-		3.XPath编辑工具：XML quire
+		3.XPath编辑工具：XML quire(不常用)
 			1.//:从整个文档中查找节点
 			2.@:选取某个节点的属性值
 				//title[@lang="en"] 或者 //tite[@lang] 或者 //title/@lang
@@ -317,23 +320,110 @@ lxml库及xptath使用
 			
 			
 
+抓包工具fiddler
+	1.配置：Tools -- HTTPS -- 1.Decrypt HTTPS traffic(抓取https包)/Actions(信任root证书) -- 2.from browsers only(只抓取浏览器的包) -- 3.connections(代理端口)
+		右半边---Inspectors --1. Headers(请求头数据)  -- 2.webforms(post) -- 3.raw(将请求头转换成纯文本)
+	2.浏览器配置：switchyomega(浏览器插件) -- 选项 --新建情景模式 -- 代理服务器和代理端口 -- 应用选项  然后，在插件出选择新建的情景模式
+		如果关闭fiddler的时候，需要将switchyomega切换成系统代理
 
 
-2-03:52
 
-
-
-
+ubuntu防火墙：ufw
 
 
 
 
 04： Cookie Session的使用 Cookiejar的管理 表单提交 
 
+Handler处理器(urllib.request)
+	1.使用流程
+		1.创建Handler对象
+			phandler = urllib。request。Proxy Handler({字典})
+		2.创建opener对象
+			opener = urllib.request.build_opener(phandler)
+		3.发请求获响应
+			req = urllib.request.Request(url,headers=headers)
+			res=opener.open(req)
+	2.分类
+		1.ProxyHandler({普通代理字典})
+		2.ProxyBasicAuthHandler(密码管理器对象)
+		3.HTTPBasicAuthHandler(密码管理器对象)
+		4.流程
+			1.密码管理器对象操作
+				1.pwdmg = urllib.request.HTTPPassword...
+				2.pwding.add_password(None,{"http":"IP:端口"},"user","pwd"
+
+
+
 
 
 
 05： 数据的持续化存储 数据库的使用 多进程 多线程在爬虫框架中的使用 
+
+
+Ajax动态加载
+	1.抓包工具：WebForms -> QueryString
+	2.parmas = {QueryString一堆查询参数}
+	3.URL地址：抓包工具Raw下的GET地址
+
+
+
+selenium + phantomjs/chromedriver 强大网络爬虫组合
+	1.selenium(模块)
+		1.web自动化测试工具，应用于web自动化测试
+		2.特点：
+			1.可以运行在浏览器，根据指定命令操作浏览器，让浏览器自动加载页面
+			2.需要与第三方浏览器结合使用
+	2.phantomjs（应用程序）
+		1.无界面浏览器(无头浏览器)
+		2.特点：
+			1.把网站加载到内存进行页面加载
+			2.运行高效
+	3.chromedriver可设置有/无界面（程序）
+		chromdriver.storage.googleapis.com(需要与谷歌浏览器版本一致)
+	4.打开百度/发送文字并点击，最后获取页面截图
+	5.浏览器对象(driver)的方法
+		1.driver.get(url):发请求，或响应
+		2.driver.page_source:获取html源码
+		3.driver.page_source.find('字符串'):从源码找字符串，查找失败返回-1
+	6.单元素查找（节点对象，只查找第一个search）
+		1.driver.find_element_by_id('')
+		2.driver.find_element_by_name('')
+		3.driver.find_element_by_class_name('')
+		4.driver.find_element_by_xpath('')
+	7.多元素查找
+		1.driver.find_elements_by_id('')
+		2.driver.find_elements_by_name('')
+		3.driver.find_elements_by_class_name('')
+		4.driver.find_elements_by_xpath('')
+		返回值是一个列表
+	8.节点对象.send_keys('')     #发送文字
+	9.节点对象.click()			 #点击
+	10.chromdriver参数
+		百度  "ChromeOptions()"
+
+
+
+
+
+
+3-02:58
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -344,3 +434,15 @@ lxml库及xptath使用
 
 
 07： 爬虫项目实战：猫眼 豆瓣电影数据抓取 腾讯招聘网站数据抓取 淘女郎图片抓取
+
+
+
+
+
+
+
+
+
+
+
+

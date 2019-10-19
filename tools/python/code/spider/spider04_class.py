@@ -19,9 +19,13 @@ class SpiderPage():
         pass
 
     #主函数
-    def workOn(self):
-
+    def workOn(self,rlink):
+        name = str(input("输入你要下载的东西"))
+        
+        for i in rlink:
+            pass
         
         
 if __name__ == '__main__':
     start1 = SpiderPage()
+    start1.workOn()
