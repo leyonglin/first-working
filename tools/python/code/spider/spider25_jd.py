@@ -7,8 +7,9 @@ Created on Sun Oct 20 12:07:06 2019
 
 from selenium import webdriver
 import time
-#创建浏览器对象
-driver = webdriver.PhantomJS(executable_path='C:\\Users\\59748\\Desktop\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe')
+#创建浏览器对象，推荐用谷歌或火狐插件
+#driver = webdriver.PhantomJS(executable_path='C:\\Users\\bangde\\Desktop\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe')
+driver = webdriver.Chrome(executable_path='C:\\Users\\bangde\\Desktop\\phantomjs-2.1.1-windows\\chromedriver.exe')
 
 #访问京东首页
 driver.get('https://www.jd.com')
@@ -22,32 +23,32 @@ button = driver.find_element_by_class_name('button')
 button.click()
 time.sleep(3)
 #提取数据，分析数据
-while True:
-    #执行脚本，进度条拉到最底部
-    driver.execute_script('window.srollTo(0,document.body.scrollHeight)')
+#while True:
+#    #执行脚本，进度条拉到最底部，不知道报的啥错
+#    driver.execute_script('window.srollTo(0,document.body.scrollHeight)')
     
-    rlist=driver.find_elements_by_xpath('//div[@id="J_goodsList"]//li')
-    for r in rlist:
-        contentlist=r.text.split('\n')
-        price = contentlist[0]
-        name = contentlist[1]
-        commit = contentlist[2]
-        market = contentlist[3]
-        d = {
-                "价格":price,
-                "名称":name,
-                "评论":commit,
-                "商家":market,
-                }
-        with open("jd.json","a",encoding="utf-8") as f:
-            f.write(str(d) + "\n")
+rlist=driver.find_elements_by_xpath('//div[@id="J_goodsList"]//li')
+for r in rlist:
+    contentlist=r.text.split('\n')
+    price = contentlist[0]
+    name = contentlist[1]
+    commit = contentlist[2]
+    market = contentlist[3]
+    d = {
+            "价格":price,
+            "名称":name,
+            "评论":commit,
+            "商家":market,
+            }
+    with open("jd.json","a",encoding="utf-8") as f:
+        f.write(str(d) + "\n")
         
         #点击下一页
-        if driver.page_source.find('pn-next disabled') == -1:
-            driver.find_element_by_class_name('pn-next').click()
-        else:
-            print("爬取结束")
-            break
+#        if driver.page_source.find('pn-next disabled') == -1:
+#            driver.find_element_by_class_name('pn-next').click()
+#        else:
+#            print("爬取结束")
+#            break
         
     
 driver.quit()

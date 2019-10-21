@@ -407,9 +407,91 @@ selenium + phantomjs/chromedriver 强大网络爬虫组合
 
 06： Scrapy框架的使用以及如何对爬虫进行分页 去重 
 
+进程：系统正在运行的一个程序
+	1个cpu在同一时间只能执行一个进程
+线程：一个进程可包含多个线程
+	GIL(全局解释锁)导致1个cpu只能运行一个线程
+	
+1.队列(from queue import Queue)
+	put()
+	get()
+	Queue.empty():是否为空
+	Queue.join():如果队列为空，执行其它程序
+2.线程(import threading)
+	threading.Thread(target=...)
 
 
+BeautifulSoup解析
+	1.定义：HTML或XML的解析器，依赖于lxml
+	2.安装：python -m pip install beautifulsoup4
+	3.使用流程：
+		1.导模块
+			from bs4 import BeautifulSoup
+		2.创建解析对象
+			soup = BeautifulSoup(html,'lxml')
+		3.查找节点对象(列表)
+			soup.find_all("div",attrs={"class":"test"})
+	4.BeautifulSoup支持的解析库
+		1.lxml:soup = BeautifulSoup(html,"lxml")  #筛选速度快，容错率强
+		2.html.parser:python标准库				  #一般
+		3.xml：速度快								
+	5.节点选择器
+		1.选择节点并获取内容
+			节点对象.节点名.string
+	6.find_all():返回列表
 
+
+scrapy框架
+	1.定义：异步处理框架，可配置和可扩展程度非常高
+	2.scrary startproject pro_name
+	3.scrapy组件：
+		 爬虫程序：发送url，解析返回内容
+		1.scrapy引擎(engine):框架的核心
+		2.调度器(scheduler):接收从引擎发过来的URL，入队列
+		3.下载器(downloader):获取网页源码，返回爬虫程序
+		4.下载器中间件(downloader middlewares)）：在引擎去往下载器的中间
+			蜘蛛中间件(spider middlewares)：在引擎返回爬虫程序的中间
+		5.项目管道(item pipeline):数据处理
+
+	4.制作scrapy爬虫项目的步骤
+		1.新建项目,执行命令
+			scrapy startproject pro_name
+		2.明确目标(items.py)
+			编辑items.py文件
+				name = scrapy.Field()
+		3.制作爬虫程序
+			进入导spiders文件夹中，执行命令:
+				scrapy genspider 文件名 "域名"
+		4.处理数据(pipelines.py)
+		5.配置settings.py
+		6.运行爬虫程序
+			1.scrapy crawl 爬虫名
+			2.保存为csv文件：scrapy crawl 爬虫名 -o 文件名.csv
+			
+	5.scrapy项目文件讲解
+
+		Baidu/   						#执行命令scrapy startproject Baidu
+		├── Baidu                       #项目目录
+		│   ├── __init__.py
+		│   ├── items.py				#定义爬取的数据结构
+		│   ├── middlewares.py			#下载器中间件和蜘蛛中间件
+		│   ├── pipelines.py			#管道文件，处理数据
+		│   ├── settings.py				#项目全局配置
+		│   └── spiders					#文件夹，存放爬虫程序
+		│       ├── baiduspider.py		#爬虫程序，执行命令：scrapy genspider baiduspider  "www.baidu.com"
+		│       └── __init__.py
+		└── scrapy.cfg					#基本配置文件，一般不用改
+
+	6.运行流程
+		1.Engine想spider索要URL(爬虫文件的第一个start_urls)
+		2.交给Scheduler入队列
+		3.scheduler出队列，通过downloader middlewares交给downloader
+		4.下载完成，通过spider middlewares给spider
+		5.spider做数据提取
+			1.把数据交给Item Pipeline 
+			2.把需要跟进url交给scheduler入队列
+		6.当scheduler中没有任何request请求后，程序结束
+		
 
 
 
@@ -417,6 +499,136 @@ selenium + phantomjs/chromedriver 强大网络爬虫组合
 
 
 07： 爬虫项目实战：猫眼 豆瓣电影数据抓取 腾讯招聘网站数据抓取 淘女郎图片抓取
+
+yield：把一个函数当成一个生成器使用，通过对象.__next__()一个一个取出
+
+
+	网址：https://blog.csdn.net/qq_39305249/article/details/102628783
+	爬取标题  时间  数量
+	xpath:
+		//h1[@class="title-article"]/text()
+		//div[@class="article-bar-top"]/span[@class="time"]/text()
+		//div[@class="article-bar-top"]/span[@class="read-count"]/text()
+
+
+
+1.scrapy startproject Csdn
+2.cd Csdn/Csdn
+3.scrapy genspider csdn blog.csdn.net
+4.修改items.py（爬取数据）
+5.修改csdn.py（start_urls）及自定义类匹配出值并return给pipelines.py
+6.修改setting.py
+7.常见begin.py执行文件(与items同级目录)	
+	from scrapy import cmdline
+	cmdline.execute('scrapy crawl tengxun'.split())
+	cmdline.execute('scrapy crawl tengxun -o 文件名.csv'.split())
+
+
+
+
+1.extract():获取选择器对象中的文本内容
+	response.xpath('')  --> 结果:[<selector ...,data='文本内容'>]
+	response.xpath('').exreact()[0]  -->结果：文本内容
+2.爬虫程序中，start_urls必须为列表
+3.pipelines.py中必须有1个函数叫：
+	def process_item(self,item,spider):
+		pass(处理item的)
+
+4.58招聘项目(数据持久化存储)
+	1.网站：https://bj.58.com/kefu/
+			https://bj.58.com/kefu/  pn1/
+	2.xpath匹配
+		表达式：//ul[@id="list_con"]/li
+		岗位：//span[@class="name"]
+		地点：//span[@class="address"]		
+		薪资：//p[@class="job_salary"]
+		待遇：//div/span[2]
+		链接：//a/@href
+
+5.日志级别及保存日志文件
+	LOG_LEVEL=""
+	LOG_FILE='文件名.log'
+		LOG_ENABLED 默认: True，启用logging	
+		LOG_ENCODING 默认: ‘utf-8’，logging使用的编码	
+		LOG_FILE 默认: None，在当前目录里创建logging输出文件的文件名
+		LOG_LEVEL 默认: ‘DEBUG’，log的最低级别
+	5层警告级别
+		CRITICAL - 严重错误
+		ERROR - 一般错误
+		WARNING - 警告信息
+		INFO - 一般信息
+		DEBUG - 调试信息
+
+ajax：可以查看F12的xhr
+
+
+6.保存为csv或json文件
+	保存为csv/json文件：scrapy crawl 爬虫名 -o 文件名.csv/json
+	settings.py
+		FEED_EXPORT_ENCODING = 'utf8'   设置导出格式
+	设置导出空行问题：修改源码(百度)
+
+
+7.盗墓笔记：http://www.daomubiji.com/dao-mu-bi-ji-1
+	基准：
+		response.xpath('//article/a/text()').extract()
+		for r in []:
+			标题
+			章节数
+			章节名称
+			链接 '//article/a/@href'[i]
+			yield item
+
+
+8.scrapy shell
+	1.用法：scrapy shell URL
+		response.headers
+		request.headers：请求头
+		response.text：string类型
+		response.body：bytes类型
+		request.xpath('')
+	2.scrapy.Request()常用参数:
+		request.meta
+			定义代理等参数相关信息
+			不同请求之间传递数据
+		dont_filter:是否忽略域组限制
+			默认False：检查allowed_domains
+		encoding:默认utf-8
+		callback: 指定解析函数
+9.下载器中间件（随机User-Agent）
+	1.setting.py(适合少量)
+		1.User_Agent
+		2.DEFAULT_REQUEST_HEADERS={}
+	2.middlewares.py设置中间件
+		1.创建一个新的存放user_agent的python文件
+		2.在middlewares.py中导入并自定义类并重写process_request方法
+		3.在settings.py注册
+10.下载器中间件（随机代理）
+		1.创建一个新的存放user_agent的python文件
+        2.在middlewares.py中导入并自定义类并重写process_request方法(和useragent是一样的方法)
+        3.在settings.py注册
+
+11.CrawlSpider类
+	1.Spider的派生类
+		from scrapy.spiders import CrawlSpider
+		定义一些规则来提取跟进链接，从爬取的网页中提取链接并继续爬取
+	2.提取链接的流程(LinkExtractor)
+		1.scrapy shell URL
+		2.from scrapy.linkextractors import LinkExtractor
+		3.LinkExtractor(allow='').extract_links(response)
+	3.创建爬虫文本模板（CrawlSpider类）
+		cd Baidu/Baidu(不要与原模版文件名及name重名)
+		scrapy genspider -t crawl 爬虫名 域名
+
+
+
+
+
+3-00：00
+
+
+
+
 
 
 

@@ -37,7 +37,7 @@ html="""<div class="animal">
 #print(html)  
 #这里匹配，就相当于从开头匹配到结尾，
 #<div class="animal">匹配一段字符串  .*?非贪婪匹配  title="匹配字符串  (.*?)分组/输出  .*?  class="content">  (.*?)  </p>           
-p = re.compile('<div class="animal">.*?title="(.*?).*?class="content">(.*?)</p>',re.S)
+p = re.compile('<div class="animal">.*?title="(.*?)".*?class="content">(.*?)</p>',re.S)
 rlist = p.findall(html)
 #print(rlist)
 for r in rlist:
