@@ -619,15 +619,20 @@ ajax：可以查看F12的xhr
 	3.创建爬虫文本模板（CrawlSpider类）
 		cd Baidu/Baidu(不要与原模版文件名及name重名)
 		scrapy genspider -t crawl 爬虫名 域名
+12.scrapy redis-key
+
+setting.py配置
+	重新配置各模块
+		SCHEDULER = "scrapy_redis.scheduler.Scheduler"
+	去重
+		DUPEFILTER_CLASS="scrapy_redis.dupefilter.RFPDupeFilter"
+	保持调度器队列，断点续爬
+		SCHEDULER_PERSIST = True
+	配置redis数据库链接地址
+		REDIS_URL = 'redis://172.16.24.4434223:6379'         
 
 
-
-
-
-3-00：00
-
-
-
+3-02:06
 
 
 

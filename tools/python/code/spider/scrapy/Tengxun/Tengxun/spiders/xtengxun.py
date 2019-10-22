@@ -11,9 +11,13 @@ class XtengxunSpider(CrawlSpider):
     name = 'xtengxun'
     allowed_domains = ['www.qq.com']
     start_urls = ['http://www.qq.com/']
-
+    
+    Link1 = LinkExtractor(allow=r'Items/')
+    
     rules = (
-        Rule(LinkExtractor(allow=r'Items/'), callback='parse_item', follow=True),
+        Rule(Link1, callback='parse_item', follow=True),
+        #Rule(LinkExtractor(allow=r'Items/'), callback='parse_item', follow=True),
+        #... ...
     )
 
     def parse_item(self, response):
