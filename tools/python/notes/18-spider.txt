@@ -560,6 +560,7 @@ yield：把一个函数当成一个生成器使用，通过对象.__next__()一�
 		DEBUG - 调试信息
 
 ajax：可以查看F12的xhr
+	有一些跳转的url是和ajax中的值进行拼接而成的，同时有着其它的信息
 
 
 6.保存为csv或json文件
@@ -620,27 +621,63 @@ ajax：可以查看F12的xhr
 		cd Baidu/Baidu(不要与原模版文件名及name重名)
 		scrapy genspider -t crawl 爬虫名 域名
 12.scrapy redis-key
+	
+https://github.com/rmax/scrapy-redis
+	
+        
 
+视频4与视频3顺序颠倒
+	
+
+验证码处理
+	1.OCR(Optical Character Recognition):光学字符识别
+		通过字符性值 --> 电子文本
+	2.tesseract-ocr(谷歌维护的OCR开源库，不能import)
+		1.windows安装
+			下载网址：https://sourceforge.net/projects/tesseract-ocr-alt/files/
+			安装完成后添加到环境变量
+			验证：tesseract test1.png aaa
+		2.python模块：pytesseract
+			pip/conda install pytesseract
+		3.pytesseract使用示例
+			s=spytesseract.image_to_string(图像对象)
+	
+
+分布式原理(共享爬取队列)
+	安装scrapy_redis
+	1.redis_key使用
+		1.爬虫文件
+			from scrapy_redis.spiders import RedisCrawlSpider
+			class MyCrawler(RedisCrawlSpider):
+			将 start_urls 替换成 redis_key = 'mycrawler:start_urls'
+	2.把项目拷贝到分布式的不同服务器上，
+		运行项目scrapy crawl mycrawler_redis
+		或者 cd spiders && scrapy runspider mycrawler_redis.py
+	3.进入windows的redis,发送redis_key
+		redis-cli -hIP
+		>>lpush mycrawler:start_urls URL
+	
 setting.py配置
 	重新配置各模块
 		SCHEDULER = "scrapy_redis.scheduler.Scheduler"
 	去重
 		DUPEFILTER_CLASS="scrapy_redis.dupefilter.RFPDupeFilter"
-	保持调度器队列，断点续爬
+	保持调度器队列，断点续爬（不会清空指纹）
 		SCHEDULER_PERSIST = True
+	管道：数据处理
+		ITEM_PIPELINES = {
+			'scrapy_redis.pipelines.RedisPipeline': 400,
+		}
 	配置redis数据库链接地址
-		REDIS_URL = 'redis://172.16.24.4434223:6379'         
+		REDIS_HOST='127.0.0.1'
+		REDIS_PORT=6379
 
 
-3-02:06
+redis是非关系型数据库，key-value形式存储，结构灵活
+redis集合，存储每个request的指纹(加密存储，相同的值不进行第二次存储)
 
 
-
-
-
-
-
-
+5-00：23
 
 
 

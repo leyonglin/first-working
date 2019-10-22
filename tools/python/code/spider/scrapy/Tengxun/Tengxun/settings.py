@@ -112,3 +112,32 @@ MySQL_DB='Tencent'
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+
+##分布式原理(共享爬取队列)scrapy_redis
+##指纹存储在redis，数据可以存储在其他地方
+##重新配置各模块
+##    SCHEDULER = "scrapy_redis.scheduler.Scheduler"
+##去重
+##    DUPEFILTER_CLASS="scrapy_redis.dupefilter.RFPDupeFilter"
+##保持调度器队列，断点续爬（不会清空指纹）
+##    SCHEDULER_PERSIST = True
+##管道：数据处理
+##    ITEM_PIPELINES = {
+##        'scrapy_redis.pipelines.RedisPipeline': 400,
+##    }
+##配置redis数据库链接地址
+##    REDIS_HOST='127.0.0.1'
+##    REDIS_PORT=6379
+
+
+
+
+
+
+
+
+
+
+
+
+

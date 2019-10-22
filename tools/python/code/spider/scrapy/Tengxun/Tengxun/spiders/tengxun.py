@@ -41,3 +41,22 @@ class TengxunSpider(scrapy.Spider):
         # item['zhDai'] = response.xpath('//ul[@id="list_con"]/li//div/span[2]/text()').extract()[0]
         # item['zhLink'] = response.xpath('//ul[@id="list_con"]/li//a/@href').extract()[0]
         # yield item
+
+##使用redis_key配置
+##class TengxunSpider(scrapy.Spider):
+##    name = 'tengxun'
+##    allowed_domains = ['bj.58.com']
+##    #发送命令，分布式服务器执行爬取命令（scrapy crawl tengxun）后等待redis执行lpush mycrawler:start_urls URL(就是爬取程序的redis_key)统一开始爬取
+##    redis_key = 'mycrawler:start_urls'
+##    ##动态获取域限制(allowed_domains,这样才能跨域名爬取)，但是和allowed_domains只能二选一
+##    def __init__(self, *args, **kwargs):
+##        # Dynamically define the allowed domains list.
+##        domain = kwargs.pop('domain', '')
+##        self.allowed_domains = filter(None, domain.split(','))
+##        super(MyCrawler, self).__init__(*args, **kwargs)
+
+
+
+
+
+
