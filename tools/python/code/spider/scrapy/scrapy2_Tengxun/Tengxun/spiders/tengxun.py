@@ -9,7 +9,7 @@ from Tengxun.items import TengxunItem
 class TengxunSpider(scrapy.Spider):
     name = 'tengxun'
     allowed_domains = ['bj.58.com']
-
+    #url是一个列表，具体可以看scrapy.Spider中的start_requests方法
     url = "https://bj.58.com/kefu/pn"
     start_urls = [url + str(1)]
 
@@ -28,7 +28,11 @@ class TengxunSpider(scrapy.Spider):
         baseList = response.xpath('//ul[@id="list_con"]/li')
         for base in baseList:
             item['zhName'] = base.xpath('//span[@class="name"]/text()').extract()[0]
-            item['zhAddress'] = base.xpath('//span[@class="address"]/text()').extract()[0]
+            item['zhAddress'] = base.xpath('//span[@class="address"]/text()').extract()
+            if item['zhAddress']:
+                item['zhAddress'] = item['zhAddress'][0]
+            else:
+                item['zhAddress'] = "无"
             item['zhXin'] = base.xpath('//p[@class="job_salary"]/text()').extract()[0]
             item['zhDai'] = base.xpath('//div/span[2]/text()').extract()[0]
             #链接的提取有问题

