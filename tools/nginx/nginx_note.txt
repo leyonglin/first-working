@@ -8,12 +8,19 @@
  安装nginx安装第三方模块实际上是使用--add-module重新安装一次nginx
  
  ./configure --prefix=/opt/apps/nginx --with-http_stub_status_module --with-http_ssl_module --with-http_geoip_module --with-http_gzip_static_module --with-ipv6 --with-http_realip_module  --user=swadmin --group=swadmin --add-module=../upload/ngx_tcpwrappers/
- 配置ngx_lua-waf  隐藏nginx版本   优化buffer  自定义日志格式    fastcgi网站加速(网站静态缓存加速方案)  限速limit及限制单个IP单位时间访问次数
- 自动识别CPU,分配进程	自动识别CPU，分配进程	最大打开文件数(与内核配合)	 设置proxy_cache缓存    gzip压缩配置   IP黑名单及GeoIP 访问IP限制/白名单    搭建虚拟机(include)
- 监听多个端口   自定义错误返回页面  设置后缀名处理方法   proxy_pass  ip2location(第三方模块)
+ 配置ngx_lua-waf  隐藏nginx版本   限速limit及限制单个IP单位时间访问次数  IP黑名单及GeoIP 访问IP限制/白名单  referer模块  设置后缀名处理方法 ip2location(第三方模块)  
+ 自动识别CPU,分配进程	自动识别CPU,分配进程	优化buffer      fastcgi网站加速(网站静态缓存加速方案)   gzip压缩配置  最大打开文件数(与内核配合)
+ 设置proxy_cache缓存    proxy_pass   upstream/stream(反代)
+ 自定义日志格式 搭建虚拟机(include)监听多个端口  自定义错误返回页面
  
  proxy_set_header用来重定义发往后端服务器的请求头。
  语法格式： proxy_set_header Field Value;      #Field传到后端服务器的字段名，Value字段值，可以是变量(最后有例子)    
+ 
+ proxy：设置代理参数
+ upstream：负载均衡（upstream七层 和 stream四层）
+ 
+ 
+ 
  
  
  
@@ -217,7 +224,11 @@
  
 
 
-
+搭建nginx过程：
+	创建不可登录的无家目录用户：useradd nginx -s /sbin/nologin  -M -g root
+	修改用户附加组：usermod nginx -G nginx     （passwd可修改密码时间相关）
+	进入解压目录并编译--with-http_stub_status_module
+	./config --prefix=/usr/local/nginx --user=nginx	--with-http_stub_status_module --with-http_ssl_module --with-http_geoip_module --with-http_gzip_static_module --with-ipv6 --with-http_realip_module
 
 
 
