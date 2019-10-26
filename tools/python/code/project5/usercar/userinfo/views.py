@@ -1,3 +1,4 @@
+
 #加密模块
 from django.contrib.auth.hashers import make_password
 #错误处理模块
@@ -36,7 +37,23 @@ def register(request):
 def login(request):
     #判断请求方式，获取前端数据并与数据库比对,返回不同数据
     if request.method == "POST":
-        luser = UserInfo()
-        luser.username = request.POST.get("username")
-        luser.password = request.POST.get('pwd')
+        # luser = UserInfo()
+        # luser.username = request.POST.get("username")
+        # luser.password = request.POST.get('pwd')
+        uname = request.POST.get("username")
+        pwd = request.POST.get('pwd')
+        #判断用户的合法性，用户名密码为空,存在获取用户对象
+        user = authenticate(username=uname,password=pwd)
+        if user is not None and user.is_active:
+            #用户登录
+            login(request,user)
+            #获取来源url
+            url = request.COOKIES.get('source_url','')
+            return  HttpResponse(request,'index.html')
 
+def logout(request):
+    logout(request)
+    return render(request,'index.html')
+
+def register(request):
+    if request.user.is_authenticated():

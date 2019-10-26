@@ -710,6 +710,9 @@ java:笨重但是稳,交易系统会用。hadoop使用java写的
 数据库物理删除和逻辑删除
 token：账号密码时间戳等进行哈希计算   表/浏览器cookie/网站cookie/session
 
+tornado：天生异步
+flask：小巧灵活
+django：大而全，并且很多东西都内置
 
 
 
@@ -822,8 +825,7 @@ python3 manage.py createsuperuser
 	
 
 
-
-9-03：55
+10-01:26
 
 
 
