@@ -16,6 +16,8 @@ manage jenkins(全局配置) --》configure system--》Publish over SSH(连接�
 
 
 在官网下载软件包：https://jenkins.io/
+百度搜索：jenkins自动部署
+
 yum源
 wget http://pkg.jenkins.io/redhat/jenkins.repo
 rpm --import http://pkg.jenkins.io/redhat/jenkins.io.key
