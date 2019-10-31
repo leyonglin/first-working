@@ -138,6 +138,11 @@ ssh免密推送：1.在家目录用ssh-keygen 生成密钥，并将 id_rsa.pub �
 			 4.(1)查看：git remote -v       (2)推送：git push ssh别名 分支
 
 
+每个项目中都可以创建issues的里程碑和问题(list)，并且可以指派给已在项目中的成员并且可以添加解决问题的模板
+gitflow feature start question  = git checkout -b feature/question(feature/question是一个分支)(flow是一个插件)
+请求合并：merge request 
+
+
 
 git工作流：1.集中式工作流：即不分支，类似svn
 		   2.GitFlow工作流：(master/develop/feature/hotfix/release)
