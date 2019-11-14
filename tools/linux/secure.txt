@@ -1,4 +1,5 @@
 
+刷登陆：频繁刷某个url，过滤并拉黑
 cc攻击：验证码
 ddos：流量攻击，cdn，封ip
 反弹：python -c 'import pty; pty.spawn("/bin/bash")'

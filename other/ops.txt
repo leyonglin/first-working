@@ -1,11 +1,20 @@
 服务器检查
-	dmidecode | egrep -i 'manufacturer|product|vendor|system' | uniq
-	lscpu
+	#dmidecode | egrep -i 'manufacturer|product|vendor|system' | uniq
+	lscpu          #Socket 具体是指的主板上 CPU 的插槽数量,称为路。Core 具体是指 CPU 的核心。thread 是指的每个 Core 的硬件线程数，超线程。逻辑 CPU 的数量就是 Socket * Core * Thread
 	ip -4 a
 	timedatectl
 	df -hT
 	free -h
+	hostname
+	uname -m && getconf LONG_BIT      
+	uname -r    #内核版本
+	uptime    #负载与开机时间，awk '{a=$1/86400;b=($1%86400)/3600;c=($1%3600)/60;d=$1%60} {printf("%ddays, %d:%d:%d\n",a,b,c,d)}' /proc/uptime
+	ps -ef | egrep "python| exec"
+	cat /etc/redhat-release  //  cat /etc/issue // cat /proc/version // cat /etc/os-release // cat /etc/lsb-release #查看服务器内核版本
+
 开机自启服务：网卡，时间同步，关闭selinux，su/sudo
+生成随机密码
+终端操作命令：stty
 内核优化：
 	net.ipv4.ip_forward = 1
 	net.ipv4.tcp_fin_timeout = 600
